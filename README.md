@@ -54,6 +54,20 @@ In order to ensure that the Laravel community is welcoming to all, please review
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
+## Push to GitHub
+
+This project is already a Git repo (branch `main`). To push to GitHub:
+
+1. **Create a new repository** on [GitHub](https://github.com/new). Do **not** add a README, .gitignore, or license (they already exist here).
+2. **Add the remote and push** (replace `YOUR_USERNAME` and `YOUR_REPO` with your GitHub username and repo name):
+
+   ```bash
+   git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+   git push -u origin main
+   ```
+
+   Or with SSH: `git remote add origin git@github.com:YOUR_USERNAME/YOUR_REPO.git`
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

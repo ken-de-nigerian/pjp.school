@@ -1,0 +1,379 @@
+@extends('layouts.app')
+
+@section('content')
+    @php
+        $uploadUrl = route('admin.results.upload-term');
+        $viewUploadedUrl = route('admin.results.uploaded', [
+            'class' => $class ?? '',
+            'term' => $term ?? '',
+            'session' => $session ?? '',
+            'subjects' => $subjects ?? '',
+        ]);
+    @endphp
+    <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
+        <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+            @if(!empty($showSheet))
+                <div class="mb-4 sm:mb-6 w-fit">
+                    <a href="{{ route('admin.upload-results') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Change class / subject
+                    </a>
+                </div>
+            @endif
+
+            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                <div class="min-w-0 flex-1">
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
+                        @if(!empty($showSheet))
+                            {{ e($class) }} · {{ e($subjects) }}
+                        @else
+                            Upload results
+                        @endif
+                    </h1>
+
+                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
+                        @if(!empty($showSheet))
+                            {{ e($term) }} · {{ e($session) }} · CA (15) · Assign (25) · Exam (60)
+                        @else
+                            Choose class and subject, then enter scores per student.
+                        @endif
+                    </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full lg:w-auto lg:flex-shrink-0">
+                    @if(Route::has('admin.results.uploaded') && empty($showSheet))
+                        <a href="{{ route('admin.results.uploaded') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-95" style="background-color: var(--primary); color: var(--on-primary); border-radius: 12px;">
+                            <i class="fas fa-eye text-xs" aria-hidden="true"></i>
+                            <span>View uploaded</span>
+                        </a>
+                    @endif
+                </div>
+            </header>
+
+            @if(empty($showSheet))
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1);">
+                    <div class="col-span-full flex-1 flex flex-col items-center justify-center min-h-[min(400px,50vh)] py-12 sm:py-16">
+                        <div class="rounded-3xl p-4 sm:p-6 lg:p-8 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                            <div class="flex items-center gap-4 mb-6 sm:mb-8">
+                                <div>
+                                    <h2 class="text-base sm:text-lg font-medium" style="color: var(--on-surface);">Result sheet filters</h2>
+                                    <p class="text-sm font-normal" style="color: var(--on-surface-variant);">Load students registered for the subject in this class</p>
+                                </div>
+                            </div>
+
+                            <form method="GET" action="{{ route('admin.upload-results') }}" class="space-y-5 sm:space-y-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                                    <div class="form-group sm:col-span-2 min-w-0">
+                                        <label for="upload-class" class="form-label">Class <span style="color: var(--primary);">*</span></label>
+                                        <select id="upload-class" name="class" class="form-select w-full min-w-0" required>
+                                            <option value="">Select class</option>
+                                            @foreach($getClasses as $c)
+                                                @php $cn = is_object($c) ? $c->class_name : $c; @endphp
+                                                <option value="{{ e($cn) }}" {{ ($class ?? '') === $cn ? 'selected' : '' }}>{{ e($cn) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group sm:col-span-2 min-w-0">
+                                        <label for="upload-subjects" class="form-label">Subject <span style="color: var(--primary);">*</span></label>
+                                        <select id="upload-subjects" name="subjects" class="form-select w-full min-w-0" required>
+                                            <option value="">Select subject</option>
+                                            @foreach($getSubjects as $s)
+                                                <option value="{{ e($s->subject_name) }}" data-grade="{{ e($s->grade) }}" {{ ($subjects ?? '') === $s->subject_name ? 'selected' : '' }}>{{ e($s->subject_name) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4" style="border-top: 1px solid var(--outline-variant);">
+                                    <a href="{{ route('admin.dashboard') }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-medium w-full sm:w-auto" style="border-radius: 12px;">Cancel</a>
+                                    <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-medium w-full sm:w-auto" data-preloader style="border-radius: 12px;">
+                                        <i class="fas fa-users text-sm" aria-hidden="true"></i>
+                                        Load result sheet
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if(!empty($showSheet))
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                    <div class="flex flex-col border-b" style="border-color: var(--outline-variant); background: var(--surface-container-low);">
+                        <div class="px-4 sm:px-6 pt-4 pb-3">
+                            <p class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--on-surface-variant); letter-spacing: 0.06em;">Result sheet context</p>
+                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+                                <div class="rounded-xl px-3 py-2.5 min-w-0 border" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
+                                    <span class="text-[10px] font-medium uppercase tracking-wide block mb-1" style="color: var(--on-surface-variant);">Class</span>
+                                    <span class="text-sm font-semibold leading-snug line-clamp-2 break-words" style="color: var(--on-surface);" title="{{ e($class) }}">{{ e($class) }}</span>
+                                </div>
+
+                                <div class="rounded-xl px-3 py-2.5 min-w-0 border" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
+                                    <span class="text-[10px] font-medium uppercase tracking-wide block mb-1" style="color: var(--on-surface-variant);">Subject</span>
+                                    <span class="text-sm font-semibold leading-snug line-clamp-2 break-words" style="color: var(--on-surface);" title="{{ e($subjects) }}">{{ e($subjects) }}</span>
+                                </div>
+
+                                <div class="rounded-xl px-3 py-2.5 min-w-0 border" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
+                                    <span class="text-[10px] font-medium uppercase tracking-wide block mb-1" style="color: var(--on-surface-variant);">Term</span>
+                                    <span class="text-sm font-semibold leading-snug line-clamp-2 break-words" style="color: var(--on-surface);" title="{{ e($term) }}">{{ e($term) }}</span>
+                                </div>
+
+                                <div class="rounded-xl px-3 py-2.5 min-w-0 border col-span-2 lg:col-span-1" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
+                                    <span class="text-[10px] font-medium uppercase tracking-wide block mb-1" style="color: var(--on-surface-variant);">Session</span>
+                                    <span class="text-sm font-semibold leading-snug line-clamp-2 break-words" style="color: var(--on-surface);" title="{{ e($session) }}">{{ e($session) }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if($alreadyUploaded)
+                            <div class="px-4 sm:px-6 pb-4 pt-4" style="border-top: 1px solid var(--outline-variant); background: var(--surface-container);">
+                                <div class="rounded-2xl px-4 py-3.5 sm:px-5 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4" style="border: 1px solid var(--outline-variant);">
+                                    <div class="flex items-start gap-3 min-w-0 flex-1">
+                                        <div class="min-w-0 pt-0.5">
+                                            <p class="text-sm font-semibold">Already uploaded</p>
+                                            <p class="text-xs sm:text-sm mt-0.5 leading-relaxed" style="opacity: 0.92;">Scores for this class, term, session and subject are on file. Open the list to review or edit.</p>
+                                        </div>
+                                    </div>
+
+                                    <a href="{{ $viewUploadedUrl }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium shrink-0 w-full sm:w-auto sm:self-center" style="background: var(--primary); color: var(--on-primary); border-radius: 12px;">
+                                        <i class="fas fa-external-link-alt text-xs opacity-90" aria-hidden="true"></i>
+                                        View / edit uploaded
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                    @if($students->isEmpty())
+                        <div class="flex flex-col items-center justify-center py-16 md:py-40 px-6">
+                            <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5" style="border-radius: 16px;">
+                                <i class="fas fa-user-graduate text-3xl" aria-hidden="true"></i>
+                            </div>
+                            <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No students for this subject</h2>
+                            <p class="text-sm text-center max-w-md mb-6" style="color: var(--on-surface-variant);">No students in this class are registered for <strong>{{ e($subjects) }}</strong>. Register the subject for students or <a href="{{ route('admin.upload-results') }}" class="font-medium underline-offset-2 hover:underline" style="color: var(--primary);">choose another class/subject</a>.</p>
+                        </div>
+                    @else
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 sm:px-6 py-4" style="border-bottom: 1px solid var(--outline-variant); background: var(--surface-container-low);">
+                            <p class="text-sm font-medium" style="color: var(--on-surface-variant);">
+                                <span>{{ $students->count() }}</span> student(s) · Enter CA (15), Assign (25), Exam (60)
+                            </p>
+                        </div>
+
+                        <div class="overflow-x-auto overflow-y-auto flex-1 min-h-0" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);">
+                            <div class="hidden lg:grid lg:grid-cols-results-upload sticky top-0 z-10 px-4 sm:px-6 py-3 gap-2 text-xs font-semibold uppercase tracking-wider" style="background: var(--surface-container); border-bottom: 1px solid var(--outline-variant); color: var(--on-surface-variant);">
+                                <span class="lg:pl-2 text-center">#</span>
+                                <span class="min-w-0">Student</span>
+                                <span class="min-w-0 text-center">CA (15)</span>
+                                <span class="min-w-0 text-center">Assign (25)</span>
+                                <span class="min-w-0 text-center">Exam (60)</span>
+                            </div>
+
+                            <div id="results-upload-form" class="min-w-0 min-w-[min(100%,520px)] lg:min-w-0">
+                                @csrf
+                                <ul class="divide-y divide-[var(--outline-variant)] list-none p-0 m-0" id="results-sheet-list" role="list">
+                                    @foreach($students as $s)
+                                        @php
+                                            $fullName = trim(($s->firstname ?? '') . ' ' . ($s->lastname ?? '') . ' ' . ($s->othername ?? ''));
+                                            $displayName = trim(($s->firstname ?? '') . ' ' . ($s->lastname ?? ''));
+                                            $avatarSrc = ($s->imagelocation ?? null)
+                                                ? (str_starts_with($s->imagelocation, 'students/') ? asset('storage/' . $s->imagelocation) : asset('storage/students/' . $s->imagelocation))
+                                                : asset('storage/students/default.png');
+                                            $avatarInitial = $fullName ? mb_substr($fullName, 0, 1) : 'S';
+                                        @endphp
+                                        <li class="results-sheet-row flex flex-col lg:grid lg:grid-cols-results-upload gap-4 lg:gap-2 lg:items-stretch px-4 sm:px-6 py-5 lg:py-3 transition-colors" style="background: var(--surface-container-lowest);" data-index="{{ $loop->index }}">
+                                            <span class="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-sm font-semibold lg:place-self-center" style="background: var(--primary-container); color: var(--on-primary-container);">{{ $loop->iteration }}</span>
+
+                                            <div class="flex items-center gap-3 min-w-0 lg:py-1 lg:pr-2">
+                                                <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
+                                                <div class="flex flex-col justify-center min-w-0 flex-1">
+                                                    <p class="text-sm font-semibold break-words" style="color: var(--on-surface);">{{ $fullName ?: '—' }}</p>
+                                                    <p class="text-xs truncate mt-0.5 tabular-nums" style="color: var(--on-surface-variant);">{{ e($s->reg_number ?? '') }}</p>
+                                                </div>
+                                                <input type="hidden" class="r-studentId" value="{{ $s->id }}">
+                                                <input type="hidden" class="r-name" value="{{ e($displayName) }}">
+                                                <input type="hidden" class="r-reg" value="{{ e($s->reg_number ?? '') }}">
+                                            </div>
+
+                                            <div class="form-group min-w-0 flex flex-col lg:py-1">
+                                                <label class="form-label lg:sr-only flex items-center gap-2" for="score-ca-{{ $loop->index }}">
+                                                    <i class="fas fa-clipboard-check text-xs opacity-70" style="color: var(--on-surface-variant);" aria-hidden="true"></i>
+                                                    <span>CA (max 15)</span>
+                                                </label>
+                                                <input id="score-ca-{{ $loop->index }}" type="number" name="ca" min="0" max="15" step="0.5" value="" inputmode="decimal" required class="form-input results-score-input w-full min-w-[7rem] tabular-nums rounded-xl border text-sm py-2.5 px-3 text-center sm:min-w-[6.5rem]" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);" placeholder="0 – 15" {{ $alreadyUploaded ? 'disabled' : '' }}>
+                                            </div>
+
+                                            <div class="form-group min-w-0 flex flex-col lg:py-1">
+                                                <label class="form-label lg:sr-only flex items-center gap-2" for="score-as-{{ $loop->index }}">
+                                                    <i class="fas fa-tasks text-xs opacity-70" style="color: var(--on-surface-variant);" aria-hidden="true"></i>
+                                                    <span>Assign (max 25)</span>
+                                                </label>
+                                                <input id="score-as-{{ $loop->index }}" type="number" name="assignment" min="0" max="25" step="0.5" value="" inputmode="decimal" required class="form-input results-score-input w-full min-w-[7rem] tabular-nums rounded-xl border text-sm py-2.5 px-3 text-center sm:min-w-[6.5rem]" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);" placeholder="0 – 25" {{ $alreadyUploaded ? 'disabled' : '' }}>
+                                            </div>
+
+                                            <div class="form-group min-w-0 flex flex-col lg:py-1">
+                                                <label class="form-label lg:sr-only flex items-center gap-2" for="score-ex-{{ $loop->index }}">
+                                                    <i class="fas fa-file-alt text-xs opacity-70" style="color: var(--on-surface-variant);" aria-hidden="true"></i>
+                                                    <span>Exam (max 60)</span>
+                                                </label>
+                                                <input id="score-ex-{{ $loop->index }}" type="number" name="exam" min="0" max="60" step="0.5" value="" inputmode="decimal" required class="form-input results-score-input w-full min-w-[7rem] tabular-nums rounded-xl border text-sm py-2.5 px-3 text-center sm:min-w-[6.5rem]" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);" placeholder="0 – 60" {{ $alreadyUploaded ? 'disabled' : '' }}>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+
+                            @if(!$alreadyUploaded)
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 px-5 sm:px-6 py-5" style="border-top: 1px solid var(--outline-variant); background: var(--surface-container-low);">
+                                    <button type="button" id="results-upload-submit" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] sm:min-w-[200px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98] w-full sm:w-auto" style="border-radius: 12px;">
+                                        <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+                                        Save {{ e($term) }} term results
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+            @endif
+        </div>
+    </main>
+
+    <style>
+        /* Align with take-behavioural: # + student + reg + three score columns */
+        .lg\:grid-cols-results-upload {
+            grid-template-columns: 3rem minmax(11rem, 1.45fr) minmax(7.25rem, 1fr) minmax(7.25rem, 1fr) minmax(7.25rem, 1fr);
+            align-items: stretch;
+        }
+        @media (max-width: 1023px) {
+            .lg\:grid-cols-results-upload { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    @push('scripts')
+        <script>
+            (function () {
+                const classSelect = document.getElementById('upload-class');
+                const subjectSelect = document.getElementById('upload-subjects');
+                if (classSelect && subjectSelect) {
+                    function gradeForClass(name) {
+                        if (!name) return null;
+                        const p = name.substring(0, 3).toUpperCase();
+                        if (p === 'JSS') return 'Junior';
+                        if (p === 'SSS') return 'Senior';
+                        return null;
+                    }
+                    function filterSubjects() {
+                        const g = gradeForClass(classSelect.value);
+                        const opts = subjectSelect.querySelectorAll('option[data-grade]');
+                        const sel = subjectSelect.value;
+                        let ok = false;
+                        opts.forEach(function (opt) {
+                            const show = !g || opt.getAttribute('data-grade') === g;
+                            opt.style.display = show ? '' : 'none';
+                            opt.disabled = !show;
+                            if (opt.value === sel && show) ok = true;
+                        });
+                        if (sel && !ok) subjectSelect.value = '';
+                    }
+                    classSelect.addEventListener('change', filterSubjects);
+                    filterSubjects();
+                }
+
+                let term = @json($term ?? 'First Term');
+                let session = @json($session ?? '');
+                let className = @json($class ?? '');
+                let subjects = @json($subjects ?? '');
+                let uploadUrl = @json($uploadUrl);
+                let already = @json($alreadyUploaded ?? false);
+                let token = @json(csrf_token());
+
+                const btn = document.getElementById('results-upload-submit');
+                if (!btn || already) return;
+
+                btn.addEventListener('click', function () {
+                    const rows = document.querySelectorAll('.results-sheet-row');
+                    const results = [];
+                    let err = null;
+                    rows.forEach(function (row) {
+                        const ca = row.querySelector('input[name="ca"]');
+                        const as = row.querySelector('input[name="assignment"]');
+                        const ex = row.querySelector('input[name="exam"]');
+                        if (!ca || !as || !ex) return;
+                        const caV = parseFloat(ca.value);
+                        const asV = parseFloat(as.value);
+                        const exV = parseFloat(ex.value);
+                        if (isNaN(caV) || isNaN(asV) || isNaN(exV)) { err = 'Enter all scores for every student.'; return; }
+                        if (caV < 0 || caV > 15 || asV < 0 || asV > 25 || exV < 0 || exV > 60) { err = 'CA must be ≤15, Assign ≤25, Exam ≤60.'; return; }
+                        results.push({
+                            studentId: row.querySelector('.r-studentId').value,
+                            class: className,
+                            term: term,
+                            session: session,
+                            subjects: subjects,
+                            name: row.querySelector('.r-name').value,
+                            reg_number: row.querySelector('.r-reg').value
+                        });
+                        results[results.length - 1].ca = caV;
+                        results[results.length - 1].assignment = asV;
+                        results[results.length - 1].exam = exV;
+                    });
+                    if (err) {
+                        if (typeof markEmptyResultsScoreInputsOnSubmit === 'function') markEmptyResultsScoreInputsOnSubmit();
+                        if (typeof flashError === 'function') flashError(err);
+                        return;
+                    }
+                    document.querySelectorAll('.results-score-input-empty').forEach(function (el) { el.classList.remove('results-score-input-empty'); });
+                    if (!results.length) {
+                        if (typeof flashError === 'function') flashError('No rows to upload.');
+                        return;
+                    }
+
+                    if (typeof setButtonLoading === 'function') setButtonLoading(btn, true);
+
+                    fetch(uploadUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ results: results })
+                    })
+                    .then(function (r) {
+                        return r.text().then(function (text) {
+                            let d = {};
+                            try { d = text ? JSON.parse(text) : {}; } catch (e) { d = {}; }
+                            return { ok: r.ok, d: d };
+                        });
+                    })
+                    .then(function (res) {
+                        if (typeof setButtonLoading === 'function') setButtonLoading(btn, false);
+                        if (!res.ok) {
+                            let msg = res.d.message || 'Upload failed. Please try again later.';
+                            if (res.d.errors && typeof res.d.errors === 'object') {
+                                const keys = Object.keys(res.d.errors);
+                                if (keys.length) {
+                                    const m = res.d.errors[keys[0]];
+                                    msg = Array.isArray(m) ? m[0] : m;
+                                }
+                            }
+                            if (typeof flashError === 'function') flashError(msg);
+                            return;
+                        }
+                        const d = res.d;
+                        if (d.status === 'success') {
+                            if (typeof flashSuccess === 'function') flashSuccess(d.message || 'Results saved.');
+                            setTimeout(function () { window.location.href = @json($viewUploadedUrl); }, 2800);
+                        } else {
+                            if (typeof flashError === 'function') flashError(d.message || 'Upload failed. Please try again later.');
+                        }
+                    })
+                    .catch(function () {
+                        if (typeof setButtonLoading === 'function') setButtonLoading(btn, false);
+                        if (typeof flashError === 'function') flashError('Request failed. Check your connection and try again.');
+                    });
+                });
+            })();
+        </script>
+    @endpush
+@endsection

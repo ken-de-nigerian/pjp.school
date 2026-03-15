@@ -1,0 +1,202 @@
+@extends('layouts.app')
+
+@section('content')
+    <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
+        <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+            <div class="mb-4 sm:mb-6 w-fit">
+                <a href="{{ route('admin.subjects.fetch-classes') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                    Change class
+                </a>
+            </div>
+
+            <header class="mb-6 lg:mb-8 flex flex-col gap-4 sm:gap-5">
+                <div class="flex items-start gap-3 sm:gap-4 min-w-0">
+                    <div class="min-w-0 flex-1">
+                        <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-normal tracking-tight mb-1 sm:mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Register students to subjects</h1>
+                        <p class="text-xs sm:text-sm md:text-base font-normal max-w-xl" style="color: var(--on-surface-variant);">Class: {{ e($selectedClass) }} — Select a student to register their subjects.</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                @if($students->isEmpty())
+                    <div class="flex flex-col items-center justify-center py-16 md:py-40 px-6">
+                        <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5" style="border-radius: 16px;">
+                            <i class="fas fa-user-graduate text-3xl" aria-hidden="true"></i>
+                        </div>
+                        <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No students in this class</h2>
+                        <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">There are no students in {{ e($selectedClass) }}. Add or assign students first.</p>
+                        <div class="flex justify-center">
+                            <a href="{{ route('admin.subjects.fetch-classes') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                                <i class="fas fa-arrow-left text-sm" aria-hidden="true"></i>
+                                Change class
+                            </a>
+                        </div>
+                    </div>
+                @else
+                    <div class="overflow-x-auto overflow-y-auto flex-1 min-h-0 border-x border-b" style="border-color: var(--outline-variant);">
+                        <ul class="divide-y divide-[var(--outline-variant)]" role="list">
+                            @foreach($students as $index => $s)
+                                @php
+                                    $fullName = trim(($s->firstname ?? '') . ' ' . ($s->lastname ?? '') . ' ' . ($s->othername ?? ''));
+                                    $avatarSrc = $s->imagelocation
+                                        ? (str_starts_with($s->imagelocation, 'students/') ? asset('storage/' . $s->imagelocation) : asset('storage/students/' . $s->imagelocation))
+                                        : asset('storage/students/default.png');
+                                    $avatarInitial = $fullName ? mb_substr($fullName, 0, 1) : 'S';
+                                @endphp
+                                <li class="flex items-center gap-4 px-5 sm:px-6 py-4 transition-colors" style="background: var(--surface-container-lowest);">
+                                    <span class="text-sm font-medium w-8 flex-shrink-0" style="color: var(--on-surface-variant);">{{ $index + 1 }}</span>
+                                    <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-sm font-medium truncate" style="color: var(--on-surface);">{{ $fullName ?: '—' }}</p>
+                                        <p class="text-xs truncate" style="color: var(--on-surface-variant);">{{ $s->reg_number ?? '' }}</p>
+                                    </div>
+                                    <div class="flex items-center gap-2 flex-shrink-0">
+                                        <button type="button" class="register-subject-btn inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style="background: var(--primary-container); color: var(--on-primary-container);" data-reg="{{ e($s->reg_number) }}" data-name="{{ e($fullName ?: $s->reg_number) }}" data-subjects="{{ e($s->subjects ?? '') }}">
+                                            <i class="fas fa-list-check text-xs" aria-hidden="true"></i>
+                                            Register subjects
+                                        </button>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+
+                    @if(method_exists($students, 'hasPages') && $students->hasPages())
+                        <div class="px-5 sm:px-6 py-4" style="border-top: 1px solid var(--outline-variant); background: var(--surface-container-low);">
+                            <x-pagination :paginator="$students" />
+                        </div>
+                    @endif
+                @endif
+            </div>
+        </div>
+    </main>
+
+    <div id="register-subject-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm" aria-modal="true" role="dialog" aria-labelledby="register-subject-modal-title">
+        <div class="register-subject-modal-panel relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl shadow-2xl flex flex-col" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-2);">
+            <div class="flex-shrink-0 px-5 sm:px-6 pt-5 sm:pt-6 pb-3 flex items-start justify-between gap-3" style="border-bottom: 1px solid var(--outline-variant);">
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-3 mb-1">
+                        <h3 id="register-subject-modal-title" class="text-lg font-semibold truncate" style="color: var(--on-surface);">Register subjects for <span id="register-modal-student-name"></span></h3>
+                    </div>
+                    <p class="text-sm mt-1" style="color: var(--on-surface-variant);">Select the subjects to register for this student.</p>
+                </div>
+                <button type="button" onclick="closeModal('register-subject-modal')" class="header-icon-btn w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" aria-label="Close" style="color: var(--on-surface);">
+                    <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <form id="register-subject-form" class="flex flex-col flex-1 min-h-0 flex">
+                <input type="hidden" name="studentsList" id="modal-students-list">
+                <div class="flex-1 min-h-0 overflow-y-auto px-5 sm:px-6 py-4">
+                    <p id="studentsList-error" class="form-error text-sm mb-2 hidden" aria-live="polite"></p>
+                    <p id="subjectsList-error" class="form-error text-sm mb-2 hidden" aria-live="polite"></p>
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-medium uppercase tracking-wider" style="color: var(--on-surface-variant);">Subjects</span>
+                        <div class="flex gap-2">
+                            <button type="button" id="register-modal-select-all" class="text-xs font-medium px-2 py-1 rounded-lg transition-colors" style="color: var(--primary); background: var(--primary-container);">Select all</button>
+                            <button type="button" id="register-modal-clear" class="text-xs font-medium px-2 py-1 rounded-lg transition-colors" style="color: var(--on-surface-variant); background: var(--surface-container-high);">Clear</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 rounded-xl p-2 border max-h-52 overflow-y-auto" style="border-color: var(--outline-variant); background: var(--surface-container-low);">
+                        @foreach($subjects as $sub)
+                            <label class="register-subject-option flex items-center gap-2 cursor-pointer px-3 py-2.5 rounded-lg border transition-colors min-h-[2.5rem] w-full text-left hover:bg-[var(--surface-container-high)] focus-within:bg-[var(--surface-container-high)]" style="border-color: var(--outline-variant); color: var(--on-surface);">
+                                <input type="checkbox" name="subjectsList[]" value="{{ e($sub->subject_name) }}" class="register-subject-checkbox form-checkbox-input w-4 h-4 sm:w-5 sm:h-5 rounded border-2 flex-shrink-0 cursor-pointer focus:ring-2 focus:ring-offset-0 focus:ring-[var(--primary)] focus:outline-none" style="border-color: var(--outline); accent-color: var(--primary);">
+                                <span class="text-xs sm:text-sm font-medium truncate min-w-0">{{ e($sub->subject_name) }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="flex-shrink-0 flex flex-col-reverse sm:flex-row justify-end gap-2 px-5 sm:px-6 py-4" style="border-top: 1px solid var(--outline-variant); background: var(--surface-container-lowest);">
+                    <button type="button" onclick="closeModal('register-subject-modal')" class="btn-secondary px-4 py-2.5 rounded-xl text-sm w-full sm:w-auto">Cancel</button>
+                    <button type="submit" id="register-subject-submit-btn" class="btn-primary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium w-full sm:w-auto transition-opacity hover:opacity-95" style="border-radius: 12px;">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @push('scripts')
+        <script>
+            (function() {
+                const studentNameEl = document.getElementById('register-modal-student-name');
+                const studentsListEl = document.getElementById('modal-students-list');
+                const form = document.getElementById('register-subject-form');
+                const submitBtn = document.getElementById('register-subject-submit-btn');
+                const csrf = document.querySelector('meta[name="csrf-token"]') && document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                function clearRegisterModalErrors() {
+                    ['studentsList', 'subjectsList'].forEach(function(id) {
+                        const el = document.getElementById(id + '-error');
+                        if (el) { el.textContent = ''; el.classList.add('hidden'); }
+                    });
+                }
+
+                document.querySelectorAll('.register-subject-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        clearRegisterModalErrors();
+                        studentsListEl.value = this.getAttribute('data-reg');
+                        studentNameEl.textContent = this.getAttribute('data-name');
+                        const subjectsStr = this.getAttribute('data-subjects') || '';
+                        const registered = subjectsStr.split(',').map(function (s) {
+                            return s.trim();
+                        }).filter(Boolean);
+                        if (form) {
+                            form.querySelectorAll('.register-subject-checkbox').forEach(function(cb) {
+                                cb.checked = registered.indexOf(cb.value) !== -1;
+                            });
+                        }
+                        openModal('register-subject-modal');
+                    });
+                });
+
+                document.getElementById('register-modal-select-all') && document.getElementById('register-modal-select-all').addEventListener('click', function() {
+                    if (form) form.querySelectorAll('.register-subject-checkbox').forEach(function(c) { c.checked = true; });
+                });
+                document.getElementById('register-modal-clear') && document.getElementById('register-modal-clear').addEventListener('click', function() {
+                    if (form) form.querySelectorAll('.register-subject-checkbox').forEach(function(c) { c.checked = false; });
+                });
+
+            if (form) form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (!csrf) return;
+                    clearRegisterModalErrors();
+                    setButtonLoading(submitBtn, true);
+                    const formData = new FormData(form);
+                    fetch('{{ route("admin.subjects.register-subjects") }}', {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(function(r) {
+                        if (r.status === 422) {
+                            return r.json().then(function(data) {
+                                if (data.errors && typeof showLaravelErrors === 'function') {
+                                    showLaravelErrors(data.errors);
+                                } else {
+                                    flashError(data.message || 'Please correct the errors and try again.');
+                                }
+                                throw new Error('Validation failed');
+                            });
+                        }
+                        return r.json();
+                    })
+                    .then(function(data) {
+                        if (data.status === 'success') {
+                            flashSuccess(data.message || 'Subjects registered successfully.');
+                            closeModal('register-subject-modal');
+                        } else {
+                            flashError(Array.isArray(data.message) ? data.message.join(' ') : (data.message || 'Could not register subjects.'));
+                        }
+                    })
+                    .catch(function(err) {
+                        if (err.message !== 'Validation failed' && typeof flashError === 'function') {
+                            flashError('An error occurred. Please try again.');
+                        }
+                    })
+                    .finally(function() { setButtonLoading(submitBtn, false); });
+                });
+            })();
+        </script>
+    @endpush
+@endsection

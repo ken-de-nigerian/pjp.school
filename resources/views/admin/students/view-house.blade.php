@@ -1,0 +1,137 @@
+@extends('layouts.app')
+
+@section('content')
+    <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
+        <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+            <div class="mb-4 sm:mb-6 w-fit">
+                <a href="{{ route('admin.students.houses') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                    Back to Houses
+                </a>
+            </div>
+
+            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
+                        House: {{ e($house) }}
+                    </h1>
+                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
+                        View and manage students in this house. Filter by class or search by name or reg. number.
+                    </p>
+                </div>
+            </header>
+
+            <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <form method="GET" action="{{ route('admin.students.houses.view') }}" class="space-y-4 sm:space-y-5">
+                    <input type="hidden" name="house" value="{{ e(old('house', $house)) }}">
+                    <p id="house-error" class="form-error text-sm {{ $errors->has('house') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('house') }}</p>
+
+                    <div class="grid grid-cols-12 gap-4 min-w-0">
+                        <div class="col-span-12 sm:col-span-6 form-group min-w-0">
+                            <label for="house-search" class="form-label">Search by name or reg. number</label>
+                            <input type="text" id="house-search" name="search" value="{{ e(old('search', $search ?? '')) }}" placeholder="Search..." class="form-input w-full min-w-0">
+                            <p id="search-error" class="form-error mt-1 text-sm {{ $errors->has('search') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('search') }}</p>
+                        </div>
+
+                        <div class="col-span-12 sm:col-span-6 form-group min-w-0">
+                            <label for="house-class" class="form-label">Class</label>
+                            <select id="house-class" name="class" class="form-select w-full min-w-0">
+                                <option value="">All classes</option>
+                                @foreach($getClasses as $c)
+                                    @php $className = is_object($c) ? $c->class_name : $c; @endphp
+                                    <option value="{{ e($className) }}" {{ old('class', $classFilter ?? '') === $className ? 'selected' : '' }}>{{ e($className) }}</option>
+                                @endforeach
+                            </select>
+                            <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
+                        <a href="{{ route('admin.students.houses.view', ['house' => $house]) }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
+                            <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                            Clear
+                        </a>
+                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
+                            Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                @if($students->isEmpty())
+                    <div class="flex flex-col items-center justify-center min-h-[min(360px,50vh)] py-12 sm:py-16 px-4 sm:px-6">
+                        <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg">
+                            @if(!empty($search) || !empty($classFilter))
+                                <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
+                                    <i class="fas fa-search text-4xl" aria-hidden="true"></i>
+                                </div>
+                                <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No students found</h2>
+                                <p class="text-sm font-normal mb-6 leading-relaxed" style="color: var(--on-surface-variant);">No students in <strong style="color: var(--on-surface);">{{ e($house) }}</strong> match your filters. Try a different search or clear filters.</p>
+                                <a href="{{ route('admin.students.houses.view', ['house' => $house]) }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                                    <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                                    Clear filters
+                                </a>
+                            @else
+                                <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
+                                    <i class="fas fa-users text-4xl" aria-hidden="true"></i>
+                                </div>
+                                <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No students in this house</h2>
+                                <p class="text-sm font-normal mb-6 leading-relaxed" style="color: var(--on-surface-variant);">There are no students assigned to <strong style="color: var(--on-surface);">{{ e($house) }}</strong>. Assign houses when adding or editing students.</p>
+                                <a href="{{ route('admin.students.houses') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                                    <i class="fas fa-arrow-left text-sm" aria-hidden="true"></i>
+                                    Back to Houses
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                @else
+                    <div class="overflow-x-auto overflow-y-auto flex-1 min-h-0 border-x border-b" style="border-color: var(--outline-variant);">
+                        <ul class="divide-y divide-[var(--outline-variant)]" role="list">
+                            <li class="flex items-center gap-2 sm:gap-4 px-4 sm:px-6 py-3" style="background: var(--surface-container); border-color: var(--outline-variant);">
+                                <span class="text-xs font-medium w-6 sm:w-8 flex-shrink-0" style="color: var(--on-surface-variant);">#</span>
+                                <span class="w-10 flex-shrink-0" aria-hidden="true"></span>
+                                <span class="text-xs font-medium flex-1 min-w-0" style="color: var(--on-surface-variant);">Name</span>
+                                <span class="text-xs font-medium flex-shrink-0 w-14 sm:w-24 text-right" style="color: var(--on-surface-variant);">Class</span>
+                                <span class="text-xs font-medium flex-shrink-0 w-10 sm:w-24 text-right" style="color: var(--on-surface-variant);">Actions</span>
+                            </li>
+                            @foreach($students as $index => $s)
+                                @php
+                                    $fullName = trim(($s->firstname ?? '') . ' ' . ($s->lastname ?? '') . ' ' . ($s->othername ?? ''));
+                                    $avatarSrc = $s->imagelocation
+                                        ? (str_starts_with($s->imagelocation, 'students/') ? asset('storage/' . $s->imagelocation) : asset('storage/students/' . $s->imagelocation))
+                                        : asset('storage/students/default.png');
+                                    $avatarInitial = $fullName ? mb_substr($fullName, 0, 1) : 'S';
+                                @endphp
+                                <li class="flex items-center gap-2 sm:gap-4 px-4 sm:px-6 py-4 transition-colors" style="background: var(--surface-container-lowest);">
+                                    <span class="text-sm font-medium w-6 sm:w-8 flex-shrink-0" style="color: var(--on-surface-variant);">{{ ($students->currentPage() - 1) * $students->perPage() + $index + 1 }}</span>
+                                    <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-sm font-medium break-words sm:truncate" style="color: var(--on-surface);">
+                                            <a href="{{ route('admin.students.show', $s->id) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: '—' }}</a>
+                                        </p>
+                                        <p class="text-xs break-words sm:truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $s->reg_number ?? '' }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 w-14 sm:w-24 flex justify-end">
+                                        <span class="inline-flex items-center px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-medium truncate max-w-full" style="background: var(--surface-container-high); color: var(--on-surface-variant);" title="{{ e($s->class ?? '') }}">{{ e($s->class ?? '') }}</span>
+                                    </div>
+                                    <div class="flex-shrink-0 w-10 sm:w-24 text-right">
+                                        <a href="{{ route('admin.students.edit', $s->id) }}" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 sm:px-2.5 sm:py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-[0.98] w-10 sm:w-auto min-h-[2.5rem] sm:min-h-0 flex-shrink-0" style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);" title="Edit student" aria-label="Edit student">
+                                            <i class="fas fa-pen text-sm sm:text-xs" aria-hidden="true"></i>
+                                            <span class="hidden sm:inline">Edit</span>
+                                        </a>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+
+                    @if($students->hasPages())
+                        <div class="px-5 sm:px-6 py-4" style="border-top: 1px solid var(--outline-variant); background: var(--surface-container-low);">
+                            <x-pagination :paginator="$students->withQueryString()" />
+                        </div>
+                    @endif
+                @endif
+            </div>
+        </div>
+    </main>
+@endsection

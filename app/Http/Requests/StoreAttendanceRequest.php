@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreAttendanceRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this->user('admin') !== null || $this->user('teacher') !== null;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'attendance' => 'required|array',
+            'attendance.*.class' => 'required|string|max:100',
+            'attendance.*.term' => 'required|string|max:50',
+            'attendance.*.session' => 'required|string|max:50',
+            'attendance.*.segment' => 'required|string|max:50',
+            'attendance.*.name' => 'required|string|max:255',
+            'attendance.*.reg_number' => 'required|string|max:50',
+            'attendance.*.class_roll_call' => 'required|string|max:50',
+        ];
+    }
+}

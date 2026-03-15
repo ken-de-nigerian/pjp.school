@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Feature\Admin;
+
+use App\Models\Admin;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
+
+class DashboardAccessTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Admin::query()->firstOrCreate(
+            ['adminId' => 'dash-admin'],
+            [
+                'name' => 'Dash',
+                'email' => 'dash@test.local',
+                'password' => Hash::make('password'),
+                'user_type' => 1,
+            ]
+        );
+    }
+
+    public function test_guest_cannot_access_admin_dashboard(): void
+    {
+        $response = $this->get(route('admin.dashboard'));
+
+        $response->assertRedirect(route('login'));
+    }
+
+    public function test_authenticated_admin_can_access_dashboard(): void
+    {
+        $admin = Admin::first();
+
+        $response = $this->actingAs($admin, 'admin')->get(route('admin.dashboard'));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.dashboard');
+    }
+}

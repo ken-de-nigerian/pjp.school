@@ -114,6 +114,11 @@ class StudentService
             ->get();
     }
 
+    /**
+     * Students in the given class who are registered for the given subject.
+     * Used for result upload and subject-specific views; only returns students
+     * whose registered subjects (comma-separated) include the given subject.
+     */
     public function getStudentsByClassAndSubject(?string $class, ?string $subject): Collection
     {
         $query = Student::query()->active()->orderBy('firstname')->orderBy('lastname');
@@ -121,11 +126,17 @@ class StudentService
             $query->byClass($class);
         }
         $students = $query->get();
-        if ($subject !== null && $subject !== '') {
-            $students = $students->filter(function ($student) use ($subject) {
-                $subs = array_map('trim', explode(',', $student->subjects ?? ''));
 
-                return in_array($subject, $subs, true);
+        if ($subject !== null && $subject !== '') {
+            $subjectNorm = strtolower(trim($subject));
+            $students = $students->filter(function ($student) use ($subjectNorm) {
+                $registered = array_map('trim', explode(',', $student->subjects ?? ''));
+                foreach ($registered as $s) {
+                    if ($s !== '' && strtolower($s) === $subjectNorm) {
+                        return true;
+                    }
+                }
+                return false;
             });
         }
 

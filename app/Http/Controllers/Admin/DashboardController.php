@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     public function __construct(
-        private DashboardService $dashboardService
+        private readonly DashboardService $dashboardService
     ) {}
 
     public function index(Request $request): View

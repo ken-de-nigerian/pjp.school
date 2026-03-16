@@ -24,9 +24,65 @@
                         @endif
                     </p>
                 </div>
+                @if($hasFilters)
+                    <a href="{{ route('admin.results.uploaded') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90 shrink-0" style="color: var(--on-surface-variant); background: var(--surface-container-high); border-radius: 12px;">
+                        <i class="fas fa-filter text-xs" aria-hidden="true"></i>
+                        <span>Change filters</span>
+                    </a>
+                @endif
             </header>
 
-            @if($hasFilters)
+            @if(!$hasFilters)
+            <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <form method="GET" action="{{ route('admin.results.uploaded') }}" class="space-y-4 sm:space-y-5">
+                    <input hidden name="term" value="{{ $term }}">
+                    <input hidden name="session" value="{{ $session }}">
+
+                    <div class="grid grid-cols-12 gap-4 min-w-0">
+                        <div class="col-span-12 sm:col-span-6 form-group min-w-0">
+                            <label for="upload-class" class="form-label">Class <span style="color: var(--primary);">*</span></label>
+                            <select id="upload-class" name="class" class="form-select w-full min-w-0" required>
+                                <option value="">Select class</option>
+                                @foreach($getClasses as $c)
+                                    @php $cn = is_object($c) ? $c->class_name : $c; @endphp
+                                    <option value="{{ e($cn) }}" {{ ($class ?? '') === $cn ? 'selected' : '' }}>{{ e($cn) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-span-12 sm:col-span-6 form-group min-w-0">
+                            <label for="upload-subjects" class="form-label">Subject <span style="color: var(--primary);">*</span></label>
+                            <select id="upload-subjects" name="subjects" class="form-select w-full min-w-0" required>
+                                <option value="">Select subject</option>
+                                @foreach($getSubjects as $s)
+                                    <option value="{{ e($s->subject_name) }}" data-grade="{{ e($s->grade) }}" {{ ($subjects ?? '') === $s->subject_name ? 'selected' : '' }}>{{ e($s->subject_name) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
+                        <a href="{{ route('admin.results.uploaded') }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
+                            <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                            Clear
+                        </a>
+                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
+                            Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
+            @endif
+
+            @if(!$hasFilters)
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                    <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
+                        <i class="fas fa-search text-3xl" aria-hidden="true"></i>
+                    </div>
+                    <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No filters selected</h2>
+                    <p class="text-sm text-center max-w-sm" style="color: var(--on-surface-variant);">Choose class and subject in the form above, then click &quot;Filter&quot; to see uploaded scores for that combination.</p>
+                </div>
+            @else
                 <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="flex flex-col border-b" style="border-color: var(--outline-variant); background: var(--surface-container-low);">
                         <div class="px-4 sm:px-6 pt-4 pb-3">
@@ -51,6 +107,7 @@
                             </div>
                         </div>
                     </div>
+
                     @if($results->isEmpty())
                         <div class="flex flex-col items-center justify-center py-16 md:py-24 px-6">
                             <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
@@ -207,6 +264,39 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            (function () {
+                const classSelect = document.getElementById('upload-class');
+                const subjectSelect = document.getElementById('upload-subjects');
+                if (!classSelect || !subjectSelect) return;
+                function gradeForClass(name) {
+                    if (!name) return null;
+                    const p = name.substring(0, 3).toUpperCase();
+                    if (p === 'JSS') return 'Junior';
+                    if (p === 'SSS') return 'Senior';
+                    return null;
+                }
+                function filterSubjectOptions() {
+                    const g = gradeForClass(classSelect.value);
+                    const opts = subjectSelect.querySelectorAll('option[data-grade]');
+                    const sel = subjectSelect.value;
+                    let selectedStillVisible = false;
+                    opts.forEach(function (opt) {
+                        const optGrade = opt.getAttribute('data-grade');
+                        const show = !g || optGrade === g;
+                        opt.style.display = show ? '' : 'none';
+                        opt.disabled = !show;
+                        if (opt.value === sel && show) selectedStillVisible = true;
+                    });
+                    if (sel && !selectedStillVisible) subjectSelect.value = '';
+                }
+                classSelect.addEventListener('change', filterSubjectOptions);
+                filterSubjectOptions();
+            })();
+        </script>
+    @endpush
 
     @if($hasFilters && !$results->isEmpty())
         @push('scripts')

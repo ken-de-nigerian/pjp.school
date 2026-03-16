@@ -4,21 +4,76 @@
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
             <div class="mb-4 sm:mb-6 w-fit">
-                <a href="{{ route('admin.subjects.fetch-classes') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
+                <a href="{{ route('admin.subjects.index', ['grade' => 'Junior']) }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
                     <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Change class
+                    Back to Subjects
                 </a>
             </div>
 
-            <header class="mb-6 lg:mb-8 flex flex-col gap-4 sm:gap-5">
-                <div class="flex items-start gap-3 sm:gap-4 min-w-0">
-                    <div class="min-w-0 flex-1">
-                        <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-normal tracking-tight mb-1 sm:mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Register students to subjects</h1>
-                        <p class="text-xs sm:text-sm md:text-base font-normal max-w-xl" style="color: var(--on-surface-variant);">Class: {{ e($selectedClass) }} — Select a student to register their subjects.</p>
-                    </div>
+            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                <div class="min-w-0 flex-1">
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Register students to subjects</h1>
+                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
+                        @if($hasFilters)
+                            Class: {{ e($selectedClass) }} — Select a student to register their subjects.
+                        @else
+                            Choose a class to view students and register their subjects.
+                        @endif
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                    @if($hasFilters)
+                        <a href="{{ route('admin.subjects.fetch-classes') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style="color: var(--on-surface-variant); background: var(--surface-container-high); border-radius: 12px;">
+                            <i class="fas fa-filter text-xs" aria-hidden="true"></i>
+                            <span>Change class</span>
+                        </a>
+                    @endif
+                    @if(Route::has('admin.subjects.registered'))
+                        <a href="{{ route('admin.subjects.registered') }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors border border-dashed border-gray-300 lg:border-solid" style="background-color: var(--primary); color: var(--on-primary);">
+                            <i class="fas fa-eye text-xs" aria-hidden="true"></i>
+                            <span>View Registered</span>
+                        </a>
+                    @endif
                 </div>
             </header>
 
+            @if(!$hasFilters)
+            <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <form method="GET" action="{{ route('admin.subjects.fetch-classes') }}" class="space-y-4 sm:space-y-5">
+                    <div class="form-group min-w-0">
+                        <label for="class" class="form-label">Select class</label>
+                        <select id="class" name="class" class="form-select w-full min-w-0">
+                            <option value="">Choose class</option>
+                            @foreach($getClasses as $c)
+                                @php $className = is_object($c) ? $c->class_name : $c; @endphp
+                                <option value="{{ e($className) }}" {{ ($selectedClass ?? '') === $className ? 'selected' : '' }}>{{ e($className) }}</option>
+                            @endforeach
+                        </select>
+                        <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
+                    </div>
+                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
+                        <a href="{{ route('admin.subjects.fetch-classes') }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
+                            <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                            Clear
+                        </a>
+                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
+                            <i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
+                            View students
+                        </button>
+                    </div>
+                </form>
+            </div>
+            @endif
+
+            @if(!$hasFilters)
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                    <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
+                        <i class="fas fa-search text-3xl" aria-hidden="true"></i>
+                    </div>
+                    <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No filters selected</h2>
+                    <p class="text-sm text-center max-w-sm" style="color: var(--on-surface-variant);">Choose a class in the form above, then click &quot;View students&quot; to see the list and register subjects.</p>
+                </div>
+            @else
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($students->isEmpty())
                     <div class="flex flex-col items-center justify-center py-16 md:py-40 px-6">
@@ -35,8 +90,14 @@
                         </div>
                     </div>
                 @else
-                    <div class="overflow-x-auto overflow-y-auto flex-1 min-h-0 border-x border-b" style="border-color: var(--outline-variant);">
-                        <ul class="divide-y divide-[var(--outline-variant)]" role="list">
+                    <div class="overflow-x-auto overflow-y-auto flex-1 min-h-0 border-x border-b md:border-x md:border-b" style="border-color: var(--outline-variant);">
+                        <ul class="flex flex-col gap-3 md:gap-0 md:divide-y divide-[var(--outline-variant)] p-4 sm:px-6 md:p-0 list-none min-w-0" role="list">
+                            <li class="hidden md:flex items-center gap-3 sm:gap-4 px-5 sm:px-6 py-3" style="background: var(--surface-container); border-color: var(--outline-variant);">
+                                <span class="text-xs font-medium w-8 flex-shrink-0" style="color: var(--on-surface-variant);">#</span>
+                                <span class="w-10 flex-shrink-0" aria-hidden="true"></span>
+                                <span class="text-xs font-medium flex-1 min-w-0" style="color: var(--on-surface-variant);">Name</span>
+                                <span class="text-xs font-medium flex-shrink-0 w-10 sm:w-32 text-right" style="color: var(--on-surface-variant);">Actions</span>
+                            </li>
                             @foreach($students as $index => $s)
                                 @php
                                     $fullName = trim(($s->firstname ?? '') . ' ' . ($s->lastname ?? '') . ' ' . ($s->othername ?? ''));
@@ -45,18 +106,23 @@
                                         : asset('storage/students/default.png');
                                     $avatarInitial = $fullName ? mb_substr($fullName, 0, 1) : 'S';
                                 @endphp
-                                <li class="flex items-center gap-4 px-5 sm:px-6 py-4 transition-colors" style="background: var(--surface-container-lowest);">
-                                    <span class="text-sm font-medium w-8 flex-shrink-0" style="color: var(--on-surface-variant);">{{ $index + 1 }}</span>
-                                    <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
-                                    <div class="min-w-0 flex-1">
-                                        <p class="text-sm font-medium truncate" style="color: var(--on-surface);">{{ $fullName ?: '—' }}</p>
-                                        <p class="text-xs truncate" style="color: var(--on-surface-variant);">{{ $s->reg_number ?? '' }}</p>
+                                <li class="flex flex-col gap-0 rounded-2xl border p-4 md:rounded-none md:border-0 md:border-b md:border-t-0 md:flex-row md:items-center md:gap-4 md:py-4 md:px-5 lg:px-6 md:min-w-0 md:p-0 transition-[background-color] duration-200" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
+                                    <div class="flex items-center gap-3 md:contents">
+                                        <span class="text-sm font-medium w-8 flex-shrink-0 md:block" style="color: var(--on-surface-variant);">{{ $index + 1 }}</span>
+                                        <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
+                                        <div class="min-w-0 flex-1 md:min-w-0 md:flex-1">
+                                            <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Name</span>
+                                            <p class="text-sm font-medium truncate" style="color: var(--on-surface);">{{ $fullName ?: '—' }}</p>
+                                            <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $s->reg_number ?? '' }}</p>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center gap-2 flex-shrink-0">
-                                        <button type="button" class="register-subject-btn inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style="background: var(--primary-container); color: var(--on-primary-container);" data-reg="{{ e($s->reg_number) }}" data-name="{{ e($fullName ?: $s->reg_number) }}" data-subjects="{{ e($s->subjects ?? '') }}">
-                                            <i class="fas fa-list-check text-xs" aria-hidden="true"></i>
-                                            Register subjects
-                                        </button>
+                                    <div class="mt-3 pt-3 border-t md:border-t-0 md:mt-0 md:pt-0 w-full flex flex-row items-center justify-end gap-3 md:contents" style="border-color: var(--outline-variant);">
+                                        <span class="w-full md:w-48 md:flex-shrink-0 md:ml-auto">
+                                            <button type="button" class="register-subject-btn inline-flex items-center justify-center gap-1.5 px-3 py-2.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 w-full" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;" data-reg="{{ e($s->reg_number) }}" data-name="{{ e($fullName ?: $s->reg_number) }}" data-subjects="{{ e($s->subjects ?? '') }}">
+                                                <i class="fas fa-list-check text-xs" aria-hidden="true"></i>
+                                                <span>Register subjects</span>
+                                            </button>
+                                        </span>
                                     </div>
                                 </li>
                             @endforeach
@@ -70,6 +136,7 @@
                     @endif
                 @endif
             </div>
+            @endif
         </div>
     </main>
 

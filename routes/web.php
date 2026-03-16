@@ -210,6 +210,9 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     /** Legacy URLs (same handlers) */
     Route::get('/results/uploaded', [ResultController::class, 'getUploadedResults'])->name('results.uploaded');
     Route::get('/results/published', [ResultController::class, 'viewPublished'])->name('results.published');
+    Route::post('/results/published/toggle-live', [ResultController::class, 'togglePublishedLive'])->name('results.published.toggle-live');
+    Route::post('/results/published/set-live', [ResultController::class, 'setPublishedLiveBulk'])->name('results.published.set-live');
+    Route::post('/results/published/delete', [ResultController::class, 'deletePublished'])->name('results.published.delete');
     Route::put('/results/edit', [ResultController::class, 'edit'])->name('results.edit');
     Route::post('/results/approve', [ResultController::class, 'approve'])->name('results.approve');
     Route::post('/results/reject', [ResultController::class, 'reject'])->name('results.reject');

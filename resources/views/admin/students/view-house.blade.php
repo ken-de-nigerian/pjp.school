@@ -85,9 +85,9 @@
                         </div>
                     </div>
                 @else
-                    <div class="overflow-x-auto overflow-y-auto flex-1 min-h-0 border-x border-b" style="border-color: var(--outline-variant);">
-                        <ul class="divide-y divide-[var(--outline-variant)]" role="list">
-                            <li class="flex items-center gap-2 sm:gap-4 px-4 sm:px-6 py-3" style="background: var(--surface-container); border-color: var(--outline-variant);">
+                    <div class="overflow-x-auto overflow-y-auto flex-1 min-h-0 border-x border-b md:border-x md:border-b" style="border-color: var(--outline-variant);">
+                        <ul class="flex flex-col gap-3 md:gap-0 md:divide-y divide-[var(--outline-variant)] p-4 sm:px-6 md:p-0 list-none min-w-0" role="list">
+                            <li class="hidden md:flex items-center gap-3 sm:gap-4 px-5 sm:px-6 py-3" style="background: var(--surface-container); border-color: var(--outline-variant);">
                                 <span class="text-xs font-medium w-6 sm:w-8 flex-shrink-0" style="color: var(--on-surface-variant);">#</span>
                                 <span class="w-10 flex-shrink-0" aria-hidden="true"></span>
                                 <span class="text-xs font-medium flex-1 min-w-0" style="color: var(--on-surface-variant);">Name</span>
@@ -102,23 +102,26 @@
                                         : asset('storage/students/default.png');
                                     $avatarInitial = $fullName ? mb_substr($fullName, 0, 1) : 'S';
                                 @endphp
-                                <li class="flex items-center gap-2 sm:gap-4 px-4 sm:px-6 py-4 transition-colors" style="background: var(--surface-container-lowest);">
-                                    <span class="text-sm font-medium w-6 sm:w-8 flex-shrink-0" style="color: var(--on-surface-variant);">{{ ($students->currentPage() - 1) * $students->perPage() + $index + 1 }}</span>
-                                    <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
-                                    <div class="min-w-0 flex-1">
-                                        <p class="text-sm font-medium break-words sm:truncate" style="color: var(--on-surface);">
-                                            <a href="{{ route('admin.students.show', $s->id) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: '—' }}</a>
-                                        </p>
-                                        <p class="text-xs break-words sm:truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $s->reg_number ?? '' }}</p>
+                                <li class="flex flex-col gap-0 rounded-2xl border p-4 md:rounded-none md:border-0 md:border-b md:border-t-0 md:flex-row md:items-center md:gap-4 md:py-4 md:px-5 lg:px-6 md:min-w-0 md:p-0 transition-[background-color] duration-200" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
+                                    <div class="flex items-center gap-3 md:contents">
+                                        <span class="text-sm font-medium w-6 sm:w-8 flex-shrink-0 md:block" style="color: var(--on-surface-variant);">{{ ($students->currentPage() - 1) * $students->perPage() + $index + 1 }}</span>
+                                        <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
+                                        <div class="min-w-0 flex-1 md:min-w-0 md:flex-1">
+                                            <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Name</span>
+                                            <p class="text-sm font-medium truncate" style="color: var(--on-surface);">
+                                                <a href="{{ route('admin.students.show', $s->id) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: '—' }}</a>
+                                            </p>
+                                            <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $s->reg_number ?? '' }}</p>
+                                        </div>
                                     </div>
-                                    <div class="flex-shrink-0 w-14 sm:w-24 flex justify-end">
-                                        <span class="inline-flex items-center px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-medium truncate max-w-full" style="background: var(--surface-container-high); color: var(--on-surface-variant);" title="{{ e($s->class ?? '') }}">{{ e($s->class ?? '') }}</span>
-                                    </div>
-                                    <div class="flex-shrink-0 w-10 sm:w-24 text-right">
-                                        <a href="{{ route('admin.students.edit', $s->id) }}" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 sm:px-2.5 sm:py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-[0.98] w-10 sm:w-auto min-h-[2.5rem] sm:min-h-0 flex-shrink-0" style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);" title="Edit student" aria-label="Edit student">
-                                            <i class="fas fa-pen text-sm sm:text-xs" aria-hidden="true"></i>
-                                            <span class="hidden sm:inline">Edit</span>
-                                        </a>
+                                    <div class="mt-3 pt-3 border-t md:border-t-0 md:mt-0 md:pt-0 w-full flex flex-row items-center justify-between gap-3 md:contents" style="border-color: var(--outline-variant);">
+                                        <span class="text-xs md:flex-shrink-0 md:w-24"><span class="md:sr-only" style="color: var(--on-surface-variant);">Class </span><span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium" style="background: var(--surface-container-high); color: var(--on-surface-variant);" title="{{ e($s->class ?? '') }}">{{ e($s->class ?? '') }}</span></span>
+                                        <span class="md:flex-shrink-0 md:w-24 md:flex md:justify-end">
+                                            <a href="{{ route('admin.students.edit', $s->id) }}" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-opacity hover:opacity-90 w-9 h-9 sm:w-auto sm:h-auto sm:min-w-0" style="background: var(--primary); color: var(--on-primary); border-radius: 12px;" title="Edit student" aria-label="Edit student">
+                                                <i class="fas fa-pen text-sm sm:text-xs" aria-hidden="true"></i>
+                                                <span class="hidden sm:inline">Edit</span>
+                                            </a>
+                                        </span>
                                     </div>
                                 </li>
                             @endforeach

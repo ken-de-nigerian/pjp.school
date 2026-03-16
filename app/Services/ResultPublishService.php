@@ -7,12 +7,12 @@ use App\Models\Notification;
 use App\Models\Position;
 use App\Models\Student;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class ResultPublishService
 {
     /**
-     * Publish results for a class/term/session. Returns response array (no HTTP).
-     * Optimized: single query for all results per class/term/session instead of N+1.
+     * @throws Throwable
      */
     public function publish(string $class, string $term, string $session, string $adminName): array
     {
@@ -28,7 +28,18 @@ class ResultPublishService
             ];
         }
 
-        // Single query: all annual_result rows for this class/term/session
+        $hasUnverified = AnnualResult::query()
+            ->forClassTermSession($class, $term, $session)
+            ->whereIn('status', [2, 3])
+            ->exists();
+
+        if ($hasUnverified) {
+            return [
+                'status' => 'error',
+                'message' => 'Some results in '.$class.' are pending approval, please approve and try again.',
+            ];
+        }
+
         $allResults = AnnualResult::query()
             ->forClassTermSession($class, $term, $session)
             ->approved()
@@ -36,20 +47,12 @@ class ResultPublishService
             ->groupBy('reg_number');
 
         $insertData = [];
-        $hasUnverified = false;
 
         foreach ($students as $student) {
             $results = $allResults->get($student->reg_number, collect());
 
             if ($results->isEmpty()) {
                 continue;
-            }
-
-            foreach ($results as $result) {
-                if (in_array((int) $result->status, [2, 3], true)) {
-                    $hasUnverified = true;
-                    break 2;
-                }
             }
 
             $numSubjects = count(array_filter(explode(',', $student->subjects ?? '')));
@@ -72,13 +75,6 @@ class ResultPublishService
                 'class_position' => 0,
                 'status' => 0,
                 'date_added' => now()->format('Y-m-d H:i:s'),
-            ];
-        }
-
-        if ($hasUnverified) {
-            return [
-                'status' => 'error',
-                'message' => 'Some results in '.$class.' are pending approval, please approve and try again.',
             ];
         }
 

@@ -75,13 +75,13 @@
                         </div>
                     </div>
                 @else
-                    <div class="overflow-x-auto overflow-y-auto flex-1 min-h-0 border-x border-b" style="border-color: var(--outline-variant);">
-                        <ul class="divide-y divide-[var(--outline-variant)] min-w-[320px] sm:min-w-0" role="list">
-                            <li class="flex flex-wrap sm:flex-nowrap items-stretch sm:items-center gap-x-2 sm:gap-x-4 gap-y-1 px-4 sm:px-6 py-3" style="background: var(--surface-container); border-color: var(--outline-variant);">
-                                <span class="text-xs font-medium w-6 sm:w-8 flex-shrink-0 self-center" style="color: var(--on-surface-variant);">#</span>
+                    <div class="overflow-x-auto overflow-y-auto flex-1 min-h-0 border-x border-b md:border-x md:border-b" style="border-color: var(--outline-variant);">
+                        <ul class="flex flex-col gap-3 md:gap-0 md:divide-y divide-[var(--outline-variant)] p-4 sm:px-6 md:p-0 list-none min-w-0" role="list">
+                            <li class="hidden md:flex items-center gap-3 sm:gap-4 px-5 sm:px-6 py-3" style="background: var(--surface-container); border-color: var(--outline-variant);">
+                                <span class="text-xs font-medium w-6 sm:w-8 flex-shrink-0" style="color: var(--on-surface-variant);">#</span>
                                 <span class="w-10 flex-shrink-0" aria-hidden="true"></span>
-                                <span class="text-xs font-medium flex-1 min-w-0 order-1" style="color: var(--on-surface-variant);">Name</span>
-                                <span class="text-xs font-medium flex-shrink-0 w-full sm:w-28 text-right sm:text-left order-2 sm:ml-4" style="color: var(--on-surface-variant);">Graduate date</span>
+                                <span class="text-xs font-medium flex-1 min-w-0" style="color: var(--on-surface-variant);">Name</span>
+                                <span class="text-xs font-medium flex-shrink-0 w-28 text-left" style="color: var(--on-surface-variant);">Graduate date</span>
                             </li>
                             @foreach($students as $index => $s)
                                 @php
@@ -94,17 +94,21 @@
                                         : asset('storage/students/default.png');
                                     $avatarInitial = $fullName ? mb_substr($fullName, 0, 1) : 'S';
                                 @endphp
-                                <li class="flex flex-wrap sm:flex-nowrap items-stretch sm:items-center gap-x-2 sm:gap-x-4 gap-y-2 px-4 sm:px-6 py-4 transition-colors" style="background: var(--surface-container-lowest);">
-                                    <span class="text-sm font-medium w-6 sm:w-8 flex-shrink-0 self-center" style="color: var(--on-surface-variant);">{{ ($students->currentPage() - 1) * $students->perPage() + $index + 1 }}</span>
-                                    <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2 self-center" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
-                                    <div class="min-w-0 flex-1 order-1">
-                                        <p class="text-sm font-medium break-words sm:truncate" style="color: var(--on-surface);">
-                                            <a href="{{ route('admin.students.show', $s->id) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: '—' }}</a>
-                                        </p>
-                                        <p class="text-xs break-words sm:truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $s->reg_number ?? '' }}</p>
+                                <li class="flex flex-col gap-0 rounded-2xl border p-4 md:rounded-none md:border-0 md:border-b md:border-t-0 md:flex-row md:items-center md:gap-4 md:py-4 md:px-5 lg:px-6 md:min-w-0 md:p-0 transition-[background-color] duration-200" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
+                                    <div class="flex items-center gap-3 md:contents">
+                                        <span class="text-sm font-medium w-6 sm:w-8 flex-shrink-0 md:block" style="color: var(--on-surface-variant);">{{ ($students->currentPage() - 1) * $students->perPage() + $index + 1 }}</span>
+                                        <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
+                                        <div class="min-w-0 flex-1 md:min-w-0 md:flex-1">
+                                            <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Name</span>
+                                            <p class="text-sm font-medium truncate" style="color: var(--on-surface);">
+                                                <a href="{{ route('admin.students.show', $s->id) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: '—' }}</a>
+                                            </p>
+                                            <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $s->reg_number ?? '' }}</p>
+                                        </div>
                                     </div>
-                                    <div class="flex-shrink-0 w-full sm:w-28 flex justify-end sm:justify-start order-2 self-center sm:ml-4 mt-1 sm:mt-0">
-                                        <span class="text-sm sm:text-xs font-medium sm:inline-flex sm:px-1.5 sm:py-0.5 sm:rounded-lg max-w-full" style="color: var(--on-surface-variant);" title="{{ $gradDate }}">{{ $gradDate }}</span>
+                                    <div class="mt-3 pt-3 border-t md:border-t-0 md:mt-0 md:pt-0 flex flex-wrap items-baseline gap-x-4 gap-y-1 md:contents" style="border-color: var(--outline-variant);">
+                                        <span class="w-full text-xs font-medium mb-1 md:sr-only" style="color: var(--on-surface-variant);">Graduate date</span>
+                                        <span class="text-xs md:flex-shrink-0 md:w-28 font-medium" style="color: var(--on-surface-variant);" title="{{ $gradDate }}">{{ $gradDate }}</span>
                                     </div>
                                 </li>
                             @endforeach

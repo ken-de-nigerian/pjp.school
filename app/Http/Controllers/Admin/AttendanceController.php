@@ -84,18 +84,49 @@ class AttendanceController extends Controller
         ]);
     }
 
-    public function viewAttendance(): View
+    public function viewAttendance(Request $request): View
     {
         $settings = Setting::getCached();
         $classes = SchoolClass::query()->orderBy('class_name')->get();
+        $date = trim((string) $request->query('date', date('Y-m-d')));
+        $class = trim((string) $request->query('class', ''));
+        $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
+        $session = trim((string) $request->query('session', $settings['session'] ?? ''));
+        $segment = trim((string) $request->query('segment', $settings['segment'] ?? 'First'));
+        $hasFilters = $date !== '' && $class !== '' && $term !== '' && $session !== '' && $segment !== '';
+
+        if ($hasFilters) {
+            $validated = $request->validate([
+                'date' => 'required|string|max:50',
+                'class' => 'required|string|max:100',
+                'term' => 'required|string|max:50',
+                'session' => 'required|string|max:50',
+                'segment' => 'required|string|max:50',
+            ]);
+            $date = $validated['date'];
+            $class = $validated['class'];
+            $term = $validated['term'];
+            $session = $validated['session'];
+            $segment = $validated['segment'];
+            $records = $this->attendanceService->getRecord($date, $class, $term, $session, $segment);
+        } else {
+            $records = collect();
+        }
 
         return view('admin.attendance.view-attendance', [
             'classes' => $classes,
             'settings' => $settings,
+            'hasFilters' => $hasFilters,
+            'students' => $records,
+            'date' => $date,
+            'class' => $class,
+            'term' => $term,
+            'session' => $session,
+            'segment' => $segment,
         ]);
     }
 
-    public function getRecord(Request $request): View
+    public function getRecord(Request $request): View|JsonResponse
     {
         $validated = $request->validate([
             'date' => 'required|string|max:50',
@@ -113,7 +144,17 @@ class AttendanceController extends Controller
             $validated['segment']
         );
 
-        return view('admin.attendance.records', [
+        if ($request->expectsJson()) {
+            return response()->json($records->values()->all());
+        }
+
+        $settings = Setting::getCached();
+        $classes = SchoolClass::query()->orderBy('class_name')->get();
+
+        return view('admin.attendance.view-attendance', [
+            'classes' => $classes,
+            'settings' => $settings,
+            'hasFilters' => true,
             'students' => $records,
             'date' => $validated['date'],
             'class' => $validated['class'],

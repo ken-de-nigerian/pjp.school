@@ -23,6 +23,24 @@ class ResultService
             ->exists();
     }
 
+    /**
+     * Get upload and approval status for a subject in a class/term/session.
+     * Returns ['uploaded' => bool, 'status' => int|null] where status is 1 = approved, 3 = rejected, 2/0 = pending.
+     */
+    public function getUploadAndApprovalStatus(string $class, string $term, string $session, string $subject): array
+    {
+        $row = AnnualResult::query()
+            ->where('class', $class)
+            ->where('term', $term)
+            ->where('session', $session)
+            ->where('subjects', $subject)
+            ->first();
+        if ($row === null) {
+            return ['uploaded' => false, 'status' => null];
+        }
+        return ['uploaded' => true, 'status' => (int) $row->status];
+    }
+
     public function getUploadedResults(string $class, string $term, string $session, string $subjects): Collection
     {
         return AnnualResult::query()
@@ -155,15 +173,52 @@ class ResultService
             ->get();
     }
 
-    public function deleteByIds(array $ids): int
+    /**
+     * Search results by name or reg_number, optionally filter by class.
+     * Returns results ordered by session (desc), term, subjects.
+     */
+    public function searchResults(string $param, ?string $class = null): Collection
     {
-        if (empty($ids)) {
-            return 0;
+        $like = '%' . addcslashes($param, '%_\\') . '%';
+        $query = AnnualResult::query()
+            ->with('student')
+            ->where(function ($q) use ($like) {
+                $q->where('name', 'like', $like)
+                    ->orWhere('reg_number', 'like', $like);
+            });
+        if ($class !== null && $class !== '') {
+            $query->where(function ($q) use ($class) {
+                $q->where('class_arm', $class)->orWhere('class', $class);
+            });
         }
-        return (int) AnnualResult::query()->whereIn('id', $ids)->delete();
+        return $query
+            ->orderBy('session', 'desc')
+            ->orderBy('term')
+            ->orderBy('subjects')
+            ->get();
     }
 
-    /** Delete all uploaded results for the given class, term, session and subject. */
+    /** Distinct sessions from annual_result, for search filters. */
+    public function getDistinctSessionsFromResults(): Collection
+    {
+        return AnnualResult::query()
+            ->distinct()
+            ->orderByRaw('session DESC')
+            ->pluck('session')
+            ->filter();
+    }
+
+    /** Distinct segments from annual_result (including empty as "No segment"). */
+    public function getDistinctSegmentsFromResults(): Collection
+    {
+        $segments = AnnualResult::query()
+            ->distinct()
+            ->orderBy('segment')
+            ->pluck('segment')
+            ->map(fn ($s) => $s === null || $s === '' ? 'No segment' : $s);
+        return $segments->unique()->values();
+    }
+
     public function deleteByContext(string $class, string $term, string $session, string $subjects): int
     {
         return (int) AnnualResult::query()
@@ -183,7 +238,6 @@ class ResultService
             ->exists();
     }
 
-    /** Legacy: getPublishedResults — positions for class/term/session, order by class_position. */
     public function getPublishedResults(string $class, string $term, string $session): Collection
     {
         return Position::query()
@@ -194,7 +248,6 @@ class ResultService
             ->get();
     }
 
-    /** Legacy: getSegments — distinct segment names from annual_result for class/term/session. */
     public function getSegmentsForPublished(string $class, string $term, string $session): Collection
     {
         return AnnualResult::query()
@@ -203,5 +256,47 @@ class ResultService
             ->where('session', $session)
             ->distinct()
             ->pluck('segment');
+    }
+
+    public function getSubjectBreakdownForPublished(string $class, string $term, string $session): Collection
+    {
+        return AnnualResult::query()
+            ->forClassTermSession($class, $term, $session)
+            ->approved()
+            ->orderBy('subjects')
+            ->get()
+            ->groupBy('reg_number');
+    }
+
+    public function setPublishedLiveStatus(string $class, string $term, string $session, string $regNumber, int $live): int
+    {
+        return Position::query()
+            ->where('class', $class)
+            ->where('term', $term)
+            ->where('session', $session)
+            ->where('reg_number', $regNumber)
+            ->update(['status' => $live]);
+    }
+
+    public function setPublishedLiveBulk(string $class, string $term, string $session, array $regNumbers, int $live): int
+    {
+        if (empty($regNumbers)) {
+            return 0;
+        }
+        return Position::query()
+            ->where('class', $class)
+            ->where('term', $term)
+            ->where('session', $session)
+            ->whereIn('reg_number', $regNumbers)
+            ->update(['status' => $live]);
+    }
+
+    public function deletePublishedResults(string $class, string $term, string $session): int
+    {
+        return Position::query()
+            ->where('class', $class)
+            ->where('term', $term)
+            ->where('session', $session)
+            ->delete();
     }
 }

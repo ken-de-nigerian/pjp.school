@@ -12,37 +12,28 @@
     @endphp
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            @if(!empty($showSheet))
-                <div class="mb-4 sm:mb-6 w-fit">
-                    <a href="{{ route('admin.upload-results') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
-                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                        Change class / subject
-                    </a>
-                </div>
-            @endif
-
             <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
                 <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        @if(!empty($showSheet))
-                            {{ e($class) }} · {{ e($subjects) }}
-                        @else
-                            Upload results
-                        @endif
-                    </h1>
-
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Upload results</h1>
                     <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        @if(!empty($showSheet))
-                            {{ e($term) }} · {{ e($session) }} · CA (15) · Assign (25) · Exam (60)
+                        @if(!empty($hasFilters))
+                            {{ e($class) }} · {{ e($subjects) }} · {{ e($term) }} · {{ e($session) }} — CA (15) · Assign (25) · Exam (60)
                         @else
-                            Choose class and subject, then enter scores per student.
+                            Choose class and subject below, then click &quot;Load result sheet&quot; to enter scores.
                         @endif
                     </p>
                 </div>
 
-                <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full lg:w-auto lg:flex-shrink-0">
-                    @if(Route::has('admin.results.uploaded') && empty($showSheet))
-                        <a href="{{ route('admin.results.uploaded') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-95" style="background-color: var(--primary); color: var(--on-primary); border-radius: 12px;">
+                <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+                    @if(!empty($hasFilters))
+                        <a href="{{ route('admin.upload-results') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style="color: var(--on-surface-variant); background: var(--surface-container-high); border-radius: 12px;">
+                            <i class="fas fa-filter text-xs" aria-hidden="true"></i>
+                            <span>Change filters</span>
+                        </a>
+                    @endif
+
+                    @if(Route::has('admin.results.uploaded'))
+                        <a href="{{ route('admin.results.uploaded') }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-95" style="background-color: var(--primary); color: var(--on-primary); border-radius: 12px;">
                             <i class="fas fa-eye text-xs" aria-hidden="true"></i>
                             <span>View uploaded</span>
                         </a>
@@ -50,54 +41,55 @@
                 </div>
             </header>
 
-            @if(empty($showSheet))
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1);">
-                    <div class="col-span-full flex-1 flex flex-col items-center justify-center min-h-[min(400px,50vh)] py-12 sm:py-16">
-                        <div class="rounded-3xl p-4 sm:p-6 lg:p-8 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
-                            <div class="flex items-center gap-4 mb-6 sm:mb-8">
-                                <div>
-                                    <h2 class="text-base sm:text-lg font-medium" style="color: var(--on-surface);">Result sheet filters</h2>
-                                    <p class="text-sm font-normal" style="color: var(--on-surface-variant);">Load students registered for the subject in this class</p>
-                                </div>
-                            </div>
-
-                            <form method="GET" action="{{ route('admin.upload-results') }}" class="space-y-5 sm:space-y-6">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
-                                    <div class="form-group sm:col-span-2 min-w-0">
-                                        <label for="upload-class" class="form-label">Class <span style="color: var(--primary);">*</span></label>
-                                        <select id="upload-class" name="class" class="form-select w-full min-w-0" required>
-                                            <option value="">Select class</option>
-                                            @foreach($getClasses as $c)
-                                                @php $cn = is_object($c) ? $c->class_name : $c; @endphp
-                                                <option value="{{ e($cn) }}" {{ ($class ?? '') === $cn ? 'selected' : '' }}>{{ e($cn) }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group sm:col-span-2 min-w-0">
-                                        <label for="upload-subjects" class="form-label">Subject <span style="color: var(--primary);">*</span></label>
-                                        <select id="upload-subjects" name="subjects" class="form-select w-full min-w-0" required>
-                                            <option value="">Select subject</option>
-                                            @foreach($getSubjects as $s)
-                                                <option value="{{ e($s->subject_name) }}" data-grade="{{ e($s->grade) }}" {{ ($subjects ?? '') === $s->subject_name ? 'selected' : '' }}>{{ e($s->subject_name) }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4" style="border-top: 1px solid var(--outline-variant);">
-                                    <a href="{{ route('admin.dashboard') }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-medium w-full sm:w-auto" style="border-radius: 12px;">Cancel</a>
-                                    <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-medium w-full sm:w-auto" data-preloader style="border-radius: 12px;">
-                                        <i class="fas fa-users text-sm" aria-hidden="true"></i>
-                                        Load result sheet
-                                    </button>
-                                </div>
-                            </form>
+            @if(empty($hasFilters))
+            <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <form method="GET" action="{{ route('admin.upload-results') }}" class="space-y-4 sm:space-y-5">
+                    <input type="hidden" name="term" value="{{ e($term ?? '') }}">
+                    <input type="hidden" name="session" value="{{ e($session ?? '') }}">
+                    <div class="grid grid-cols-12 gap-4 min-w-0">
+                        <div class="col-span-12 sm:col-span-6 form-group min-w-0">
+                            <label for="upload-class" class="form-label">Class <span style="color: var(--primary);">*</span></label>
+                            <select id="upload-class" name="class" class="form-select w-full min-w-0">
+                                <option value="">Select class</option>
+                                @foreach($getClasses as $c)
+                                    @php $cn = is_object($c) ? $c->class_name : $c; @endphp
+                                    <option value="{{ e($cn) }}" {{ ($class ?? '') === $cn ? 'selected' : '' }}>{{ e($cn) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-span-12 sm:col-span-6 form-group min-w-0">
+                            <label for="upload-subjects" class="form-label">Subject <span style="color: var(--primary);">*</span></label>
+                            <select id="upload-subjects" name="subjects" class="form-select w-full min-w-0">
+                                <option value="">Select subject</option>
+                                @foreach($getSubjects as $s)
+                                    <option value="{{ e($s->subject_name) }}" data-grade="{{ e($s->grade) }}" {{ ($subjects ?? '') === $s->subject_name ? 'selected' : '' }}>{{ e($s->subject_name) }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
-                </div>
+                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
+                        <a href="{{ route('admin.upload-results') }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
+                            <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                            Clear
+                        </a>
+                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
+                            <i class="fas fa-users text-sm" aria-hidden="true"></i>
+                            Load result sheet
+                        </button>
+                    </div>
+                </form>
+            </div>
             @endif
 
+            @if(empty($hasFilters))
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                    <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
+                        <i class="fas fa-search text-3xl" aria-hidden="true"></i>
+                    </div>
+                    <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No filters selected</h2>
+                    <p class="text-sm text-center max-w-sm" style="color: var(--on-surface-variant);">Choose class and subject in the form above, then click &quot;Load result sheet&quot; to see students and enter scores.</p>
+                </div>
+            @else
             @if(!empty($showSheet))
                 <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="flex flex-col border-b" style="border-color: var(--outline-variant); background: var(--surface-container-low);">
@@ -234,6 +226,7 @@
                         </div>
                     @endif
                 </div>
+            @endif
             @endif
         </div>
     </main>

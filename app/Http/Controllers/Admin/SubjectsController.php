@@ -177,25 +177,27 @@ class SubjectsController extends Controller
     {
         Gate::authorize('viewAny', Subject::class);
         $getClasses = $this->studentService->getClassesArray();
+        $class = $request->query('class');
+        $hasFilters = $class !== null && $class !== '';
 
-        if ($request->has('class')) {
+        if ($hasFilters) {
             $validated = $request->validate([
                 'class' => 'required|string|max:100',
             ]);
             $class = $validated['class'];
             $students = $this->studentService->getStudentsByClass($class, 100);
             $subjects = $this->studentService->getSubjectsToRegister($class);
-
-            return view('admin.subjects.register-students', [
-                'getClasses' => $getClasses,
-                'students' => $students,
-                'subjects' => $subjects,
-                'selectedClass' => $class,
-            ]);
+        } else {
+            $students = collect();
+            $subjects = collect();
         }
 
-        return view('admin.subjects.fetch-classes', [
+        return view('admin.subjects.register-students', [
             'getClasses' => $getClasses,
+            'students' => $students,
+            'subjects' => $subjects,
+            'selectedClass' => $hasFilters ? $class : null,
+            'hasFilters' => $hasFilters,
         ]);
     }
 
@@ -244,28 +246,29 @@ class SubjectsController extends Controller
 
         $getClasses = $this->studentService->getClassesArray();
         $getSubjects = Subject::query()->orderBy('grade')->orderBy('subject_name')->get();
+        $filterClass = $request->query('class');
+        $filterSubject = $request->query('subjects');
+        $hasFilters = $filterClass !== null && $filterClass !== '' && $filterSubject !== null && $filterSubject !== '';
 
-        if ($request->has('class') || $request->has('subjects')) {
+        if ($hasFilters) {
             $validated = $request->validate([
                 'class' => 'required|string|max:100',
                 'subjects' => 'required|string|max:100',
             ]);
-            $class = $validated['class'];
-            $subjects = $validated['subjects'];
-            $students = $this->studentService->getStudentsByClassAndSubject($class, $subjects);
-
-            return view('admin.subjects.view-registered-students', [
-                'getClasses' => $getClasses,
-                'getSubjects' => $getSubjects,
-                'students' => $students,
-                'filterClass' => $class,
-                'filterSubject' => $subjects,
-            ]);
+            $filterClass = $validated['class'];
+            $filterSubject = $validated['subjects'];
+            $students = $this->studentService->getStudentsByClassAndSubject($filterClass, $filterSubject);
+        } else {
+            $students = collect();
         }
 
-        return view('admin.subjects.registered', [
+        return view('admin.subjects.view-registered-students', [
             'getClasses' => $getClasses,
             'getSubjects' => $getSubjects,
+            'students' => $students,
+            'filterClass' => $filterClass,
+            'filterSubject' => $filterSubject,
+            'hasFilters' => $hasFilters,
         ]);
     }
 }

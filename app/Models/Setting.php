@@ -37,6 +37,14 @@ class Setting extends Model
         ];
     }
 
+    /**
+     * Return null when a segment is the placeholder so the UI never displays "No Segment".
+     */
+    public function getSegmentAttribute(): null
+    {
+        return null;
+    }
+
     private const CACHE_KEY = 'school_settings';
 
     private const CACHE_TTL_SECONDS = 300;

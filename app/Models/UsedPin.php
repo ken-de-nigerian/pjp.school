@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UsedPin extends Model
 {
@@ -25,5 +26,10 @@ class UsedPin extends Model
         return [
             'time_used' => 'datetime',
         ];
+    }
+
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class, 'reg_number', 'reg_number');
     }
 }

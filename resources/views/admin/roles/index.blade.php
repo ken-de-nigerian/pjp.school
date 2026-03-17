@@ -22,17 +22,20 @@
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($roles->isEmpty())
-                    <div class="flex flex-col items-center justify-center py-16 px-6">
+                    <div class="flex flex-col items-center justify-center py-16 md:py-40 px-6">
                         <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                             <i class="fas fa-user-shield text-3xl" aria-hidden="true"></i>
                         </div>
                         <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No roles yet</h2>
                         <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">Create a role and assign permissions for staff accounts.</p>
+
                         @can('create', Role::class)
-                            <a href="{{ route('admin.roles.create') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95" style="border-radius: 12px;">
-                                <i class="fas fa-plus text-sm" aria-hidden="true"></i>
-                                Add role
-                            </a>
+                            <div class="flex justify-center">
+                                <a href="{{ route('admin.roles.create') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95" style="border-radius: 12px;">
+                                    <i class="fas fa-plus text-sm" aria-hidden="true"></i>
+                                    Add role
+                                </a>
+                            </div>
                         @endcan
                     </div>
                 @else

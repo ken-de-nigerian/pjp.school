@@ -19,9 +19,9 @@
                     <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">View Attendance</h1>
                     <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
                         @if($hasFilters)
-                            View and edit attendance for the selected date, class, term, session and segment.
+                            View and edit attendance for the selected date, class, term and session.
                         @else
-                            Filter by date, class, term, session, and segment to view uploaded records.
+                            Filter by date, class, term and session to view uploaded records.
                         @endif
                     </p>
                 </div>
@@ -43,6 +43,7 @@
                             <input type="date" id="view-attendance-date" name="date" class="form-input w-full min-w-0" value="{{ e($date ?? date('Y-m-d')) }}">
                             <p id="date-error" class="form-error mt-1 text-sm {{ $errors->has('date') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('date') }}</p>
                         </div>
+
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="view-attendance-class" class="form-label">Class</label>
                             <select id="view-attendance-class" name="class" class="form-select w-full min-w-0">
@@ -53,6 +54,7 @@
                             </select>
                             <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
                         </div>
+
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="view-attendance-term" class="form-label">Term</label>
                             <select id="view-attendance-term" name="term" class="form-select w-full min-w-0">
@@ -62,6 +64,7 @@
                             </select>
                             <p id="term-error" class="form-error mt-1 text-sm {{ $errors->has('term') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('term') }}</p>
                         </div>
+
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="view-attendance-session" class="form-label">Session</label>
                             <select id="view-attendance-session" name="session" class="form-select w-full min-w-0">
@@ -72,15 +75,6 @@
                                 @endforeach
                             </select>
                             <p id="session-error" class="form-error mt-1 text-sm {{ $errors->has('session') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('session') }}</p>
-                        </div>
-                        <div class="col-span-12 sm:col-span-6 form-group min-w-0">
-                            <label for="view-attendance-segment" class="form-label">Segment</label>
-                            <select id="view-attendance-segment" name="segment" class="form-select w-full min-w-0">
-                                <option value="First" {{ ($segment ?? $settings['segment'] ?? '') === 'First' ? 'selected' : '' }}>First Segment</option>
-                                <option value="Second" {{ ($segment ?? $settings['segment'] ?? '') === 'Second' ? 'selected' : '' }}>Second Segment</option>
-                                <option value="Third" {{ ($segment ?? $settings['segment'] ?? '') === 'Third' ? 'selected' : '' }}>Third Segment</option>
-                            </select>
-                            <p id="segment-error" class="form-error mt-1 text-sm {{ $errors->has('segment') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('segment') }}</p>
                         </div>
                     </div>
                     <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
@@ -103,7 +97,7 @@
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
                     <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No filters selected</h2>
-                    <p class="text-sm text-center max-w-sm" style="color: var(--on-surface-variant);">Choose date, class, term, session and segment in the form above, then click &quot;View attendance&quot; to see records.</p>
+                    <p class="text-sm text-center max-w-sm" style="color: var(--on-surface-variant);">Choose date, class, term and session in the form above, then click &quot;View attendance&quot; to see records.</p>
                 </div>
             @else
             <div class="flex flex-wrap gap-3 sm:gap-4 mb-6">
@@ -123,10 +117,6 @@
                     <span class="text-xs font-medium" style="color: var(--on-surface-variant);">Session</span>
                     <p class="text-sm font-medium mt-0.5" style="color: var(--on-surface);">{{ $session }}</p>
                 </div>
-                <div class="rounded-xl px-4 py-2.5" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
-                    <span class="text-xs font-medium" style="color: var(--on-surface-variant);">Segment</span>
-                    <p class="text-sm font-medium mt-0.5" style="color: var(--on-surface);">{{ $segment }}</p>
-                </div>
             </div>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
@@ -136,7 +126,7 @@
                             <i class="fas fa-calendar-day text-3xl" aria-hidden="true"></i>
                         </div>
                         <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No records for this selection</h2>
-                        <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">There are no attendance records for {{ $date }}, {{ $class }}, {{ $term }}, {{ $session }}, {{ $segment }}. Take attendance first or choose another date.</p>
+                        <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">There are no attendance records for {{ $date }}, {{ $class }}, {{ $term }}, {{ $session }}. Take attendance first or choose another date.</p>
                         <div class="flex justify-center">
                             <a href="{{ route('admin.attendance.view') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
                                 <i class="fas fa-filter text-sm"></i>
@@ -231,7 +221,6 @@
                 const classVal = @json($class);
                 const termVal = @json($term);
                 const sessionVal = @json($session);
-                const segmentVal = @json($segment);
                 const dateVal = @json($date);
 
                 const csrfToken = form.querySelector('input[name="_token"]').value;
@@ -334,7 +323,7 @@
                     openDeleteModal(
                         'Delete all records?',
                         'Delete all attendance records for this date? This cannot be undone.',
-                        { class: classVal, term: termVal, session: sessionVal, segment: segmentVal, date: dateVal }
+                        { class: classVal, term: termVal, session: sessionVal, date: dateVal }
                     );
                 });
 
@@ -345,7 +334,7 @@
                         openDeleteModal(
                             'Delete record?',
                             'Delete attendance record for ' + (name || reg) + '?',
-                            { reg_number: reg, class: classVal, term: termVal, session: sessionVal, segment: segmentVal, date: dateVal }
+                            { reg_number: reg, class: classVal, term: termVal, session: sessionVal, date: dateVal }
                         );
                     });
                 });
@@ -383,7 +372,6 @@
                                 class: classVal,
                                 term: termVal,
                                 session: sessionVal,
-                                segment: segmentVal,
                                 date: dateVal,
                                 updates: rowsToUpdate
                             })

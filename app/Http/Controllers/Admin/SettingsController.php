@@ -9,7 +9,9 @@ use App\Http\Requests\Toggle2FARequest;
 use App\Http\Requests\UpdateSettingsRequest;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Throwable;
 
 class SettingsController extends Controller
 {
@@ -21,13 +23,20 @@ class SettingsController extends Controller
         ]);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function update(UpdateSettingsRequest $request): JsonResponse
     {
         $this->authorize('update', Setting::class);
 
         $setting = Setting::query()->first();
         if ($setting) {
-            $setting->update($request->validated());
+            $data = $request->validated();
+            $data['segment'] = config('school.no_segment', 'No Segment');
+            DB::transaction(function () use ($setting, $data) {
+                $setting->update($data);
+            });
             Setting::clearSettingsCache();
         }
 

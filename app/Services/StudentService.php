@@ -114,11 +114,6 @@ class StudentService
             ->get();
     }
 
-    /**
-     * Students in the given class who are registered for the given subject.
-     * Used for result upload and subject-specific views; only returns students
-     * whose registered subjects (comma-separated) include the given subject.
-     */
     public function getStudentsByClassAndSubject(?string $class, ?string $subject): Collection
     {
         $query = Student::query()->active()->orderBy('firstname')->orderBy('lastname');
@@ -166,7 +161,6 @@ class StudentService
         return array_values($dates);
     }
 
-    /** Returns array of [ 'year' => string, 'user_count' => int ] for graduated index (same shape as house counts). */
     public function getGraduationYearsWithCounts(): array
     {
         $years = $this->getGraduationDates();
@@ -178,11 +172,11 @@ class StudentService
         foreach ($years as $year) {
             $count = Student::query()
                 ->whereNotNull('graduation_date')
-                ->where('graduation_date', 'like', (string) $year . '%')
+                ->where('graduation_date', 'like', $year . '%')
                 ->count();
             $results[] = [
                 'year' => (string) $year,
-                'user_count' => (int) $count,
+                'user_count' => $count,
             ];
         }
         return $results;
@@ -215,7 +209,6 @@ class StudentService
         return array_values($dates);
     }
 
-    /** Returns array of [ 'year' => string, 'user_count' => int ] for left-school index (same shape as graduated). */
     public function getLeftSchoolYearsWithCounts(): array
     {
         $years = $this->getLeftSchoolDates();
@@ -228,11 +221,11 @@ class StudentService
             $count = Student::query()
                 ->where('status', 1)
                 ->whereNotNull('left_school_date')
-                ->where('left_school_date', 'like', (string) $year . '%')
+                ->where('left_school_date', 'like', $year . '%')
                 ->count();
             $results[] = [
                 'year' => (string) $year,
-                'user_count' => (int) $count,
+                'user_count' => $count,
             ];
         }
         return $results;
@@ -282,7 +275,6 @@ class StudentService
         return $query->paginate($perPage);
     }
 
-    /** Legacy: getClassesArray */
     public function getClassesArray(): array
     {
         return SchoolClass::query()->orderBy('class_name')->get()->all();
@@ -297,7 +289,6 @@ class StudentService
         return $maxReg + 1;
     }
 
-    /** Legacy: getSubjectsToRegister - JSS -> Junior, SSS -> Senior */
     public function getSubjectsToRegister(string $selectedClass): Collection
     {
         $classArm = substr($selectedClass, 0, 3);
@@ -308,16 +299,14 @@ class StudentService
             return Subject::query()->where('grade', 'Senior')->orderBy('subject_name')->get();
         }
 
-        return collect([]);
+        return collect();
     }
 
-    /** Legacy: hasClass */
     public function hasClass(string $class_name): bool
     {
         return SchoolClass::query()->where('class_name', $class_name)->exists();
     }
 
-    /** Legacy: addClass */
     public function addClass(string $class_name): int
     {
         $created = SchoolClass::query()->create([
@@ -418,13 +407,11 @@ class StudentService
         ]);
     }
 
-    /** Legacy: toggleStudentsFeeStatus */
     public function toggleFeeStatus(int $id, int $fee_status): int
     {
-        return (int) Student::query()->where('id', $id)->update(['fee_status' => $fee_status]);
+        return Student::query()->where('id', $id)->update(['fee_status' => $fee_status]);
     }
 
-    /** Update fee status for multiple students. Returns number of rows updated. */
     public function updateFeeStatusBulk(array $ids, int $fee_status): int
     {
         if (count($ids) === 0) {
@@ -432,10 +419,9 @@ class StudentService
         }
         $ids = array_values(array_unique(array_map('intval', $ids)));
 
-        return (int) Student::query()->whereIn('id', $ids)->update(['fee_status' => $fee_status]);
+        return Student::query()->whereIn('id', $ids)->update(['fee_status' => $fee_status]);
     }
 
-    /** Legacy: promoteStudents - update class where class = from; set graduation_date if toClass is Graduated */
     public function promote(string $fromClass, string $toClass): bool
     {
         $data = ['class' => $toClass, 'class_arm' => ClassArm::fromClass($toClass)];
@@ -446,7 +432,6 @@ class StudentService
         return Student::query()->where('class', $fromClass)->update($data) !== 0;
     }
 
-    /** Legacy: demoteStudents - update by id list; set graduation_date if toClass is Graduated */
     public function demote(string $toClass, array $studentIds): bool
     {
         $data = ['class' => $toClass, 'class_arm' => ClassArm::fromClass($toClass)];
@@ -457,38 +442,13 @@ class StudentService
         return Student::query()->whereIn('id', $studentIds)->update($data) !== 0;
     }
 
-    /** Legacy: hasStudentsClass */
-    public function hasStudentsInClass(string $class): bool
-    {
-        return Student::query()->active()->byClass($class)->exists();
-    }
-
-    /** Delete student (hard delete). Legacy has no delete; spec requires delete. */
     public function delete(int $id): bool
     {
         return (bool) Student::query()->where('id', $id)->delete();
     }
 
-    /** Legacy: update student profile picture (imagelocation). $path = path under storage/app/public, e.g. students/xxx.jpg */
     public function updateProfilePicture(int $studentId, string $path): bool
     {
         return Student::query()->where('id', $studentId)->update(['imagelocation' => $path]) !== 0;
-    }
-
-    /** Legacy: getAllStudents - class + status 2, ORDER firstname ASC */
-    public function getAllStudentsByClass(string $class): Collection
-    {
-        return Student::query()
-            ->active()
-            ->byClass($class)
-            ->orderBy('firstname')
-            ->orderBy('lastname')
-            ->get();
-    }
-
-    /** Legacy: countAllStudents for a class */
-    public function countByClass(string $class): int
-    {
-        return Student::query()->active()->byClass($class)->count();
     }
 }

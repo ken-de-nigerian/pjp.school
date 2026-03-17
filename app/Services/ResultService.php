@@ -8,11 +8,11 @@ use App\Helpers\ClassArm;
 use App\Models\AnnualResult;
 use App\Models\Position;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class ResultService
 {
-    private const DEFAULT_RESULT_SEGMENT = 'No Segment';
-
     public function hasUploadedResults(string $class, string $term, string $session, string $subjects): bool
     {
         return AnnualResult::query()
@@ -23,10 +23,6 @@ class ResultService
             ->exists();
     }
 
-    /**
-     * Get upload and approval status for a subject in a class/term/session.
-     * Returns ['uploaded' => bool, 'status' => int|null] where status is 1 = approved, 3 = rejected, 2/0 = pending.
-     */
     public function getUploadAndApprovalStatus(string $class, string $term, string $session, string $subject): array
     {
         $row = AnnualResult::query()
@@ -53,17 +49,19 @@ class ResultService
             ->get();
     }
 
-    public function getResultsByClass(string $class, string $term, string $session, string $segment): Collection
+    public function getResultsByClass(string $class, string $term, string $session): Collection
     {
         return AnnualResult::query()
             ->where('class', $class)
             ->where('term', $term)
             ->where('session', $session)
-            ->where('segment', $segment)
             ->orderBy('name')
             ->get();
     }
 
+    /**
+     * @throws Throwable
+     */
     public function bulkInsert(array $results): int
     {
         $rows = [];
@@ -87,7 +85,7 @@ class ResultService
                 'subjects' => $r['subjects'] ?? '',
                 'name' => $r['name'] ?? '',
                 'reg_number' => $r['reg_number'] ?? '',
-                'segment' => self::DEFAULT_RESULT_SEGMENT,
+                'segment' => config('school.no_segment', 'No Segment'),
                 'ca' => $ca,
                 'assignment' => $assignment,
                 'exam' => $exam,
@@ -101,9 +99,11 @@ class ResultService
             return 0;
         }
 
-        foreach ($rows as $row) {
-            AnnualResult::query()->create($row);
-        }
+        DB::transaction(function () use ($rows) {
+            foreach ($rows as $row) {
+                AnnualResult::query()->create($row);
+            }
+        });
 
         return count($rows);
     }
@@ -119,7 +119,6 @@ class ResultService
         $assignment,
         $exam
     ): int {
-        $seg = self::DEFAULT_RESULT_SEGMENT;
         $weight = 1.0;
         $total = $weight * (floatval($ca) + floatval($assignment) + floatval($exam));
 
@@ -130,7 +129,6 @@ class ResultService
             ->where('session', $session)
             ->where('subjects', $subjects)
             ->where('reg_number', $reg_number)
-            ->where('segment', $seg)
             ->update([
                 'ca' => $ca,
                 'assignment' => $assignment,

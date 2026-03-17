@@ -41,7 +41,6 @@
                             <input type="hidden" name="students[{{ $loop->index }}][class]" value="{{ $class }}">
                             <input type="hidden" name="students[{{ $loop->index }}][term]" value="{{ $term }}">
                             <input type="hidden" name="students[{{ $loop->index }}][session]" value="{{ $session }}">
-                            <input type="hidden" name="students[{{ $loop->index }}][segment]" value="{{ $segment }}">
                             <input type="hidden" name="students[{{ $loop->index }}][name]" value="{{ $s->firstname ?? '' }} {{ $s->lastname ?? '' }}">
                             <input type="hidden" name="students[{{ $loop->index }}][reg_number]" value="{{ $s->reg_number ?? '' }}">
                         </td>

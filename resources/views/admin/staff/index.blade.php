@@ -40,7 +40,7 @@
                 </div>
             </header>
 
-            <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1);">
+            <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($isEmpty)
                     <div class="flex flex-col items-center justify-center py-16 md:py-40 px-6">
                         <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5" style="border-radius: 16px;">
@@ -58,10 +58,12 @@
                         </p>
 
                         @if($searchQuery === '' && Route::has('admin.staff.create'))
-                            <a href="{{ route('admin.staff.create') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
-                                <i class="fas fa-user-plus text-sm" aria-hidden="true"></i>
-                                Add Staff
-                            </a>
+                            <div class="flex justify-center">
+                                <a href="{{ route('admin.staff.create') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                                    <i class="fas fa-user-plus text-sm" aria-hidden="true"></i>
+                                    Add Staff
+                                </a>
+                            </div>
                         @endif
                     </div>
                 @else

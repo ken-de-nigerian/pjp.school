@@ -19,18 +19,12 @@
                     <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Search results</h1>
                     <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
                         @if($hasSearch)
-                            Find a student by name or reg number, optionally filter by class, and group by session, segment, term or show all together.
+                            Find a student by name or reg number, optionally filter by class, and group by session, term or show all together.
                         @else
                             Search by student name or registration number. Optionally filter by class and choose how to group the results.
                         @endif
                     </p>
                 </div>
-                @if($hasSearch)
-                    <a href="{{ route('admin.results-by-params') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90 shrink-0" style="color: var(--on-surface-variant); background: var(--surface-container-high); border-radius: 12px;">
-                        <i class="fas fa-filter text-xs" aria-hidden="true"></i>
-                        <span>Change search</span>
-                    </a>
-                @endif
             </header>
 
             <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
@@ -56,8 +50,7 @@
                             <label for="group_by" class="form-label">Group results by</label>
                             <select id="group_by" name="group_by" class="form-select w-full min-w-0">
                                 <option value="session" {{ ($group_by ?? 'session') === 'session' ? 'selected' : '' }}>Session</option>
-                                <option value="segment" {{ ($group_by ?? '') === 'segment' ? 'selected' : '' }}>Segment</option>
-                                <option value="none" {{ ($group_by ?? '') === 'none' ? 'selected' : '' }}>No segment (single list)</option>
+                                <option value="none" {{ ($group_by ?? '') === 'none' ? 'selected' : '' }}>Single list</option>
                                 <option value="term" {{ ($group_by ?? '') === 'term' ? 'selected' : '' }}>Term</option>
                             </select>
                         </div>
@@ -111,9 +104,8 @@
                                     <span class="text-[10px] font-medium uppercase tracking-wide block mb-1" style="color: var(--on-surface-variant);">Group by</span>
                                     <span class="text-sm font-semibold leading-snug" style="color: var(--on-surface);">
                                         @if(($group_by ?? '') === 'session') Session
-                                        @elseif(($group_by ?? '') === 'segment') Segment
                                         @elseif(($group_by ?? '') === 'term') Term
-                                        @else No segment
+                                        @else Single list
                                         @endif
                                     </span>
                                 </div>
@@ -136,8 +128,6 @@
                                     <h2 class="text-sm font-semibold" style="color: var(--on-surface);">
                                         @if(($group_by ?? '') === 'session')
                                             Session {{ e($groupLabel) }}
-                                        @elseif(($group_by ?? '') === 'segment')
-                                            Segment: {{ e($groupLabel) }}
                                         @elseif(($group_by ?? '') === 'term')
                                             {{ e($groupLabel) }}
                                         @else

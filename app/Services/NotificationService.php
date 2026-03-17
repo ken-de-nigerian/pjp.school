@@ -15,19 +15,4 @@ class NotificationService
             'date_added' => now()->format('Y-m-d H:i:s'),
         ]);
     }
-
-    public function getRecent(int $limit = 20): \Illuminate\Database\Eloquent\Collection
-    {
-        return Notification::query()
-            ->orderByDesc('date_added')
-            ->limit($limit)
-            ->get();
-    }
-
-    public function getPaginated(int $perPage = 20): LengthAwarePaginator
-    {
-        return Notification::query()
-            ->orderByDesc('date_added')
-            ->paginate($perPage);
-    }
 }

@@ -20,7 +20,6 @@ class DeleteAttendanceRequest extends FormRequest
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
             'session' => 'required|string|max:50',
-            'segment' => 'required|string|max:50',
             'date' => 'required|string|max:100',
         ];
     }

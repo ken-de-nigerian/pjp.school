@@ -20,7 +20,6 @@ class StoreBehavioralRequest extends FormRequest
             'students.*.class' => 'required|string|max:100',
             'students.*.term' => 'required|string|max:50',
             'students.*.session' => 'required|string|max:50',
-            'students.*.segment' => 'required|string|max:50',
             'students.*.name' => 'required|string|max:255',
             'students.*.reg_number' => 'required|string|max:50',
             'students.*.neatness' => 'nullable|string|max:255',

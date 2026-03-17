@@ -37,6 +37,14 @@ class AnnualResult extends Model
         ];
     }
 
+    /**
+     * Return null when a segment is the placeholder so the UI never displays "No Segment".
+     */
+    public function getSegmentAttribute(): null
+    {
+        return null;
+    }
+
     public function scopeForClassTermSession(Builder $query, string $class, string $term, string $session): void
     {
         $query->where('class_arm', $class)

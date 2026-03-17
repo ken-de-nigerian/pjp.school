@@ -138,41 +138,43 @@
                 <!-- Recent Announcements -->
                 <div class="space-y-6 lg:space-y-8">
                     <div class="card-refined rounded-2xl p-4 lg:p-6" style="border-color: var(--outline-variant);">
-                        <div
-                            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
-                            <div>
-                                <h2 class="text-xl lg:text-2xl font-bold mb-1" style="color: var(--text-primary);">
-                                    Recent Announcements</h2>
-                                <p class="text-sm" style="color: var(--text-secondary);">Latest school notices and
-                                    updates</p>
-                            </div>
-
-                            @if(Route::has('admin.news.index'))
-                                <a href="{{ route('admin.news.index') }}"
-                                   class="text-primary-400 hover:text-primary-300 text-sm font-semibold flex items-center gap-2 transition min-h-[44px]">
-                                    View All <i class="fas fa-arrow-right text-xs"></i>
-                                </a>
-                            @endif
-                        </div>
-
                         @if(empty($get_news))
-                            <div class="text-center py-12">
-                                <div class="dashboard-stat-icon dashboard-stat-icon--blue w-16 h-16 rounded-full mx-auto mb-4">
-                                    <i class="fas fa-bullhorn text-2xl"></i>
+                            <div class="flex flex-col items-center justify-center py-16 md:py-24 px-6">
+                                <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
+                                    <i class="fas fa-bullhorn text-3xl" aria-hidden="true"></i>
                                 </div>
-                                <p class="mb-4" style="color: var(--text-secondary);">No announcements yet</p>
+                                <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No announcements yet</h2>
+                                <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">
+                                    Create your first announcement to keep staff, students and parents informed.
+                                </p>
+
                                 @if(Route::has('admin.news.create'))
-                                    <div class="flex justify-center w-full">
-                                        <a href="{{ route('admin.news.create') }}"
-                                           class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]"
-                                           style="border-radius: 12px; width: fit-content;">
+                                    <div class="flex justify-center">
+                                        <a href="{{ route('admin.news.create') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
                                             <i class="fas fa-plus text-sm" aria-hidden="true"></i>
-                                            Add Announcement
+                                            <span>Add Announcement</span>
                                         </a>
                                     </div>
                                 @endif
                             </div>
                         @else
+                            <div
+                                class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                                <div>
+                                    <h2 class="text-xl lg:text-2xl font-bold mb-1" style="color: var(--text-primary);">
+                                        Recent Announcements</h2>
+                                    <p class="text-sm" style="color: var(--text-secondary);">Latest school notices and
+                                        updates</p>
+                                </div>
+
+                                @if(Route::has('admin.news.index'))
+                                    <a href="{{ route('admin.news.index') }}"
+                                       class="text-primary-400 hover:text-primary-300 text-sm font-semibold flex items-center gap-2 transition min-h-[44px]">
+                                        View All <i class="fas fa-arrow-right text-xs"></i>
+                                    </a>
+                                @endif
+                            </div>
+
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                                 @foreach($get_news ?? [] as $item)
                                     <div class="card-refined rounded-2xl shadow-sm p-3 sm:p-4 overflow-hidden" style="border-color: var(--outline-variant);">
@@ -224,18 +226,18 @@
                                                     <div class="flex flex-wrap gap-1.5 sm:gap-2">
                                                         @if(Route::has('admin.news.edit'))
                                                             <a href="{{ route('admin.news.edit', $item->id) }}"
-                                                               class="inline-flex items-center gap-1 px-2 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition"><i class="fas fa-pen-square text-xs"></i> Edit</a>
+                                                               class="inline-flex items-center gap-1 px-2 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition">
+                                                                <i class="fas fa-pen-square text-xs"></i> Edit
+                                                            </a>
                                                         @endif
                                                         @if(Route::has('admin.news.destroy'))
-                                                            <form action="{{ route('admin.news.destroy', $item->id) }}" method="POST" class="inline"
-                                                                  onsubmit="return confirm('Are you sure you want to delete this news?');">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit"
-                                                                        class="inline-flex items-center gap-1 px-2 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-red-500/10 text-red-600 hover:bg-red-500/20 transition">
-                                                                    <i class="fas fa-trash-alt text-xs"></i> Delete
-                                                                </button>
-                                                            </form>
+                                                            <button type="button"
+                                                                    class="news-delete-btn inline-flex items-center gap-1 px-2 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-red-500/10 text-red-600 hover:bg-red-500/20 transition"
+                                                                    data-news-id="{{ $item->id }}"
+                                                                    data-news-title="{{ e($item->title ?? '') }}"
+                                                                    data-delete-url="{{ route('admin.news.destroy', $item->id) }}">
+                                                                <i class="fas fa-trash-alt text-xs"></i> Delete
+                                                            </button>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -252,4 +254,111 @@
             </div>
         </div>
     </main>
+
+    @if(!empty($get_news))
+        <div id="dashboard-news-delete-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="dashboard-news-delete-modal-title">
+            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="dashboard-news-delete-modal" aria-hidden="true"></div>
+            <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+                <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
+                    <h3 id="dashboard-news-delete-modal-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);">Delete announcement</h3>
+                    <p id="dashboard-news-delete-modal-message" class="text-sm mb-6" style="color: var(--on-surface-variant);">
+                        Are you sure you want to delete this announcement? This action cannot be undone.
+                    </p>
+                    <div class="flex flex-col-reverse sm:flex-row justify-end gap-2">
+                        <button type="button" class="btn-secondary px-4 py-2.5 rounded-full text-sm w-full sm:w-auto" data-close="dashboard-news-delete-modal">Cancel</button>
+                        <button type="button" id="dashboard-news-delete-modal-confirm" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium w-full sm:w-auto transition-opacity hover:opacity-95" style="background: var(--error-container); color: var(--on-error-container);">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @push('scripts')
+            <script>
+                (function() {
+                    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                    const csrf = csrfMeta ? csrfMeta.getAttribute('content') : null;
+                    const deleteModal = document.getElementById('dashboard-news-delete-modal');
+                    const deleteModalTitle = document.getElementById('dashboard-news-delete-modal-title');
+                    const deleteModalMessage = document.getElementById('dashboard-news-delete-modal-message');
+                    const deleteModalConfirm = document.getElementById('dashboard-news-delete-modal-confirm');
+                    let pendingDeleteUrl = null;
+
+                    function openDeleteModal(title, url) {
+                        pendingDeleteUrl = url;
+
+                        if (deleteModalTitle) {
+                            deleteModalTitle.textContent = 'Delete announcement';
+                        }
+
+                        const displayTitle = title && title.trim() !== '' ? '"' + title + '"' : 'this announcement';
+                        if (deleteModalMessage) {
+                            deleteModalMessage.textContent = 'Are you sure you want to delete ' + displayTitle + '? This action cannot be undone.';
+                        }
+
+                        if (deleteModal) deleteModal.classList.remove('hidden');
+                    }
+
+                    function closeDeleteModal() {
+                        if (deleteModal) deleteModal.classList.add('hidden');
+                        pendingDeleteUrl = null;
+                    }
+
+                    document.querySelectorAll('[data-close="dashboard-news-delete-modal"]').forEach(function(el) {
+                        el.addEventListener('click', closeDeleteModal);
+                    });
+
+                    if (deleteModalConfirm) {
+                        deleteModalConfirm.addEventListener('click', function() {
+                            if (!pendingDeleteUrl) return;
+                            const btn = this;
+                            if (typeof setButtonLoading === 'function') setButtonLoading(btn, true);
+
+                            const body = new URLSearchParams();
+                            body.append('_method', 'DELETE');
+                            if (csrf) body.append('_token', csrf);
+
+                            fetch(pendingDeleteUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                },
+                                body: body
+                            })
+                            .then(function(r) { return r.json().then(function(data) { return { ok: r.ok, status: r.status, data: data }; }); })
+                            .then(function(res) {
+                                closeDeleteModal();
+                                if (res.ok && res.data && res.data.status === 'success') {
+                                    if (typeof flashSuccess === 'function') flashSuccess(res.data.message || 'Announcement deleted.');
+                                    setTimeout(function() {
+                                        window.location.href = res.data.redirect || '{{ route('admin.dashboard') }}';
+                                    }, 2800);
+                                } else if (typeof flashError === 'function') {
+                                    const msg = res.data && res.data.message ? (Array.isArray(res.data.message) ? res.data.message.join(' ') : res.data.message) : 'Could not delete announcement.';
+                                    flashError(msg);
+                                }
+                            })
+                            .catch(function() {
+                                if (typeof flashError === 'function') flashError('An error occurred. Please try again.');
+                                closeDeleteModal();
+                            })
+                            .finally(function() {
+                                if (typeof setButtonLoading === 'function') setButtonLoading(btn, false);
+                            });
+                        });
+                    }
+
+                    document.querySelectorAll('.news-delete-btn').forEach(function(btn) {
+                        btn.addEventListener('click', function() {
+                            const title = this.getAttribute('data-news-title') || '';
+                            const url = this.getAttribute('data-delete-url');
+                            if (url) openDeleteModal(title, url);
+                        });
+                    });
+                })();
+            </script>
+        @endpush
+    @endif
 @endsection

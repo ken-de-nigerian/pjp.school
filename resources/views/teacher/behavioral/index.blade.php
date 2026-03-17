@@ -14,7 +14,7 @@
         @foreach($classList as $c)
             <li class="px-4 py-3 flex justify-between items-center">
                 <span>{{ $c['class_name'] ?? '' }}</span>
-                <a href="{{ route('teacher.behavioral.take-behavioral', ['class' => $c['class_name'], 'term' => $settings['term'] ?? '', 'session' => $settings['session'] ?? '', 'segment' => $settings['segment'] ?? 'First']) }}" class="text-indigo-600 hover:underline">Take behavioural</a>
+                <a href="{{ route('teacher.behavioral.take-behavioral', ['class' => $c['class_name'], 'term' => $settings['term'] ?? '', 'session' => $settings['session'] ?? '']) }}" class="hover:underline" style="color: var(--primary);">Take behavioural</a>
             </li>
         @endforeach
     </ul>

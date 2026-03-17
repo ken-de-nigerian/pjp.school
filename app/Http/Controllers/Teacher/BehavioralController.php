@@ -30,16 +30,15 @@ class BehavioralController extends Controller
         ]);
     }
 
-    /** GET teacher/behavioral/take-behavioral?class=&term=&session=&segment= — form. */
+    /** GET teacher/behavioral/take-behavioral?class=&term=&session= — form. */
     public function takeBehavioral(Request $request): View|\Illuminate\Http\RedirectResponse
     {
         $class = $request->query('class');
         $term = $request->query('term');
         $session = $request->query('session');
-        $segment = $request->query('segment');
 
-        if (! $class || ! $term || ! $session || ! $segment) {
-            return redirect()->route('teacher.behavioral.index')->with('error', 'Missing class, term, session or segment.');
+        if (! $class || ! $term || ! $session) {
+            return redirect()->route('teacher.behavioral.index')->with('error', 'Missing class, term or session.');
         }
 
         $students = $this->studentService->getStudentsByClass($class, 500)->items();
@@ -49,7 +48,6 @@ class BehavioralController extends Controller
             'class' => $class,
             'term' => $term,
             'session' => $session,
-            'segment' => $segment,
             'settings' => Setting::getCached(),
         ]);
     }
@@ -60,16 +58,15 @@ class BehavioralController extends Controller
         $class = $request->query('class');
         $term = $request->query('term');
         $session = $request->query('session');
-        $segment = $request->query('segment');
 
-        if ($class && $term && $session && $segment) {
+        if ($class && $term && $session) {
+            $segment = config('school.no_segment', 'No Segment');
             $records = $this->behavioralService->getRecord($class, $term, $session, $segment);
             return view('teacher.behavioral.view-behavioral', [
                 'students' => $records,
                 'class' => $class,
                 'term' => $term,
                 'session' => $session,
-                'segment' => $segment,
                 'classList' => $this->studentService->getClassesWithCounts(),
                 'settings' => Setting::getCached(),
             ]);

@@ -50,27 +50,37 @@
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($students->isEmpty())
                     <div class="flex flex-col items-center justify-center min-h-[min(360px,50vh)] py-12 sm:py-16 px-4 sm:px-6">
-                        <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-1);">
+                        <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg">
                             @if(!empty($search))
-                                <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
-                                    <i class="fas fa-search text-4xl" aria-hidden="true"></i>
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
+                                        <i class="fas fa-search text-4xl" aria-hidden="true"></i>
+                                    </div>
+                                    <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No students found</h2>
+                                    <p class="text-sm font-normal mb-6 leading-relaxed" style="color: var(--on-surface-variant);">No graduates in <strong style="color: var(--on-surface);">{{ e($year) }}</strong> match your search. Try a different term or clear the search.</p>
+
+                                    <div class="flex justify-center">
+                                        <a href="{{ route('admin.graduated.view', ['year' => $year]) }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                                            <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                                            <span>Clear search</span>
+                                        </a>
+                                    </div>
                                 </div>
-                                <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No students found</h2>
-                                <p class="text-sm font-normal mb-6 leading-relaxed" style="color: var(--on-surface-variant);">No graduates in <strong style="color: var(--on-surface);">{{ e($year) }}</strong> match your search. Try a different term or clear the search.</p>
-                                <a href="{{ route('admin.graduated.view', ['year' => $year]) }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
-                                    <i class="fas fa-times text-sm" aria-hidden="true"></i>
-                                    Clear search
-                                </a>
                             @else
-                                <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
-                                    <i class="fas fa-graduation-cap text-4xl" aria-hidden="true"></i>
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
+                                        <i class="fas fa-graduation-cap text-4xl" aria-hidden="true"></i>
+                                    </div>
+                                    <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No graduates for this year</h2>
+                                    <p class="text-sm font-normal mb-6 leading-relaxed" style="color: var(--on-surface-variant);">There are no students recorded as graduated in <strong style="color: var(--on-surface);">{{ e($year) }}</strong>.</p>
+
+                                    <div class="flex justify-center">
+                                        <a href="{{ route('admin.graduated') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                                            <i class="fas fa-arrow-left text-sm" aria-hidden="true"></i>
+                                            <span>Back to Graduated</span>
+                                        </a>
+                                    </div>
                                 </div>
-                                <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No graduates for this year</h2>
-                                <p class="text-sm font-normal mb-6 leading-relaxed" style="color: var(--on-surface-variant);">There are no students recorded as graduated in <strong style="color: var(--on-surface);">{{ e($year) }}</strong>.</p>
-                                <a href="{{ route('admin.graduated') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
-                                    <i class="fas fa-arrow-left text-sm" aria-hidden="true"></i>
-                                    Back to Graduated
-                                </a>
                             @endif
                         </div>
                     </div>

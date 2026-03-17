@@ -9,7 +9,7 @@
                         Behavioural Analysis
                     </h1>
                     <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        Select a class to take or view behavioural analysis for the current term and segment.
+                        Select a class to take or view behavioural analysis for the current term.
                     </p>
                 </div>
 
@@ -38,7 +38,7 @@
                                 <div class="p-4 sm:p-5 pt-0 flex justify-center" style="border-top: 1px solid var(--outline-variant);">
                                     @php
                                         $raw = fn ($v) => str_replace(['%', '&', '=', ' '], ['%25', '%26', '%3D', '+'], (string) $v);
-                                        $takeUrl = route('admin.behavioral.take') . '?' . 'class=' . $raw($c['class_name']) . '&term=' . $raw($settings['term']) . '&session=' . $raw($settings['session']) . '&segment=' . $raw($settings['segment']);
+                                        $takeUrl = route('admin.behavioral.take') . '?' . 'class=' . $raw($c['class_name']) . '&term=' . $raw($settings['term']) . '&session=' . $raw($settings['session']);
                                     @endphp
                                     <a href="{{ $takeUrl }}" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px; margin-top: 10px;">
                                         <i class="fas fa-door-open text-sm" aria-hidden="true"></i>

@@ -52,19 +52,26 @@
                             <i class="fas fa-user-graduate text-3xl" aria-hidden="true"></i>
                         </div>
                         @if(!empty($search))
-                            <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No students found</h2>
-                            <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">No students who left in {{ e($year) }} match your search. Try a different term or clear the search.</p>
-                            <div class="w-full flex justify-center">
-                                <a href="{{ route('admin.left_school.view', ['year' => $year]) }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] max-w-[280px] w-full rounded-xl font-medium text-sm transition-opacity hover:opacity-90" style="border-radius: 12px;">Clear search</a>
+                            <div class="flex flex-col items-center justify-center">
+                                <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No students found</h2>
+                                <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">No students who left in {{ e($year) }} match your search. Try a different term or clear the search.</p>
+                                <div class="w-full flex justify-center">
+                                    <a href="{{ route('admin.left_school.view', ['year' => $year]) }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] max-w-[280px] w-full rounded-xl font-medium text-sm transition-opacity hover:opacity-90" style="border-radius: 12px;">
+                                        <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                                        Clear search
+                                    </a>
+                                </div>
                             </div>
                         @else
-                            <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No students for this year</h2>
-                            <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">There are no students recorded as having left school in {{ e($year) }}.</p>
-                            <div class="flex justify-center w-full">
-                                <a href="{{ route('admin.left_school') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px; width: fit-content;">
-                                    <i class="fas fa-arrow-left text-sm" aria-hidden="true"></i>
-                                    Back to Left School
-                                </a>
+                            <div class="flex flex-col items-center justify-center">
+                                <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No students for this year</h2>
+                                <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">There are no students recorded as having left school in {{ e($year) }}.</p>
+                                <div class="flex justify-center w-full">
+                                    <a href="{{ route('admin.left_school') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px; width: fit-content;">
+                                        <i class="fas fa-arrow-left text-sm" aria-hidden="true"></i>
+                                        Back to Left School
+                                    </a>
+                                </div>
                             </div>
                         @endif
                     </div>

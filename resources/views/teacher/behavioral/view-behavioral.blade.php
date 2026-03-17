@@ -10,7 +10,6 @@
         <div><label class="block text-sm text-gray-700">Class</label><select name="class" class="rounded border border-gray-300 px-2 py-1">@foreach($classList as $c)<option value="{{ $c['class_name'] ?? '' }}" {{ (isset($class) && ($c['class_name'] ?? '') === $class) ? 'selected' : '' }}>{{ $c['class_name'] ?? '' }}</option>@endforeach</select></div>
         <div><label class="block text-sm text-gray-700">Term</label><input type="text" name="term" value="{{ $term ?? $settings['term'] ?? '' }}" class="rounded border border-gray-300 px-2 py-1" placeholder="e.g. First Term"></div>
         <div><label class="block text-sm text-gray-700">Session</label><input type="text" name="session" value="{{ $session ?? $settings['session'] ?? '' }}" class="rounded border border-gray-300 px-2 py-1" placeholder="e.g. 2024/2025"></div>
-        <div><label class="block text-sm text-gray-700">Segment</label><input type="text" name="segment" value="{{ $segment ?? $settings['segment'] ?? 'First' }}" class="rounded border border-gray-300 px-2 py-1" placeholder="e.g. First"></div>
         <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">View</button>
     </form>
 </div>

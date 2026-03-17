@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * @property mixed $adminId
+ * @property mixed $user_type
+ * @property mixed $role
  */
 class Admin extends Authenticatable
 {

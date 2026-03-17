@@ -47,11 +47,6 @@
                     <span class="text-xs font-medium uppercase tracking-wider" style="color: var(--on-surface-variant);">Session</span>
                     <p class="text-sm font-semibold mt-0.5" style="color: var(--on-surface);">{{ $session }}</p>
                 </div>
-
-                <div class="rounded-xl px-4 py-2.5" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
-                    <span class="text-xs font-medium uppercase tracking-wider" style="color: var(--on-surface-variant);">Segment</span>
-                    <p class="text-sm font-semibold mt-0.5" style="color: var(--on-surface);">{{ $segment }}</p>
-                </div>
             </div>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
@@ -160,7 +155,6 @@
                     const classVal = @json($class);
                     const termVal = @json($term);
                     const sessionVal = @json($session);
-                    const segmentVal = @json($segment);
                     const fieldKeys = @json(array_keys($behaviorFields));
 
                     form.addEventListener('submit', async function(e) {
@@ -177,7 +171,6 @@
                                 class: classVal,
                                 term: termVal,
                                 session: sessionVal,
-                                segment: segmentVal,
                                 name: name,
                                 reg_number: regNumber
                             };

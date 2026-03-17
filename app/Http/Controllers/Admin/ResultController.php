@@ -11,7 +11,6 @@ use App\Http\Requests\EditResultRequest;
 use App\Http\Requests\RejectResultsRequest;
 use App\Http\Requests\PublishResultRequest;
 use App\Http\Requests\UploadResultsTermRequest;
-use App\Models\AcademicSession;
 use App\Models\Notification;
 use App\Models\SchoolClass;
 use App\Models\Student;
@@ -67,6 +66,9 @@ class ResultController extends Controller
         ]);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function uploadResults(UploadResultsTermRequest $request): JsonResponse
     {
         $results = $request->input('results');
@@ -198,8 +200,6 @@ class ResultController extends Controller
         $session = trim((string) $request->query('session', $settings['session'] ?? ''));
 
         $positions = collect();
-
-        $sessions = AcademicSession::query()->orderByDesc('year')->get();
         $classes = SchoolClass::query()->orderBy('class_name')->get();
 
         $subjectBreakdown = collect();
@@ -223,7 +223,6 @@ class ResultController extends Controller
             'positions' => $positions,
             'subjectBreakdown' => $subjectBreakdown,
             'studentsByReg' => $studentsByReg,
-            'sessions' => $sessions,
             'classes' => $classes,
             'class' => $class,
             'term' => $term,

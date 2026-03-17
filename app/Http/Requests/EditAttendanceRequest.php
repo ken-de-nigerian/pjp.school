@@ -19,7 +19,6 @@ class EditAttendanceRequest extends FormRequest
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
             'session' => 'required|string|max:50',
-            'segment' => 'required|string|max:50',
             'date' => 'required|string|max:50',
             'updates' => 'required|array|min:1',
             'updates.*.reg_number' => 'required|string|max:100',

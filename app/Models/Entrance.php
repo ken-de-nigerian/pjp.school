@@ -12,7 +12,7 @@ class Entrance extends Model
 
     protected $fillable = [];
 
-    /** Order by surname for list. */
+    /** Order by surname for a list. */
     public function scopeOrdered($query)
     {
         return $query->orderBy('candidates_surname', 'asc');

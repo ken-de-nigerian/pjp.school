@@ -7,18 +7,15 @@ namespace App\Services;
 use App\Models\News;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
+use Schema;
 
-/**
- * Replicates legacy Krak\Models\News: getNews, countAll, addNews, addNewsNoImage,
- * hasNewsId, getNewsById, updateNewsCoverImage, editNews. Plus delete (legacy Requests::deleteNews).
- */
 class NewsService
 {
     public function list(int $perPage = 6): LengthAwarePaginator
     {
         $query = News::query();
 
-        if (\Schema::hasColumn('news', 'created_at')) {
+        if (Schema::hasColumn('news', 'created_at')) {
             $query->orderByDesc('created_at');
         } else {
             $query->orderByDesc('date_added');
@@ -27,22 +24,16 @@ class NewsService
         return $query->paginate($perPage);
     }
 
-    public function countAll(): int
+    public function getById(int|string $id): ?News
     {
-        return News::query()->count();
+        return News::query()->where('id', $id)->first();
     }
 
-    public function getById(int|string $newsid): ?News
+    public function hasNewsId(int|string $id): bool
     {
-        return News::query()->where('newsid', $newsid)->first();
+        return News::query()->where('id', $id)->exists();
     }
 
-    public function hasNewsId(int|string $newsid): bool
-    {
-        return News::query()->where('newsid', $newsid)->exists();
-    }
-
-    /** Create with cover image (filename). Legacy: addNews. */
     public function createWithImage(array $data, string $author, string $imageFileName): News
     {
         $slug = Str::slug($data['title'] ?? '');
@@ -57,7 +48,6 @@ class NewsService
         ]);
     }
 
-    /** Create without cover image. Legacy: addNewsNoImage. */
     public function createNoImage(array $data, string $author): News
     {
         $slug = Str::slug($data['title'] ?? '');
@@ -72,11 +62,10 @@ class NewsService
         ]);
     }
 
-    /** Legacy: editNews. */
     public function update(int|string $newsid, array $data, string $author): int
     {
         $slug = Str::slug($data['title'] ?? '');
-        return (int) News::query()->where('newsid', $newsid)->update([
+        return News::query()->where('newsid', $newsid)->update([
             'title' => $data['title'],
             'slug' => $slug,
             'content' => $data['content'] ?? $data['message'] ?? '',
@@ -85,16 +74,14 @@ class NewsService
         ]);
     }
 
-    /** Legacy: updateNewsCoverImage. */
     public function updateCoverImage(int|string $newsid, string $fileName): int
     {
-        return (int) News::query()->where('newsid', $newsid)->update([
+        return News::query()->where('newsid', $newsid)->update([
             'imagelocation' => $fileName,
             'image' => $fileName,
         ]);
     }
 
-    /** Legacy: Requests::deleteNews (by newsid). */
     public function delete(int|string $newsid): int
     {
         return (int) News::query()->where('newsid', $newsid)->delete();

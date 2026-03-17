@@ -27,9 +27,9 @@
                     <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">View Behavioural</h1>
                     <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
                         @if($hasFilters)
-                            View records, edit or delete for the selected class, term, session and segment.
+                            View records, edit or delete for the selected class, term and session.
                         @else
-                            Filter by class, term, session, and segment to view uploaded behavioural records.
+                            Filter by class, term and session to view uploaded behavioural records.
                         @endif
                     </p>
                 </div>
@@ -55,6 +55,7 @@
                             </select>
                             <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
                         </div>
+
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="view-behavioral-term" class="form-label">Term</label>
                             <select id="view-behavioral-term" name="term" class="form-select w-full min-w-0">
@@ -64,7 +65,8 @@
                             </select>
                             <p id="term-error" class="form-error mt-1 text-sm {{ $errors->has('term') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('term') }}</p>
                         </div>
-                        <div class="col-span-12 sm:col-span-6 form-group min-w-0">
+
+                        <div class="col-span-12 sm:col-span-12 form-group min-w-0">
                             <label for="view-behavioral-session" class="form-label">Session</label>
                             <select id="view-behavioral-session" name="session" class="form-select w-full min-w-0">
                                 <option value="">Select session</option>
@@ -74,15 +76,6 @@
                                 @endforeach
                             </select>
                             <p id="session-error" class="form-error mt-1 text-sm {{ $errors->has('session') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('session') }}</p>
-                        </div>
-                        <div class="col-span-12 sm:col-span-6 form-group min-w-0">
-                            <label for="view-behavioral-segment" class="form-label">Segment</label>
-                            <select id="view-behavioral-segment" name="segment" class="form-select w-full min-w-0">
-                                <option value="First" {{ ($segment ?? $settings['segment'] ?? '') === 'First' ? 'selected' : '' }}>First Segment</option>
-                                <option value="Second" {{ ($segment ?? $settings['segment'] ?? '') === 'Second' ? 'selected' : '' }}>Second Segment</option>
-                                <option value="Third" {{ ($segment ?? $settings['segment'] ?? '') === 'Third' ? 'selected' : '' }}>Third Segment</option>
-                            </select>
-                            <p id="segment-error" class="form-error mt-1 text-sm {{ $errors->has('segment') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('segment') }}</p>
                         </div>
                     </div>
                     <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
@@ -105,7 +98,7 @@
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
                     <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No filters selected</h2>
-                    <p class="text-sm text-center max-w-sm" style="color: var(--on-surface-variant);">Choose class, term, session and segment in the form above, then click &quot;View behavioural&quot; to see records.</p>
+                    <p class="text-sm text-center max-w-sm" style="color: var(--on-surface-variant);">Choose class, term and session in the form above, then click &quot;View behavioural&quot; to see records.</p>
                 </div>
             @else
             <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-4 mb-6 min-w-0">
@@ -121,10 +114,6 @@
                     <span class="text-xs font-medium uppercase tracking-wider block truncate" style="color: var(--on-surface-variant);">Session</span>
                     <p class="text-sm font-semibold mt-0.5 truncate" style="color: var(--on-surface);" title="{{ e($session) }}">{{ $session }}</p>
                 </div>
-                <div class="rounded-xl px-3 py-2.5 sm:px-4 min-w-0 sm:max-w-[10rem] col-span-2 sm:col-span-1" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
-                    <span class="text-xs font-medium uppercase tracking-wider block truncate" style="color: var(--on-surface-variant);">Segment</span>
-                    <p class="text-sm font-semibold mt-0.5 truncate" style="color: var(--on-surface);" title="{{ e($segment) }}">{{ $segment }}</p>
-                </div>
             </div>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
@@ -134,7 +123,7 @@
                             <i class="fas fa-clipboard-list text-3xl" aria-hidden="true"></i>
                         </div>
                         <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No records for this selection</h2>
-                        <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">There are no behavioural records for {{ $class }}, {{ $term }}, {{ $session }}, {{ $segment }}. Take behavioural analysis first or choose another filter.</p>
+                        <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">There are no behavioural records for {{ $class }}, {{ $term }}, {{ $session }}. Take behavioural analysis first or choose another filter.</p>
                         <div class="flex justify-center">
                             <a href="{{ route('admin.behavioral.view') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
                                 <i class="fas fa-filter text-sm"></i>
@@ -147,7 +136,7 @@
                         <p class="text-sm font-medium" style="color: var(--on-surface-variant);">
                             <span id="behavioral-records-count">{{ $records->count() }}</span> record(s)
                         </p>
-                        <button type="button" id="behavioral-delete-all-btn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style="background: var(--error-container); color: var(--on-error-container); border: 1px solid var(--outline-variant);" title="Delete all records for this class, term, session and segment">
+                        <button type="button" id="behavioral-delete-all-btn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style="background: var(--error-container); color: var(--on-error-container); border: 1px solid var(--outline-variant);" title="Delete all records for this class, term and session">
                             <i class="fas fa-trash-alt text-xs"></i>
                             Delete all
                         </button>
@@ -290,13 +279,12 @@
                 const classVal = @json($class);
                 const termVal = @json($term);
                 const sessionVal = @json($session);
-                const segmentVal = @json($segment);
                 const fieldKeys = @json(array_keys($behaviorFields));
                 const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
                 function getPayload(row) {
                     const reg = row.dataset.reg || '';
-                    const payload = { reg_number: reg, class: classVal, term: termVal, session: sessionVal, segment: segmentVal };
+                    const payload = { reg_number: reg, class: classVal, term: termVal, session: sessionVal };
                     fieldKeys.forEach(function(key) {
                         const input = row.querySelector('.behavioral-record-field[data-field="' + key + '"]');
                         payload[key] = input ? (input.value || '').trim().slice(0, 255) : '';
@@ -430,8 +418,8 @@
                 document.getElementById('behavioral-delete-all-btn').addEventListener('click', function() {
                     openDeleteModal(
                         'Delete all records?',
-                        'Delete all behavioural records for this class, term, session and segment? This cannot be undone.',
-                        { class: classVal, term: termVal, session: sessionVal, segment: segmentVal },
+                        'Delete all behavioural records for this class, term and session? This cannot be undone.',
+                        { class: classVal, term: termVal, session: sessionVal },
                         true,
                         null
                     );
@@ -446,7 +434,7 @@
                     openDeleteModal(
                         'Delete record?',
                         'Delete behavioural record for ' + name + '? This cannot be undone.',
-                        { reg_number: row.dataset.reg || '', class: classVal, term: termVal, session: sessionVal, segment: segmentVal },
+                        { reg_number: row.dataset.reg || '', class: classVal, term: termVal, session: sessionVal },
                         false,
                         row
                     );

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AcademicSession;
 use App\Models\Setting;
 use App\Models\Teacher;
 use App\Services\ResultService;
@@ -32,7 +31,6 @@ class StatusController extends Controller
         if ($term === '' && isset($settings['term']) && $settings['term'] !== '') {
             $term = (string) $settings['term'];
         }
-        $viewSheet = $request->query('view') === 'sheet';
 
         $payload = [
             'getClasses' => $getClasses,
@@ -44,20 +42,6 @@ class StatusController extends Controller
         ];
 
         $hasFilters = $class !== '' && $term !== '' && $session !== '';
-
-        if ($hasFilters && $viewSheet) {
-            $segment = 'First';
-            $getResults = $this->resultService->getResultsByClass($class, $term, $session, $segment);
-
-            return view('admin.results.result-sheet', [
-                'getClasses' => $getClasses,
-                'getResults' => $getResults,
-                'class' => $class,
-                'term' => $term,
-                'session' => $session,
-                'segment' => $segment,
-            ]);
-        }
 
         if ($hasFilters) {
             $teachers = Teacher::query()->get()->filter(function (Teacher $t) use ($class): bool {

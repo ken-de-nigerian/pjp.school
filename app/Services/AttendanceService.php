@@ -6,6 +6,8 @@ namespace App\Services;
 
 use App\Models\AttendanceRecord;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class AttendanceService
 {
@@ -18,6 +20,9 @@ class AttendanceService
             ->get();
     }
 
+    /**
+     * @throws Throwable
+     */
     public function saveRecord(array $attendance): int
     {
         if (empty($attendance)) {
@@ -26,41 +31,43 @@ class AttendanceService
 
         $currentDateTime = now()->toDateTimeString();
         $dateForDay = now()->format('Y-m-d');
-        $affected = 0;
 
-        foreach ($attendance as $row) {
-            $classRollCall = strtolower($row['class_roll_call'] ?? '') === 'present' ? 1 : 2;
-            $updated = AttendanceRecord::query()
-                ->where('class', $row['class'])
-                ->where('term', $row['term'])
-                ->where('session', $row['session'])
-                ->where('segment', $row['segment'])
-                ->where('reg_number', $row['reg_number'])
-                ->where('date_added', 'like', $dateForDay . '%')
-                ->update([
-                    'class_roll_call' => $classRollCall,
-                    'name'            => $row['name'] ?? '',
-                    'date_added'     => $currentDateTime,
-                ]);
+        $noSegment = config('school.no_segment', 'No Segment');
 
-            if ($updated > 0) {
-                $affected += $updated;
-            } else {
-                AttendanceRecord::query()->insert([
-                    'class'           => $row['class'],
-                    'term'            => $row['term'],
-                    'session'         => $row['session'],
-                    'segment'         => $row['segment'],
-                    'name'            => $row['name'],
-                    'reg_number'      => $row['reg_number'],
-                    'class_roll_call' => $classRollCall,
-                    'date_added'      => $currentDateTime,
-                ]);
-                $affected += 1;
+        return (int) DB::transaction(function () use ($attendance, $dateForDay, $currentDateTime, $noSegment) {
+            $affected = 0;
+            foreach ($attendance as $row) {
+                $classRollCall = strtolower($row['class_roll_call'] ?? '') === 'present' ? 1 : 2;
+                $updated = AttendanceRecord::query()
+                    ->where('class', $row['class'])
+                    ->where('term', $row['term'])
+                    ->where('session', $row['session'])
+                    ->where('reg_number', $row['reg_number'])
+                    ->where('date_added', 'like', $dateForDay . '%')
+                    ->update([
+                        'class_roll_call' => $classRollCall,
+                        'name'            => $row['name'] ?? '',
+                        'date_added'      => $currentDateTime,
+                    ]);
+
+                if ($updated > 0) {
+                    $affected += $updated;
+                } else {
+                    AttendanceRecord::query()->insert([
+                        'class'           => $row['class'],
+                        'term'            => $row['term'],
+                        'session'         => $row['session'],
+                        'segment'         => $noSegment,
+                        'name'            => $row['name'] ?? '',
+                        'reg_number'      => $row['reg_number'],
+                        'class_roll_call' => $classRollCall,
+                        'date_added'      => $currentDateTime,
+                    ]);
+                    $affected += 1;
+                }
             }
-        }
-
-        return $affected;
+            return $affected;
+        });
     }
 
     public function editRecord(

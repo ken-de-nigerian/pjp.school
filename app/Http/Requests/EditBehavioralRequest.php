@@ -20,7 +20,6 @@ class EditBehavioralRequest extends FormRequest
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
             'session' => 'required|string|max:50',
-            'segment' => 'required|string|max:50',
             'neatness' => 'required|string|max:255',
             'music' => 'required|string|max:255',
             'sports' => 'required|string|max:255',

@@ -20,7 +20,6 @@ class StoreAttendanceRequest extends FormRequest
             'attendance.*.class' => 'required|string|max:100',
             'attendance.*.term' => 'required|string|max:50',
             'attendance.*.session' => 'required|string|max:50',
-            'attendance.*.segment' => 'required|string|max:50',
             'attendance.*.name' => 'required|string|max:255',
             'attendance.*.reg_number' => 'required|string|max:50',
             'attendance.*.class_roll_call' => 'required|string|max:50',

@@ -193,15 +193,6 @@
                                 <p id="session-error" class="form-error hidden" aria-live="polite"></p>
                             </div>
 
-                            <div class="form-group">
-                                <label for="segment" class="form-label">Current Segment</label>
-                                <select id="segment" name="segment" class="form-select">
-                                    <option value="First" {{ ($settings['segment'] ?? '') === 'First' ? 'selected' : '' }}>First Segment</option>
-                                    <option value="Second" {{ ($settings['segment'] ?? '') === 'Second' ? 'selected' : '' }}>Second Segment</option>
-                                    <option value="Third" {{ ($settings['segment'] ?? '') === 'Third' ? 'selected' : '' }}>Third Segment</option>
-                                </select>
-                                <p id="segment-error" class="form-error hidden" aria-live="polite"></p>
-                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0">
@@ -478,12 +469,11 @@
                     e.preventDefault();
                     const form = document.getElementById('config-form');
                     const btn = this;
-                    clearFieldErrors(['term', 'session', 'segment', 'closed', 'resumption']);
+                    clearFieldErrors(['term', 'session', 'closed', 'resumption']);
                     setButtonLoading(btn, true);
                     const payload = {
                         term: form.term.value,
                         session: form.session.value,
-                        segment: form.segment.value,
                         closed: form.closed.value,
                         resumption: form.resumption.value
                     };

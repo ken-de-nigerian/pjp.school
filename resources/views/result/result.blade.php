@@ -27,7 +27,6 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Segment</th>
                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">CA</th>
                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Exam</th>
                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
@@ -37,7 +36,6 @@
                 @foreach($getSegment as $row)
                     <tr>
                         <td class="px-4 py-2">{{ $row->subjects ?? '' }}</td>
-                        <td class="px-4 py-2">{{ $row->segment ?? '' }}</td>
                         <td class="px-4 py-2">{{ $row->ca ?? '' }}</td>
                         <td class="px-4 py-2">{{ $row->exam ?? '' }}</td>
                         <td class="px-4 py-2">{{ $row->total ?? '' }}</td>
@@ -51,7 +49,6 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Segment</th>
                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Neatness</th>
                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Punctuality</th>
                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Politeness</th>
@@ -60,7 +57,6 @@
             <tbody class="divide-y divide-gray-200">
                 @foreach($behavioral as $b)
                     <tr>
-                        <td class="px-4 py-2">{{ $b->segment ?? '' }}</td>
                         <td class="px-4 py-2">{{ $b->neatness ?? '' }}</td>
                         <td class="px-4 py-2">{{ $b->punctuality ?? '' }}</td>
                         <td class="px-4 py-2">{{ $b->politeness ?? '' }}</td>

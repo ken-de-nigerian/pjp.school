@@ -32,16 +32,15 @@ class AttendanceController extends Controller
         ]);
     }
 
-    /** GET teacher/attendance/take-attendance?class=&term=&session=&segment= — form to take attendance. */
+    /** GET teacher/attendance/take-attendance?class=&term=&session= — form to take attendance. */
     public function takeAttendance(Request $request): View|\Illuminate\Http\RedirectResponse
     {
         $class = $request->query('class');
         $term = $request->query('term');
         $session = $request->query('session');
-        $segment = $request->query('segment');
 
-        if (! $class || ! $term || ! $session || ! $segment) {
-            return redirect()->route('teacher.attendance.index')->with('error', 'Missing class, term, session or segment.');
+        if (! $class || ! $term || ! $session) {
+            return redirect()->route('teacher.attendance.index')->with('error', 'Missing class, term or session.');
         }
 
         $students = $this->studentService->getStudentsByClass($class, 500);
@@ -52,21 +51,20 @@ class AttendanceController extends Controller
             'class' => $class,
             'term' => $term,
             'session' => $session,
-            'segment' => $segment,
             'settings' => Setting::getCached(),
         ]);
     }
 
-    /** GET teacher/attendance/view-attendance — form to view by date/class/term/session/segment. */
+    /** GET teacher/attendance/view-attendance — form to view by date/class/term/session. */
     public function viewAttendance(Request $request): View
     {
         $date = $request->query('date');
         $class = $request->query('class');
         $term = $request->query('term');
         $session = $request->query('session');
-        $segment = $request->query('segment');
 
-        if ($date && $class && $term && $session && $segment) {
+        if ($date && $class && $term && $session) {
+            $segment = config('school.no_segment', 'No Segment');
             $records = $this->attendanceService->getRecord($date, $class, $term, $session, $segment);
             return view('teacher.attendance.view-attendance', [
                 'students' => $records,
@@ -74,7 +72,6 @@ class AttendanceController extends Controller
                 'class' => $class,
                 'term' => $term,
                 'session' => $session,
-                'segment' => $segment,
                 'classList' => $this->studentService->getClassesWithCounts(),
                 'settings' => Setting::getCached(),
             ]);

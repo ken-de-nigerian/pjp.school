@@ -33,13 +33,23 @@ class AttendanceRecord extends Model
     }
 
     /**
+     * Return null when a segment is the placeholder so the UI never displays "No Segment".
+     */
+    public function getSegmentAttribute(): null
+    {
+        return null;
+    }
+
+    /**
+     * Filter by class, term, session.
+     * Segment filter removed (post-migration); segment column is stored as config('school.no_segment').
+     *
      * @return Builder<static>
      */
-    public function scopeForClassTermSessionSegment(Builder $query, string $class, string $term, string $session, string $segment): Builder
+    public function scopeForClassTermSessionSegment(Builder $query, string $class, string $term, string $session): Builder
     {
         return $query->where('class', $class)
             ->where('term', $term)
-            ->where('session', $session)
-            ->where('segment', $segment);
+            ->where('session', $session);
     }
 }

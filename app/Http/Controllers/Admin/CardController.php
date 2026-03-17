@@ -6,47 +6,47 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GeneratePinsRequest;
-use App\Models\AcademicSession;
+use App\Models\Setting;
 use App\Services\NotificationService;
 use App\Services\PinService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Random\RandomException;
 
 class CardController extends Controller
 {
-    private const USED_PINS_PER_PAGE = 200;
+    private const USED_PINS_PER_PAGE = 50;
+
+    private const UNUSED_PINS_PER_PAGE = 50;
 
     public function __construct(
-        private PinService $pinService,
-        private NotificationService $notificationService
+        private readonly PinService $pinService,
+        private readonly NotificationService $notificationService
     ) {}
 
-    /** Legacy: admin/card — scratch card dashboard with counts */
-    public function index(Request $request): View
+    public function index(): View
     {
-        $settings = \App\Models\Setting::getCached();
+        $settings = Setting::getCached();
         $session = $settings['session'] ?? '';
 
         $unusedCount = $this->pinService->countUnused($session);
         $usedCount = $this->pinService->countUsed($session);
-        $sessions = AcademicSession::query()->orderBy('year')->get();
 
         return view('admin.card.index', [
             'unused_count' => $unusedCount,
             'used_count' => $usedCount,
-            'settings' => $settings,
-            'sessions' => $sessions,
+            'settings' => $settings
         ]);
     }
 
-    /** Legacy: admin/card/unused-pins */
     public function unusedPins(Request $request): View
     {
-        $settings = \App\Models\Setting::getCached();
+        $settings = Setting::getCached();
         $session = $settings['session'] ?? '';
+        $page = (int) $request->query('page', 1);
 
-        $unused = $this->pinService->getUnused($session);
+        $unused = $this->pinService->getUnusedPaginated($session, self::UNUSED_PINS_PER_PAGE, $page);
 
         return view('admin.card.unused-pins', [
             'unused' => $unused,
@@ -54,10 +54,21 @@ class CardController extends Controller
         ]);
     }
 
-    /** Legacy: admin/card/used-pins — paginated */
+    public function unusedPinsPdf(): View
+    {
+        $settings = Setting::getCached();
+        $session = $settings['session'] ?? '';
+        $unused = $this->pinService->getUnused($session);
+
+        return view('admin.card.unused-pins-pdf', [
+            'unused' => $unused,
+            'session' => $session,
+        ]);
+    }
+
     public function usedPins(Request $request): View
     {
-        $settings = \App\Models\Setting::getCached();
+        $settings = Setting::getCached();
         $session = $settings['session'] ?? '';
         $page = (int) $request->query('page', 1);
 
@@ -69,28 +80,20 @@ class CardController extends Controller
         ]);
     }
 
-    /** Legacy: admin/card/generate-pins — show form */
-    public function showGenerate(Request $request): View
-    {
-        $settings = \App\Models\Setting::getCached();
-        $sessions = AcademicSession::query()->orderBy('year')->get();
-
-        return view('admin.card.generate-pins', [
-            'settings' => $settings,
-            'sessions' => $sessions,
-        ]);
-    }
-
-    /** Legacy: admin/card/generate-pins POST — add pins */
+    /**
+     * @throws RandomException
+     */
     public function generatePins(GeneratePinsRequest $request): JsonResponse
     {
         $session = $request->validated('session');
-        $pins = $request->getPins();
+        $count = (int) $request->validated('count');
+
+        $pins = $this->pinService->generatePinValues($count);
 
         if (empty($pins)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'No pins were found on input. Please try again later.',
+                'message' => 'No pins to generate. Specify a count (1–500) or provide pins.',
             ], 422);
         }
 
@@ -100,14 +103,14 @@ class CardController extends Controller
             $adminName = $request->user('admin')->name ?? 'Admin';
             $this->notificationService->add(
                 'Pins Added',
-                "{$adminName} has generated new pins for {$session} Session"
+                "$adminName has generated new pins for $session Session"
             );
         }
 
         return response()->json([
             'status' => $inserted > 0 ? 'success' : 'error',
             'message' => $inserted > 0
-                ? "{$session} Session pins have been generated successfully."
+                ? "$session Session pins have been generated successfully."
                 : 'No pins generated. Please try again later.',
         ]);
     }

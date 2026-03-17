@@ -99,7 +99,7 @@ class BehavioralServiceTest extends TestCase
             'attentiveness' => 'A', 'punctuality' => 'A', 'health' => 'A', 'politeness' => 'A', 'date_added' => now(),
         ]);
 
-        $updated = $this->service->editRecord('1001', 'JSS 1', '1', '2024/2025', 'First', 'B', 'B', 'B', 'B', 'B', 'B', 'B');
+        $updated = $this->service->editRecord('1001', 'JSS 1', '1', '2024/2025', 'B', 'B', 'B', 'B', 'B', 'B', 'B');
         $this->assertSame(1, $updated);
         $row = Behavioral::query()->where('reg_number', '1001')->first();
         $this->assertSame('B', $row->neatness);

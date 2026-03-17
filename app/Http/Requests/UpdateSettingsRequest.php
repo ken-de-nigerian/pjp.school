@@ -21,7 +21,6 @@ class UpdateSettingsRequest extends FormRequest
             'address' => 'sometimes|string|max:1000',
             'term' => 'sometimes|string|max:50',
             'session' => 'sometimes|string|max:50',
-            'segment' => 'sometimes|string|max:50',
             'closed' => 'sometimes|string|max:255',
             'resumption' => 'sometimes|string|max:255',
             'timezone' => 'sometimes|string|max:100',

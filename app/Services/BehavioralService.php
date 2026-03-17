@@ -7,6 +7,8 @@ namespace App\Services;
 use App\Models\Behavioral;
 use App\Models\Student;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class BehavioralService
 {
@@ -44,17 +46,22 @@ class BehavioralService
         });
     }
 
+    /**
+     * @throws Throwable
+     */
     public function bulkInsert(array $behavioral): int
     {
         $rows = [];
         $currentDateTime = now()->toDateTimeString();
+
+        $noSegment = config('school.no_segment', 'No Segment');
 
         foreach ($behavioral as $row) {
             $rows[] = [
                 'class' => $row['class'] ?? '',
                 'term' => $row['term'] ?? '',
                 'session' => $row['session'] ?? '',
-                'segment' => $row['segment'] ?? '',
+                'segment' => $noSegment,
                 'name' => $row['name'] ?? '',
                 'reg_number' => $row['reg_number'] ?? '',
                 'neatness' => $row['neatness'] ?? '',
@@ -72,9 +79,11 @@ class BehavioralService
             return 0;
         }
 
-        foreach ($rows as $row) {
-            Behavioral::query()->create($row);
-        }
+        DB::transaction(function () use ($rows) {
+            foreach ($rows as $row) {
+                Behavioral::query()->create($row);
+            }
+        });
 
         return count($rows);
     }
@@ -84,7 +93,6 @@ class BehavioralService
         string $class,
         string $term,
         string $session,
-        string $segment,
         string $neatness,
         string $music,
         string $sports,
@@ -98,7 +106,6 @@ class BehavioralService
             ->where('class', $class)
             ->where('term', $term)
             ->where('session', $session)
-            ->where('segment', $segment)
             ->update([
                 'neatness' => $neatness,
                 'music' => $music,

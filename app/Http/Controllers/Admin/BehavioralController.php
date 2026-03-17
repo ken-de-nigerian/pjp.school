@@ -40,7 +40,6 @@ class BehavioralController extends Controller
             'class' => 'required',
             'term' => 'required',
             'session' => 'required',
-            'segment' => 'required',
         ]);
 
         $students = SchoolClass::query()->where([
@@ -51,7 +50,6 @@ class BehavioralController extends Controller
             'class' => $validated['class'],
             'term' => $validated['term'],
             'session' => $validated['session'],
-            'segment' => $validated['segment'],
             'students' => $students,
         ]);
     }
@@ -63,7 +61,7 @@ class BehavioralController extends Controller
         $class = $students[0]['class'] ?? '';
         $term = $students[0]['term'] ?? '';
         $session = $students[0]['session'] ?? '';
-        $segment = $students[0]['segment'] ?? '';
+        $segment = config('school.no_segment', 'No Segment');
 
         if ($this->behavioralService->hasBehavioralAnalysis($class, $term, $session, $segment)) {
             return response()->json([
@@ -85,7 +83,7 @@ class BehavioralController extends Controller
 
         Notification::query()->create([
             'title' => 'Behavioral Record Added',
-            'message' => $adminName . ' has added behavioral record for class: ' . $class . ' , ' . $term . ' , ' . $session . ' Session, and ' . $segment . ' Segment.',
+            'message' => $adminName . ' has added behavioral record for class: ' . $class . ' , ' . $term . ' , ' . $session . ' Session.',
             'date_added' => now()->format('Y-m-d H:i:s'),
         ]);
 
@@ -102,20 +100,18 @@ class BehavioralController extends Controller
         $class = trim((string) $request->query('class', ''));
         $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
         $session = trim((string) $request->query('session', $settings['session'] ?? ''));
-        $segment = trim((string) $request->query('segment', $settings['segment'] ?? 'First'));
-        $hasFilters = $class !== '' && $term !== '' && $session !== '' && $segment !== '';
+        $hasFilters = $class !== '' && $term !== '' && $session !== '';
 
         if ($hasFilters) {
             $validated = $request->validate([
                 'class' => 'required|string|max:100',
                 'term' => 'required|string|max:50',
                 'session' => 'required|string|max:50',
-                'segment' => 'required|string|max:50',
             ]);
             $class = $validated['class'];
             $term = $validated['term'];
             $session = $validated['session'];
-            $segment = $validated['segment'];
+            $segment = config('school.no_segment', 'No Segment');
             $records = $this->behavioralService->getRecord($class, $term, $session, $segment);
         } else {
             $records = collect();
@@ -129,7 +125,6 @@ class BehavioralController extends Controller
             'class' => $class,
             'term' => $term,
             'session' => $session,
-            'segment' => $segment,
         ]);
     }
 
@@ -139,14 +134,14 @@ class BehavioralController extends Controller
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
             'session' => 'required|string|max:50',
-            'segment' => 'required|string|max:50',
         ]);
 
+        $segment = config('school.no_segment', 'No Segment');
         $records = $this->behavioralService->getRecord(
             $validated['class'],
             $validated['term'],
             $validated['session'],
-            $validated['segment']
+            $segment
         );
 
         if ($request->expectsJson()) {
@@ -164,19 +159,18 @@ class BehavioralController extends Controller
             'class' => $validated['class'],
             'term' => $validated['term'],
             'session' => $validated['session'],
-            'segment' => $validated['segment'],
         ]);
     }
 
     public function edit(EditBehavioralRequest $request): JsonResponse
     {
         $v = $request->validated();
+        $segment = config('school.no_segment', 'No Segment');
         $updated = $this->behavioralService->editRecord(
             $v['reg_number'],
             $v['class'],
             $v['term'],
             $v['session'],
-            $v['segment'],
             $v['neatness'],
             $v['music'],
             $v['sports'],
@@ -191,7 +185,7 @@ class BehavioralController extends Controller
             $adminName = $admin ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Behavioral Record Edited',
-                'message' => $adminName . ' has edited the behavioral record for class: ' . $v['class'] . ', term: ' . $v['term'] . ', session: ' . $v['session'] . ', and segment: ' . $v['segment'],
+                'message' => $adminName . ' has edited the behavioral record for class: ' . $v['class'] . ', term: ' . $v['term'] . ', session: ' . $v['session'],
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
 
@@ -212,15 +206,14 @@ class BehavioralController extends Controller
         $class = $request->input('class');
         $term = $request->input('term');
         $session = $request->input('session');
-        $segment = $request->input('segment');
-        if (empty($class) || empty($term) || empty($session) || empty($segment)) {
+        if (empty($class) || empty($term) || empty($session)) {
             return response()->json(['status' => 'error', 'message' => 'Missing parameters.'], 422);
         }
         $classDecoded = urldecode((string) $class);
         $termDecoded = urldecode((string) $term);
         $sessionDecoded = urldecode((string) $session);
-        $segmentDecoded = urldecode((string) $segment);
-        $deleted = $this->behavioralService->deleteRecord($classDecoded, $termDecoded, $sessionDecoded, $segmentDecoded);
+        $segment = config('school.no_segment', 'No Segment');
+        $deleted = $this->behavioralService->deleteRecord($classDecoded, $termDecoded, $sessionDecoded, $segment);
         if ($deleted > 0) {
             $admin = $request->user('admin');
             if ($admin) {
@@ -248,15 +241,15 @@ class BehavioralController extends Controller
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
             'session' => 'required|string|max:50',
-            'segment' => 'required|string|max:50',
         ]);
 
+        $segment = config('school.no_segment', 'No Segment');
         $deleted = $this->behavioralService->deleteOneRecord(
             $validated['reg_number'],
             $validated['class'],
             $validated['term'],
             $validated['session'],
-            $validated['segment']
+            $segment
         );
 
         if ($deleted > 0) {

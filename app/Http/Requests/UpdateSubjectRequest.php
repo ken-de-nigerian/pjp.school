@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Models\Subject;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSubjectRequest extends FormRequest
@@ -15,7 +16,6 @@ class UpdateSubjectRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = (int) $this->route('id');
         return [
             'subject_name' => ['required', 'string', 'max:255'],
             'grade' => ['required', 'string', 'in:Junior,Senior'],
@@ -26,7 +26,7 @@ class UpdateSubjectRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $id = (int) $this->route('id');
-            $exists = \App\Models\Subject::query()
+            $exists = Subject::query()
                 ->where('subject_name', $this->input('subject_name'))
                 ->where('grade', $this->input('grade'))
                 ->where('id', '!=', $id)

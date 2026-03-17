@@ -42,7 +42,6 @@ class AttendanceController extends Controller
             'class' => 'required',
             'term' => 'required',
             'session' => 'required',
-            'segment' => 'required',
         ]);
 
         $students = SchoolClass::query()->where([
@@ -53,7 +52,6 @@ class AttendanceController extends Controller
             'class' => $validated['class'],
             'term' => $validated['term'],
             'session' => $validated['session'],
-            'segment' => $validated['segment'],
             'students' => $students,
         ]);
     }
@@ -70,11 +68,10 @@ class AttendanceController extends Controller
             $class = $first['class'] ?? '';
             $term = $first['term'] ?? '';
             $session = $first['session'] ?? '';
-            $segment = $first['segment'] ?? '';
 
             $this->notificationService->add(
                 'Attendance Record Added',
-                "$adminName has added attendance record for class: $class, term: $term, session: $session, and segment: $segment."
+                "$adminName has added attendance record for class: $class, term: $term, session: $session."
             );
         }
 
@@ -92,8 +89,7 @@ class AttendanceController extends Controller
         $class = trim((string) $request->query('class', ''));
         $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
         $session = trim((string) $request->query('session', $settings['session'] ?? ''));
-        $segment = trim((string) $request->query('segment', $settings['segment'] ?? 'First'));
-        $hasFilters = $date !== '' && $class !== '' && $term !== '' && $session !== '' && $segment !== '';
+        $hasFilters = $date !== '' && $class !== '' && $term !== '' && $session !== '';
 
         if ($hasFilters) {
             $validated = $request->validate([
@@ -101,13 +97,12 @@ class AttendanceController extends Controller
                 'class' => 'required|string|max:100',
                 'term' => 'required|string|max:50',
                 'session' => 'required|string|max:50',
-                'segment' => 'required|string|max:50',
             ]);
             $date = $validated['date'];
             $class = $validated['class'];
             $term = $validated['term'];
             $session = $validated['session'];
-            $segment = $validated['segment'];
+            $segment = config('school.no_segment', 'No Segment');
             $records = $this->attendanceService->getRecord($date, $class, $term, $session, $segment);
         } else {
             $records = collect();
@@ -122,7 +117,6 @@ class AttendanceController extends Controller
             'class' => $class,
             'term' => $term,
             'session' => $session,
-            'segment' => $segment,
         ]);
     }
 
@@ -133,15 +127,15 @@ class AttendanceController extends Controller
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
             'session' => 'required|string|max:50',
-            'segment' => 'required|string|max:50',
         ]);
 
+        $segment = config('school.no_segment', 'No Segment');
         $records = $this->attendanceService->getRecord(
             $validated['date'],
             $validated['class'],
             $validated['term'],
             $validated['session'],
-            $validated['segment']
+            $segment
         );
 
         if ($request->expectsJson()) {
@@ -160,19 +154,19 @@ class AttendanceController extends Controller
             'class' => $validated['class'],
             'term' => $validated['term'],
             'session' => $validated['session'],
-            'segment' => $validated['segment'],
         ]);
     }
 
     public function edit(EditAttendanceRequest $request): JsonResponse
     {
         $v = $request->validated();
+        $segment = config('school.no_segment', 'No Segment');
 
         $updated = $this->attendanceService->editRecord(
             $v['class'],
             $v['term'],
             $v['session'],
-            $v['segment'],
+            $segment,
             $v['date'],
             $v['updates']
         );
@@ -184,7 +178,6 @@ class AttendanceController extends Controller
                 $adminName . ' has edited ' . $updated . ' attendance record(s) for class: ' . $v['class']
                 . ', term: ' . $v['term']
                 . ', session: ' . $v['session']
-                . ', and segment: ' . $v['segment']
             );
         }
 
@@ -200,6 +193,7 @@ class AttendanceController extends Controller
     {
         $v = $request->validated();
         $regNumber = $v['reg_number'] ?? null;
+        $segment = config('school.no_segment', 'No Segment');
 
         if ($regNumber !== null && $regNumber !== '') {
             $deleted = $this->attendanceService->deleteOneRecord(
@@ -207,7 +201,7 @@ class AttendanceController extends Controller
                 $v['class'],
                 $v['term'],
                 $v['session'],
-                $v['segment'],
+                $segment,
                 $v['date']
             );
             $message = $deleted > 0
@@ -218,7 +212,7 @@ class AttendanceController extends Controller
                 $v['class'],
                 $v['term'],
                 $v['session'],
-                $v['segment'],
+                $segment,
                 $v['date']
             );
             if ($deleted > 0) {
@@ -226,7 +220,7 @@ class AttendanceController extends Controller
                 $this->notificationService->add(
                     'Attendance Record Deleted',
                     $adminName . ' has deleted attendance record for class: ' . $v['class']
-                        . ' , ' . $v['term'] . ' , ' . $v['session'] . ' Session, and ' . $v['segment'] . ' Segment.'
+                        . ' , ' . $v['term'] . ' , ' . $v['session'] . ' Session.'
                 );
             }
             $message = $deleted > 0

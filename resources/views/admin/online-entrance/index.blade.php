@@ -25,7 +25,7 @@
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($applicants->isEmpty())
-                    <div class="flex flex-col items-center justify-center py-16 px-6">
+                    <div class="flex flex-col items-center justify-center py-16 md:py-40 px-6">
                         <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                             <i class="fas fa-file-alt text-3xl" aria-hidden="true"></i>
                         </div>

@@ -12,9 +12,6 @@ use Illuminate\View\View;
 
 class OnlineEntranceController extends Controller
 {
-    /**
-     * List entrance examination applicants (Phase 4D).
-     */
     public function index(): View
     {
         Gate::authorize('viewAny', Entrance::class);
@@ -26,9 +23,6 @@ class OnlineEntranceController extends Controller
         ]);
     }
 
-    /**
-     * Print-friendly / PDF view of all applicants (open in new tab, then Print / Save as PDF).
-     */
     public function applicantsPdf(): View
     {
         Gate::authorize('viewAny', Entrance::class);
@@ -40,9 +34,6 @@ class OnlineEntranceController extends Controller
         ]);
     }
 
-    /**
-     * View a single entrance application (legacy parity: view application).
-     */
     public function show(int $id): View|RedirectResponse
     {
         $applicant = Entrance::query()->find($id);

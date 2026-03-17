@@ -30,7 +30,7 @@ class StaffController extends Controller
     {
         Gate::authorize('viewAny', Admin::class);
 
-        $perPage = config('school.pagination.staff', 15);
+        $perPage = 15;
         $roles = $this->staffService->getAllRoles();
         $searchQuery = $request->input('search', '');
 

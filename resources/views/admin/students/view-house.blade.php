@@ -62,25 +62,35 @@
                     <div class="flex flex-col items-center justify-center min-h-[min(360px,50vh)] py-12 sm:py-16 px-4 sm:px-6">
                         <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg">
                             @if(!empty($search) || !empty($classFilter))
-                                <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
-                                    <i class="fas fa-search text-4xl" aria-hidden="true"></i>
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
+                                        <i class="fas fa-search text-4xl" aria-hidden="true"></i>
+                                    </div>
+                                    <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No students found</h2>
+                                    <p class="text-sm font-normal mb-6 leading-relaxed" style="color: var(--on-surface-variant);">No students in <strong style="color: var(--on-surface);">{{ e($house) }}</strong> match your filters. Try a different search or clear filters.</p>
+
+                                    <div class="flex justify-center">
+                                        <a href="{{ route('admin.students.houses.view', ['house' => $house]) }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                                            <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                                            <span>Clear filters</span>
+                                        </a>
+                                    </div>
                                 </div>
-                                <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No students found</h2>
-                                <p class="text-sm font-normal mb-6 leading-relaxed" style="color: var(--on-surface-variant);">No students in <strong style="color: var(--on-surface);">{{ e($house) }}</strong> match your filters. Try a different search or clear filters.</p>
-                                <a href="{{ route('admin.students.houses.view', ['house' => $house]) }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
-                                    <i class="fas fa-times text-sm" aria-hidden="true"></i>
-                                    Clear filters
-                                </a>
                             @else
-                                <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
-                                    <i class="fas fa-users text-4xl" aria-hidden="true"></i>
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
+                                        <i class="fas fa-users text-4xl" aria-hidden="true"></i>
+                                    </div>
+                                    <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No students in this house</h2>
+                                    <p class="text-sm font-normal mb-6 leading-relaxed" style="color: var(--on-surface-variant);">There are no students assigned to <strong style="color: var(--on-surface);">{{ e($house) }}</strong>. Assign houses when adding or editing students.</p>
+
+                                    <div class="flex justify-center">
+                                        <a href="{{ route('admin.students.houses') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                                            <i class="fas fa-arrow-left text-sm" aria-hidden="true"></i>
+                                            <span>Back to Houses</span>
+                                        </a>
+                                    </div>
                                 </div>
-                                <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No students in this house</h2>
-                                <p class="text-sm font-normal mb-6 leading-relaxed" style="color: var(--on-surface-variant);">There are no students assigned to <strong style="color: var(--on-surface);">{{ e($house) }}</strong>. Assign houses when adding or editing students.</p>
-                                <a href="{{ route('admin.students.houses') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
-                                    <i class="fas fa-arrow-left text-sm" aria-hidden="true"></i>
-                                    Back to Houses
-                                </a>
                             @endif
                         </div>
                     </div>

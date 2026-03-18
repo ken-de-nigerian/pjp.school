@@ -26,12 +26,12 @@ final class NewsService
 
     public function getById(int|string $id): ?News
     {
-        return News::query()->where('newsid', $id)->first();
+        return News::query()->where('id', $id)->first();
     }
 
     public function hasNewsId(int|string $id): bool
     {
-        return News::query()->where('newsid', $id)->exists();
+        return News::query()->where('id', $id)->exists();
     }
 
     public function createWithImage(array $data, string $author, string $imageFileName): News
@@ -68,7 +68,7 @@ final class NewsService
     {
         $slug = Str::slug($data['title'] ?? '');
 
-        return News::query()->where('newsid', $id)->update([
+        return News::query()->where('id', $id)->update([
             'title' => $data['title'],
             'slug' => $slug,
             'content' => $data['content'],
@@ -79,13 +79,13 @@ final class NewsService
 
     public function updateCoverImage(int|string $id, string $fileName): int
     {
-        return News::query()->where('newsid', $id)->update([
+        return News::query()->where('id', $id)->update([
             'imagelocation' => $fileName,
         ]);
     }
 
     public function delete(int|string $id): int
     {
-        return (int) News::query()->where('newsid', $id)->delete();
+        return (int) News::query()->where('id', $id)->delete();
     }
 }

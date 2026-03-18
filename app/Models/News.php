@@ -14,12 +14,6 @@ class News extends Model
 
     protected $table = 'news';
 
-    protected $primaryKey = 'newsid';
-
-    public $incrementing = false;
-
-    protected $keyType = 'string';
-
     protected $fillable = [
         'title',
         'slug',

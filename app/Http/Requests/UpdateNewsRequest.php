@@ -16,7 +16,7 @@ class UpdateNewsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'newsId' => 'required|string|exists:news,newsid',
+            'newsId' => 'required|string|exists:news,id',
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:100',
             'content' => 'required|string',

@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Teacher;
 
+use App\Contracts\ResultServiceContract;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
-use App\Services\ResultService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PublishedController extends Controller
 {
     public function __construct(
-        private ResultService $resultService
+        private ResultServiceContract $resultService
     ) {}
 
     /** GET teacher/published — form or view results. */
@@ -31,6 +31,7 @@ class PublishedController extends Controller
             }
             $students = $this->resultService->getPublishedResults($class, $term, $session);
             $getSegment = $this->resultService->getSegmentsForPublished($class, $term, $session);
+
             return view('teacher.published.view-results', [
                 'students' => $students,
                 'getSegment' => $getSegment,

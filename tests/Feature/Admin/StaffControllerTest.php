@@ -15,6 +15,7 @@ class StaffControllerTest extends TestCase
     use RefreshDatabase;
 
     private Admin $admin;
+
     private Role $role;
 
     protected function setUp(): void
@@ -40,7 +41,7 @@ class StaffControllerTest extends TestCase
     {
         $response = $this->get(route('admin.staff.index'));
 
-        $response->assertRedirect(route('login'));
+        $response->assertUnauthorized();
     }
 
     public function test_admin_can_access_staff_index(): void
@@ -116,16 +117,16 @@ class StaffControllerTest extends TestCase
 
     public function test_admin_can_view_staff_show(): void
     {
-        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.staff.show', $this->admin));
+        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.staff.edit', $this->admin->adminId));
 
         $response->assertStatus(200);
-        $response->assertViewIs('admin.staff.show');
+        $response->assertViewIs('admin.staff.edit');
         $response->assertViewHas('staff', $this->admin);
     }
 
     public function test_show_returns_404_for_missing_staff(): void
     {
-        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.staff.show', 'nonexistent-id'));
+        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.staff.edit', 'nonexistent-id'));
 
         $response->assertStatus(404);
     }
@@ -140,7 +141,7 @@ class StaffControllerTest extends TestCase
             '_token' => csrf_token(),
         ]);
 
-        $response->assertRedirect(route('admin.staff.show', $this->admin->adminId));
+        $response->assertRedirect(route('admin.staff.edit', $this->admin->adminId));
         $this->admin->refresh();
         $this->assertSame('Updated Name', $this->admin->name);
         $this->assertSame('999', $this->admin->phone);
@@ -154,7 +155,7 @@ class StaffControllerTest extends TestCase
             '_token' => csrf_token(),
         ]);
 
-        $response->assertRedirect(route('admin.staff.show', $this->admin->adminId));
+        $response->assertRedirect(route('admin.staff.edit', $this->admin->adminId));
     }
 
     public function test_super_admin_can_delete_other_staff(): void

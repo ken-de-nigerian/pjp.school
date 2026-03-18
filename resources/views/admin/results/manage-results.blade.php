@@ -163,7 +163,14 @@
                                                     <div class="min-w-0 flex-1 md:min-w-0 md:flex-1">
                                                         <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Subject</span>
                                                         <p class="text-sm font-medium truncate" style="color: var(--on-surface);">{{ e($r->subjects) }}</p>
-                                                        <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ e($r->name) }} · {{ e($r->reg_number) }}</p>
+                                                        <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">
+                                                            @if($r->student && Route::has('admin.students.show'))
+                                                                <a href="{{ route('admin.students.show', $r->student) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ e($r->name) }}</a>
+                                                            @else
+                                                                {{ e($r->name) }}
+                                                            @endif
+                                                            · {{ e($r->reg_number) }}
+                                                        </p>
                                                     </div>
                                                 </div>
                                                 <div class="mt-3 pt-3 border-t md:border-t-0 md:mt-0 md:pt-0 flex flex-wrap items-baseline gap-x-4 gap-y-1 md:contents" style="border-color: var(--outline-variant);">

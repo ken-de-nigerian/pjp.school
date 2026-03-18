@@ -17,7 +17,7 @@ class ResultPublishServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new ResultPublishService;
+        $this->service = app(ResultPublishService::class);
     }
 
     public function test_publish_returns_error_when_no_students_in_class(): void

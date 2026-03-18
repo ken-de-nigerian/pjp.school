@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\NotificationServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreNewsRequest;
 use App\Http\Requests\UpdateNewsCoverImageRequest;
 use App\Http\Requests\UpdateNewsRequest;
 use App\Models\News;
 use App\Services\NewsService;
-use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,11 +23,12 @@ use Throwable;
 class NewsController extends Controller
 {
     private const COVER_WIDTH = 556;
+
     private const COVER_HEIGHT = 350;
 
     public function __construct(
         private readonly NewsService $newsService,
-        private readonly NotificationService $notificationService
+        private readonly NotificationServiceContract $notificationService
     ) {}
 
     public function index(): View
@@ -55,7 +56,6 @@ class NewsController extends Controller
 
         $author = $request->user('admin')->name ?? 'Admin';
         $data = $request->validated();
-        $data['content'] = $data['content'] ?? $data['message'] ?? '';
 
         try {
             if ($request->hasFile('photoimg') && $request->file('photoimg')->isValid()) {
@@ -68,7 +68,7 @@ class NewsController extends Controller
                 $news = $this->newsService->createNoImage($data, $author);
             }
 
-            $this->notificationService->add('News Added', $author . ' has added a news: ' . ($data['title'] ?? ''));
+            $this->notificationService->add('News Added', $author.' has added a news: '.($data['title'] ?? ''));
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -77,7 +77,7 @@ class NewsController extends Controller
                 ]);
             }
 
-            return redirect()->route('admin.news.show', $news->id)->with('success', 'News posted successfully.');
+            return redirect()->route('admin.news.show', $news)->with('success', 'News posted successfully.');
         } catch (Throwable $e) {
             if ($request->expectsJson()) {
                 return response()->json(['status' => 'error', 'message' => $e->getMessage()], 422);
@@ -87,17 +87,8 @@ class NewsController extends Controller
         }
     }
 
-    public function show(Request $request, int|string $id): View|RedirectResponse
+    public function show(News $news): View
     {
-        $news = $this->newsService->getById($id);
-        if ($news === null) {
-            if ($request->expectsJson()) {
-                abort(404);
-            }
-
-            return redirect()->route('admin.news.index')->with('error', 'Failed to fetch news details.');
-        }
-
         Gate::authorize('view', $news);
 
         return view('admin.news.show', [
@@ -105,42 +96,30 @@ class NewsController extends Controller
         ]);
     }
 
-    public function edit(int|string $id): View|RedirectResponse
+    public function edit(News $news): View
     {
-        $news = $this->newsService->getById($id);
-        if ($news === null) {
-            return redirect()->route('admin.news.index')->with('error', 'News not found.');
-        }
-
         Gate::authorize('update', $news);
 
         return view('admin.news.edit', ['news' => $news]);
     }
 
-    public function update(UpdateNewsRequest $request, int|string|null $id = null): JsonResponse|RedirectResponse
+    public function update(UpdateNewsRequest $request, News $news): JsonResponse|RedirectResponse
     {
-        $id = $id ?? $request->input('id');
-        $news = $this->newsService->getById($id);
-        if ($news === null) {
-            return $this->jsonError('News not found.', 404);
-        }
-
         Gate::authorize('update', $news);
 
         $author = $request->user('admin')->name ?? 'Admin';
         $data = $request->validated();
-        $data['message'] = $data['message'] ?? $data['content'] ?? '';
 
         try {
-            $updated = $this->newsService->update($id, $data, $author);
+            $updated = $this->newsService->update($news->getKey(), $data, $author);
             if ($updated > 0) {
-                $this->notificationService->add('News Edited', $author . ' has edited a news: ' . ($data['title'] ?? ''));
+                $this->notificationService->add('News Edited', $author.' has edited a news: '.($data['title'] ?? ''));
             }
             if ($request->hasFile('photoimg') && $request->file('photoimg')->isValid()) {
                 $fileName = $this->storeResizedCoverImage($request->file('photoimg'));
                 if ($fileName !== null) {
-                    $this->newsService->updateCoverImage($id, $fileName);
-                    $this->notificationService->add('News Cover Image Edited', $author . ' has edited a news cover image');
+                    $this->newsService->updateCoverImage($news->getKey(), $fileName);
+                    $this->notificationService->add('News Cover Image Edited', $author.' has edited a news cover image');
                 }
             }
 
@@ -151,7 +130,7 @@ class NewsController extends Controller
                 ]);
             }
 
-            return redirect()->route('admin.news.show', $id)->with('success', 'News updated successfully.');
+            return redirect()->route('admin.news.show', $news)->with('success', 'News updated successfully.');
         } catch (Throwable $e) {
             if ($request->expectsJson()) {
                 return response()->json(['status' => 'error', 'message' => $e->getMessage()], 422);
@@ -161,23 +140,14 @@ class NewsController extends Controller
         }
     }
 
-    public function destroy(Request $request, int|string $id): JsonResponse|RedirectResponse
+    public function destroy(Request $request, News $news): JsonResponse|RedirectResponse
     {
-        $news = $this->newsService->getById($id);
-        if ($news === null) {
-            if ($request->expectsJson()) {
-                return response()->json(['status' => 'error', 'message' => 'News not found.'], 404);
-            }
-
-            return redirect()->route('admin.news.index')->with('error', 'News not found.');
-        }
-
         Gate::authorize('delete', $news);
 
-        $deleted = $this->newsService->delete($id);
+        $deleted = $this->newsService->delete($news->getKey());
         if ($deleted > 0) {
             $adminName = $request->user('admin')->name ?? 'Admin';
-            $this->notificationService->add('News Deleted', $adminName . ' has deleted a news with ID: ' . $id);
+            $this->notificationService->add('News Deleted', $adminName.' has deleted a news: '.$news->title);
         }
 
         if ($request->expectsJson()) {
@@ -211,7 +181,7 @@ class NewsController extends Controller
 
         $this->newsService->updateCoverImage($id, $fileName);
         $adminName = $request->user('admin')->name ?? 'Admin';
-        $this->notificationService->add('News Cover Image Edited', $adminName . ' has edited a news cover image');
+        $this->notificationService->add('News Cover Image Edited', $adminName.' has edited a news cover image');
 
         return response()->json(['status' => 'success']);
     }
@@ -219,7 +189,7 @@ class NewsController extends Controller
     private function storeResizedCoverImage(UploadedFile $file): ?string
     {
         $ext = strtolower($file->getClientOriginalExtension());
-        if (!in_array($ext, ['jpg', 'jpeg', 'png'], true)) {
+        if (! in_array($ext, ['jpg', 'jpeg', 'png'], true)) {
             return null;
         }
 
@@ -238,12 +208,12 @@ class NewsController extends Controller
             return null;
         }
 
-        $fileName = uniqid('', true) . '.jpg';
+        $fileName = uniqid('', true).'.jpg';
         $dir = 'news';
         Storage::disk('public')->makeDirectory($dir);
-        $path = Storage::disk('public')->path($dir . '/' . $fileName);
+        $path = Storage::disk('public')->path($dir.'/'.$fileName);
 
-        if (!imagejpeg($resized, $path, 90)) {
+        if (! imagejpeg($resized, $path, 90)) {
             imagedestroy($resized);
 
             return null;

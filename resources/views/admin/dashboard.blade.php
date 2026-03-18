@@ -7,13 +7,10 @@
         <div id="page-home" class="page-content max-w-7xl mx-auto px-6 lg:px-8 py-8 lg:py-12">
             <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 lg:mb-8">
                 <div class="flex items-center gap-4 min-w-0 flex-1">
-                    <div class="dashboard-profile-avatar flex-shrink-0 overflow-hidden rounded-full border-2"
-                         style="width: 56px; height: 56px; border-color: var(--outline-variant); background: var(--surface-container-low);">
-                        <img class="h-full w-full object-cover"
-                             src="{{ asset('storage/staffs/' . ($layoutAdmin->profileImage ?? '')) }}"
-                             alt="{{ e($layoutAdmin->name ?? 'Admin') }}"
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($layoutAdmin->name ?? 'Admin') }}&size=112&background=bbdefb&color=0d47a1'; this.onerror=null;">
+                    <div class="dashboard-profile-avatar flex-shrink-0 overflow-hidden rounded-full border-2" style="width: 56px; height: 56px; border-color: var(--outline-variant); background: var(--surface-container-low);">
+                        <img class="h-full w-full object-cover" src="{{ asset('storage/staffs/' . ($layoutAdmin->profileImage ?? '')) }}" alt="{{ e($layoutAdmin->name ?? 'Admin') }}" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($layoutAdmin->name ?? 'Admin') }}&size=112&background=bbdefb&color=0d47a1'; this.onerror=null;">
                     </div>
+
                     <div class="min-w-0 flex-1 flex flex-col gap-0.5">
                         <p class="text-xs font-medium uppercase tracking-wide truncate" style="color: var(--text-secondary);">Welcome back</p>
                         <p class="text-base sm:text-lg font-semibold truncate" style="color: var(--on-surface);">{{ $layoutAdmin->name ?? 'Admin' }}</p>
@@ -24,8 +21,7 @@
                 @if(isset($role) && (($role->manage_scratch_card ?? 0) == 1 || ($role->bulk_sms ?? 0) == 1))
                     <div class="flex gap-2">
                         @if(($role->manage_scratch_card ?? 0) == 1 && Route::has('admin.card.index'))
-                            <a href="{{ route('admin.card.index') }}"
-                               class="btn-primary-tonal inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium">
+                            <a href="{{ route('admin.card.index') }}" class="btn-primary-tonal inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium">
                                 <i class="fas fa-ticket-alt" aria-hidden="true"></i>Scratch Card
                             </a>
                         @endif
@@ -42,32 +38,28 @@
 
             <!-- Top Quick Nav -->
             <div class="grid grid-cols-4 gap-3 lg:mb-8">
-                <a href="{{ route('admin.classes') }}"
-                   class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
+                <a href="{{ route('admin.classes') }}" class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
                     <div class="dashboard-quick-icon dashboard-quick-icon--blue w-12 h-12">
                         <i class="fas fa-chalkboard text-lg"></i>
                     </div>
                     <span class="font-medium text-sm" style="color: var(--text-primary);">Classes</span>
                 </a>
 
-                <a href="{{ route('admin.teachers.index') }}"
-                   class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
+                <a href="{{ route('admin.teachers.index') }}" class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
                     <div class="dashboard-quick-icon dashboard-quick-icon--blue w-12 h-12">
                         <i class="fas fa-user-tie text-lg"></i>
                     </div>
                     <span class="font-medium text-sm" style="color: var(--text-primary);">Teachers</span>
                 </a>
 
-                <a href="{{ route('admin.subjects.index') }}"
-                   class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
+                <a href="{{ route('admin.subjects.index') }}" class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
                     <div class="dashboard-quick-icon dashboard-quick-icon--blue w-12 h-12">
                         <i class="fas fa-book-open text-lg"></i>
                     </div>
                     <span class="font-medium text-sm" style="color: var(--text-primary);">Subjects</span>
                 </a>
 
-                <a href="{{ route('admin.upload-results') }}"
-                   class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
+                <a href="{{ route('admin.upload-results') }}" class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
                     <div class="dashboard-quick-icon dashboard-quick-icon--blue w-12 h-12">
                         <i class="fas fa-poll text-lg"></i>
                     </div>
@@ -158,8 +150,7 @@
                                 @endif
                             </div>
                         @else
-                            <div
-                                class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
                                 <div>
                                     <h2 class="text-xl lg:text-2xl font-bold mb-1" style="color: var(--text-primary);">
                                         Recent Announcements</h2>
@@ -183,11 +174,7 @@
                                             <div
                                                 class="w-full sm:w-1/4 flex-shrink-0 overflow-hidden rounded-xl aspect-video sm:aspect-square sm:min-w-[100px] max-sm:max-h-44">
                                                 @if($item->imagelocation ?? null)
-                                                    <img src="{{ asset('storage/news/'.$item->imagelocation) }}"
-                                                         alt="{{ e($item->title ?? '') }}"
-                                                         class="w-full h-full object-cover object-center"
-                                                         loading="lazy"
-                                                         onerror="this.src='{{ asset('storage/news/default.png') }}'; this.onerror=null;">
+                                                    <img src="{{ asset('storage/news/'.$item->imagelocation) }}" alt="{{ e($item->title ?? '') }}" class="w-full h-full object-cover object-center" loading="lazy" onerror="this.src='{{ asset('storage/news/default.png') }}'; this.onerror=null;">
                                                 @else
                                                     <div class="news-placeholder-bg w-full h-full rounded-xl flex items-center justify-center dashboard-stat-icon dashboard-stat-icon--blue">
                                                         <i class="fas fa-bullhorn text-xl sm:text-2xl"></i>
@@ -198,10 +185,8 @@
                                             <!-- Card body -->
                                             <div class="flex-1 min-w-0 flex flex-col relative">
                                                 <!-- Title -->
-                                                <h5 class="font-semibold mb-0 text-sm sm:text-base line-clamp-2"
-                                                    style="color: var(--text-primary);">
-                                                    <a href="{{ route('admin.news.show', $item->id) }}"
-                                                       class="hover:underline">{{ e($item->title ?? '') }}</a>
+                                                <h5 class="font-semibold mb-0 text-sm sm:text-base line-clamp-2" style="color: var(--text-primary);">
+                                                    <a href="{{ route('admin.news.show', $item) }}" class="hover:underline">{{ e($item->title ?? '') }}</a>
                                                 </h5>
 
                                                 @if(!empty($item->category))
@@ -225,17 +210,13 @@
                                                     </div>
                                                     <div class="flex flex-wrap gap-1.5 sm:gap-2">
                                                         @if(Route::has('admin.news.edit'))
-                                                            <a href="{{ route('admin.news.edit', $item->id) }}"
+                                                            <a href="{{ route('admin.news.edit', $item) }}"
                                                                class="inline-flex items-center gap-1 px-2 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition">
                                                                 <i class="fas fa-pen-square text-xs"></i> Edit
                                                             </a>
                                                         @endif
                                                         @if(Route::has('admin.news.destroy'))
-                                                            <button type="button"
-                                                                    class="news-delete-btn inline-flex items-center gap-1 px-2 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-red-500/10 text-red-600 hover:bg-red-500/20 transition"
-                                                                    data-news-id="{{ $item->id }}"
-                                                                    data-news-title="{{ e($item->title ?? '') }}"
-                                                                    data-delete-url="{{ route('admin.news.destroy', $item->id) }}">
+                                                            <button type="button" class="news-delete-btn inline-flex items-center gap-1 px-2 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-red-500/10 text-red-600 hover:bg-red-500/20 transition" data-news-id="{{ $item->id }}" data-news-title="{{ e($item->title ?? '') }}" data-delete-url="{{ route('admin.news.destroy', $item) }}">
                                                                 <i class="fas fa-trash-alt text-xs"></i> Delete
                                                             </button>
                                                         @endif

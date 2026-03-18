@@ -79,7 +79,7 @@
                                     </button>
                                     @endcan
                                     @can('delete', $subject)
-                                    <form id="subject-delete-form-{{ $subject->id }}" action="{{ route('admin.subjects.destroy', $subject->id) }}" method="POST" class="flex flex-1 md:flex-initial min-w-0">
+                                    <form id="subject-delete-form-{{ $subject->id }}" action="{{ route('admin.subjects.destroy', $subject) }}" method="POST" class="flex flex-1 md:flex-initial min-w-0">
                                         @csrf
                                         @method('DELETE')
                                         <button type="button" class="subject-delete-btn w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90 min-h-[2.75rem] md:min-h-0 whitespace-nowrap" style="background: var(--error-container); color: var(--on-error-container);" data-form-id="subject-delete-form-{{ $subject->id }}" data-subject-name="{{ e($subject->subject_name) }}">

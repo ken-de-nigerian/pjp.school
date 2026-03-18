@@ -79,7 +79,7 @@
 
                                         <div class="flex-1 min-w-0 flex flex-col relative">
                                             <h5 class="font-semibold mb-0 text-sm sm:text-base line-clamp-2" style="color: var(--text-primary);">
-                                                <a href="{{ route('admin.news.show', $item->id) }}" class="hover:underline">
+                                                <a href="{{ route('admin.news.show', $item) }}" class="hover:underline">
                                                     {{ e($item->title ?? '') }}
                                                 </a>
                                             </h5>
@@ -105,7 +105,7 @@
 
                                                 <div class="flex flex-wrap gap-1.5 sm:gap-2">
                                                     @if(Route::has('admin.news.edit'))
-                                                        <a href="{{ route('admin.news.edit', $item->id) }}"
+                                                        <a href="{{ route('admin.news.edit', $item) }}"
                                                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition">
                                                             <i class="fas fa-pen-square text-xs"></i>
                                                             Edit
@@ -117,7 +117,7 @@
                                                                 class="news-delete-btn inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-red-500/10 text-red-600 hover:bg-red-500/20 transition"
                                                                 data-news-id="{{ $item->id }}"
                                                                 data-news-title="{{ e($item->title ?? '') }}"
-                                                                data-delete-url="{{ route('admin.news.destroy', $item->id) }}">
+                                                                data-delete-url="{{ route('admin.news.destroy', $item) }}">
                                                             <i class="fas fa-trash-alt text-xs"></i>
                                                             Delete
                                                         </button>

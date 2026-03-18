@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class BehavioralService
+final class BehavioralService
 {
     public function hasBehavioralAnalysis(string $class, string $term, string $session, string $segment): bool
     {

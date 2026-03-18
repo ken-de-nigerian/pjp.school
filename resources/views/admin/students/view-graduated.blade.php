@@ -111,7 +111,7 @@
                                         <div class="min-w-0 flex-1 md:min-w-0 md:flex-1">
                                             <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Name</span>
                                             <p class="text-sm font-medium truncate" style="color: var(--on-surface);">
-                                                <a href="{{ route('admin.students.show', $s->id) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: '—' }}</a>
+                                                <a href="{{ route('admin.students.show', $s) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: '—' }}</a>
                                             </p>
                                             <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $s->reg_number ?? '' }}</p>
                                         </div>

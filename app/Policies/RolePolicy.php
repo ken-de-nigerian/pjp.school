@@ -11,26 +11,26 @@ class RolePolicy
 {
     public function viewAny(Admin $user): bool
     {
-        return true;
+        return $user->hasPermission('general_settings');
     }
 
     public function view(Admin $user, Role $role): bool
     {
-        return true;
+        return $user->hasPermission('general_settings');
     }
 
     public function create(Admin $user): bool
     {
-        return true;
+        return $user->hasPermission('general_settings');
     }
 
     public function update(Admin $user, Role $role): bool
     {
-        return true;
+        return $user->hasPermission('general_settings');
     }
 
     public function delete(Admin $user, Role $role): bool
     {
-        return true;
+        return $user->hasPermission('general_settings');
     }
 }

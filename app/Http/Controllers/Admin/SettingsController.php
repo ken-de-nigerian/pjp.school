@@ -18,6 +18,7 @@ class SettingsController extends Controller
     public function index(): View
     {
         $settings = Setting::getCached();
+
         return view('admin.settings.index', [
             'settings' => $settings,
         ]);

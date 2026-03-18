@@ -84,7 +84,7 @@ class ProfileController extends Controller
 
         $file = $request->file('photoimg');
         $ext = $file->getClientOriginalExtension();
-        $filename = Str::random(12) . '.' . strtolower($ext);
+        $filename = Str::random(12).'.'.strtolower($ext);
 
         $path = $file->storeAs('staffs', $filename, 'public');
         if (! $path) {

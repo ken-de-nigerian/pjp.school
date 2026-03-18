@@ -12,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Illuminate\Contracts\View\View as ViewContract;
 
 class ProfileController extends Controller
 {
@@ -101,7 +100,7 @@ class ProfileController extends Controller
 
         $file = $request->file('photoimg');
         $ext = $file->getClientOriginalExtension();
-        $filename = Str::random(12) . '.' . strtolower($ext);
+        $filename = Str::random(12).'.'.strtolower($ext);
 
         $path = $file->storeAs('teachers', $filename, 'public');
         if (! $path) {

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Models\Admin;
-use App\Models\Role;
 
 class AdminPolicy
 {
@@ -23,29 +22,28 @@ class AdminPolicy
 
     public function viewAny(Admin $user): bool
     {
-        return true;
+        return $user->hasPermission('manage_staffs');
     }
 
     public function view(Admin $user, Admin $target): bool
     {
-        return true;
+        return $user->hasPermission('manage_staffs');
     }
 
     public function create(Admin $user): bool
     {
-        return true;
+        return $user->hasPermission('manage_staffs');
     }
 
     /**
-     * Super admin (user_type 1) and Principal role can edit staff.
+     * Super admin (user_type 1) and admins with manage_staffs can edit staff.
      */
     public function update(Admin $user, Admin $target): bool
     {
         if ((int) $user->user_type === 1) {
             return true;
         }
-        $role = $user->relationLoaded('role') ? $user->role : Role::find($user->user_type);
 
-        return $role && $role->name === 'Principal';
+        return $user->hasPermission('manage_staffs');
     }
 }

@@ -4,15 +4,21 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Contracts\ResultRepositoryContract;
+use App\Contracts\ResultServiceContract;
+use App\Enums\ResultStatus;
 use App\Helpers\ClassArm;
 use App\Models\AnnualResult;
-use App\Models\Position;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class ResultService
+final class ResultService implements ResultServiceContract
 {
+    public function __construct(
+        private readonly ResultRepositoryContract $resultRepository
+    ) {}
+
     public function hasUploadedResults(string $class, string $term, string $session, string $subjects): bool
     {
         return AnnualResult::query()
@@ -34,6 +40,7 @@ class ResultService
         if ($row === null) {
             return ['uploaded' => false, 'status' => null];
         }
+
         return ['uploaded' => true, 'status' => (int) $row->status];
     }
 
@@ -145,7 +152,7 @@ class ResultService
 
         return AnnualResult::query()
             ->whereIn('id', $ids)
-            ->update(['status' => 1]);
+            ->update(['status' => ResultStatus::APPROVED->value]);
     }
 
     public function rejectByIds(array $ids): int
@@ -153,14 +160,15 @@ class ResultService
         if (empty($ids)) {
             return 0;
         }
+
         return AnnualResult::query()
             ->whereIn('id', $ids)
-            ->update(['status' => 3]);
+            ->update(['status' => ResultStatus::REJECTED->value]);
     }
 
     public function fetchResultsByName(string $name): Collection
     {
-        $like = '%' . addcslashes($name, '%_\\') . '%';
+        $like = '%'.addcslashes($name, '%_\\').'%';
 
         return AnnualResult::query()
             ->where(function ($q) use ($like) {
@@ -177,7 +185,7 @@ class ResultService
      */
     public function searchResults(string $param, ?string $class = null): Collection
     {
-        $like = '%' . addcslashes($param, '%_\\') . '%';
+        $like = '%'.addcslashes($param, '%_\\').'%';
         $query = AnnualResult::query()
             ->with('student')
             ->where(function ($q) use ($like) {
@@ -189,6 +197,7 @@ class ResultService
                 $q->where('class_arm', $class)->orWhere('class', $class);
             });
         }
+
         return $query
             ->orderBy('session', 'desc')
             ->orderBy('term')
@@ -214,6 +223,7 @@ class ResultService
             ->orderBy('segment')
             ->pluck('segment')
             ->map(fn ($s) => $s === null || $s === '' ? 'No segment' : $s);
+
         return $segments->unique()->values();
     }
 
@@ -229,72 +239,36 @@ class ResultService
 
     public function hasPublishedResults(string $class, string $term, string $session): bool
     {
-        return Position::query()
-            ->where('class', $class)
-            ->where('term', $term)
-            ->where('session', $session)
-            ->exists();
+        return $this->resultRepository->hasPublishedResults($class, $term, $session);
     }
 
     public function getPublishedResults(string $class, string $term, string $session): Collection
     {
-        return Position::query()
-            ->where('class', $class)
-            ->where('term', $term)
-            ->where('session', $session)
-            ->orderBy('class_position')
-            ->get();
+        return $this->resultRepository->getPublishedResults($class, $term, $session);
     }
 
     public function getSegmentsForPublished(string $class, string $term, string $session): Collection
     {
-        return AnnualResult::query()
-            ->where('class_arm', $class)
-            ->where('term', $term)
-            ->where('session', $session)
-            ->distinct()
-            ->pluck('segment');
+        return $this->resultRepository->getSegmentsForPublished($class, $term, $session);
     }
 
     public function getSubjectBreakdownForPublished(string $class, string $term, string $session): Collection
     {
-        return AnnualResult::query()
-            ->forClassTermSession($class, $term, $session)
-            ->approved()
-            ->orderBy('subjects')
-            ->get()
-            ->groupBy('reg_number');
+        return $this->resultRepository->getSubjectBreakdownForPublished($class, $term, $session);
     }
 
     public function setPublishedLiveStatus(string $class, string $term, string $session, string $regNumber, int $live): int
     {
-        return Position::query()
-            ->where('class', $class)
-            ->where('term', $term)
-            ->where('session', $session)
-            ->where('reg_number', $regNumber)
-            ->update(['status' => $live]);
+        return $this->resultRepository->setPublishedLiveStatus($class, $term, $session, $regNumber, $live);
     }
 
     public function setPublishedLiveBulk(string $class, string $term, string $session, array $regNumbers, int $live): int
     {
-        if (empty($regNumbers)) {
-            return 0;
-        }
-        return Position::query()
-            ->where('class', $class)
-            ->where('term', $term)
-            ->where('session', $session)
-            ->whereIn('reg_number', $regNumbers)
-            ->update(['status' => $live]);
+        return $this->resultRepository->setPublishedLiveBulk($class, $term, $session, $regNumbers, $live);
     }
 
     public function deletePublishedResults(string $class, string $term, string $session): int
     {
-        return Position::query()
-            ->where('class', $class)
-            ->where('term', $term)
-            ->where('session', $session)
-            ->delete();
+        return $this->resultRepository->deletePublishedResults($class, $term, $session);
     }
 }

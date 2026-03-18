@@ -10,14 +10,18 @@ use App\Http\Requests\StoreBehavioralRequest;
 use App\Models\Notification;
 use App\Models\SchoolClass;
 use App\Models\Setting;
+use App\Models\Student;
 use App\Services\BehavioralService;
 use App\Services\StudentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Throwable;
 
 class BehavioralController extends Controller
 {
+    use AuthorizesAdminPermission;
+
     public function __construct(
         private readonly BehavioralService $behavioralService,
         private readonly StudentService $studentService
@@ -25,17 +29,19 @@ class BehavioralController extends Controller
 
     public function index(): View
     {
+        $this->authorizePermission('behavioural_analysis');
         $settings = Setting::getCached();
         $classesWithCounts = $this->studentService->getClassesWithCounts();
 
         return view('admin.behavioral.index', [
             'classes' => $classesWithCounts,
-            'settings' => $settings
+            'settings' => $settings,
         ]);
     }
 
     public function takeBehavioral(Request $request): View
     {
+        $this->authorizePermission('behavioural_analysis');
         $validated = $request->validate([
             'class' => 'required',
             'term' => 'required',
@@ -54,8 +60,12 @@ class BehavioralController extends Controller
         ]);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function save(StoreBehavioralRequest $request): JsonResponse
     {
+        $this->authorizePermission('behavioural_analysis');
         $students = $request->input('students');
 
         $class = $students[0]['class'] ?? '';
@@ -66,7 +76,7 @@ class BehavioralController extends Controller
         if ($this->behavioralService->hasBehavioralAnalysis($class, $term, $session, $segment)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Behavioral analysis for ' . $class . ' in term ' . $term . ' and session ' . $session . ' already exists',
+                'message' => 'Behavioral analysis for '.$class.' in term '.$term.' and session '.$session.' already exists',
             ]);
         }
 
@@ -74,7 +84,7 @@ class BehavioralController extends Controller
         if ($count !== count($students)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error adding behavioral analysis for ' . $class . '. Please try again later.',
+                'message' => 'Error adding behavioral analysis for '.$class.'. Please try again later.',
             ]);
         }
 
@@ -83,18 +93,19 @@ class BehavioralController extends Controller
 
         Notification::query()->create([
             'title' => 'Behavioral Record Added',
-            'message' => $adminName . ' has added behavioral record for class: ' . $class . ' , ' . $term . ' , ' . $session . ' Session.',
+            'message' => $adminName.' has added behavioral record for class: '.$class.' , '.$term.' , '.$session.' Session.',
             'date_added' => now()->format('Y-m-d H:i:s'),
         ]);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Behavioral analysis for ' . $class . ' has been added successfully.',
+            'message' => 'Behavioral analysis for '.$class.' has been added successfully.',
         ]);
     }
 
     public function viewBehavioral(Request $request): View
     {
+        $this->authorizePermission('view_uploaded_behavioural_analysis');
         $settings = Setting::getCached();
         $classes = SchoolClass::query()->orderBy('class_name')->get();
         $class = trim((string) $request->query('class', ''));
@@ -113,8 +124,13 @@ class BehavioralController extends Controller
             $session = $validated['session'];
             $segment = config('school.no_segment', 'No Segment');
             $records = $this->behavioralService->getRecord($class, $term, $session, $segment);
+            $regNumbers = $records->pluck('reg_number')->unique()->filter()->values();
+            $studentsByReg = $regNumbers->isNotEmpty()
+                ? Student::query()->whereIn('reg_number', $regNumbers->all())->get()->keyBy('reg_number')
+                : collect();
         } else {
             $records = collect();
+            $studentsByReg = collect();
         }
 
         return view('admin.behavioral.view-behavioral', [
@@ -122,6 +138,7 @@ class BehavioralController extends Controller
             'settings' => $settings,
             'hasFilters' => $hasFilters,
             'students' => $records,
+            'studentsByReg' => $studentsByReg,
             'class' => $class,
             'term' => $term,
             'session' => $session,
@@ -130,6 +147,7 @@ class BehavioralController extends Controller
 
     public function getRecord(Request $request): View|JsonResponse
     {
+        $this->authorizePermission('view_uploaded_behavioural_analysis');
         $validated = $request->validate([
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
@@ -150,12 +168,17 @@ class BehavioralController extends Controller
 
         $settings = Setting::getCached();
         $classes = SchoolClass::query()->orderBy('class_name')->get();
+        $regNumbers = $records->pluck('reg_number')->unique()->filter()->values();
+        $studentsByReg = $regNumbers->isNotEmpty()
+            ? Student::query()->whereIn('reg_number', $regNumbers->all())->get()->keyBy('reg_number')
+            : collect();
 
         return view('admin.behavioral.view-behavioral', [
             'classes' => $classes,
             'settings' => $settings,
             'hasFilters' => true,
             'students' => $records,
+            'studentsByReg' => $studentsByReg,
             'class' => $validated['class'],
             'term' => $validated['term'],
             'session' => $validated['session'],
@@ -164,8 +187,8 @@ class BehavioralController extends Controller
 
     public function edit(EditBehavioralRequest $request): JsonResponse
     {
+        $this->authorizePermission('view_uploaded_behavioural_analysis');
         $v = $request->validated();
-        $segment = config('school.no_segment', 'No Segment');
         $updated = $this->behavioralService->editRecord(
             $v['reg_number'],
             $v['class'],
@@ -185,7 +208,7 @@ class BehavioralController extends Controller
             $adminName = $admin ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Behavioral Record Edited',
-                'message' => $adminName . ' has edited the behavioral record for class: ' . $v['class'] . ', term: ' . $v['term'] . ', session: ' . $v['session'],
+                'message' => $adminName.' has edited the behavioral record for class: '.$v['class'].', term: '.$v['term'].', session: '.$v['session'],
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
 
@@ -203,6 +226,7 @@ class BehavioralController extends Controller
 
     public function destroyByRequest(Request $request): JsonResponse
     {
+        $this->authorizePermission('view_uploaded_behavioural_analysis');
         $class = $request->input('class');
         $term = $request->input('term');
         $session = $request->input('session');
@@ -219,15 +243,17 @@ class BehavioralController extends Controller
             if ($admin) {
                 Notification::query()->create([
                     'title' => 'Behavioral Record Deleted',
-                    'message' => $admin->name . ' has deleted a behavioral record.',
+                    'message' => $admin->name.' has deleted a behavioral record.',
                     'date_added' => now()->format('Y-m-d H:i:s'),
                 ]);
             }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Behavioral record has been deleted successfully.',
             ]);
         }
+
         return response()->json([
             'status' => 'error',
             'message' => 'Unable to delete the record. Please try again.',
@@ -236,6 +262,7 @@ class BehavioralController extends Controller
 
     public function destroyOne(Request $request): JsonResponse
     {
+        $this->authorizePermission('view_uploaded_behavioural_analysis');
         $validated = $request->validate([
             'reg_number' => 'required|string|max:50',
             'class' => 'required|string|max:100',
@@ -257,10 +284,11 @@ class BehavioralController extends Controller
             if ($admin) {
                 Notification::query()->create([
                     'title' => 'Behavioral Record Deleted',
-                    'message' => $admin->name . ' has deleted a student\'s behavioural record.',
+                    'message' => $admin->name.' has deleted a student\'s behavioural record.',
                     'date_added' => now()->format('Y-m-d H:i:s'),
                 ]);
             }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Behavioural record has been deleted.',

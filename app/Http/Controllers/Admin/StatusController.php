@@ -4,23 +4,26 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\ResultServiceContract;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Models\Teacher;
-use App\Services\ResultService;
 use App\Services\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class StatusController extends Controller
 {
+    use AuthorizesAdminPermission;
+
     public function __construct(
-        private readonly ResultService  $resultService,
+        private readonly ResultServiceContract $resultService,
         private readonly StudentService $studentService,
     ) {}
 
     public function index(Request $request): View
     {
+        $this->authorizePermission('check_result_status');
         $settings = Setting::getCached();
         $getClasses = $this->studentService->getClassesArray();
 

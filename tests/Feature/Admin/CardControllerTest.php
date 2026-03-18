@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Admin;
 
 use App\Models\Admin;
-use App\Models\PinCode;
 use App\Models\Role;
 use App\Models\UnusedPin;
 use App\Models\UsedPin;
@@ -27,7 +26,6 @@ class CardControllerTest extends TestCase
             'name' => 'School',
             'session' => '2024/2025',
             'term' => '1',
-            'segment' => 'First',
         ]);
         $this->admin = Admin::query()->firstOrCreate(
             ['adminId' => 'card-admin'],
@@ -44,8 +42,7 @@ class CardControllerTest extends TestCase
     public function test_guest_cannot_access_card_index(): void
     {
         $response = $this->get(route('admin.card.index'));
-        $response->assertRedirect();
-        $this->assertTrue(str_contains($response->headers->get('Location') ?? '', 'login'));
+        $response->assertUnauthorized();
     }
 
     public function test_admin_can_see_card_index(): void
@@ -91,25 +88,24 @@ class CardControllerTest extends TestCase
     {
         $response = $this->actingAs($this->admin, 'admin')->postJson(route('admin.card.generate-pins.store'), [
             'session' => '2024/2025',
-            'pins' => ['NEWPIN1', 'NEWPIN2'],
+            'count' => 2,
             '_token' => csrf_token(),
         ]);
 
         $response->assertOk();
         $response->assertJsonPath('status', 'success');
-        $this->assertDatabaseHas('pin_code', ['pin' => 'NEWPIN1']);
-        $this->assertDatabaseHas('unused_pins', ['pins' => 'NEWPIN1']);
+        $this->assertDatabaseCount('unused_pins', 2);
     }
 
-    public function test_generate_rejects_empty_pins(): void
+    public function test_generate_rejects_invalid_count(): void
     {
         $response = $this->actingAs($this->admin, 'admin')->postJson(route('admin.card.generate-pins.store'), [
             'session' => '2024/2025',
-            'pins' => [],
+            'count' => 0,
             '_token' => csrf_token(),
         ]);
 
         $response->assertStatus(422);
-        $response->assertJsonPath('status', 'error');
+        $response->assertJsonValidationErrors(['count']);
     }
 }

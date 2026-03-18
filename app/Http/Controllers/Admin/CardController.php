@@ -4,29 +4,33 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\NotificationServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GeneratePinsRequest;
 use App\Models\Setting;
-use App\Services\NotificationService;
 use App\Services\PinService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Random\RandomException;
+use Throwable;
 
 class CardController extends Controller
 {
+    use AuthorizesAdminPermission;
+
     private const USED_PINS_PER_PAGE = 50;
 
     private const UNUSED_PINS_PER_PAGE = 50;
 
     public function __construct(
         private readonly PinService $pinService,
-        private readonly NotificationService $notificationService
+        private readonly NotificationServiceContract $notificationService
     ) {}
 
     public function index(): View
     {
+        $this->authorizePermission('manage_scratch_card');
         $settings = Setting::getCached();
         $session = $settings['session'] ?? '';
 
@@ -36,12 +40,13 @@ class CardController extends Controller
         return view('admin.card.index', [
             'unused_count' => $unusedCount,
             'used_count' => $usedCount,
-            'settings' => $settings
+            'settings' => $settings,
         ]);
     }
 
     public function unusedPins(Request $request): View
     {
+        $this->authorizePermission('manage_scratch_card');
         $settings = Setting::getCached();
         $session = $settings['session'] ?? '';
         $page = (int) $request->query('page', 1);
@@ -56,6 +61,7 @@ class CardController extends Controller
 
     public function unusedPinsPdf(): View
     {
+        $this->authorizePermission('manage_scratch_card');
         $settings = Setting::getCached();
         $session = $settings['session'] ?? '';
         $unused = $this->pinService->getUnused($session);
@@ -68,6 +74,7 @@ class CardController extends Controller
 
     public function usedPins(Request $request): View
     {
+        $this->authorizePermission('manage_scratch_card');
         $settings = Setting::getCached();
         $session = $settings['session'] ?? '';
         $page = (int) $request->query('page', 1);
@@ -81,10 +88,11 @@ class CardController extends Controller
     }
 
     /**
-     * @throws RandomException
+     * @throws RandomException|Throwable
      */
     public function generatePins(GeneratePinsRequest $request): JsonResponse
     {
+        $this->authorizePermission('manage_scratch_card');
         $session = $request->validated('session');
         $count = (int) $request->validated('count');
 

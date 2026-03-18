@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property mixed $id
+ * @property mixed $title
  */
 class News extends Model
 {
@@ -15,17 +16,21 @@ class News extends Model
 
     protected $primaryKey = 'newsid';
 
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $fillable = [
         'title',
         'slug',
         'content',
         'category',
         'author',
-        'image',
         'imagelocation',
         'date_added',
         'created_at',
         'updated_at',
+        'newsid',
     ];
 
     protected function casts(): array
@@ -40,6 +45,6 @@ class News extends Model
     /** Cover image: legacy uses imagelocation; fallback to image. */
     public function getCoverImageAttribute(): ?string
     {
-        return $this->imagelocation ?? $this->image ?? null;
+        return $this->imagelocation ?? null;
     }
 }

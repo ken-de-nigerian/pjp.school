@@ -45,6 +45,8 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::controller(ClassController::class)->group(function () {
         Route::get('/classes', 'index')->name('classes');
         Route::post('/students/add-class', 'addClass')->name('add.class');
+        Route::put('/students/classes/{schoolClass}', 'updateClass')->name('classes.update');
+        Route::delete('/students/classes/{schoolClass}', 'destroyClass')->name('classes.destroy');
     });
 
     /*
@@ -69,17 +71,17 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         Route::post('/students/promote', 'promote')->name('students.promote');
         Route::post('/students/demote', 'demote')->name('students.demote');
         Route::post('/students/upload-students-profile', 'uploadStudentsProfile')->name('students.upload-profile');
-        Route::get('/students/{id}', 'show')->name('students.show')->whereNumber('id');
-        Route::get('/students/{id}/edit', 'edit')->name('students.edit')->whereNumber('id');
-        Route::delete('/students/{id}', 'destroy')->name('students.destroy')->whereNumber('id');
-        Route::put('/students/{id}/account', 'updateAccount')->name('students.update.account')->whereNumber('id');
-        Route::put('/students/{id}/academic', 'updateAcademic')->name('students.update.academic')->whereNumber('id');
-        Route::put('/students/{id}/contact', 'updateContact')->name('students.update.contact')->whereNumber('id');
-        Route::put('/students/{id}/parents', 'updateParents')->name('students.update.parents')->whereNumber('id');
-        Route::put('/students/{id}/sponsors', 'updateSponsors')->name('students.update.sponsors')->whereNumber('id');
-        Route::put('/students/{id}/other', 'updateOther')->name('students.update.other')->whereNumber('id');
-        Route::put('/students/{id}/status', 'toggleStatus')->name('students.toggle.status')->whereNumber('id');
-        Route::put('/students/{id}/fee-status', 'toggleFee')->name('students.toggle.fee')->whereNumber('id');
+        Route::get('/students/{student}', 'show')->name('students.show');
+        Route::get('/students/{student}/edit', 'edit')->name('students.edit');
+        Route::delete('/students/{student}', 'destroy')->name('students.destroy');
+        Route::put('/students/{student}/account', 'updateAccount')->name('students.update.account');
+        Route::put('/students/{student}/academic', 'updateAcademic')->name('students.update.academic');
+        Route::put('/students/{student}/contact', 'updateContact')->name('students.update.contact');
+        Route::put('/students/{student}/parents', 'updateParents')->name('students.update.parents');
+        Route::put('/students/{student}/sponsors', 'updateSponsors')->name('students.update.sponsors');
+        Route::put('/students/{student}/other', 'updateOther')->name('students.update.other');
+        Route::put('/students/{student}/status', 'toggleStatus')->name('students.toggle.status');
+        Route::put('/students/{student}/fee-status', 'toggleFee')->name('students.toggle.fee');
     });
 
     /*
@@ -107,10 +109,10 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/news', 'index')->name('news.index');
         Route::get('/news/create', 'create')->name('news.create');
         Route::post('/news', 'store')->name('news.store');
-        Route::get('/news/{newsid}', 'show')->name('news.show')->where('newsid', '[a-zA-Z0-9_\-\.]+');
-        Route::get('/news/{newsid}/edit', 'edit')->name('news.edit')->where('newsid', '[a-zA-Z0-9_\-\.]+');
-        Route::put('/news/{newsid}', 'update')->name('news.update')->where('newsid', '[a-zA-Z0-9_\-\.]+');
-        Route::delete('/news/{newsid}', 'destroy')->name('news.destroy')->where('newsid', '[a-zA-Z0-9_\-\.]+');
+        Route::get('/news/{news}', 'show')->name('news.show');
+        Route::get('/news/{news}/edit', 'edit')->name('news.edit');
+        Route::put('/news/{news}', 'update')->name('news.update');
+        Route::delete('/news/{news}', 'destroy')->name('news.destroy');
         Route::post('/news/upload-cover-image', 'updateCoverImage')->name('news.upload-cover-image');
     });
 
@@ -141,9 +143,9 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/roles', 'index')->name('roles.index');
         Route::get('/roles/create', 'create')->name('roles.create');
         Route::post('/roles', 'store')->name('roles.store');
-        Route::get('/roles/{id}/edit', 'edit')->name('roles.edit')->whereNumber('id');
-        Route::put('/roles/{id}', 'update')->name('roles.update')->whereNumber('id');
-        Route::delete('/roles/{id}', 'destroy')->name('roles.destroy')->whereNumber('id');
+        Route::get('/roles/{role}/edit', 'edit')->name('roles.edit');
+        Route::put('/roles/{role}', 'update')->name('roles.update');
+        Route::delete('/roles/{role}', 'destroy')->name('roles.destroy');
     });
 
     /*
@@ -155,9 +157,9 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/subjects', 'index')->name('subjects.index');
         Route::get('/subjects/create', 'create')->name('subjects.create');
         Route::post('/subjects', 'store')->name('subjects.store');
-        Route::get('/subjects/{id}/edit', 'edit')->name('subjects.edit')->whereNumber('id');
-        Route::put('/subjects/{id}', 'update')->name('subjects.update')->whereNumber('id');
-        Route::delete('/subjects/{id}', 'destroy')->name('subjects.destroy')->whereNumber('id');
+        Route::get('/subjects/{subject}/edit', 'edit')->name('subjects.edit');
+        Route::put('/subjects/{subject}', 'update')->name('subjects.update');
+        Route::delete('/subjects/{subject}', 'destroy')->name('subjects.destroy');
         Route::get('/subjects/fetch-classes', 'fetchClasses')->name('subjects.fetch-classes');
         Route::post('/subjects/register-subjects', 'registerSubjects')->name('subjects.register-subjects');
         Route::get('/subjects/registered', 'registered')->name('subjects.registered');
@@ -171,7 +173,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::controller(OnlineEntranceController::class)->group(function () {
         Route::get('/online_entrance', 'index')->name('online_entrance.index');
         Route::get('/online_entrance/pdf', 'applicantsPdf')->name('online_entrance.pdf');
-        Route::get('/online_entrance/{id}', 'show')->name('online_entrance.show')->whereNumber('id');
+        Route::get('/online_entrance/{entrance}', 'show')->name('online_entrance.show');
     });
 
     /*
@@ -181,7 +183,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     */
     Route::controller(NotificationsController::class)->group(function () {
         Route::get('/notifications', 'index')->name('notifications.index');
-        Route::delete('/notifications/{notification}', 'destroy')->name('notifications.destroy')->whereNumber('notification');
+        Route::delete('/notifications/{notification}', 'destroy')->name('notifications.destroy');
         Route::delete('/notifications', 'destroyAll')->name('notifications.clear');
     });
 

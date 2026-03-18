@@ -8,6 +8,7 @@ use App\Models\News;
 use App\Models\Teacher;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 /**
@@ -39,12 +40,20 @@ class TeacherDashboardTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewHas('user');
         $response->assertViewHas('get_news');
-        $response->assertViewHas('totalItems');
+        $response->assertViewHas('news');
     }
 
     public function test_teacher_dashboard_shows_news_paginated(): void
     {
-        News::query()->create(['title' => 'News 1', 'content' => 'C1', 'date_added' => now()]);
+        News::query()->create([
+            'newsid' => (string) Str::uuid(),
+            'title' => 'News 1',
+            'content' => 'C1',
+            'slug' => 'news-1',
+            'category' => 'General',
+            'author' => 'Admin',
+            'imagelocation' => 'default.png',
+        ]);
         $teacher = Teacher::first();
 
         $response = $this->actingAs($teacher, 'teacher')->get(route('teacher.dashboard'));

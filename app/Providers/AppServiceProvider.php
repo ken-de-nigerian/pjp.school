@@ -2,7 +2,13 @@
 
 namespace App\Providers;
 
+use App\Contracts\NotificationServiceContract;
+use App\Contracts\ResultRepositoryContract;
+use App\Contracts\ResultServiceContract;
 use App\Models\Notification;
+use App\Repositories\ResultRepository;
+use App\Services\NotificationService;
+use App\Services\ResultService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -11,7 +17,9 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->bind(NotificationServiceContract::class, NotificationService::class);
+        $this->app->bind(ResultServiceContract::class, ResultService::class);
+        $this->app->bind(ResultRepositoryContract::class, ResultRepository::class);
     }
 
     public function boot(): void

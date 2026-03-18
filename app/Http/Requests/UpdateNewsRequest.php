@@ -16,19 +16,11 @@ class UpdateNewsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'newsId' => 'sometimes|nullable',
+            'newsId' => 'required|string|exists:news,newsid',
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:100',
-            'message' => 'required|string',
-            'content' => 'sometimes|string',
+            'content' => 'required|string',
             'photoimg' => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
         ];
-    }
-
-    protected function prepareForValidation(): void
-    {
-        if ($this->has('content') && !$this->has('message')) {
-            $this->merge(['message' => $this->input('content')]);
-        }
     }
 }

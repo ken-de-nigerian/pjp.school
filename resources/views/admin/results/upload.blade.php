@@ -179,7 +179,13 @@
                                             <div class="flex items-center gap-3 min-w-0 lg:py-1 lg:pr-2">
                                                 <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
                                                 <div class="flex flex-col justify-center min-w-0 flex-1">
-                                                    <p class="text-sm font-semibold break-words" style="color: var(--on-surface);">{{ $fullName ?: '—' }}</p>
+                                                    <p class="text-sm font-semibold break-words" style="color: var(--on-surface);">
+                                                        @if(Route::has('admin.students.show'))
+                                                            <a href="{{ route('admin.students.show', $s) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: '—' }}</a>
+                                                        @else
+                                                            {{ $fullName ?: '—' }}
+                                                        @endif
+                                                    </p>
                                                     <p class="text-xs truncate mt-0.5 tabular-nums" style="color: var(--on-surface-variant);">{{ e($s->reg_number ?? '') }}</p>
                                                 </div>
                                                 <input type="hidden" class="r-studentId" value="{{ $s->id }}">

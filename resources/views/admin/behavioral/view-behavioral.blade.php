@@ -160,6 +160,7 @@
                                         ? (str_starts_with($record->imagelocation, 'students/') ? asset('storage/' . $record->imagelocation) : asset('storage/students/' . $record->imagelocation))
                                         : asset('storage/students/default.png');
                                     $avatarInitial = $record->name ? mb_substr(trim($record->name), 0, 1) : 'S';
+                                    $studentForRecord = $studentsByReg->get($record->reg_number ?? '');
                                 @endphp
                                 <li class="behavioral-record-row border-b border-[var(--outline-variant)] last:border-b-0 min-w-0 w-full" style="background: var(--surface-container-lowest);" data-reg="{{ e($record->reg_number) }}" data-name="{{ e($record->name ?? '') }}">
                                     <div class="behavioral-view-mode flex flex-col lg:grid lg:grid-cols-behavioral-records gap-3 lg:gap-x-2 lg:gap-y-2 lg:items-stretch px-4 sm:px-6 py-4 lg:py-3 min-w-0">
@@ -167,7 +168,13 @@
                                             <span class="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-sm font-semibold lg:w-8 lg:h-8 lg:place-self-center" style="background: var(--primary-container); color: var(--on-primary-container);">{{ $index + 1 }}</span>
                                             <img src="{{ $avatarSrc }}" alt="" width="40" height="40" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2 lg:place-self-center" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
                                             <div class="flex flex-col justify-center min-w-0 flex-1 lg:flex-none lg:min-w-0 lg:py-1 lg:pr-2 overflow-hidden">
-                                                <p class="text-sm font-semibold truncate" style="color: var(--on-surface);" title="{{ e($record->name ?? '') }}">{{ e($record->name ?? '—') }}</p>
+                                                <p class="text-sm font-semibold truncate" style="color: var(--on-surface);" title="{{ e($record->name ?? '') }}">
+                                                    @if($studentForRecord && Route::has('admin.students.show'))
+                                                        <a href="{{ route('admin.students.show', $studentForRecord->id) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ e($record->name ?? '—') }}</a>
+                                                    @else
+                                                        {{ e($record->name ?? '—') }}
+                                                    @endif
+                                                </p>
                                                 <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);" title="{{ e($record->reg_number ?? '') }}">{{ e($record->reg_number ?? '') }}</p>
                                             </div>
                                         </div>

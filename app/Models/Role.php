@@ -7,6 +7,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property mixed $name
+ * @property mixed $id
+ */
 class Role extends Model
 {
     public $timestamps = false;
@@ -48,6 +52,7 @@ class Role extends Model
         foreach ($perms as $p) {
             $casts[$p] = 'integer';
         }
+
         return $casts;
     }
 

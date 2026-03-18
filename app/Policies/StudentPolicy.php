@@ -12,26 +12,46 @@ class StudentPolicy
 {
     public function update(Admin|Teacher $user, Student $student): bool
     {
-        return $user instanceof Admin || $user instanceof Teacher;
+        if ($user instanceof Teacher) {
+            return true;
+        }
+
+        return $user->hasPermission('manage_students');
     }
 
     public function delete(Admin|Teacher $user, Student $student): bool
     {
-        return $user instanceof Admin;
+        if ($user instanceof Teacher) {
+            return false;
+        }
+
+        return $user->hasPermission('manage_students');
     }
 
     public function viewAny(Admin|Teacher $user): bool
     {
-        return true;
+        if ($user instanceof Teacher) {
+            return true;
+        }
+
+        return $user->hasPermission('manage_students');
     }
 
     public function view(Admin|Teacher $user, Student $student): bool
     {
-        return true;
+        if ($user instanceof Teacher) {
+            return true;
+        }
+
+        return $user->hasPermission('manage_students');
     }
 
     public function create(Admin|Teacher $user): bool
     {
-        return $user instanceof Admin;
+        if ($user instanceof Teacher) {
+            return false;
+        }
+
+        return $user->hasPermission('manage_students');
     }
 }

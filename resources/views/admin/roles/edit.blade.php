@@ -21,7 +21,7 @@
                 <p class="text-sm" style="color: var(--on-surface-variant);">Saves stay on this page—no reload. Toggle permissions below.</p>
             </header>
 
-            <form action="{{ route('admin.roles.update', $role->id) }}" method="POST" id="role-form" class="min-w-0 flex flex-col gap-4 sm:gap-5" data-role-form="edit" data-total-perms="{{ $totalPerms }}">
+            <form action="{{ route('admin.roles.update', $role) }}" method="POST" id="role-form" class="min-w-0 flex flex-col gap-4 sm:gap-5" data-role-form="edit" data-total-perms="{{ $totalPerms }}">
                 @csrf
                 @method('PUT')
 

@@ -8,7 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSubjectRequest;
 use App\Http\Requests\UpdateSubjectRequest;
 use App\Models\Notification;
+use App\Models\Student;
 use App\Models\Subject;
+use App\Models\Teacher;
 use App\Services\StudentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -72,12 +74,12 @@ class SubjectsController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'New Subject Added',
-                'message' => $admin->name . ' has added a new subject: ' . $subject->subject_name . ' for ' . $subject->grade . ' class',
+                'message' => $admin->name.' has added a new subject: '.$subject->subject_name.' for '.$subject->grade.' class',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
 
-        $message = $subject->subject_name . ' subject has been added successfully.';
+        $message = $subject->subject_name.' subject has been added successfully.';
         $redirectUrl = route('admin.subjects.index', ['grade' => $subject->grade]);
 
         if ($request->expectsJson()) {
@@ -91,12 +93,8 @@ class SubjectsController extends Controller
         return redirect()->to($redirectUrl)->with('success', $message);
     }
 
-    public function edit(int $id): RedirectResponse
+    public function edit(Subject $subject): RedirectResponse
     {
-        $subject = Subject::query()->find($id);
-        if (! $subject) {
-            abort(404);
-        }
         Gate::authorize('update', $subject);
 
         return redirect()->route('admin.subjects.index', [
@@ -105,13 +103,8 @@ class SubjectsController extends Controller
         ]);
     }
 
-    public function update(UpdateSubjectRequest $request, int $id): JsonResponse|RedirectResponse
+    public function update(UpdateSubjectRequest $request, Subject $subject): JsonResponse|RedirectResponse
     {
-        $subject = Subject::query()->find($id);
-        if (! $subject) {
-            abort(404);
-        }
-
         Gate::authorize('update', $subject);
         $subject->update($request->validated());
         $admin = $request->user('admin');
@@ -119,12 +112,12 @@ class SubjectsController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'Subject Edited',
-                'message' => $admin->name . ' has edited subject: ' . $subject->subject_name . ' for ' . $subject->grade . ' class',
+                'message' => $admin->name.' has edited subject: '.$subject->subject_name.' for '.$subject->grade.' class',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
 
-        $message = $subject->subject_name . ' has been updated successfully for this class.';
+        $message = $subject->subject_name.' has been updated successfully for this class.';
         $redirectUrl = route('admin.subjects.index', ['grade' => $subject->grade]);
 
         if ($request->expectsJson()) {
@@ -138,14 +131,21 @@ class SubjectsController extends Controller
         return redirect()->to($redirectUrl)->with('success', $message);
     }
 
-    public function destroy(Request $request, int $id): JsonResponse|RedirectResponse
+    public function destroy(Request $request, Subject $subject): JsonResponse|RedirectResponse
     {
-        $subject = Subject::query()->find($id);
-        if (! $subject) {
-            abort(404);
+        Gate::authorize('delete', $subject);
+
+        if ($this->subjectAssignedToTeacher($subject->subject_name)) {
+            $message = __('This subject cannot be deleted because it is assigned to one or more teachers. Unassign it first.');
+
+            return $this->destroyErrorResponse($request, $message);
+        }
+        if ($this->subjectRegisteredToStudents($subject->subject_name)) {
+            $message = __('This subject cannot be deleted because it is registered for one or more students. Unregister it first.');
+
+            return $this->destroyErrorResponse($request, $message);
         }
 
-        Gate::authorize('delete', $subject);
         $name = $subject->subject_name;
         $grade = $subject->grade;
         $subject->delete();
@@ -154,7 +154,7 @@ class SubjectsController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'Subject Deleted',
-                'message' => $admin->name . ' has deleted ' . $name . ' subject with ID: ' . $id,
+                'message' => $admin->name.' has deleted '.$name.' subject with: '.$subject->subject_name,
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -223,7 +223,7 @@ class SubjectsController extends Controller
             if ($admin) {
                 Notification::query()->create([
                     'title' => 'Subjects Registered For Student',
-                    'message' => $admin->name . ' has registered subjects for student with ID: ' . $studentsList,
+                    'message' => $admin->name.' has registered subjects for student with ID: '.$studentsList,
                     'date_added' => now()->format('Y-m-d H:i:s'),
                 ]);
             }
@@ -270,5 +270,47 @@ class SubjectsController extends Controller
             'filterSubject' => $filterSubject,
             'hasFilters' => $hasFilters,
         ]);
+    }
+
+    /**
+     * Check if the subject name appears in any teacher's subject_to_teach (comma-separated list).
+     */
+    private function subjectAssignedToTeacher(string $subjectName): bool
+    {
+        $escaped = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $subjectName);
+
+        return Teacher::query()
+            ->where('subject_to_teach', $subjectName)
+            ->orWhere('subject_to_teach', 'like', $escaped.',%')
+            ->orWhere('subject_to_teach', 'like', '%,'.$escaped.',%')
+            ->orWhere('subject_to_teach', 'like', '%,'.$escaped)
+            ->exists();
+    }
+
+    /**
+     * Check if the subject name appears in any student's subjects (comma-separated list).
+     */
+    private function subjectRegisteredToStudents(string $subjectName): bool
+    {
+        $escaped = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $subjectName);
+
+        return Student::query()
+            ->where('subjects', $subjectName)
+            ->orWhere('subjects', 'like', $escaped.',%')
+            ->orWhere('subjects', 'like', '%,'.$escaped.',%')
+            ->orWhere('subjects', 'like', '%,'.$escaped)
+            ->exists();
+    }
+
+    private function destroyErrorResponse(Request $request, string $message): JsonResponse|RedirectResponse
+    {
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $message,
+            ], 422);
+        }
+
+        return back()->with('error', $message);
     }
 }

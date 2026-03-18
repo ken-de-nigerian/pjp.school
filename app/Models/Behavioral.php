@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method static Builder<static> forClassTermSessionSegment(string $class, string $term, string $session, string $segment)
+ *
  * @property mixed $reg_number
  */
 class Behavioral extends Model

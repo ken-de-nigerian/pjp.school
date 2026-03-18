@@ -83,7 +83,7 @@
 
                         @if($notifications->hasPages())
                             <div class="px-4 sm:px-5 lg:px-6 py-3 border-t" style="border-color: var(--outline-variant); background: var(--surface-container-low);">
-                                {{ $notifications->links() }}
+                                <x-pagination :paginator="$notifications" />
                             </div>
                         @endif
                     </div>

@@ -55,7 +55,7 @@ class ResultCheckController extends Controller
         }
 
         if (! $this->resultCheckService->hasPublished($class, $term, $session)) {
-            return redirect()->route('result.check')->with('error', $term . ' results for ' . $class . ' have not been published yet.');
+            return redirect()->route('result.check')->with('error', $term.' results for '.$class.' have not been published yet.');
         }
 
         if ($scratchRequired) {

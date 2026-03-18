@@ -27,7 +27,7 @@ class DemoteStudentsRequest extends FormRequest
     {
         return [
             'from_class.different' => "You can't demote students to the same class.",
-            'student_ids.required' => "Please select at least one student to demote.",
+            'student_ids.required' => 'Please select at least one student to demote.',
         ];
     }
 }

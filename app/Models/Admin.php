@@ -65,4 +65,20 @@ class Admin extends Authenticatable
     {
         return $this->password;
     }
+
+    /**
+     * Check if this admin has a role permission.
+     * Super admin (user_type === 1) has all permissions.
+     * Otherwise the role's permission column must equal 1.
+     */
+    public function hasPermission(string $key): bool
+    {
+        if ((int) $this->user_type === 1) {
+            return true;
+        }
+
+        $role = $this->relationLoaded('role') ? $this->role : $this->role()->first();
+
+        return $role !== null && (int) ($role->{$key} ?? 0) === 1;
+    }
 }

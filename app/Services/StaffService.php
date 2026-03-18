@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Random\RandomException;
 
-class StaffService
+final class StaffService
 {
     public function list(int $perPage = 15): LengthAwarePaginator
     {
@@ -80,7 +80,7 @@ class StaffService
             'search' => 'required|string|min:2|max:255',
         ]);
 
-        $term = '%' . $validated['search'] . '%';
+        $term = '%'.$validated['search'].'%';
 
         return Admin::query()
             ->with('role')
@@ -102,6 +102,6 @@ class StaffService
      */
     public function generateAdminId(): string
     {
-        return substr((int) (microtime(true) * 1000) . random_int(100, 999), 0, 12);
+        return substr((int) (microtime(true) * 1000).random_int(100, 999), 0, 12);
     }
 }

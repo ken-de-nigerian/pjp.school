@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Contracts\ResultServiceContract;
 use App\Models\AnnualResult;
 use App\Models\Behavioral;
 use App\Models\Position;
@@ -15,13 +16,13 @@ use Illuminate\Support\Collection;
  * Public result check: replicates legacy Result::index flow (hasStudentID, getStudentFees,
  * hasPublished, pin validation, StudentReport, ReportCard, psychomotor, getSegment).
  */
-class ResultCheckService
+final class ResultCheckService
 {
     private const MAX_PIN_USES = 15;
 
     public function __construct(
         private PinService $pinService,
-        private ResultService $resultService
+        private ResultServiceContract $resultService
     ) {}
 
     public function getSettings(): array
@@ -57,6 +58,7 @@ class ResultCheckService
     public function hasApprovedFees(string $regNumber): bool
     {
         $student = $this->getStudent($regNumber);
+
         return $student && (int) $student->fee_status === 1;
     }
 
@@ -70,6 +72,7 @@ class ResultCheckService
     public function isScratchCardRequired(): bool
     {
         $s = $this->getSettings();
+
         return (int) ($s['scratch_card'] ?? 0) === 1;
     }
 
@@ -95,6 +98,7 @@ class ResultCheckService
         } else {
             $this->pinService->markUsedInsert($pin, $regNumber, 1, $class, $term, $session);
         }
+
         return null;
     }
 

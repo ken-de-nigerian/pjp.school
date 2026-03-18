@@ -7,12 +7,12 @@ namespace Tests\Feature\Admin;
 use App\Models\Admin;
 use App\Models\News;
 use App\Models\Role;
-use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Teacher;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 /**
@@ -81,9 +81,13 @@ class DashboardDataTest extends TestCase
     public function test_dashboard_includes_paginated_news(): void
     {
         News::query()->create([
+            'newsid' => (string) Str::uuid(),
             'title' => 'Test News',
             'content' => 'Body',
-            'date_added' => now(),
+            'slug' => 'test-news',
+            'category' => 'General',
+            'author' => 'Admin',
+            'imagelocation' => 'default.png',
         ]);
         $admin = Admin::first();
 

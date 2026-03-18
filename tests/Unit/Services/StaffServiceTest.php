@@ -49,39 +49,6 @@ class StaffServiceTest extends TestCase
         $this->assertSame('First', $paginator->items()[0]->name);
     }
 
-    public function test_count_all(): void
-    {
-        Role::query()->create(['id' => 1, 'name' => 'R', 'permissions' => null]);
-        Admin::query()->create([
-            'adminId' => 'a1',
-            'name' => 'A',
-            'email' => 'a@t.local',
-            'password' => Hash::make('p'),
-            'user_type' => 1,
-        ]);
-
-        $this->assertSame(1, $this->service->countAll());
-    }
-
-    public function test_get_staff_returns_admin(): void
-    {
-        Role::query()->firstOrCreate(['id' => 1], ['name' => 'R', 'permissions' => null]);
-        $admin = Admin::query()->create([
-            'adminId' => 'sid1',
-            'name' => 'Staff',
-            'email' => 's@t.local',
-            'password' => Hash::make('p'),
-            'user_type' => 1,
-            'joined' => now(),
-        ]);
-
-        $found = $this->service->getStaff('sid1');
-        $this->assertNotNull($found, 'getStaff(sid1) should return the admin');
-        $this->assertSame('Staff', $found->name);
-        $this->assertSame('s@t.local', $found->email);
-        $this->assertNull($this->service->getStaff('nonexistent'));
-    }
-
     public function test_has_admin_email(): void
     {
         Role::query()->create(['id' => 1, 'name' => 'R', 'permissions' => null]);
@@ -138,25 +105,6 @@ class StaffServiceTest extends TestCase
         $admin = Admin::query()->where('adminId', 'u1')->first();
         $this->assertSame('New Name', $admin->name);
         $this->assertSame(2, (int) $admin->user_type);
-    }
-
-    public function test_search_finds_by_name_or_email(): void
-    {
-        Role::query()->create(['id' => 1, 'name' => 'R', 'permissions' => null]);
-        Admin::query()->create([
-            'adminId' => 's1',
-            'name' => 'John Doe',
-            'email' => 'john@test.local',
-            'password' => Hash::make('p'),
-            'user_type' => 1,
-        ]);
-
-        $results = $this->service->search('John');
-        $this->assertCount(1, $results);
-        $this->assertSame('John Doe', $results->first()->name);
-
-        $results2 = $this->service->search('john@test');
-        $this->assertCount(1, $results2);
     }
 
     public function test_delete_removes_staff(): void

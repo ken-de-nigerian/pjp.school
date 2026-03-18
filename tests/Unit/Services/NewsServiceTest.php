@@ -7,6 +7,7 @@ namespace Tests\Unit\Services;
 use App\Models\News;
 use App\Services\NewsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class NewsServiceTest extends TestCase
@@ -18,29 +19,29 @@ class NewsServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new NewsService();
+        $this->service = new NewsService;
     }
 
     public function test_list_orders_by_created_at_desc_and_paginates(): void
     {
         News::query()->create([
+            'newsid' => (string) Str::uuid(),
             'title' => 'First',
             'slug' => 'first',
             'content' => 'C',
             'category' => 'Cat',
             'author' => 'A',
             'imagelocation' => 'default.png',
-            'image' => 'default.png',
             'created_at' => now()->subDay(),
         ]);
         News::query()->create([
+            'newsid' => (string) Str::uuid(),
             'title' => 'Second',
             'slug' => 'second',
             'content' => 'C',
             'category' => 'Cat',
             'author' => 'A',
             'imagelocation' => 'default.png',
-            'image' => 'default.png',
             'created_at' => now(),
         ]);
 
@@ -51,19 +52,19 @@ class NewsServiceTest extends TestCase
 
     public function test_get_by_id_returns_null_for_missing(): void
     {
-        $this->assertNull($this->service->getById(99999));
+        $this->assertNull($this->service->getById((string) Str::uuid()));
     }
 
     public function test_get_by_id_returns_news(): void
     {
         $news = News::query()->create([
+            'newsid' => (string) Str::uuid(),
             'title' => 'One',
             'slug' => 'one',
             'content' => 'C',
             'category' => 'Cat',
             'author' => 'A',
             'imagelocation' => 'default.png',
-            'image' => 'default.png',
         ]);
 
         $found = $this->service->getById($news->newsid);
@@ -74,17 +75,17 @@ class NewsServiceTest extends TestCase
     public function test_has_news_id(): void
     {
         $news = News::query()->create([
+            'newsid' => (string) Str::uuid(),
             'title' => 'H',
             'slug' => 'h',
             'content' => 'C',
             'category' => 'Cat',
             'author' => 'A',
             'imagelocation' => 'default.png',
-            'image' => 'default.png',
         ]);
 
         $this->assertTrue($this->service->hasNewsId($news->newsid));
-        $this->assertFalse($this->service->hasNewsId(99999));
+        $this->assertFalse($this->service->hasNewsId((string) Str::uuid()));
     }
 
     public function test_create_no_image(): void
@@ -116,19 +117,19 @@ class NewsServiceTest extends TestCase
     public function test_update(): void
     {
         $news = News::query()->create([
+            'newsid' => (string) Str::uuid(),
             'title' => 'Old',
             'slug' => 'old',
             'content' => 'Old content',
             'category' => 'Cat',
             'author' => 'A',
             'imagelocation' => 'default.png',
-            'image' => 'default.png',
         ]);
 
         $count = $this->service->update($news->newsid, [
             'title' => 'New Title',
             'category' => 'NewCat',
-            'message' => 'New body',
+            'content' => 'New body',
         ], 'New Author');
 
         $this->assertSame(1, $count);
@@ -141,13 +142,13 @@ class NewsServiceTest extends TestCase
     public function test_update_cover_image(): void
     {
         $news = News::query()->create([
+            'newsid' => (string) Str::uuid(),
             'title' => 'T',
             'slug' => 't',
             'content' => 'C',
             'category' => 'Cat',
             'author' => 'A',
             'imagelocation' => 'default.png',
-            'image' => 'default.png',
         ]);
 
         $count = $this->service->updateCoverImage($news->newsid, 'new-cover.jpg');
@@ -159,13 +160,13 @@ class NewsServiceTest extends TestCase
     public function test_delete(): void
     {
         $news = News::query()->create([
+            'newsid' => (string) Str::uuid(),
             'title' => 'Del',
             'slug' => 'del',
             'content' => 'C',
             'category' => 'Cat',
             'author' => 'A',
             'imagelocation' => 'default.png',
-            'image' => 'default.png',
         ]);
 
         $count = $this->service->delete($news->newsid);

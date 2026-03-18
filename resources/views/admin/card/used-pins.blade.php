@@ -58,7 +58,7 @@
                                         <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
                                         <div class="min-w-0 flex-1">
                                             @if($student && Route::has('admin.students.show'))
-                                                <a href="{{ route('admin.students.show', $student->id) }}" class="text-sm font-medium block truncate transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: e($row->reg_number) }}</a>
+                                                <a href="{{ route('admin.students.show', $student) }}" class="text-sm font-medium block truncate transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: e($row->reg_number) }}</a>
                                             @else
                                                 <span class="text-sm font-medium block truncate" style="color: var(--on-surface);">{{ $fullName ?: e($row->reg_number) }}</span>
                                             @endif
@@ -119,7 +119,7 @@
                                                 <img src="{{ $avatarSrc }}" alt="" class="w-9 h-9 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
                                                 <div class="min-w-0">
                                                     @if($student && Route::has('admin.students.show'))
-                                                        <a href="{{ route('admin.students.show', $student->id) }}" class="text-sm font-medium truncate block transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: e($row->reg_number) }}</a>
+                                                        <a href="{{ route('admin.students.show', $student) }}" class="text-sm font-medium truncate block transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: e($row->reg_number) }}</a>
                                                     @else
                                                         <span class="text-sm font-medium truncate block" style="color: var(--on-surface);">{{ $fullName ?: e($row->reg_number) }}</span>
                                                     @endif

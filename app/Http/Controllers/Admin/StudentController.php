@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\NotificationServiceContract;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BulkToggleStudentFeeRequest;
 use App\Http\Requests\DemoteStudentsRequest;
 use App\Http\Requests\PromoteStudentsRequest;
 use App\Http\Requests\StoreStudentRequest;
-use App\Http\Requests\BulkToggleStudentFeeRequest;
 use App\Http\Requests\ToggleStudentFeeRequest;
 use App\Http\Requests\ToggleStudentStatusRequest;
-use App\Http\Requests\UpdateStudentAccountRequest;
 use App\Http\Requests\UpdateStudentAcademicRequest;
+use App\Http\Requests\UpdateStudentAccountRequest;
 use App\Http\Requests\UpdateStudentContactRequest;
 use App\Http\Requests\UpdateStudentOtherRequest;
 use App\Http\Requests\UpdateStudentParentsRequest;
 use App\Http\Requests\UpdateStudentSponsorsRequest;
 use App\Http\Requests\UploadStudentProfilePhotoRequest;
 use App\Models\Student;
-use App\Services\NotificationService;
 use App\Services\StudentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -32,7 +32,7 @@ class StudentController extends Controller
 {
     public function __construct(
         private readonly StudentService $studentService,
-        private readonly NotificationService $notificationService,
+        private readonly NotificationServiceContract $notificationService,
     ) {}
 
     public function classListPdf(Request $request): View|RedirectResponse
@@ -100,7 +100,7 @@ class StudentController extends Controller
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
             'New Student Registered',
-            $adminName . ' has registered a new student: ' . $validated['firstname'] . ' ' . $validated['lastname'] . ', into class: ' . $validated['class']
+            $adminName.' has registered a new student: '.$validated['firstname'].' '.$validated['lastname'].', into class: '.$validated['class']
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -116,23 +116,15 @@ class StudentController extends Controller
             ->with('success', __('Student registered successfully.'));
     }
 
-    public function show(int $id): View|RedirectResponse
+    public function show(Student $student): View|RedirectResponse
     {
-        $student = $this->studentService->getById($id);
-        if (! $student) {
-            abort(404);
-        }
         Gate::authorize('view', $student);
 
         return view('admin.students.show', ['student' => $student]);
     }
 
-    public function edit(int $id): View|RedirectResponse
+    public function edit(Student $student): View|RedirectResponse
     {
-        $student = $this->studentService->getById($id);
-        if (! $student) {
-            abort(404);
-        }
         Gate::authorize('update', $student);
 
         $classes = $this->studentService->getClassesArray();
@@ -159,20 +151,16 @@ class StudentController extends Controller
         ]);
     }
 
-    public function updateAccount(UpdateStudentAccountRequest $request, int $id): JsonResponse|RedirectResponse
+    public function updateAccount(UpdateStudentAccountRequest $request, Student $student): JsonResponse|RedirectResponse
     {
-        $student = $this->studentService->getById($id);
-        if (! $student) {
-            abort(404);
-        }
         Gate::authorize('update', $student);
 
-        $this->studentService->updateAccount($id, $request->validated());
+        $this->studentService->updateAccount($student->id, $request->validated());
 
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
             'Student Profile Updated',
-            $adminName . ' has updated the profile information of student: ' . $student->firstname . ' ' . $student->lastname . ', in class: ' . $student->class
+            $adminName.' has updated the profile information of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -180,20 +168,16 @@ class StudentController extends Controller
         }
 
         return redirect()
-            ->route('admin.students.edit', $id)
+            ->route('admin.students.edit', $student)
             ->with('success', __('Student\'s profile has been updated successfully.'));
     }
 
-    public function updateAcademic(UpdateStudentAcademicRequest $request, int $id): JsonResponse|RedirectResponse
+    public function updateAcademic(UpdateStudentAcademicRequest $request, Student $student): JsonResponse|RedirectResponse
     {
-        $student = $this->studentService->getById($id);
-        if (! $student) {
-            abort(404);
-        }
         Gate::authorize('update', $student);
 
         $this->studentService->updateAcademicProfile(
-            $id,
+            $student->id,
             $request->input('class'),
             $request->input('subjects', ''),
             $request->input('reg_number')
@@ -202,7 +186,7 @@ class StudentController extends Controller
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
             'Student Academic Status Updated',
-            $adminName . ' has updated the academic status of student: ' . $student->firstname . ' ' . $student->lastname . ', in class: ' . $student->class
+            $adminName.' has updated the academic status of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -210,24 +194,20 @@ class StudentController extends Controller
         }
 
         return redirect()
-            ->route('admin.students.edit', $id)
+            ->route('admin.students.edit', $student)
             ->with('success', __('Student\'s account status has been updated successfully.'));
     }
 
-    public function updateContact(UpdateStudentContactRequest $request, int $id): JsonResponse|RedirectResponse
+    public function updateContact(UpdateStudentContactRequest $request, Student $student): JsonResponse|RedirectResponse
     {
-        $student = $this->studentService->getById($id);
-        if (! $student) {
-            abort(404);
-        }
         Gate::authorize('update', $student);
 
-        $this->studentService->updateContactAddress($id, $request->validated());
+        $this->studentService->updateContactAddress($student->id, $request->validated());
 
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
             'Contact Information Updated',
-            $adminName . ' has updated the contact information of student: ' . $student->firstname . ' ' . $student->lastname . ', in class: ' . $student->class
+            $adminName.' has updated the contact information of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -235,24 +215,20 @@ class StudentController extends Controller
         }
 
         return redirect()
-            ->route('admin.students.edit', $id)
+            ->route('admin.students.edit', $student)
             ->with('success', __('Student\'s contact address has been updated successfully'));
     }
 
-    public function updateParents(UpdateStudentParentsRequest $request, int $id): JsonResponse|RedirectResponse
+    public function updateParents(UpdateStudentParentsRequest $request, Student $student): JsonResponse|RedirectResponse
     {
-        $student = $this->studentService->getById($id);
-        if (! $student) {
-            abort(404);
-        }
         Gate::authorize('update', $student);
 
-        $this->studentService->updateParentsInformation($id, $request->validated());
+        $this->studentService->updateParentsInformation($student->id, $request->validated());
 
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
             'Parents Information Updated',
-            $adminName . ' has updated the parent\'s information of student: ' . $student->firstname . ' ' . $student->lastname . ', in class: ' . $student->class
+            $adminName.' has updated the parent\'s information of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -260,24 +236,20 @@ class StudentController extends Controller
         }
 
         return redirect()
-            ->route('admin.students.edit', $id)
+            ->route('admin.students.edit', $student)
             ->with('success', __('Parent\'s information has been updated successfully.'));
     }
 
-    public function updateSponsors(UpdateStudentSponsorsRequest $request, int $id): JsonResponse|RedirectResponse
+    public function updateSponsors(UpdateStudentSponsorsRequest $request, Student $student): JsonResponse|RedirectResponse
     {
-        $student = $this->studentService->getById($id);
-        if (! $student) {
-            abort(404);
-        }
         Gate::authorize('update', $student);
 
-        $this->studentService->updateSponsorsInformation($id, $request->validated());
+        $this->studentService->updateSponsorsInformation($student->id, $request->validated());
 
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
             'Sponsors Information Updated',
-            $adminName . ' has updated the sponsor\'s information of student: ' . $student->firstname . ' ' . $student->lastname . ', in class: ' . $student->class
+            $adminName.' has updated the sponsor\'s information of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -285,21 +257,17 @@ class StudentController extends Controller
         }
 
         return redirect()
-            ->route('admin.students.edit', $id)
+            ->route('admin.students.edit', $student)
             ->with('success', __('Sponsor\'s information has been updated successfully.'));
     }
 
-    public function updateOther(UpdateStudentOtherRequest $request, int $id): JsonResponse|RedirectResponse
+    public function updateOther(UpdateStudentOtherRequest $request, Student $student): JsonResponse|RedirectResponse
     {
-        $student = $this->studentService->getById($id);
-        if (! $student) {
-            abort(404);
-        }
         Gate::authorize('update', $student);
 
         $v = $request->validated();
         $this->studentService->updateOtherInformation(
-            $id,
+            $student->id,
             $v['house'] ?? '',
             $v['category'] ?? ''
         );
@@ -307,7 +275,7 @@ class StudentController extends Controller
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
             'Students Information Updated',
-            $adminName . ' has updated the information of student: ' . $student->firstname . ' ' . $student->lastname . ', in class: ' . $student->class
+            $adminName.' has updated the information of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -315,19 +283,15 @@ class StudentController extends Controller
         }
 
         return redirect()
-            ->route('admin.students.edit', $id)
+            ->route('admin.students.edit', $student)
             ->with('success', __('Student\'s information has been updated successfully.'));
     }
 
-    public function destroy(int $id): JsonResponse|RedirectResponse
+    public function destroy(Student $student): JsonResponse|RedirectResponse
     {
-        $student = $this->studentService->getById($id);
-        if (! $student) {
-            abort(404);
-        }
         Gate::authorize('delete', $student);
 
-        $this->studentService->delete($id);
+        $this->studentService->delete($student->id);
 
         if (request()->wantsJson() || request()->ajax()) {
             return response()->json([
@@ -357,37 +321,34 @@ class StudentController extends Controller
             $adminName = $request->user('admin')->name ?? 'Admin';
             $this->notificationService->add(
                 'Profile Picture Updated',
-                $adminName . ' has updated the profile picture of student: ' . $student->firstname . ' ' . $student->lastname . ', in class: ' . $student->class
+                $adminName.' has updated the profile picture of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
             );
         }
+
         return response()->json(
             $updated
-                ? ['status' => 'success', 'message' => __('Profile picture updated.'), 'image_url' => asset('storage/' . $path)]
+                ? ['status' => 'success', 'message' => __('Profile picture updated.'), 'image_url' => asset('storage/'.$path)]
                 : ['status' => 'error', 'message' => __('No changes have been made to your profile.')]
         );
     }
 
-    public function toggleStatus(ToggleStudentStatusRequest $request, int $id): JsonResponse|RedirectResponse
+    public function toggleStatus(ToggleStudentStatusRequest $request, Student $student): JsonResponse|RedirectResponse
     {
-        $student = $this->studentService->getById($id);
-        if (! $student) {
-            abort(404);
-        }
         Gate::authorize('update', $student);
 
         if ($request->input('status') == 1) {
-            $class_arm = "left-school";
-        }else{
+            $class_arm = 'left-school';
+        } else {
             $pattern = '/(JSS|SSS) [1-3]/';
             if (preg_match($pattern, $student->class, $matches)) {
                 $class_arm = $matches[0];
-            }else{
-                $class_arm = "left-school";
+            } else {
+                $class_arm = 'left-school';
             }
         }
 
         $this->studentService->toggleStatus(
-            $id,
+            $student->id,
             $request->input('status'),
             $class_arm
         );
@@ -395,7 +356,7 @@ class StudentController extends Controller
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
             'Students Status Updated',
-            $adminName . ' has updated the status of student: ' . $student->firstname . ' ' . $student->lastname
+            $adminName.' has updated the status of student: '.$student->firstname.' '.$student->lastname
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -405,20 +366,16 @@ class StudentController extends Controller
         return back()->with('success', __('Student\'s account status has been updated successfully.'));
     }
 
-    public function toggleFee(ToggleStudentFeeRequest $request, int $id): JsonResponse|RedirectResponse
+    public function toggleFee(ToggleStudentFeeRequest $request, Student $student): JsonResponse|RedirectResponse
     {
-        $student = $this->studentService->getById($id);
-        if (! $student) {
-            abort(404);
-        }
         Gate::authorize('update', $student);
 
-        $this->studentService->toggleFeeStatus($id, (int) $request->input('fee_status'));
+        $this->studentService->toggleFeeStatus($student->id, (int) $request->input('fee_status'));
 
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
             'Fee Status Updated',
-            $adminName . ' has updated the fee status of student: ' . $student->firstname . ' ' . $student->lastname . ', in class: ' . $student->class
+            $adminName.' has updated the fee status of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -517,7 +474,7 @@ class StudentController extends Controller
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
             'Class Promotion',
-            $adminName . ' has promoted students from: ' . $fromClass . ' to ' . $toClass
+            $adminName.' has promoted students from: '.$fromClass.' to '.$toClass
         );
 
         if ($request->expectsJson() || $request->ajax()) {
@@ -543,7 +500,7 @@ class StudentController extends Controller
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
             'Class Demotion',
-            $adminName . ' has demoted students from: ' . $fromClass . ' to ' . $toClass
+            $adminName.' has demoted students from: '.$fromClass.' to '.$toClass
         );
 
         if ($request->expectsJson() || $request->ajax()) {
@@ -560,6 +517,7 @@ class StudentController extends Controller
     {
         Gate::authorize('viewAny', Student::class);
         $getHouses = $this->studentService->getHouseCounts();
+
         return view('admin.students.houses', ['getHouses' => $getHouses]);
     }
 
@@ -592,6 +550,7 @@ class StudentController extends Controller
     {
         Gate::authorize('viewAny', Student::class);
         $graduationYearsWithCounts = $this->studentService->getGraduationYearsWithCounts();
+
         return view('admin.students.graduated', ['graduationYearsWithCounts' => $graduationYearsWithCounts]);
     }
 
@@ -615,8 +574,9 @@ class StudentController extends Controller
         if ($search !== '') {
             $q = strtolower($search);
             $collection = $collection->filter(function ($s) use ($q) {
-                $name = strtolower(trim(($s->firstname ?? '') . ' ' . ($s->lastname ?? '') . ' ' . ($s->othername ?? '')));
+                $name = strtolower(trim(($s->firstname ?? '').' '.($s->lastname ?? '').' '.($s->othername ?? '')));
                 $reg = strtolower((string) ($s->reg_number ?? ''));
+
                 return str_contains($name, $q) || str_contains($reg, $q);
             })->values();
         }
@@ -637,6 +597,7 @@ class StudentController extends Controller
     {
         Gate::authorize('viewAny', Student::class);
         $leftSchoolYearsWithCounts = $this->studentService->getLeftSchoolYearsWithCounts();
+
         return view('admin.students.left-school', ['leftSchoolYearsWithCounts' => $leftSchoolYearsWithCounts]);
     }
 
@@ -660,8 +621,9 @@ class StudentController extends Controller
         if ($search !== '') {
             $q = strtolower($search);
             $collection = $collection->filter(function ($s) use ($q) {
-                $name = strtolower(trim(($s->firstname ?? '') . ' ' . ($s->lastname ?? '') . ' ' . ($s->othername ?? '')));
+                $name = strtolower(trim(($s->firstname ?? '').' '.($s->lastname ?? '').' '.($s->othername ?? '')));
                 $reg = strtolower((string) ($s->reg_number ?? ''));
+
                 return str_contains($name, $q) || str_contains($reg, $q);
             })->values();
         }

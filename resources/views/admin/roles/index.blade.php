@@ -76,14 +76,14 @@
 
                                 <div class="flex flex-wrap gap-2 md:justify-end md:flex-nowrap md:place-self-start md:shrink-0 md:pt-0.5">
                                     @can('update', $role)
-                                        <a href="{{ route('admin.roles.edit', $role->id) }}" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90 min-h-[2.75rem] md:min-h-0 flex-1 md:flex-initial" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;">
+                                        <a href="{{ route('admin.roles.edit', $role) }}" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90 min-h-[2.75rem] md:min-h-0 flex-1 md:flex-initial" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;">
                                             <i class="fas fa-pen text-xs" aria-hidden="true"></i>
                                             Edit
                                         </a>
                                     @endcan
 
                                     @can('delete', $role)
-                                        <form id="role-delete-form-{{ $role->id }}" action="{{ route('admin.roles.destroy', $role->id) }}" method="POST" class="flex flex-1 md:flex-initial min-w-0">
+                                        <form id="role-delete-form-{{ $role->id }}" action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="flex flex-1 md:flex-initial min-w-0">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="role-delete-btn w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90 min-h-[2.75rem] md:min-h-0 whitespace-nowrap" style="background: var(--error-container); color: var(--on-error-container); border-radius: 12px;" data-form-id="role-delete-form-{{ $role->id }}" data-role-name="{{ e($role->name) }}">

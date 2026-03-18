@@ -18,7 +18,7 @@ class ResultServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new ResultService;
+        $this->service = app(ResultService::class);
     }
 
     public function test_has_uploaded_results_false_when_empty(): void
@@ -66,11 +66,10 @@ class ResultServiceTest extends TestCase
             ],
         ];
 
-        $count = $this->service->uploadTerm($results);
+        $count = $this->service->bulkInsert($results);
         $this->assertSame(1, $count);
         $row = AnnualResult::query()->where('reg_number', '1001')->first();
         $this->assertSame(40.0, (float) $row->total);
-        $this->assertSame('First', $row->segment);
     }
 
     public function test_get_uploaded_results_orders_by_name(): void

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\DTO\DashboardCountsDTO;
 use App\Models\News;
 use App\Models\Setting;
 use App\Models\Student;
@@ -16,32 +17,32 @@ use Illuminate\Support\Facades\Schema;
  * Replicates legacy admin dashboard data.
  * Same query filters and counts as legacy (Admin::countAllStudents, etc.).
  */
-class DashboardService
+final class DashboardService
 {
     private const NEWS_PER_PAGE_ADMIN = 6;
 
     private const NEWS_PER_PAGE_TEACHER = 3;
 
-    public function getAdminCounts(): array
+    public function getAdminCounts(): DashboardCountsDTO
     {
-        return [
-            'count-all-students' => Student::query()
+        return new DashboardCountsDTO(
+            countAllStudents: (int) Student::query()
                 ->whereNotIn('class', ['Left', 'Graduated'])
                 ->where('status', 2)
                 ->count(),
-            'count-boarding-students' => Student::query()
+            countBoardingStudents: (int) Student::query()
                 ->where('category', 'Boarding')
                 ->whereNotIn('class', ['Left', 'Graduated'])
                 ->where('status', 2)
                 ->count(),
-            'count-day-students' => Student::query()
+            countDayStudents: (int) Student::query()
                 ->where('category', 'Day')
                 ->whereNotIn('class', ['Left', 'Graduated'])
                 ->where('status', 2)
                 ->count(),
-            'count-subjects' => Subject::query()->count(),
-            'count-teachers' => Teacher::query()->count(),
-        ];
+            countSubjects: (int) Subject::query()->count(),
+            countTeachers: (int) Teacher::query()->count(),
+        );
     }
 
     public function getAdminNewsPaginated(int $page = 1): LengthAwarePaginator

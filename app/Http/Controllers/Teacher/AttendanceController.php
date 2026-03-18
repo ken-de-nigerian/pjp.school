@@ -66,6 +66,7 @@ class AttendanceController extends Controller
         if ($date && $class && $term && $session) {
             $segment = config('school.no_segment', 'No Segment');
             $records = $this->attendanceService->getRecord($date, $class, $term, $session, $segment);
+
             return view('teacher.attendance.view-attendance', [
                 'students' => $records,
                 'date' => $date,

@@ -20,7 +20,8 @@ class DashboardController extends Controller
         $admin = $request->user('admin');
         $admin->load('role');
 
-        $counts = $this->dashboardService->getAdminCounts();
+        $countsDto = $this->dashboardService->getAdminCounts();
+        $counts = $countsDto->toArray();
         $page = (int) $request->query('page', 1);
         $newsPaginator = $this->dashboardService->getAdminNewsPaginated($page);
         $settings = $this->dashboardService->getCachedSettings();
@@ -28,11 +29,11 @@ class DashboardController extends Controller
         return view('admin.dashboard', [
             'role' => $admin->role,
             'counts' => $counts,
-            'count_all_students' => $counts['count-all-students'] ?? 0,
-            'count_boarding_students' => $counts['count-boarding-students'] ?? 0,
-            'count_day_students' => $counts['count-day-students'] ?? 0,
-            'count_subjects' => $counts['count-subjects'] ?? 0,
-            'count_teachers' => $counts['count-teachers'] ?? 0,
+            'count_all_students' => $countsDto->countAllStudents,
+            'count_boarding_students' => $countsDto->countBoardingStudents,
+            'count_day_students' => $countsDto->countDayStudents,
+            'count_subjects' => $countsDto->countSubjects,
+            'count_teachers' => $countsDto->countTeachers,
             'get_news' => $newsPaginator->items(),
             'news' => $newsPaginator,
             'currentPage' => $newsPaginator->currentPage(),

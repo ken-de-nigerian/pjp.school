@@ -27,7 +27,6 @@ class NotificationsController extends Controller
         ]);
     }
 
-    /** Delete single notification. Legacy: requests/delete_notifications (bulk); single delete for UI. */
     public function destroy(Request $request, Notification $notification): JsonResponse|RedirectResponse
     {
         Gate::authorize('viewAny', Notification::class);
@@ -41,7 +40,6 @@ class NotificationsController extends Controller
         return redirect()->route('admin.notifications.index')->with('success', 'Notification deleted.');
     }
 
-    /** Clear all notifications. Legacy: POST requests/delete_notifications. */
     public function destroyAll(Request $request): JsonResponse|RedirectResponse
     {
         Gate::authorize('viewAny', Notification::class);

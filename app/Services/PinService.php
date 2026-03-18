@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Random\RandomException;
 use Throwable;
 
-class PinService
+final class PinService
 {
     public function countUnused(string $session): int
     {
@@ -55,33 +55,35 @@ class PinService
         $time = date('s');
         $pins = [];
         for ($i = 0; $i < $numPins; $i++) {
-            $pins[] = $time . $this->rnd(14, false, false, true);
+            $pins[] = $time.$this->rnd(14, false, false, true);
         }
+
         return $pins;
     }
 
     private function rnd(int $length, bool $lower, bool $upper, bool $numbers): string
     {
-        $pool = "";
-        $result = "";
+        $pool = '';
+        $result = '';
 
-        if($lower){
-            $pool .= "abcdefghijklmnopqrstuvwxyz";
+        if ($lower) {
+            $pool .= 'abcdefghijklmnopqrstuvwxyz';
         }
 
-        if($upper){
-            $pool .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        if ($upper) {
+            $pool .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         }
 
-        if($numbers){
-            $pool .= "01234567890";
+        if ($numbers) {
+            $pool .= '01234567890';
         }
 
         $cc = 0;
-        while($cc < $length){
-            $result .= $pool[mt_rand(0, strlen($pool)-1)];
+        while ($cc < $length) {
+            $result .= $pool[mt_rand(0, strlen($pool) - 1)];
             $cc++;
         }
+
         return $result;
     }
 
@@ -117,6 +119,7 @@ class PinService
                 ]);
                 $inserted++;
             }
+
             return $inserted;
         });
     }

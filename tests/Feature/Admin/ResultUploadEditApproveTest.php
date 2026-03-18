@@ -7,7 +7,6 @@ namespace Tests\Feature\Admin;
 use App\Models\Admin;
 use App\Models\AnnualResult;
 use App\Models\Role;
-use App\Services\ResultService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -60,13 +59,13 @@ class ResultUploadEditApproveTest extends TestCase
         $response->assertJsonPath('status', 'success');
         $this->assertDatabaseHas('annual_result', [
             'reg_number' => '1001',
-            'segment' => 'First',
             'ca' => 10,
             'assignment' => 10,
             'exam' => 20,
         ]);
         $row = AnnualResult::query()->where('reg_number', '1001')->first();
-        $this->assertSame(40.0, round((float) $row->total, 1)); // weight 1 * 40
+        $this->assertNotNull($row);
+        $this->assertSame(40.0, round((float) $row->total, 1));
     }
 
     public function test_upload_duplicate_returns_error(): void

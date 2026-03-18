@@ -11,26 +11,26 @@ class NewsPolicy
 {
     public function viewAny(Admin $user): bool
     {
-        return true;
+        return $user->hasPermission('news');
     }
 
     public function view(Admin $user, News $news): bool
     {
-        return true;
+        return $user->hasPermission('news');
     }
 
     public function create(Admin $user): bool
     {
-        return true;
+        return $user->hasPermission('news');
     }
 
     public function update(Admin $user, News $news): bool
     {
-        return true;
+        return $user->hasPermission('news');
     }
 
     public function delete(Admin $user, News $news): bool
     {
-        return true;
+        return $user->hasPermission('news');
     }
 }

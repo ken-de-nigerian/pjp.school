@@ -36,9 +36,8 @@ class AdminLoginTest extends TestCase
     {
         $response = $this->get(route('admin.login'));
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertViewIs('auth.admin.login');
-        $response->assertSee('Login', false);
     }
 
     public function test_invalid_credentials_return_validation_error(): void

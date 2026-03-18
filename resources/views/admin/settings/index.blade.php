@@ -171,7 +171,7 @@
 
                     <form id="config-form" class="p-4 sm:p-5 min-w-0">
                         @csrf
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 min-w-0">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 min-w-0">
                             <div class="form-group">
                                 <label for="term" class="form-label">Current Term</label>
                                 <select id="term" name="term" class="form-select">
@@ -192,7 +192,6 @@
                                 </select>
                                 <p id="session-error" class="form-error hidden" aria-live="polite"></p>
                             </div>
-
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0">

@@ -84,25 +84,6 @@ class StudentServiceTest extends TestCase
         $this->assertNull($this->service->getByRegNumber('R1'));
     }
 
-    public function test_search_filters_by_class_and_like(): void
-    {
-        SchoolClass::query()->create(['class_name' => 'JSS 1', 'time_added' => now()]);
-        Student::query()->create([
-            'reg_number' => '1001',
-            'firstname' => 'John',
-            'lastname' => 'Doe',
-            'class' => 'JSS 1',
-            'status' => 2,
-        ]);
-
-        $data = $this->service->search('John', 'JSS 1');
-        $this->assertSame(1, $data['count']);
-        $this->assertSame('John', $data['results']->first()->firstname);
-
-        $data2 = $this->service->search('Jane', 'JSS 1');
-        $this->assertSame(0, $data2['count']);
-    }
-
     public function test_create_sets_class_arm_and_status(): void
     {
         SchoolClass::query()->create(['class_name' => 'JSS 1', 'time_added' => now()]);

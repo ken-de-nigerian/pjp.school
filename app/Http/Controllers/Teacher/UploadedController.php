@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Teacher;
 
+use App\Contracts\ResultServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EditResultRequest;
 use App\Models\Notification;
 use App\Models\Setting;
-use App\Services\ResultService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -16,7 +16,7 @@ use Illuminate\View\View;
 class UploadedController extends Controller
 {
     public function __construct(
-        private ResultService $resultService
+        private ResultServiceContract $resultService
     ) {}
 
     /** POST teacher/uploaded/edit-result — legacy teacher edit uploaded result (single row). */
@@ -37,16 +37,16 @@ class UploadedController extends Controller
 
         if ($updated === 1) {
             $teacher = $request->user('teacher');
-            $teacherName = $teacher ? trim(($teacher->firstname ?? '') . ' ' . ($teacher->lastname ?? '')) : 'Teacher';
+            $teacherName = $teacher ? trim(($teacher->firstname ?? '').' '.($teacher->lastname ?? '')) : 'Teacher';
             Notification::query()->create([
                 'title' => 'Results Edited',
-                'message' => $teacherName . ' has edited ' . $v['subjects'] . ' results for ' . $v['reg_number'] . ' in ' . $v['class'],
+                'message' => $teacherName.' has edited '.$v['subjects'].' results for '.$v['reg_number'].' in '.$v['class'],
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'This student\'s ' . $v['subjects'] . ' result has been updated successfully.',
+                'message' => 'This student\'s '.$v['subjects'].' result has been updated successfully.',
             ]);
         }
 
@@ -71,6 +71,7 @@ class UploadedController extends Controller
                     ->with('error', "No {$subjects} results for {$class} ({$term}) found.");
             }
             $students = $this->resultService->getUploadedResults($class, $term, $session, $subjects);
+
             return view('teacher.uploaded.view-sheet', [
                 'students' => $students,
                 'class' => $class,

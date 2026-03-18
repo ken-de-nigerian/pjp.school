@@ -97,7 +97,7 @@ class TeachersController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'Teacher Account Edited',
-                'message' => $admin->name . ' has edited the account information of teacher: ' . $teacherModel->firsname . ' ' . $teacherModel->lastname . '.',
+                'message' => $admin->name.' has edited the account information of teacher: '.$teacherModel->firsname.' '.$teacherModel->lastname.'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -105,11 +105,12 @@ class TeachersController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'status' => 'success',
-                'message' => $teacherModel->firstname . ' ' . $teacherModel->lastname . ' profile has been updated successfully.',
+                'message' => $teacherModel->firstname.' '.$teacherModel->lastname.' profile has been updated successfully.',
             ]);
         }
+
         return redirect()->route('admin.teachers.index')
-            ->with('success', $teacherModel->firstname . ' ' . $teacherModel->lastname . ' profile has been updated successfully.');
+            ->with('success', $teacherModel->firstname.' '.$teacherModel->lastname.' profile has been updated successfully.');
     }
 
     public function resetPassword(ResetTeacherPasswordRequest $request): JsonResponse
@@ -129,10 +130,11 @@ class TeachersController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'Teacher Password Reset',
-                'message' => $admin->name . ' has reset password of teacher: ' . $teacher->firstname . ' ' . $teacher->lastname . '.',
+                'message' => $admin->name.' has reset password of teacher: '.$teacher->firstname.' '.$teacher->lastname.'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
+
         return response()->json([
             'status' => 'success',
             'message' => 'Teacher\'s password has been successfully changed.',
@@ -149,7 +151,7 @@ class TeachersController extends Controller
         Gate::authorize('update', $teacher);
         $file = $request->file('photoimg');
         $ext = $file->getClientOriginalExtension();
-        $filename = Str::random(12) . '.' . strtolower($ext);
+        $filename = Str::random(12).'.'.strtolower($ext);
         $path = $file->storeAs('teachers', $filename, 'public');
 
         if (! $path) {
@@ -157,6 +159,7 @@ class TeachersController extends Controller
         }
 
         $teacher->update(['imagelocation' => $filename]);
+
         return response()->json(['status' => 'success']);
     }
 
@@ -174,7 +177,7 @@ class TeachersController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'Teacher Contact Updated',
-                'message' => $admin->name . ' has updated the contact details of teacher: ' . $teacher->firstname . ' ' . $teacher->lastname . '.',
+                'message' => $admin->name.' has updated the contact details of teacher: '.$teacher->firstname.' '.$teacher->lastname.'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -204,7 +207,7 @@ class TeachersController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'Teacher Employment Status Updated',
-                'message' => $admin->name . ' has updated the employment status of teacher: ' . $teacher->firstname . ' ' . $teacher->lastname . '.',
+                'message' => $admin->name.' has updated the employment status of teacher: '.$teacher->firstname.' '.$teacher->lastname.'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -235,7 +238,7 @@ class TeachersController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'Teacher Form Status Updated',
-                'message' => $admin->name . ' has updated the form status of teacher: ' . $teacher->firstname . ' ' . $teacher->lastname . '.',
+                'message' => $admin->name.' has updated the form status of teacher: '.$teacher->firstname.' '.$teacher->lastname.'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -266,7 +269,7 @@ class TeachersController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'Teacher Result Modification Status Updated',
-                'message' => $admin->name . ' has updated the result modification status of teacher: ' . $teacher->firstname . ' ' . $teacher->lastname . '.',
+                'message' => $admin->name.' has updated the result modification status of teacher: '.$teacher->firstname.' '.$teacher->lastname.'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -340,6 +343,7 @@ class TeachersController extends Controller
             if ($request->expectsJson()) {
                 return response()->json(['status' => 'error', 'message' => $msg]);
             }
+
             return redirect()->back()->withInput()->withErrors(['email' => $msg]);
         }
 
@@ -372,7 +376,7 @@ class TeachersController extends Controller
 
         if ($request->hasFile('photoimg')) {
             $file = $request->file('photoimg');
-            $filename = Str::random(12) . '.' . strtolower($file->getClientOriginalExtension());
+            $filename = Str::random(12).'.'.strtolower($file->getClientOriginalExtension());
             $file->storeAs('teachers', $filename, 'public');
             $data['imagelocation'] = $filename;
         }
@@ -383,18 +387,19 @@ class TeachersController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'Teacher Registered',
-                'message' => $admin->name . ' has registered a new teacher: ' . $request->input('firstname') . ' ' . $request->input('lastname'),
+                'message' => $admin->name.' has registered a new teacher: '.$request->input('firstname').' '.$request->input('lastname'),
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
         if ($request->expectsJson()) {
             return response()->json([
                 'status' => 'success',
-                'message' => $request->input('firstname') . ' ' . $request->input('lastname') . ' account has been registered successfully.',
+                'message' => $request->input('firstname').' '.$request->input('lastname').' account has been registered successfully.',
                 'redirect' => 'admin/teachers',
             ]);
         }
-        return redirect()->route('admin.teachers.index')->with('success', $request->input('firstname') . ' ' . $request->input('lastname') . ' account has been registered successfully.');
+
+        return redirect()->route('admin.teachers.index')->with('success', $request->input('firstname').' '.$request->input('lastname').' account has been registered successfully.');
     }
 
     public function assignClassForm(): View
@@ -431,7 +436,7 @@ class TeachersController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'Teacher Registration',
-                'message' => $admin->name . ' has assigned teacher: ' . $teacher->firstname . ' to class ' . $assignedClass,
+                'message' => $admin->name.' has assigned teacher: '.$teacher->firstname.' to class '.$assignedClass,
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -441,6 +446,7 @@ class TeachersController extends Controller
                 'message' => 'A new class has been assigned to the teacher successfully.',
             ]);
         }
+
         return redirect()->route('admin.assign_teacher_to_class.form')->with('success', 'A new class has been assigned to the teacher successfully.');
     }
 

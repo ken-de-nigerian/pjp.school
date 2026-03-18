@@ -16,7 +16,7 @@ class UpdateNewsCoverImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'newsId' => 'required',
+            'newsId' => 'required|integer|exists:news,id',
             'photoimg' => 'required|file|image|mimes:jpg,jpeg,png|max:2048',
         ];
     }

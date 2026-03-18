@@ -62,6 +62,7 @@ class BehavioralController extends Controller
         if ($class && $term && $session) {
             $segment = config('school.no_segment', 'No Segment');
             $records = $this->behavioralService->getRecord($class, $term, $session, $segment);
+
             return view('teacher.behavioral.view-behavioral', [
                 'students' => $records,
                 'class' => $class,

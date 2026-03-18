@@ -31,7 +31,7 @@ class DashboardAccessTest extends TestCase
     {
         $response = $this->get(route('admin.dashboard'));
 
-        $response->assertRedirect(route('login'));
+        $response->assertUnauthorized();
     }
 
     public function test_authenticated_admin_can_access_dashboard(): void

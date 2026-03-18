@@ -1,16 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Actions\SendNotificationAction;
+use App\Enums\ResultStatus;
 use App\Models\AnnualResult;
-use App\Models\Notification;
 use App\Models\Position;
 use App\Models\Student;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class ResultPublishService
+final class ResultPublishService
 {
+    public function __construct(
+        private readonly SendNotificationAction $sendNotificationAction
+    ) {}
+
     /**
      * @throws Throwable
      */
@@ -30,7 +37,7 @@ class ResultPublishService
 
         $hasUnverified = AnnualResult::query()
             ->forClassTermSession($class, $term, $session)
-            ->whereIn('status', [2, 3])
+            ->whereIn('status', [ResultStatus::PENDING->value, ResultStatus::REJECTED->value])
             ->exists();
 
         if ($hasUnverified) {
@@ -86,11 +93,10 @@ class ResultPublishService
         }
 
         DB::transaction(function () use ($insertData, $class, $term, $session, $adminName) {
-            Notification::query()->create([
-                'title' => 'Results Published',
-                'message' => $adminName.' has published '.$term.' results for: '.$class,
-                'date_added' => now()->format('Y-m-d H:i:s'),
-            ]);
+            $this->sendNotificationAction->execute(
+                'Results Published',
+                $adminName.' has published '.$term.' results for: '.$class
+            );
 
             Position::query()->insert($insertData);
 

@@ -64,30 +64,71 @@
                         @forelse($classesWithCounts as $c)
                             <div class="h-full min-h-[200px]">
                                 <div
-                                    class="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-200 hover:shadow-[var(--elevation-2)]"
+                                    class="relative flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-200 hover:shadow-[var(--elevation-2)]"
                                     style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-1);">
-                                    <div
-                                        class="p-5 sm:p-6 text-center flex-1 flex flex-col items-center justify-center gap-3">
+                                    <button type="button"
+                                            class="absolute top-3 right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center hover:bg-[rgba(0,0,0,0.04)]"
+                                            style="color: var(--on-surface-variant);"
+                                            aria-haspopup="menu"
+                                            aria-expanded="false"
+                                            data-class-menu-toggle="{{ $c['id'] }}">
+                                        <i class="fas fa-ellipsis-vertical text-sm" aria-hidden="true"></i>
+                                        <span class="sr-only">Class actions</span>
+                                    </button>
+                                    <div class="absolute top-11 right-3 w-40 rounded-xl shadow-lg border text-sm bg-[var(--surface-container-lowest)] z-10 hidden"
+                                         style="border-color: var(--outline-variant);"
+                                         role="menu"
+                                         data-class-menu="{{ $c['id'] }}">
+                                        <button type="button"
+                                                class="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-[color-mix(in_srgb,var(--on-surface)_6%,transparent)]"
+                                                style="color: var(--on-surface);"
+                                                data-class-id="{{ $c['id'] }}"
+                                                data-class-name="{{ e($c['class_name']) }}"
+                                                data-class-students="{{ (int)($c['user_count'] ?? 0) }}"
+                                                onclick="openEditClassModal(this)">
+                                            <i class="fas fa-pen text-xs" aria-hidden="true"></i>
+                                            <span>Edit class</span>
+                                        </button>
+                                        <button type="button"
+                                                class="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-[color-mix(in_srgb,var(--on-surface)_6%,transparent)]"
+                                                style="color: var(--on-error-container);"
+                                                data-class-id="{{ $c['id'] }}"
+                                                data-class-name="{{ e($c['class_name']) }}"
+                                                data-class-students="{{ (int)($c['user_count'] ?? 0) }}"
+                                                onclick="openDeleteClassModal(this)">
+                                            <i class="fas fa-trash-alt text-xs" aria-hidden="true"></i>
+                                            <span>Delete class</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="p-5 sm:p-6 flex-1 flex flex-col items-center justify-center gap-3 text-center">
                                         <div
                                             class="dashboard-quick-icon dashboard-quick-icon--blue w-14 h-14 rounded-2xl flex-shrink-0 flex items-center justify-center"
                                             style="border-radius: 16px;">
                                             <i class="fas fa-chalkboard text-xl" aria-hidden="true"></i>
                                         </div>
-                                        <h2 class="text-base sm:text-lg font-medium mb-0"
-                                            style="color: var(--on-surface);">{{ e($c['class_name']) }}</h2>
-                                        <p class="text-2xl sm:text-3xl font-normal tracking-tight mb-0"
-                                           style="color: var(--on-surface);">{{ $c['user_count'] ?? 0 }}</p>
-                                        <p class="text-sm font-normal mb-0" style="color: var(--on-surface-variant);">
-                                            Student(s)</p>
+                                        <div>
+                                            <h2 class="text-base sm:text-lg font-medium mb-0"
+                                                style="color: var(--on-surface);">
+                                                {{ e($c['class_name']) }}
+                                            </h2>
+                                            <p class="text-2xl sm:text-3xl font-normal tracking-tight mb-0"
+                                               style="color: var(--on-surface);">
+                                                {{ $c['user_count'] ?? 0 }}
+                                            </p>
+                                            <p class="text-sm font-normal mb-0"
+                                               style="color: var(--on-surface-variant);">
+                                                Student(s)
+                                            </p>
+                                        </div>
                                     </div>
 
-                                    <div class="p-4 sm:p-5 pt-0 flex justify-center"
-                                         style="border-top: 1px solid var(--outline-variant);">
+                                    <div class="px-4 pb-4 sm:px-5 sm:pb-5 pt-0" style="border-top: 1px solid var(--outline-variant);">
                                         <a href="{{ route('admin.classes', ['class' => $c['class_name']]) }}"
-                                           class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]"
-                                           style="border-radius: 12px; margin-top: 10px;">
-                                            <i class="fas fa-door-open text-sm" aria-hidden="true"></i>
-                                            Open class
+                                           class="btn-primary flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98] shadow-sm w-full"
+                                           style="background: var(--primary); color: var(--on-primary); margin-top: 15px;">
+                                            <i class="fas fa-door-open" aria-hidden="true"></i>
+                                            <span>Open class</span>
                                         </a>
                                     </div>
                                 </div>
@@ -288,7 +329,7 @@
                                             <div class="min-w-0 flex-1 md:min-w-0 md:flex-1">
                                                 <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Name</span>
                                                 <p class="text-sm font-medium truncate" style="color: var(--on-surface);">
-                                                    <a href="{{ route('admin.students.show', $s->id) }}"
+                                                    <a href="{{ route('admin.students.show', $s) }}"
                                                        class="transition-opacity hover:opacity-80"
                                                        style="color: var(--primary);">{{ $fullName ?: '—' }}</a>
                                                 </p>
@@ -397,6 +438,110 @@
         </div>
     </div>
 
+    <div id="edit-class-modal"
+         class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
+         aria-modal="true" role="dialog" aria-labelledby="edit-class-modal-title" aria-hidden="true">
+        <div
+            class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl shadow-2xl flex flex-col"
+            style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
+            <div class="flex-shrink-0 px-5 sm:px-6 pt-5 sm:pt-6 pb-3 flex items-start justify-between gap-3"
+                 style="border-bottom: 1px solid var(--outline-variant);">
+                <div class="min-w-0 flex-1">
+                    <h3 id="edit-class-modal-title" class="text-lg font-semibold" style="color: var(--on-surface);">
+                        Edit class
+                    </h3>
+                    <p class="text-sm mt-1" style="color: var(--on-surface-variant);">
+                        Update the class name. This will be used across the app for this class.
+                    </p>
+                </div>
+                <button type="button" onclick="closeModal('edit-class-modal')"
+                        class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" aria-label="Close"
+                        style="color: var(--on-surface);">
+                    <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <form id="edit-class-form" method="post"
+                  action="#"
+                  class="flex flex-col flex-1 min-h-0">
+                @csrf
+                @method('PUT')
+                <input type="hidden" id="edit-class-id" name="id">
+                <div class="flex-1 min-h-0 overflow-y-auto px-5 sm:px-6 py-4">
+                    <div class="form-group min-w-0">
+                        <label for="edit-class-name" class="form-label">Class name</label>
+                        <input type="text" id="edit-class-name" name="class_name" class="form-input w-full min-w-0"
+                               placeholder="e.g. JSS 1A" value="" maxlength="100"
+                               autocomplete="off">
+                        <p id="edit_class_name-error" class="form-error mt-1 text-sm hidden" aria-live="polite"></p>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 flex flex-col-reverse sm:flex-row justify-end gap-2 px-5 sm:px-6 py-4"
+                     style="border-top: 1px solid var(--outline-variant); background: var(--surface-container-lowest);">
+                    <button type="button" onclick="closeModal('edit-class-modal')"
+                            class="btn-secondary px-4 py-2.5 rounded-xl text-sm w-full sm:w-auto">Cancel
+                    </button>
+                    <button type="submit" id="edit-class-submit-btn"
+                            class="btn-primary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium w-full sm:w-auto transition-opacity hover:opacity-95"
+                            style="border-radius: 12px;">Save changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="delete-class-modal"
+         class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
+         aria-modal="true" role="dialog" aria-labelledby="delete-class-modal-title" aria-hidden="true">
+        <div
+            class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl shadow-2xl flex flex-col"
+            style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
+            <div class="flex-shrink-0 px-5 sm:px-6 pt-5 sm:pt-6 pb-3 flex items-start justify-between gap-3"
+                 style="border-bottom: 1px solid var(--outline-variant);">
+                <div class="min-w-0 flex-1">
+                    <h3 id="delete-class-modal-title" class="text-lg font-semibold" style="color: var(--on-surface);">
+                        Delete class
+                    </h3>
+                    <p class="text-sm mt-1" style="color: var(--on-surface-variant);">
+                        You can only delete a class that has no students assigned to it.
+                    </p>
+                </div>
+                <button type="button" onclick="closeModal('delete-class-modal')"
+                        class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" aria-label="Close"
+                        style="color: var(--on-surface);">
+                    <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <form id="delete-class-form" method="post"
+                  action="#"
+                  class="flex flex-col flex-1 min-h-0">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" id="delete-class-id" name="id">
+                <input type="hidden" id="delete-class-name" name="class_name">
+                <div class="flex-1 min-h-0 overflow-y-auto px-5 sm:px-6 py-4">
+                    <p class="text-sm" style="color: var(--on-surface-variant);">
+                        Are you sure you want to delete
+                        <span id="delete-class-label" class="font-medium" style="color: var(--on-surface);"></span>?
+                        This action cannot be undone.
+                    </p>
+                </div>
+                <div class="flex-shrink-0 flex flex-col-reverse sm:flex-row justify-end gap-2 px-5 sm:px-6 py-4"
+                     style="border-top: 1px solid var(--outline-variant); background: var(--surface-container-lowest);">
+                    <button type="button" onclick="closeModal('delete-class-modal')"
+                            class="btn-secondary px-4 py-2.5 rounded-xl text-sm w-full sm:w-auto">Cancel
+                    </button>
+                    <button type="submit" id="delete-class-submit-btn"
+                            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium w-full sm:w-auto transition-opacity hover:opacity-95"
+                            style="border-radius: 12px; background: var(--error-container); color: var(--on-error-container);">
+                        Delete class
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     @push('scripts')
         <script>
             (function () {
@@ -447,7 +592,8 @@
                                 if (r.status === 422) {
                                     return r.json().then(function (data) {
                                         if (data.errors && typeof showLaravelErrors === 'function') {
-                                            showLaravelErrors(data.errors);
+                                            // Map server field -> add modal error element id prefix (class_name-error)
+                                            showLaravelErrors(data.errors, {class_name: 'class_name'});
                                         } else if (data.message && typeof flashError === 'function') {
                                             flashError(data.message);
                                         }
@@ -472,6 +618,203 @@
                             })
                             .finally(function () {
                                 if (typeof setButtonLoading === 'function') setButtonLoading(addClassSubmitBtn, false);
+                            });
+                    });
+                }
+            })();
+
+            function openEditClassModal(button) {
+                const id = button.getAttribute('data-class-id');
+                const name = button.getAttribute('data-class-name') || '';
+                const modalId = 'edit-class-modal';
+                const form = document.getElementById('edit-class-form');
+                const nameInput = document.getElementById('edit-class-name');
+                const idInput = document.getElementById('edit-class-id');
+                const errorEl = document.getElementById('edit_class_name-error');
+
+                if (errorEl) {
+                    errorEl.textContent = '';
+                    errorEl.classList.add('hidden');
+                }
+
+                if (form && id && nameInput && idInput) {
+                    form.action = "{{ route('admin.classes.update', ['schoolClass' => 'CLASS_ID']) }}".replace('CLASS_ID', id);
+                    idInput.value = id;
+                    nameInput.value = name;
+                }
+
+                openModal(modalId);
+                setTimeout(function () {
+                    nameInput && nameInput.focus();
+                }, 50);
+            }
+
+            function openDeleteClassModal(button) {
+                const id = button.getAttribute('data-class-id');
+                const name = button.getAttribute('data-class-name') || '';
+                const students = parseInt(button.getAttribute('data-class-students') || '0', 10);
+                const modalId = 'delete-class-modal';
+                const form = document.getElementById('delete-class-form');
+                const idInput = document.getElementById('delete-class-id');
+                const nameInput = document.getElementById('delete-class-name');
+                const label = document.getElementById('delete-class-label');
+
+                if (students > 0) {
+                    if (typeof flashError === 'function') {
+                        flashError('You can only delete an empty class with no students.');
+                    }
+                    return;
+                }
+
+                if (form && id && idInput && nameInput) {
+                    form.action = "{{ route('admin.classes.destroy', ['schoolClass' => 'CLASS_ID']) }}".replace('CLASS_ID', id);
+                    idInput.value = id;
+                    nameInput.value = name;
+                }
+
+                if (label) {
+                    label.textContent = name;
+                }
+
+                openModal(modalId);
+            }
+
+            (function () {
+                // Per-card actions menu (ellipsis dropdown)
+                document.querySelectorAll('[data-class-menu-toggle]').forEach(function (btn) {
+                    btn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        const id = btn.getAttribute('data-class-menu-toggle');
+                        const menu = document.querySelector('[data-class-menu="' + id + '"]');
+                        if (!menu) return;
+                        const isHidden = menu.classList.contains('hidden');
+                        document.querySelectorAll('[data-class-menu]').forEach(function (m) {
+                            m.classList.add('hidden');
+                        });
+                        if (isHidden) {
+                            menu.classList.remove('hidden');
+                        }
+                    });
+                });
+
+                document.addEventListener('click', function () {
+                    document.querySelectorAll('[data-class-menu]').forEach(function (m) {
+                        m.classList.add('hidden');
+                    });
+                });
+
+                const editForm = document.getElementById('edit-class-form');
+                const editSubmitBtn = document.getElementById('edit-class-submit-btn');
+                const editError = document.getElementById('edit_class_name-error');
+
+                function clearEditErrors() {
+                    if (editError) {
+                        editError.textContent = '';
+                        editError.classList.add('hidden');
+                    }
+                }
+
+                if (editForm && editSubmitBtn) {
+                    editForm.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        clearEditErrors();
+                        let token = document.querySelector('meta[name="csrf-token"]') && document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                        if (!token) token = editForm.querySelector('input[name="_token"]') && editForm.querySelector('input[name="_token"]').value;
+                        if (!token) {
+                            if (typeof flashError === 'function') flashError('Security token missing. Please refresh the page.');
+                            return;
+                        }
+                        if (typeof setButtonLoading === 'function') setButtonLoading(editSubmitBtn, true);
+                        const formData = new FormData(editForm);
+                        fetch(editForm.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': token,
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                            .then(function (r) {
+                                if (r.status === 422) {
+                                    return r.json().then(function (data) {
+                                        if (data.errors && typeof showLaravelErrors === 'function') {
+                                            // Map server field -> edit modal error element id prefix
+                                            showLaravelErrors(data.errors, {class_name: 'edit_class_name'});
+                                        } else if (data.message && typeof flashError === 'function') {
+                                            flashError(data.message);
+                                        }
+                                        throw new Error('Validation failed');
+                                    });
+                                }
+                                return r.json();
+                            })
+                            .then(function (data) {
+                                if (data.status === 'success') {
+                                    if (typeof flashSuccess === 'function') flashSuccess(data.message || 'Class updated.');
+                                    closeModal('edit-class-modal');
+                                    setTimeout(function () { window.location.reload(); }, 2800);
+                                } else {
+                                    if (typeof flashError === 'function') flashError(data.message || 'Could not update class.');
+                                }
+                            })
+                            .catch(function (err) {
+                                if (err.message !== 'Validation failed' && typeof flashError === 'function') {
+                                    flashError('An error occurred. Please try again.');
+                                }
+                            })
+                            .finally(function () {
+                                if (typeof setButtonLoading === 'function') setButtonLoading(editSubmitBtn, false);
+                            });
+                    });
+                }
+
+                const deleteForm = document.getElementById('delete-class-form');
+                const deleteSubmitBtn = document.getElementById('delete-class-submit-btn');
+
+                if (deleteForm && deleteSubmitBtn) {
+                    deleteForm.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        let token = document.querySelector('meta[name="csrf-token"]') && document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                        if (!token) token = deleteForm.querySelector('input[name="_token"]') && deleteForm.querySelector('input[name="_token"]').value;
+                        if (!token) {
+                            if (typeof flashError === 'function') flashError('Security token missing. Please refresh the page.');
+                            return;
+                        }
+                        if (typeof setButtonLoading === 'function') setButtonLoading(deleteSubmitBtn, true);
+                        const formData = new FormData(deleteForm);
+                        fetch(deleteForm.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': token,
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                            .then(function (r) {
+                                return r.json().then(function (data) {
+                                    return {status: r.status, ok: r.ok, data: data};
+                                });
+                            })
+                            .then(function (res) {
+                                if (res.ok && res.data.status === 'success') {
+                                    if (typeof flashSuccess === 'function') flashSuccess(res.data.message || 'Class deleted.');
+                                    closeModal('delete-class-modal');
+                                    setTimeout(function () { window.location.reload(); }, 2800);
+                                } else if (res.status === 422) {
+                                    if (typeof flashError === 'function') {
+                                        flashError(res.data.message || 'You can only delete an empty class with no students.');
+                                    }
+                                } else {
+                                    if (typeof flashError === 'function') flashError(res.data.message || 'Could not delete class.');
+                                }
+                            })
+                            .catch(function () {
+                                if (typeof flashError === 'function') flashError('An error occurred. Please try again.');
+                            })
+                            .finally(function () {
+                                if (typeof setButtonLoading === 'function') setButtonLoading(deleteSubmitBtn, false);
                             });
                     });
                 }

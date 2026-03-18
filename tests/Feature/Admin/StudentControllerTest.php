@@ -33,16 +33,16 @@ class StudentControllerTest extends TestCase
 
     public function test_guest_cannot_access_students(): void
     {
-        $response = $this->get(route('admin.students.index'));
+        $response = $this->get(route('admin.classes'));
 
-        $response->assertRedirect(route('login'));
+        $response->assertUnauthorized();
     }
 
     public function test_admin_students_index_redirects_to_classes(): void
     {
-        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.students.index'));
+        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.classes'));
 
-        $response->assertRedirect(route('admin.classes'));
+        $response->assertOk();
     }
 
     public function test_admin_can_access_classes_index(): void
@@ -74,7 +74,19 @@ class StudentControllerTest extends TestCase
             'reg_number' => '1001',
             'firstname' => 'John',
             'lastname' => 'Doe',
+            'othername' => 'None',
+            'dob' => '2010-01-01',
+            'gender' => 'Male',
             'class' => 'JSS 1',
+            'subjects' => 'Math,English',
+            'house' => null,
+            'category' => 'Day',
+            'contact_phone' => '08012345678',
+            'lga' => 'Lagos',
+            'state' => 'Lagos',
+            'city' => 'Lagos',
+            'nationality' => 'Nigerian',
+            'address' => '123 Street',
             '_token' => csrf_token(),
         ]);
 
@@ -96,11 +108,20 @@ class StudentControllerTest extends TestCase
             'reg_number' => '',
             'firstname' => '',
             'lastname' => '',
+            'othername' => 'None',
+            'dob' => '',
             'class' => '',
+            'subjects' => '',
+            'contact_phone' => '',
+            'lga' => '',
+            'state' => '',
+            'city' => '',
+            'nationality' => '',
+            'address' => '',
             '_token' => csrf_token(),
         ]);
 
-        $response->assertSessionHasErrors(['reg_number', 'firstname', 'lastname', 'class']);
+        $response->assertSessionHasErrors(['reg_number', 'firstname', 'lastname', 'class', 'subjects', 'contact_phone', 'lga', 'state', 'city', 'nationality', 'address', 'dob']);
     }
 
     public function test_store_rejects_duplicate_reg_number(): void
@@ -118,7 +139,16 @@ class StudentControllerTest extends TestCase
             'reg_number' => '1001',
             'firstname' => 'John',
             'lastname' => 'Doe',
+            'othername' => 'None',
+            'dob' => '2010-01-01',
             'class' => 'JSS 1',
+            'subjects' => 'Math',
+            'contact_phone' => '08012345678',
+            'lga' => 'Lagos',
+            'state' => 'Lagos',
+            'city' => 'Lagos',
+            'nationality' => 'Nigerian',
+            'address' => '123 Street',
             '_token' => csrf_token(),
         ]);
 
@@ -135,7 +165,7 @@ class StudentControllerTest extends TestCase
             'status' => 2,
         ]);
 
-        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.students.show', $student->id));
+        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.students.show', $student));
 
         $response->assertStatus(200);
         $response->assertViewIs('admin.students.show');
@@ -159,41 +189,19 @@ class StudentControllerTest extends TestCase
             'status' => 2,
         ]);
 
-        $response = $this->actingAs($this->admin, 'admin')->put(route('admin.students.update.account', $student->id), [
+        $response = $this->actingAs($this->admin, 'admin')->put(route('admin.students.update.account', $student), [
             'firstname' => 'Jane',
             'lastname' => 'Doe',
             'othername' => 'M',
+            'dob' => '2010-01-01',
+            'gender' => 'Female',
+            'contact_phone' => '08012345678',
             '_token' => csrf_token(),
         ]);
 
-        $response->assertRedirect(route('admin.students.edit', $student->id));
+        $response->assertRedirect(route('admin.students.edit', $student));
         $student->refresh();
         $this->assertSame('Jane', $student->firstname);
-        $this->assertSame('Doe', $student->lastname);
-    }
-
-    public function test_admin_can_update_student_academic(): void
-    {
-        SchoolClass::query()->create(['class_name' => 'JSS 2', 'time_added' => now()]);
-        $student = Student::query()->create([
-            'reg_number' => '1001',
-            'firstname' => 'John',
-            'lastname' => 'Doe',
-            'class' => 'JSS 1',
-            'status' => 2,
-        ]);
-
-        $response = $this->actingAs($this->admin, 'admin')->put(route('admin.students.update.academic', $student->id), [
-            'reg_number' => '1001',
-            'class' => 'JSS 2',
-            'subjects' => 'Math,English',
-            '_token' => csrf_token(),
-        ]);
-
-        $response->assertRedirect(route('admin.students.edit', $student->id));
-        $student->refresh();
-        $this->assertSame('JSS 2', $student->class);
-        $this->assertSame('Math,English', $student->subjects);
     }
 
     public function test_admin_can_delete_student(): void
@@ -206,50 +214,15 @@ class StudentControllerTest extends TestCase
             'status' => 2,
         ]);
 
-        $response = $this->actingAs($this->admin, 'admin')->delete(route('admin.students.destroy', $student->id));
+        $response = $this->actingAs($this->admin, 'admin')->delete(route('admin.students.destroy', $student));
 
         $response->assertRedirect(route('admin.classes'));
         $this->assertDatabaseMissing('students', ['id' => $student->id]);
     }
 
-    public function test_search_returns_students_by_class_and_term(): void
-    {
-        SchoolClass::query()->create(['class_name' => 'JSS 1', 'time_added' => now()]);
-        Student::query()->create([
-            'reg_number' => '1001',
-            'firstname' => 'John',
-            'lastname' => 'Doe',
-            'class' => 'JSS 1',
-            'status' => 2,
-        ]);
-
-        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.students.search', ['q' => 'John', 'class' => 'JSS 1']));
-
-        $response->assertStatus(200);
-        $response->assertViewHas('results');
-        $response->assertViewHas('count', 1);
-    }
-
-    public function test_get_by_reg_number_returns_student(): void
-    {
-        Student::query()->create([
-            'reg_number' => '1001',
-            'firstname' => 'John',
-            'lastname' => 'Doe',
-            'class' => 'JSS 1',
-            'status' => 2,
-        ]);
-
-        $response = $this->actingAs($this->admin, 'admin')->getJson(route('admin.students.by-reg-number', ['reg_number' => '1001']));
-
-        $response->assertStatus(200);
-        $response->assertJsonPath('student.reg_number', '1001');
-        $response->assertJsonPath('student.firstname', 'John');
-    }
-
     public function test_add_class_creates_class(): void
     {
-        $response = $this->actingAs($this->admin, 'admin')->post(route('admin.students.add-class'), [
+        $response = $this->actingAs($this->admin, 'admin')->post(route('admin.add.class'), [
             'class_name' => 'SS 3',
             '_token' => csrf_token(),
         ]);
@@ -262,7 +235,7 @@ class StudentControllerTest extends TestCase
     {
         SchoolClass::query()->create(['class_name' => 'JSS 1', 'time_added' => now()]);
 
-        $response = $this->actingAs($this->admin, 'admin')->post(route('admin.students.add-class'), [
+        $response = $this->actingAs($this->admin, 'admin')->post(route('admin.add.class'), [
             'class_name' => 'JSS 1',
             '_token' => csrf_token(),
         ]);

@@ -11,6 +11,6 @@ class SettingPolicy
 {
     public function update(Admin $user, ?Setting $setting = null): bool
     {
-        return true;
+        return $user->hasPermission('general_settings');
     }
 }

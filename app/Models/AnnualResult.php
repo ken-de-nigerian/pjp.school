@@ -88,6 +88,7 @@ class AnnualResult extends Model
         if ($score >= 40) {
             return 'E';
         }
+
         return 'F';
     }
 

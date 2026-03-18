@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\PublishClassResultsAction;
+use App\Actions\SendNotificationAction;
+use App\Contracts\ResultServiceContract;
+use App\Enums\Term;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApproveResultsRequest;
 use App\Http\Requests\DeleteResultsRequest;
 use App\Http\Requests\EditResultRequest;
-use App\Http\Requests\RejectResultsRequest;
 use App\Http\Requests\PublishResultRequest;
+use App\Http\Requests\RejectResultsRequest;
 use App\Http\Requests\UploadResultsTermRequest;
-use App\Models\Notification;
 use App\Models\SchoolClass;
-use App\Models\Student;
 use App\Models\Setting;
+use App\Models\Student;
 use App\Models\Subject;
-use App\Services\ResultPublishService;
-use App\Services\ResultService;
 use App\Services\StudentService;
+use App\Support\DefaultTermSession;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -26,22 +28,25 @@ use Throwable;
 
 class ResultController extends Controller
 {
+    use AuthorizesAdminPermission;
+
     public function __construct(
-        private readonly ResultPublishService $resultPublishService,
-        private readonly ResultService $resultService,
+        private readonly PublishClassResultsAction $publishClassResultsAction,
+        private readonly ResultServiceContract $resultService,
+        private readonly SendNotificationAction $sendNotificationAction,
         private readonly StudentService $studentService,
     ) {}
 
     public function upload(Request $request): View
     {
+        $this->authorizePermission('upload_result');
         $getClasses = $this->studentService->getClassesArray();
         $getSubjects = Subject::query()->orderBy('grade')->orderBy('subject_name')->get();
-        $settings = Setting::getCached();
 
         $class = trim((string) $request->query('class', ''));
         $subjects = trim((string) $request->query('subjects', ''));
-        $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
-        $session = trim((string) $request->query('session', $settings['session'] ?? ''));
+        $term = trim((string) $request->query('term', DefaultTermSession::getDefaultTerm()));
+        $session = trim((string) $request->query('session', DefaultTermSession::getDefaultSession()));
 
         $showSheet = $class !== '' && $subjects !== '' && $term !== '' && $session !== '';
 
@@ -71,6 +76,7 @@ class ResultController extends Controller
      */
     public function uploadResults(UploadResultsTermRequest $request): JsonResponse
     {
+        $this->authorizePermission('upload_result');
         $results = $request->input('results');
         $class = $results[0]['class'] ?? '';
         $term = $results[0]['term'] ?? '';
@@ -80,7 +86,7 @@ class ResultController extends Controller
         if ($this->resultService->hasUploadedResults($class, $term, $session, $subjects)) {
             return response()->json([
                 'status' => 'error',
-                'message' => $subjects . ' results for ' . $class . ' (' . $term . ') already exist.',
+                'message' => $subjects.' results for '.$class.' ('.$term.') already exist.',
             ]);
         }
 
@@ -88,34 +94,33 @@ class ResultController extends Controller
         if ($count !== count($results)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error adding ' . $subjects . ' results for ' . $class . '. Please try again later.',
+                'message' => 'Error adding '.$subjects.' results for '.$class.'. Please try again later.',
             ]);
         }
 
         $admin = $request->user('admin');
         $adminName = $admin ? $admin->name : 'Admin';
-        Notification::query()->create([
-            'title' => 'Results Uploaded',
-            'message' => $adminName . ' has uploaded ' . $subjects . ' results for ' . $class . ' (' . $term . ', ' . $session . ').',
-            'date_added' => now()->format('Y-m-d H:i:s'),
-        ]);
+        $this->sendNotificationAction->execute(
+            'Results Uploaded',
+            $adminName.' has uploaded '.$subjects.' results for '.$class.' ('.$term.', '.$session.').'
+        );
 
         return response()->json([
             'status' => 'success',
-            'message' => $subjects . ' results for ' . $class . ' have been added successfully.',
+            'message' => $subjects.' results for '.$class.' have been added successfully.',
         ]);
     }
 
     public function getUploadedResults(Request $request): View|JsonResponse
     {
+        $this->authorizePermission('view_uploaded_results');
         $getClasses = $this->studentService->getClassesArray();
         $getSubjects = Subject::query()->orderBy('grade')->orderBy('subject_name')->get();
-        $settings = Setting::getCached();
 
         $class = $request->query('class', '');
         $subjects = $request->query('subjects', '');
-        $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
-        $session = trim((string) $request->query('session', $settings['session'] ?? ''));
+        $term = trim((string) $request->query('term', DefaultTermSession::getDefaultTerm()));
+        $session = trim((string) $request->query('session', DefaultTermSession::getDefaultSession()));
 
         if (! $class || ! $term || ! $session || ! $subjects) {
             if ($request->expectsJson()) {
@@ -152,7 +157,9 @@ class ResultController extends Controller
 
     public function publish(): View
     {
+        $this->authorizePermission('publish_result');
         $settings = Setting::getCached();
+
         return view('admin.results.publish', [
             'settings' => $settings,
         ]);
@@ -163,6 +170,7 @@ class ResultController extends Controller
      */
     public function publishResults(PublishResultRequest $request)
     {
+        $this->authorizePermission('publish_result');
         $validated = $request->validated();
         $admin = $request->user('admin');
         $adminName = $admin ? $admin->name : 'Admin';
@@ -170,34 +178,36 @@ class ResultController extends Controller
         if ($this->resultService->hasPublishedResults($validated['class'], $validated['term'], $validated['session'])) {
             return response()->json([
                 'status' => 'error',
-                'message' => $validated['term'] . ' results for ' . $validated['class'] . ' has already been published',
+                'message' => $validated['term'].' results for '.$validated['class'].' has already been published',
             ]);
         }
 
-        $response = $this->resultPublishService->publish(
+        $dto = $this->publishClassResultsAction->execute(
             $validated['class'],
             $validated['term'],
             $validated['session'],
             $adminName
         );
 
-        if (($response['status'] ?? '') === 'success') {
-            $response['redirect'] = route('admin.results.published', [
+        $payload = $dto->toArray();
+        if ($dto->isSuccess()) {
+            $payload['redirect'] = route('admin.results.published', [
                 'class' => $validated['class'],
                 'term' => $validated['term'],
                 'session' => $validated['session'],
             ]);
         }
 
-        return response()->json($response);
+        return response()->json($payload);
     }
 
     public function viewPublished(Request $request): View
     {
-        $settings = Setting::getCached();
+        $this->authorizePermission('view_published_results');
+
         $class = $request->query('class', '');
-        $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
-        $session = trim((string) $request->query('session', $settings['session'] ?? ''));
+        $term = trim((string) $request->query('term', DefaultTermSession::getDefaultTerm()));
+        $session = trim((string) $request->query('session', DefaultTermSession::getDefaultSession()));
 
         $positions = collect();
         $classes = SchoolClass::query()->orderBy('class_name')->get();
@@ -211,7 +221,7 @@ class ResultController extends Controller
                 ->values();
             $subjectBreakdown = $this->resultService->getSubjectBreakdownForPublished($class, $term, $session);
             $regNumbers = $positions->pluck('reg_number')->filter()->unique()->values()->all();
-            if (!empty($regNumbers)) {
+            if (! empty($regNumbers)) {
                 $studentsByReg = Student::query()
                     ->whereIn('reg_number', $regNumbers)
                     ->get()
@@ -232,23 +242,26 @@ class ResultController extends Controller
 
     public function transcript(): View
     {
+        $this->authorizePermission('transcript');
+
         return view('admin.transcript');
     }
 
     public function resultsByParams(Request $request): View
     {
+        $this->authorizePermission('view_uploaded_results');
         $param = trim((string) $request->query('param', ''));
         $class = trim((string) $request->query('class', ''));
         $groupBy = $request->query('group_by', 'session');
 
         $validGroupBy = ['session', 'segment', 'term', 'none'];
-        if (!in_array($groupBy, $validGroupBy, true)) {
+        if (! in_array($groupBy, $validGroupBy, true)) {
             $groupBy = 'session';
         }
 
         $classes = $this->studentService->getClassesArray();
         $sessions = $this->resultService->getDistinctSessionsFromResults();
-        $terms = ['First Term', 'Second Term', 'Third Term'];
+        $terms = Term::labels();
         $segments = $this->resultService->getDistinctSegmentsFromResults();
 
         $payload = [
@@ -293,6 +306,7 @@ class ResultController extends Controller
 
     public function edit(EditResultRequest $request): JsonResponse
     {
+        $this->authorizePermission('view_uploaded_results');
         $v = $request->validated();
         $updated = $this->resultService->editUploadedResult(
             (string) $v['studentId'],
@@ -309,15 +323,14 @@ class ResultController extends Controller
         if ($updated === 1) {
             $admin = $request->user('admin');
             $adminName = $admin ? $admin->name : 'Admin';
-            Notification::query()->create([
-                'title' => 'Results Edited',
-                'message' => $adminName . ' has edited ' . $v['subjects'] . ' results for student in ' . $v['class'],
-                'date_added' => now()->format('Y-m-d H:i:s'),
-            ]);
+            $this->sendNotificationAction->execute(
+                'Results Edited',
+                $adminName.' has edited '.$v['subjects'].' results for student in '.$v['class']
+            );
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'This student\'s ' . $v['subjects'] . ' result has been updated successfully.',
+                'message' => 'This student\'s '.$v['subjects'].' result has been updated successfully.',
             ]);
         }
 
@@ -329,21 +342,21 @@ class ResultController extends Controller
 
     public function approve(ApproveResultsRequest $request): JsonResponse
     {
+        $this->authorizePermission('view_uploaded_results');
         $ids = $request->input('selectedRows');
         $count = $this->resultService->approveByIds($ids);
 
         if ($count > 0) {
             $admin = $request->user('admin');
             $adminName = $admin ? $admin->name : 'Admin';
-            Notification::query()->create([
-                'title' => 'Results Approved',
-                'message' => $adminName . ' has approved results for students with ID: ' . implode(', ', $ids),
-                'date_added' => now()->format('Y-m-d H:i:s'),
-            ]);
+            $this->sendNotificationAction->execute(
+                'Results Approved',
+                $adminName.' has approved results for students with ID: '.implode(', ', $ids)
+            );
 
             return response()->json([
                 'status' => 'success',
-                'message' => $count . ' result(s) have been approved successfully.',
+                'message' => $count.' result(s) have been approved successfully.',
             ]);
         }
 
@@ -355,21 +368,21 @@ class ResultController extends Controller
 
     public function reject(RejectResultsRequest $request): JsonResponse
     {
+        $this->authorizePermission('view_uploaded_results');
         $ids = $request->input('selectedRows');
         $count = $this->resultService->rejectByIds($ids);
 
         if ($count > 0) {
             $admin = $request->user('admin');
             $adminName = $admin ? $admin->name : 'Admin';
-            Notification::query()->create([
-                'title' => 'Results Rejected',
-                'message' => $adminName . ' has rejected results for students with ID: ' . implode(', ', $ids),
-                'date_added' => now()->format('Y-m-d H:i:s'),
-            ]);
+            $this->sendNotificationAction->execute(
+                'Results Rejected',
+                $adminName.' has rejected results for students with ID: '.implode(', ', $ids)
+            );
 
             return response()->json([
                 'status' => 'success',
-                'message' => $count . ' result(s) have been rejected.',
+                'message' => $count.' result(s) have been rejected.',
             ]);
         }
 
@@ -381,6 +394,7 @@ class ResultController extends Controller
 
     public function delete(DeleteResultsRequest $request): JsonResponse
     {
+        $this->authorizePermission('view_uploaded_results');
         $class = (string) $request->input('class');
         $term = (string) $request->input('term');
         $session = (string) $request->input('session');
@@ -390,15 +404,14 @@ class ResultController extends Controller
         if ($count > 0) {
             $admin = $request->user('admin');
             $adminName = $admin ? $admin->name : 'Admin';
-            Notification::query()->create([
-                'title' => 'Results Deleted',
-                'message' => $adminName . ' has deleted all ' . $subjects . ' results for ' . $class . ' (' . $term . ', ' . $session . ').',
-                'date_added' => now()->format('Y-m-d H:i:s'),
-            ]);
+            $this->sendNotificationAction->execute(
+                'Results Deleted',
+                $adminName.' has deleted all '.$subjects.' results for '.$class.' ('.$term.', '.$session.').'
+            );
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'All ' . $count . ' result(s) for this sheet have been deleted.',
+                'message' => 'All '.$count.' result(s) for this sheet have been deleted.',
             ]);
         }
 
@@ -410,6 +423,7 @@ class ResultController extends Controller
 
     public function togglePublishedLive(Request $request): JsonResponse
     {
+        $this->authorizePermission('view_published_results');
         $request->validate([
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:100',
@@ -431,6 +445,7 @@ class ResultController extends Controller
                 'message' => $live ? 'Results are now live.' : 'Results are no longer live.',
             ]);
         }
+
         return response()->json([
             'status' => 'error',
             'message' => 'No published result found to update.',
@@ -439,6 +454,7 @@ class ResultController extends Controller
 
     public function setPublishedLiveBulk(Request $request): JsonResponse
     {
+        $this->authorizePermission('view_published_results');
         $request->validate([
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:100',
@@ -459,9 +475,10 @@ class ResultController extends Controller
         if ($updated > 0) {
             return response()->json([
                 'status' => 'success',
-                'message' => $updated . ' result(s) have been marked as ' . ($live ? 'live' : 'not live') . '.',
+                'message' => $updated.' result(s) have been marked as '.($live ? 'live' : 'not live').'.',
             ]);
         }
+
         return response()->json([
             'status' => 'error',
             'message' => 'No published results found to update.',
@@ -470,6 +487,7 @@ class ResultController extends Controller
 
     public function deletePublished(Request $request): JsonResponse
     {
+        $this->authorizePermission('view_published_results');
         $request->validate([
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:100',
@@ -482,16 +500,17 @@ class ResultController extends Controller
         if ($count > 0) {
             $admin = $request->user('admin');
             $adminName = $admin ? $admin->name : 'Admin';
-            Notification::query()->create([
-                'title' => 'Published Results Deleted',
-                'message' => $adminName . ' has deleted published results for ' . $class . ' (' . $term . ', ' . $session . ').',
-                'date_added' => now()->format('Y-m-d H:i:s'),
-            ]);
+            $this->sendNotificationAction->execute(
+                'Published Results Deleted',
+                $adminName.' has deleted published results for '.$class.' ('.$term.', '.$session.').'
+            );
+
             return response()->json([
                 'status' => 'success',
-                'message' => $count . ' published result(s) have been deleted.',
+                'message' => $count.' published result(s) have been deleted.',
             ]);
         }
+
         return response()->json([
             'status' => 'error',
             'message' => 'No published results found to delete.',

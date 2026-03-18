@@ -170,7 +170,13 @@
                                             <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($initial) }}&size=80'">
                                             <div class="min-w-0 flex-1 md:min-w-0 md:flex-1">
                                                 <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Name</span>
-                                                <p class="text-sm font-medium truncate" style="color: var(--on-surface);">{{ e($r->name) }}</p>
+                                                <p class="text-sm font-medium truncate" style="color: var(--on-surface);">
+                                                    @if(!empty($r->studentId) && Route::has('admin.students.show'))
+                                                        <a href="{{ route('admin.students.show', $r->studentId) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ e($r->name) }}</a>
+                                                    @else
+                                                        {{ e($r->name) }}
+                                                    @endif
+                                                </p>
                                                 <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ e($r->reg_number) }}</p>
                                             </div>
                                         </div>

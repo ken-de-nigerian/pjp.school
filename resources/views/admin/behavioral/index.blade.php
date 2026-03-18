@@ -13,7 +13,8 @@
                     </p>
                 </div>
 
-                @if(Route::has('admin.behavioral.view'))
+                @php $canViewBehavioral = ($layoutRole ?? null) === null || (int) (($layoutRole ?? null)->view_uploaded_behavioural_analysis ?? 0) === 1; @endphp
+                @if(Route::has('admin.behavioral.view') && $canViewBehavioral)
                     <a href="{{ route('admin.behavioral.view') }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors border border-dashed border-gray-300 lg:border-solid" style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);">
                         <i class="fas fa-eye text-[10px] sm:text-xs" aria-hidden="true"></i>
                         <span>View Behavioral</span>

@@ -8,27 +8,27 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('news')) {
+        if (! Schema::hasTable('news')) {
             return;
         }
 
         Schema::table('news', function (Blueprint $table) {
-            if (!Schema::hasColumn('news', 'slug')) {
+            if (! Schema::hasColumn('news', 'slug')) {
                 $table->string('slug')->nullable()->after('title');
             }
-            if (!Schema::hasColumn('news', 'category')) {
+            if (! Schema::hasColumn('news', 'category')) {
                 $table->string('category')->nullable()->after('content');
             }
-            if (!Schema::hasColumn('news', 'author')) {
+            if (! Schema::hasColumn('news', 'author')) {
                 $table->string('author')->nullable()->after('category');
             }
-            if (!Schema::hasColumn('news', 'imagelocation')) {
+            if (! Schema::hasColumn('news', 'imagelocation')) {
                 $table->string('imagelocation')->nullable()->after('author');
             }
-            if (!Schema::hasColumn('news', 'created_at')) {
+            if (! Schema::hasColumn('news', 'created_at')) {
                 $table->dateTime('created_at')->nullable();
             }
-            if (!Schema::hasColumn('news', 'updated_at')) {
+            if (! Schema::hasColumn('news', 'updated_at')) {
                 $table->dateTime('updated_at')->nullable();
             }
         });
@@ -43,7 +43,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        if (!Schema::hasTable('news')) {
+        if (! Schema::hasTable('news')) {
             return;
         }
 

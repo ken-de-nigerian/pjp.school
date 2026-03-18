@@ -5,6 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $subject_name
+ * @property mixed $grade
+ * @property mixed $id
+ */
 class Subject extends Model
 {
     public $timestamps = false;

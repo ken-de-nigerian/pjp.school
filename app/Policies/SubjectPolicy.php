@@ -11,26 +11,26 @@ class SubjectPolicy
 {
     public function viewAny(Admin $user): bool
     {
-        return true;
+        return $user->hasPermission('manage_subjects');
     }
 
     public function view(Admin $user, Subject $subject): bool
     {
-        return true;
+        return $user->hasPermission('manage_subjects');
     }
 
     public function create(Admin $user): bool
     {
-        return true;
+        return $user->hasPermission('manage_subjects');
     }
 
     public function update(Admin $user, Subject $subject): bool
     {
-        return true;
+        return $user->hasPermission('manage_subjects');
     }
 
     public function delete(Admin $user, Subject $subject): bool
     {
-        return true;
+        return $user->hasPermission('manage_subjects');
     }
 }

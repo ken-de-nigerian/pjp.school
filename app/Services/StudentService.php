@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
-class StudentService
+final class StudentService
 {
     public function getClassesWithCounts(): array
     {
@@ -79,7 +79,7 @@ class StudentService
             ->orderBy('lastname');
 
         if ($search !== null && $search !== '') {
-            $term = '%' . addcslashes($search, '%_\\') . '%';
+            $term = '%'.addcslashes($search, '%_\\').'%';
             $query->where(function ($q) use ($term) {
                 $q->where('firstname', 'like', $term)
                     ->orWhere('lastname', 'like', $term)
@@ -131,6 +131,7 @@ class StudentService
                         return true;
                     }
                 }
+
                 return false;
             });
         }
@@ -172,13 +173,14 @@ class StudentService
         foreach ($years as $year) {
             $count = Student::query()
                 ->whereNotNull('graduation_date')
-                ->where('graduation_date', 'like', $year . '%')
+                ->where('graduation_date', 'like', $year.'%')
                 ->count();
             $results[] = [
                 'year' => (string) $year,
                 'user_count' => $count,
             ];
         }
+
         return $results;
     }
 
@@ -186,7 +188,7 @@ class StudentService
     {
         return Student::query()
             ->whereNotNull('graduation_date')
-            ->where('graduation_date', 'like', $year . '%')
+            ->where('graduation_date', 'like', $year.'%')
             ->orderBy('firstname')
             ->orderBy('lastname')
             ->get();
@@ -221,13 +223,14 @@ class StudentService
             $count = Student::query()
                 ->where('status', 1)
                 ->whereNotNull('left_school_date')
-                ->where('left_school_date', 'like', $year . '%')
+                ->where('left_school_date', 'like', $year.'%')
                 ->count();
             $results[] = [
                 'year' => (string) $year,
                 'user_count' => $count,
             ];
         }
+
         return $results;
     }
 
@@ -236,7 +239,7 @@ class StudentService
         return Student::query()
             ->where('status', 1)
             ->whereNotNull('left_school_date')
-            ->where('left_school_date', 'like', $year . '%')
+            ->where('left_school_date', 'like', $year.'%')
             ->orderBy('firstname')
             ->orderBy('lastname')
             ->get();
@@ -263,7 +266,7 @@ class StudentService
             ->orderBy('lastname');
 
         if ($search !== '') {
-            $term = '%' . $search . '%';
+            $term = '%'.$search.'%';
             $query->where(function ($q) use ($term) {
                 $q->where('reg_number', 'like', $term)
                     ->orWhere('firstname', 'like', $term)
@@ -315,6 +318,32 @@ class StudentService
         ]);
 
         return $created ? 1 : 0;
+    }
+
+    public function updateClass(int $id, string $newName): bool
+    {
+        return (bool) SchoolClass::query()
+            ->where('id', $id)
+            ->update([
+                'class_name' => $newName,
+            ]);
+    }
+
+    public function classHasStudents(string $class_name): bool
+    {
+        return Student::query()
+            ->active()
+            ->byClass($class_name)
+            ->exists();
+    }
+
+    public function deleteClassIfEmpty(int $id, string $class_name): bool
+    {
+        if ($this->classHasStudents($class_name)) {
+            return false;
+        }
+
+        return (bool) SchoolClass::query()->where('id', $id)->delete();
     }
 
     public function create(array $attributes, ?string $imagelocation = null): Student

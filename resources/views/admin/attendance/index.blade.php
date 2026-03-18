@@ -13,7 +13,8 @@
                     </p>
                 </div>
 
-                @if(Route::has('admin.attendance.view'))
+                @php $canViewAttendance = ($layoutRole ?? null) === null || (int) (($layoutRole ?? null)->view_uploaded_attendance ?? 0) === 1; @endphp
+                @if(Route::has('admin.attendance.view') && $canViewAttendance)
                     <a href="{{ route('admin.attendance.view') }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors border border-dashed border-gray-300 lg:border-solid" style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);">
                         <i class="fas fa-eye text-[10px] sm:text-xs" aria-hidden="true"></i>
                         <span>View Attendance</span>

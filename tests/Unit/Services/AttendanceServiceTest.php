@@ -70,10 +70,12 @@ class AttendanceServiceTest extends TestCase
             'date_added' => $dateAdded,
         ]);
 
-        $count = $this->service->editRecord('R001', 'SS1', '1', '2024/2025', 'AM', 'absent', '01 Jan 2025');
+        $count = $this->service->editRecord('SS1', '1', '2024/2025', 'AM', '2025-01-01', [
+            ['reg_number' => 'R001', 'class_roll_call' => 'absent'],
+        ]);
 
         $this->assertSame(1, $count);
-        $this->assertDatabaseHas('attendance_list', ['reg_number' => 'R001', 'class_roll_call' => 'absent']);
+        $this->assertDatabaseHas('attendance_list', ['reg_number' => 'R001', 'class_roll_call' => 2]);
     }
 
     public function test_delete_by_class_term_session_segment_date_removes_records(): void
@@ -92,7 +94,7 @@ class AttendanceServiceTest extends TestCase
 
         $deleted = $this->service->deleteByClassTermSessionSegmentDate(
             'SS1', '1', '2024', 'AM',
-            now()->format('d M Y')
+            now()->format('Y-m-d')
         );
 
         $this->assertSame(1, $deleted);

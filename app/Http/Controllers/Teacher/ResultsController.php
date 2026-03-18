@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Teacher;
 
+use App\Contracts\ResultServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UploadResultsTermRequest;
 use App\Models\Notification;
-use App\Models\Subject;
 use App\Models\Setting;
-use App\Services\ResultService;
+use App\Models\Subject;
 use App\Services\StudentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,7 +19,7 @@ class ResultsController extends Controller
 {
     public function __construct(
         private StudentService $studentService,
-        private ResultService $resultService
+        private ResultServiceContract $resultService
     ) {}
 
     public function index(Request $request): View
@@ -68,7 +68,7 @@ class ResultsController extends Controller
         if ($this->resultService->hasUploadedResults($class, $term, $session, $subjects)) {
             return response()->json([
                 'status' => 'error',
-                'message' => $subjects . ' results for ' . $class . ' (' . $term . ') already exist.',
+                'message' => $subjects.' results for '.$class.' ('.$term.') already exist.',
             ]);
         }
 
@@ -76,21 +76,21 @@ class ResultsController extends Controller
         if ($count !== count($results)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error adding ' . $subjects . ' results for ' . $class . '. Please try again later.',
+                'message' => 'Error adding '.$subjects.' results for '.$class.'. Please try again later.',
             ]);
         }
 
         $teacher = $request->user('teacher');
-        $teacherName = $teacher ? trim(($teacher->firstname ?? '') . ' ' . ($teacher->lastname ?? '')) : 'Teacher';
+        $teacherName = $teacher ? trim(($teacher->firstname ?? '').' '.($teacher->lastname ?? '')) : 'Teacher';
         Notification::query()->create([
             'title' => 'Results Uploaded',
-            'message' => $teacherName . ' has uploaded ' . $subjects . ' results for ' . $class . ' (' . $term . ', ' . $session . ').',
+            'message' => $teacherName.' has uploaded '.$subjects.' results for '.$class.' ('.$term.', '.$session.').',
             'date_added' => now()->format('Y-m-d H:i:s'),
         ]);
 
         return response()->json([
             'status' => 'success',
-            'message' => $subjects . ' results for ' . $class . ' have been added successfully.',
+            'message' => $subjects.' results for '.$class.' have been added successfully.',
         ]);
     }
 }

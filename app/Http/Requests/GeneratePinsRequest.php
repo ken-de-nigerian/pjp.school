@@ -17,7 +17,7 @@ class GeneratePinsRequest extends FormRequest
     {
         return [
             'session' => 'required|string|max:50',
-            'count'   => 'required|integer|min:1|max:500',
+            'count' => 'required|integer|min:1|max:500',
         ];
     }
 }

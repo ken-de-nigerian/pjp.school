@@ -33,7 +33,7 @@ class AttendanceTest extends TestCase
             'attendance' => [],
         ]);
 
-        $response->assertRedirect(route('login'));
+        $response->assertUnauthorized();
     }
 
     public function test_admin_attendance_save_validates_attendance_array(): void
@@ -58,28 +58,28 @@ class AttendanceTest extends TestCase
             'class' => 'SS1',
             'term' => '1',
             'session' => '2024',
-            'segment' => 'AM',
+            'segment' => config('school.no_segment', 'No Segment'),
             'name' => 'Alice',
             'reg_number' => 'R001',
-            'class_roll_call' => 'present',
+            'class_roll_call' => 1,
             'date_added' => now()->format('Y-m-d H:i:s'),
         ]);
 
-        $dateStr = now()->format('d M Y');
+        $dateStr = now()->format('Y-m-d');
         $response = $this->actingAs($admin, 'admin')->putJson(route('admin.attendance.edit'), [
-            'reg_number' => 'R001',
             'class' => 'SS1',
             'term' => '1',
             'session' => '2024',
-            'segment' => 'AM',
-            'class_roll_call' => 'absent',
             'date' => $dateStr,
+            'updates' => [
+                ['reg_number' => 'R001', 'class_roll_call' => 'Absent'],
+            ],
             '_token' => csrf_token(),
         ]);
 
         $response->assertOk();
         $response->assertJsonPath('status', 'success');
-        $this->assertDatabaseHas('attendance_list', ['reg_number' => 'R001', 'class_roll_call' => 'absent']);
+        $this->assertDatabaseHas('attendance_list', ['reg_number' => 'R001', 'class_roll_call' => 2]);
     }
 
     public function test_admin_can_delete_attendance_record(): void
@@ -89,10 +89,10 @@ class AttendanceTest extends TestCase
             'class' => 'JSS1',
             'term' => '1',
             'session' => '2024',
-            'segment' => 'PM',
+            'segment' => config('school.no_segment', 'No Segment'),
             'name' => 'Bob',
             'reg_number' => 'R002',
-            'class_roll_call' => 'present',
+            'class_roll_call' => 1,
             'date_added' => now()->format('Y-m-d H:i:s'),
         ]);
 
@@ -100,8 +100,7 @@ class AttendanceTest extends TestCase
             'class' => 'JSS1',
             'term' => '1',
             'session' => '2024',
-            'segment' => 'PM',
-            'date' => now()->format('d M Y'),
+            'date' => now()->format('Y-m-d'),
             '_token' => csrf_token(),
         ]);
 

@@ -32,7 +32,7 @@ class SettingsControllerTest extends TestCase
     {
         $response = $this->get(route('admin.settings.index'));
 
-        $response->assertRedirect(route('login'));
+        $response->assertUnauthorized();
     }
 
     public function test_admin_can_access_settings_index(): void

@@ -9,13 +9,13 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class AttendanceService
+final class AttendanceService
 {
     public function getRecord(string $date, string $class, string $term, string $session, string $segment): Collection
     {
         return AttendanceRecord::query()
             ->forClassTermSessionSegment($class, $term, $session, $segment)
-            ->where('date_added', 'like', $date . '%')
+            ->where('date_added', 'like', $date.'%')
             ->orderBy('name')
             ->get();
     }
@@ -43,29 +43,30 @@ class AttendanceService
                     ->where('term', $row['term'])
                     ->where('session', $row['session'])
                     ->where('reg_number', $row['reg_number'])
-                    ->where('date_added', 'like', $dateForDay . '%')
+                    ->where('date_added', 'like', $dateForDay.'%')
                     ->update([
                         'class_roll_call' => $classRollCall,
-                        'name'            => $row['name'] ?? '',
-                        'date_added'      => $currentDateTime,
+                        'name' => $row['name'] ?? '',
+                        'date_added' => $currentDateTime,
                     ]);
 
                 if ($updated > 0) {
                     $affected += $updated;
                 } else {
                     AttendanceRecord::query()->insert([
-                        'class'           => $row['class'],
-                        'term'            => $row['term'],
-                        'session'         => $row['session'],
-                        'segment'         => $noSegment,
-                        'name'            => $row['name'] ?? '',
-                        'reg_number'      => $row['reg_number'],
+                        'class' => $row['class'],
+                        'term' => $row['term'],
+                        'session' => $row['session'],
+                        'segment' => $noSegment,
+                        'name' => $row['name'] ?? '',
+                        'reg_number' => $row['reg_number'],
                         'class_roll_call' => $classRollCall,
-                        'date_added'      => $currentDateTime,
+                        'date_added' => $currentDateTime,
                     ]);
                     $affected += 1;
                 }
             }
+
             return $affected;
         });
     }
@@ -97,18 +98,18 @@ class AttendanceService
             }
         }
 
-        if (!empty($presentRegs)) {
+        if (! empty($presentRegs)) {
             $updated += AttendanceRecord::query()
                 ->forClassTermSessionSegment($class, $term, $session, $segment)
-                ->where('date_added', 'like', $date . '%')
+                ->where('date_added', 'like', $date.'%')
                 ->whereIn('reg_number', $presentRegs)
                 ->update(['class_roll_call' => 1]);
         }
 
-        if (!empty($absentRegs)) {
+        if (! empty($absentRegs)) {
             $updated += AttendanceRecord::query()
                 ->forClassTermSessionSegment($class, $term, $session, $segment)
-                ->where('date_added', 'like', $date . '%')
+                ->where('date_added', 'like', $date.'%')
                 ->whereIn('reg_number', $absentRegs)
                 ->update(['class_roll_call' => 2]);
         }
@@ -125,7 +126,7 @@ class AttendanceService
     ): int {
         return (int) AttendanceRecord::query()
             ->forClassTermSessionSegment($class, $term, $session, $segment)
-            ->where('date_added', 'like', $date . '%')
+            ->where('date_added', 'like', $date.'%')
             ->delete();
     }
 
@@ -140,7 +141,7 @@ class AttendanceService
         return (int) AttendanceRecord::query()
             ->forClassTermSessionSegment($class, $term, $session, $segment)
             ->where('reg_number', $regNumber)
-            ->where('date_added', 'like', $date . '%')
+            ->where('date_added', 'like', $date.'%')
             ->delete();
     }
 }

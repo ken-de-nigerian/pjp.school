@@ -56,7 +56,7 @@
                                     <div class="min-w-0 flex-1">
                                         <p class="text-sm font-medium truncate" style="color: var(--on-surface);">
                                             @if(isset($app->id))
-                                                <a href="{{ route('admin.online_entrance.show', $app->id) }}" class="hover:underline" style="color: var(--primary);">{{ e($app->uniqueID) }}</a>
+                                                <a href="{{ route('admin.online_entrance.show', $app) }}" class="hover:underline" style="color: var(--primary);">{{ e($app->uniqueID) }}</a>
                                             @else
                                                 {{ e($app->uniqueID) }}
                                             @endif
@@ -76,7 +76,7 @@
 
                                     <div class="flex-shrink-0 w-24 text-right">
                                         @if(isset($app->id))
-                                            <a href="{{ route('admin.online_entrance.show', $app->id) }}" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;">
+                                            <a href="{{ route('admin.online_entrance.show', $app) }}" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;">
                                                 <i class="fas fa-eye text-xs" aria-hidden="true"></i>
                                                 <span class="hidden sm:inline">View</span>
                                             </a>

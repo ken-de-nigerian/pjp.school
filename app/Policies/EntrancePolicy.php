@@ -11,11 +11,11 @@ class EntrancePolicy
 {
     public function viewAny(Admin $user): bool
     {
-        return true;
+        return $user->hasPermission('online_entrance');
     }
 
     public function view(Admin $user, Entrance $entrance): bool
     {
-        return true;
+        return $user->hasPermission('online_entrance');
     }
 }

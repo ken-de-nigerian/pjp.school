@@ -102,6 +102,7 @@
             const studentListContainer = document.getElementById('student-list-container');
             const selectAllBtn = document.getElementById('demote-select-all');
             const clearBtn = document.getElementById('demote-clear');
+            const studentShowBase = @json(rtrim(route('admin.students.show', ['student' => 0]), '0'));
 
             if (fromSelect && studentListContainer) {
             function setMessage(text) {
@@ -161,11 +162,23 @@
                             checkbox.style.borderColor = 'var(--outline)';
 
                             const textWrapper = document.createElement('span');
-                            textWrapper.className = 'flex flex-col text-xs sm:text-sm min-w-0';
+                            textWrapper.className = 'flex flex-col text-xs sm:text-sm min-w-0 flex-1';
 
                             const nameLine = document.createElement('span');
-                            nameLine.className = 'font-medium truncate';
-                            nameLine.textContent = ((s.firstname || '') + ' ' + (s.lastname || '')).trim() || (s.reg_number || 'Student');
+                            nameLine.className = 'font-medium truncate flex items-center gap-1.5 flex-wrap';
+                            const nameText = ((s.firstname || '') + ' ' + (s.lastname || '')).trim() || (s.reg_number || 'Student');
+                            if (studentShowBase && s.id) {
+                                const showLink = document.createElement('a');
+                                showLink.href = studentShowBase + s.id;
+                                showLink.className = 'transition-opacity hover:opacity-80 truncate';
+                                showLink.style.color = 'var(--primary)';
+                                showLink.textContent = nameText;
+                                showLink.setAttribute('target', '_blank');
+                                showLink.setAttribute('rel', 'noopener');
+                                nameLine.appendChild(showLink);
+                            } else {
+                                nameLine.textContent = nameText;
+                            }
 
                             const regLine = document.createElement('span');
                             regLine.className = 'text-[11px] sm:text-xs truncate';

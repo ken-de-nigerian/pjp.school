@@ -11,21 +11,21 @@ class TeacherPolicy
 {
     public function viewAny(Admin $user): bool
     {
-        return true;
+        return $user->hasPermission('manage_teachers');
     }
 
     public function view(Admin $user, Teacher $teacher): bool
     {
-        return true;
+        return $user->hasPermission('manage_teachers');
     }
 
     public function update(Admin $user, Teacher $teacher): bool
     {
-        return true;
+        return $user->hasPermission('manage_teachers');
     }
 
     public function delete(Admin $user, Teacher $teacher): bool
     {
-        return true;
+        return $user->hasPermission('manage_teachers');
     }
 }

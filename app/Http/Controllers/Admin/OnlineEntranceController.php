@@ -34,16 +34,12 @@ class OnlineEntranceController extends Controller
         ]);
     }
 
-    public function show(int $id): View|RedirectResponse
+    public function show(Entrance $entrance): View|RedirectResponse
     {
-        $applicant = Entrance::query()->find($id);
-        if ($applicant === null) {
-            return redirect()->route('admin.online_entrance.index')->with('error', 'Application not found.');
-        }
         Gate::authorize('viewAny', Entrance::class);
 
         return view('admin.online-entrance.show', [
-            'applicant' => $applicant,
+            'applicant' => $entrance,
         ]);
     }
 }

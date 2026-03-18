@@ -12,11 +12,11 @@ use App\Http\Requests\UploadStaffProfileRequest;
 use App\Models\Admin;
 use App\Services\StaffService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Random\RandomException;
 
@@ -61,6 +61,7 @@ class StaffController extends Controller
 
     /**
      * @return RedirectResponse|JsonResponse
+     *
      * @throws RandomException
      */
     public function store(StoreStaffRequest $request)
@@ -74,6 +75,7 @@ class StaffController extends Controller
                     'errors' => ['email' => [__('This email is registered to another staff.')]],
                 ], 422);
             }
+
             return back()->withErrors(['email' => __('This email is registered to another staff.')])->withInput();
         }
 
@@ -120,6 +122,7 @@ class StaffController extends Controller
                     'errors' => ['email' => [__('This email is registered to another staff.')]],
                 ], 422);
             }
+
             return back()->withErrors(['email' => __('This email is registered to another staff.')])->withInput();
         }
 
@@ -132,6 +135,7 @@ class StaffController extends Controller
                     'message' => __('No changes have been made to this staff\'s account.'),
                 ]);
             }
+
             return response()->json([
                 'status' => 'success',
                 'message' => __('Staff account has been updated successfully.'),
@@ -153,7 +157,7 @@ class StaffController extends Controller
 
         $file = $request->file('photoimg');
         $ext = $file->getClientOriginalExtension();
-        $filename = Str::random(12) . '.' . strtolower($ext);
+        $filename = Str::random(12).'.'.strtolower($ext);
 
         $path = $file->storeAs('staffs', $filename, 'public');
         if (! $path) {
@@ -185,6 +189,7 @@ class StaffController extends Controller
                     'message' => __("You can't delete your own account."),
                 ], 403);
             }
+
             return redirect()
                 ->route('admin.staff.index')
                 ->with('error', __("You can't delete your own account."));

@@ -23,7 +23,7 @@
                         <div class="px-4 sm:px-5 py-3 sm:py-4 border-b" style="border-color: var(--card-border);">
                             <h2 class="text-sm sm:text-base font-semibold" style="color: var(--on-surface);">Profile Settings</h2>
                         </div>
-                        <form id="edit-account-form" method="POST" action="{{ route('admin.students.update.account', $student->id) }}" class="p-4 sm:p-5 min-w-0">
+                        <form id="edit-account-form" method="POST" action="{{ route('admin.students.update.account', $student) }}" class="p-4 sm:p-5 min-w-0">
                             @csrf
                             @method('PUT')
                             <input type="hidden" id="formattedPhone" name="contact_phone" value="{{ old('contact_phone', $student->contact_phone) }}">
@@ -92,7 +92,7 @@
                             <h2 class="text-sm sm:text-base font-semibold" style="color: var(--on-surface);">Academic Profile</h2>
                         </div>
 
-                        <form method="POST" action="{{ route('admin.students.update.academic', $student->id) }}" id="edit-academic-form" class="p-4 sm:p-5 min-w-0">
+                        <form method="POST" action="{{ route('admin.students.update.academic', $student) }}" id="edit-academic-form" class="p-4 sm:p-5 min-w-0">
                             @csrf
                             @method('PUT')
 
@@ -142,7 +142,7 @@
                                 <h3 class="text-sm sm:text-base font-semibold mb-1" style="color: var(--on-surface);">Delete student</h3>
                                 <p class="text-sm mb-0" style="color: var(--on-surface-variant);">Permanently remove this student. This action cannot be undone.</p>
                             </div>
-                            <form method="POST" action="{{ route('admin.students.destroy', $student->id) }}" id="student-delete-form" class="flex-shrink-0 w-full sm:w-auto">
+                            <form method="POST" action="{{ route('admin.students.destroy', $student) }}" id="student-delete-form" class="flex-shrink-0 w-full sm:w-auto">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="student-delete-open-btn w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-95" style="color: var(--on-error-container); background: var(--error-container);">Delete student</button>
@@ -161,7 +161,7 @@
                                     type="checkbox"
                                     id="student-status-toggle"
                                     class="settings-switch-input student-status-toggle"
-                                    data-status-url="{{ route('admin.students.toggle.status', $student->id) }}"
+                                    data-status-url="{{ route('admin.students.toggle.status', $student) }}"
                                     data-class-arm="{{ e($student->class_arm ?? '') }}"
                                     {{ (int)($student->status ?? 0) === 1 ? 'checked' : '' }}
                                 >
@@ -178,7 +178,7 @@
                                 <p class="text-sm mb-0" style="color: var(--on-surface-variant);">Mark fee as paid or unpaid for this student.</p>
                             </div>
                             <label class="settings-switch flex-shrink-0 self-start md:self-center">
-                                <input type="checkbox" id="fee-status-toggle" class="settings-switch-input fee-status-toggle" data-fee-url="{{ route('admin.students.toggle.fee', $student->id) }}" {{ (int)($student->fee_status ?? 0) === 1 ? 'checked' : '' }}>
+                                <input type="checkbox" id="fee-status-toggle" class="settings-switch-input fee-status-toggle" data-fee-url="{{ route('admin.students.toggle.fee', $student) }}" {{ (int)($student->fee_status ?? 0) === 1 ? 'checked' : '' }}>
                                 <span class="settings-switch-track"></span>
                             </label>
                         </div>
@@ -189,7 +189,7 @@
                         <div class="px-4 sm:px-5 py-3 sm:py-4 border-b" style="border-color: var(--card-border);">
                             <h2 class="text-sm sm:text-base font-semibold" style="color: var(--on-surface);">Contact Address</h2>
                         </div>
-                        <form id="edit-contact-form" method="POST" action="{{ route('admin.students.update.contact', $student->id) }}" class="p-4 sm:p-5 min-w-0">
+                        <form id="edit-contact-form" method="POST" action="{{ route('admin.students.update.contact', $student) }}" class="p-4 sm:p-5 min-w-0">
                             @csrf
                             @method('PUT')
 
@@ -238,7 +238,7 @@
                             <h2 class="text-sm sm:text-base font-semibold" style="color: var(--on-surface);">Parents Information</h2>
                         </div>
 
-                        <form id="edit-parents-form" method="POST" action="{{ route('admin.students.update.parents', $student->id) }}" class="p-4 sm:p-5 min-w-0">
+                        <form id="edit-parents-form" method="POST" action="{{ route('admin.students.update.parents', $student) }}" class="p-4 sm:p-5 min-w-0">
                             @csrf
                             @method('PUT')
                             <input type="hidden" id="formattedPhoneFather" name="father_phone" value="{{ old('father_phone', $student->father_phone) }}">
@@ -291,7 +291,7 @@
                     <div class="px-4 sm:px-5 py-3 sm:py-4 border-b" style="border-color: var(--card-border);">
                         <h2 class="text-sm sm:text-base font-semibold" style="color: var(--on-surface);">Sponsor's information</h2>
                     </div>
-                    <form id="edit-sponsors-form" method="POST" action="{{ route('admin.students.update.sponsors', $student->id) }}" class="p-4 sm:p-5 min-w-0">
+                    <form id="edit-sponsors-form" method="POST" action="{{ route('admin.students.update.sponsors', $student) }}" class="p-4 sm:p-5 min-w-0">
                         @csrf
                         @method('PUT')
                         <input type="hidden" id="formattedPhoneSponsor" name="sponsor_phone" value="{{ old('sponsor_phone', $student->sponsor_phone) }}">
@@ -337,7 +337,7 @@
                         <h2 class="text-sm sm:text-base font-semibold" style="color: var(--on-surface);">Other Information</h2>
                     </div>
 
-                    <form id="edit-other-form" method="POST" action="{{ route('admin.students.update.other', $student->id) }}" class="p-4 sm:p-5 min-w-0">
+                    <form id="edit-other-form" method="POST" action="{{ route('admin.students.update.other', $student) }}" class="p-4 sm:p-5 min-w-0">
                         @csrf
                         @method('PUT')
 

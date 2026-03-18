@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Contracts\NotificationServiceContract;
 use App\Models\Notification;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class NotificationService
+final class NotificationService implements NotificationServiceContract
 {
     public function add(string $title, string $message): void
     {

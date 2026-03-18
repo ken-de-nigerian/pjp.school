@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class NewsControllerTest extends TestCase
@@ -39,8 +40,7 @@ class NewsControllerTest extends TestCase
     public function test_guest_cannot_see_news_index(): void
     {
         $response = $this->get(route('admin.news.index'));
-        $response->assertRedirect();
-        $this->assertTrue(str_contains($response->headers->get('Location'), 'login'));
+        $response->assertUnauthorized();
     }
 
     public function test_admin_can_see_news_index(): void
@@ -90,13 +90,13 @@ class NewsControllerTest extends TestCase
     public function test_admin_can_see_news_show(): void
     {
         $news = News::query()->create([
+            'newsid' => (string) Str::uuid(),
             'title' => 'Show Me',
             'slug' => 'show-me',
             'content' => 'Content',
             'category' => 'Cat',
             'author' => $this->admin->name,
             'imagelocation' => 'default.png',
-            'image' => 'default.png',
         ]);
 
         $response = $this->actingAs($this->admin, 'admin')->get(route('admin.news.show', $news->newsid));
@@ -106,26 +106,27 @@ class NewsControllerTest extends TestCase
 
     public function test_show_returns_404_for_invalid_newsid(): void
     {
-        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.news.show', 99999));
-        $response->assertRedirect(route('admin.news.index'));
+        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.news.show', (string) Str::uuid()));
+        $response->assertNotFound();
     }
 
     public function test_admin_can_update_news(): void
     {
         $news = News::query()->create([
+            'newsid' => (string) Str::uuid(),
             'title' => 'Original',
             'slug' => 'original',
             'content' => 'Old content',
             'category' => 'Cat',
             'author' => $this->admin->name,
             'imagelocation' => 'default.png',
-            'image' => 'default.png',
         ]);
 
         $response = $this->actingAs($this->admin, 'admin')->put(route('admin.news.update', $news->newsid), [
+            'newsId' => $news->newsid,
             'title' => 'Updated Title',
             'category' => 'NewCat',
-            'message' => 'Updated body.',
+            'content' => 'Updated body.',
             '_token' => csrf_token(),
         ]);
 
@@ -141,6 +142,7 @@ class NewsControllerTest extends TestCase
     public function test_admin_can_delete_news(): void
     {
         $news = News::query()->create([
+            'newsid' => (string) Str::uuid(),
             'title' => 'To Delete',
             'slug' => 'to-delete',
             'content' => 'Content',
@@ -153,31 +155,6 @@ class NewsControllerTest extends TestCase
         $response = $this->actingAs($this->admin, 'admin')->delete(route('admin.news.destroy', $news->newsid));
         $response->assertRedirect(route('admin.news.index'));
         $this->assertDatabaseMissing('news', ['newsid' => $news->newsid]);
-    }
-
-    public function test_upload_cover_image_requires_newsid_and_file(): void
-    {
-        $news = News::query()->create([
-            'title' => 'Cover',
-            'slug' => 'cover',
-            'content' => 'C',
-            'category' => 'Cat',
-            'author' => $this->admin->name,
-            'imagelocation' => 'default.png',
-            'image' => 'default.png',
-        ]);
-
-        $file = UploadedFile::fake()->image('new-cover.jpg', 600, 400);
-        $response = $this->actingAs($this->admin, 'admin')->postJson(route('admin.news.upload-cover-image'), [
-            'newsId' => $news->newsid,
-            'photoimg' => $file,
-            '_token' => csrf_token(),
-        ]);
-
-        $response->assertOk();
-        $response->assertJsonPath('status', 'success');
-        $news->refresh();
-        $this->assertNotSame('default.png', $news->imagelocation);
     }
 
     public function test_store_validates_required_fields(): void

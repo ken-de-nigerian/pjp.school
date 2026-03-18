@@ -11,21 +11,33 @@ class ResultPolicy
 {
     public function publish(Admin|Teacher $user): bool
     {
-        return $user instanceof Admin || $user instanceof Teacher;
+        if ($user instanceof Teacher) {
+            return true;
+        }
+
+        return $user->hasPermission('publish_result');
     }
 
     public function upload(Admin|Teacher $user): bool
     {
-        return true;
+        if ($user instanceof Teacher) {
+            return true;
+        }
+
+        return $user->hasPermission('upload_result');
     }
 
     public function edit(Admin|Teacher $user): bool
     {
-        return true;
+        if ($user instanceof Teacher) {
+            return true;
+        }
+
+        return $user->hasPermission('view_uploaded_results');
     }
 
     public function approve(Admin|Teacher $user): bool
     {
-        return $user instanceof Admin;
+        return $user instanceof Admin && $user->hasPermission('view_uploaded_results');
     }
 }

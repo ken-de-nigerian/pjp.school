@@ -32,7 +32,7 @@ class UpdateSubjectRequest extends FormRequest
                 ->where('id', '!=', $id)
                 ->exists();
             if ($exists) {
-                $validator->errors()->add('subject_name', $this->input('subject_name') . ' has already been added for this class.');
+                $validator->errors()->add('subject_name', $this->input('subject_name').' has already been added for this class.');
             }
         });
     }

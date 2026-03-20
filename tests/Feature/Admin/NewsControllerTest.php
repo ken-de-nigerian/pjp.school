@@ -99,14 +99,14 @@ class NewsControllerTest extends TestCase
             'imagelocation' => 'default.png',
         ]);
 
-        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.news.show', $news->newsid));
+        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.news.show', $news->id));
         $response->assertOk();
         $response->assertSee('Show Me');
     }
 
-    public function test_show_returns_404_for_invalid_newsid(): void
+    public function test_show_returns_404_for_invalid_id(): void
     {
-        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.news.show', (string) Str::uuid()));
+        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.news.show', 999_999));
         $response->assertNotFound();
     }
 
@@ -122,8 +122,8 @@ class NewsControllerTest extends TestCase
             'imagelocation' => 'default.png',
         ]);
 
-        $response = $this->actingAs($this->admin, 'admin')->put(route('admin.news.update', $news->newsid), [
-            'newsId' => $news->newsid,
+        $response = $this->actingAs($this->admin, 'admin')->put(route('admin.news.update', $news->id), [
+            'newsId' => $news->id,
             'title' => 'Updated Title',
             'category' => 'NewCat',
             'content' => 'Updated body.',
@@ -152,7 +152,7 @@ class NewsControllerTest extends TestCase
             'image' => 'default.png',
         ]);
 
-        $response = $this->actingAs($this->admin, 'admin')->delete(route('admin.news.destroy', $news->newsid));
+        $response = $this->actingAs($this->admin, 'admin')->delete(route('admin.news.destroy', $news->id));
         $response->assertRedirect(route('admin.news.index'));
         $this->assertDatabaseMissing('news', ['newsid' => $news->newsid]);
     }

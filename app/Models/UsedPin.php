@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property mixed $reg_number
+ * @property mixed $used_count
+ */
 class UsedPin extends Model
 {
     public $timestamps = false;

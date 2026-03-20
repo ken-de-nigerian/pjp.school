@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('content')
     <div class="auth-container auth-with-banner">
@@ -38,16 +38,6 @@
 
         <div class="auth-form-wrap">
             <div class="auth-card auth-card--modern">
-                @if(session('error'))
-                    <div class="auth-form-alert auth-form-alert--error" role="alert">
-                        {{ session('error') }}
-                    </div>
-                @endif
-                @if(session('success'))
-                    <div class="auth-form-alert auth-form-alert--success" role="alert">
-                        {{ session('success') }}
-                    </div>
-                @endif
                 <header class="auth-form-header">
                     <h1 class="auth-title">Check Result</h1>
                     <p class="auth-subtitle">Enter the details below to view your result</p>
@@ -67,8 +57,9 @@
                         <div class="form-group">
                             <label for="session" class="form-label">Session</label>
                             <select id="session" name="session" class="form-select" required>
-                                @foreach($sessions as $s)
-                                    <option value="{{ $s['year'] ?? '' }}" {{ ($settings['session'] ?? '') === ($s['year'] ?? '') ? 'selected' : '' }}>{{ $s['year'] ?? '' }}</option>
+                                @foreach(range((int)date('Y') - 5, (int)date('Y') + 5) as $y)
+                                    @php $opt = $y . '/' . ($y + 1); @endphp
+                                    <option value="{{ $opt }}" {{ ($settings['session'] ?? '') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -88,10 +79,10 @@
                         </div>
 
                         @if($scratchRequired)
-                        <div class="form-group">
-                            <label for="scratch_card" class="form-label">Scratch card number</label>
-                            <input type="text" id="scratch_card" name="scratch_card" value="{{ old('scratch_card', request('scratch_card')) }}" class="form-input" required autocomplete="off" placeholder="Enter scratch card number">
-                        </div>
+                            <div class="form-group">
+                                <label for="scratch_card" class="form-label">Scratch card number</label>
+                                <input type="text" id="scratch_card" name="scratch_card" value="{{ old('scratch_card', request('scratch_card')) }}" class="form-input" required autocomplete="off" placeholder="Enter scratch card number">
+                            </div>
                         @endif
                     </div>
 

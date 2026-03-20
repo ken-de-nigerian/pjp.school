@@ -11,18 +11,15 @@ use App\Models\Position;
 use App\Models\Setting;
 use App\Models\Student;
 use Illuminate\Support\Collection;
+use Throwable;
 
-/**
- * Public result check: replicates legacy Result::index flow (hasStudentID, getStudentFees,
- * hasPublished, pin validation, StudentReport, ReportCard, psychomotor, getSegment).
- */
 final class ResultCheckService
 {
     private const MAX_PIN_USES = 15;
 
     public function __construct(
-        private PinService $pinService,
-        private ResultServiceContract $resultService
+        private readonly PinService   $pinService,
+        private readonly ResultServiceContract $resultService
     ) {}
 
     public function getSettings(): array
@@ -30,13 +27,6 @@ final class ResultCheckService
         return Setting::getCached();
     }
 
-    /** Legacy: getSessions — list for dropdown (year). */
-    public function getSessions(): array
-    {
-        return \App\Models\AcademicSession::query()->orderByDesc('year')->get()->toArray();
-    }
-
-    /** Legacy: hasStudentID — student exists, class not Left/Graduated */
     public function hasStudentId(string $regNumber): bool
     {
         return Student::query()
@@ -45,7 +35,6 @@ final class ResultCheckService
             ->exists();
     }
 
-    /** Get student for fee check and report; null if not found or Left/Graduated */
     public function getStudent(string $regNumber): ?Student
     {
         return Student::query()
@@ -54,7 +43,6 @@ final class ResultCheckService
             ->first();
     }
 
-    /** Legacy: fee_status 1 = approved */
     public function hasApprovedFees(string $regNumber): bool
     {
         $student = $this->getStudent($regNumber);
@@ -62,13 +50,11 @@ final class ResultCheckService
         return $student && (int) $student->fee_status === 1;
     }
 
-    /** Legacy: hasPublished — positions exist for class/term/session */
     public function hasPublished(string $class, string $term, string $session): bool
     {
         return $this->resultService->hasPublishedResults($class, $term, $session);
     }
 
-    /** Scratch card enabled when settings scratch_card == 1 */
     public function isScratchCardRequired(): bool
     {
         $s = $this->getSettings();
@@ -76,7 +62,9 @@ final class ResultCheckService
         return (int) ($s['scratch_card'] ?? 0) === 1;
     }
 
-    /** Validate pin and record use; returns null on success, error message on failure */
+    /**
+     * @throws Throwable
+     */
     public function validateAndRecordPin(?string $pin, string $regNumber, string $class, string $term, string $session): ?string
     {
         if ($pin === null || $pin === '') {
@@ -102,13 +90,11 @@ final class ResultCheckService
         return null;
     }
 
-    /** Legacy: StudentReport — single student row */
     public function getStudentReport(string $regNumber): ?Student
     {
         return $this->getStudent($regNumber);
     }
 
-    /** Legacy: ReportCard — positions row for reg_number, class, term, session */
     public function getReportCard(string $regNumber, string $class, string $term, string $session): ?Position
     {
         return Position::query()
@@ -119,7 +105,6 @@ final class ResultCheckService
             ->first();
     }
 
-    /** Legacy: psychomotor — behavioral rows for reg_number, term, session */
     public function getBehavioral(string $regNumber, string $term, string $session): Collection
     {
         return Behavioral::query()
@@ -130,7 +115,6 @@ final class ResultCheckService
             ->get();
     }
 
-    /** Legacy: getSegment — annual_result rows for reg_number, class, term, session */
     public function getSegment(string $regNumber, string $class, string $term, string $session): Collection
     {
         return AnnualResult::query()

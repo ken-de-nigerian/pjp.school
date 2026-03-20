@@ -8,23 +8,20 @@ use App\Services\ResultCheckService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Throwable;
 
-/**
- * Public result check. Legacy: result/index (GET result with optional term, session, class, reg_number, scratch_card).
- */
 class ResultCheckController extends Controller
 {
     public function __construct(
-        private ResultCheckService $resultCheckService
+        private readonly ResultCheckService $resultCheckService
     ) {}
 
     /**
-     * GET /result — no params: show check form; with params: validate and show result or redirect with error.
+     * @throws Throwable
      */
     public function index(Request $request): View|RedirectResponse
     {
         $settings = $this->resultCheckService->getSettings();
-        $sessions = $this->resultCheckService->getSessions();
 
         $term = $request->query('term');
         $session = $request->query('session');
@@ -37,7 +34,6 @@ class ResultCheckController extends Controller
         if ($term === null || $term === '' || $session === null || $session === '' || $class === null || $class === '' || $regNumber === null || $regNumber === '') {
             return view('result.check-result', [
                 'settings' => $settings,
-                'sessions' => $sessions,
                 'scratchRequired' => $scratchRequired,
             ]);
         }

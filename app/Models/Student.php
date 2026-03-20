@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property mixed $sponsor_address
  * @property mixed $house
  * @property mixed $category
+ * @property mixed $fee_status
  */
 class Student extends Model
 {

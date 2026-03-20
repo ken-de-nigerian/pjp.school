@@ -16,7 +16,8 @@ return new class extends Migration
         }
 
         Schema::create('news', function (Blueprint $table) {
-            $table->uuid('newsid')->primary();
+            $table->id();
+            $table->uuid('newsid')->unique();
             $table->string('title')->nullable();
             $table->text('content')->nullable();
             $table->string('image')->nullable();

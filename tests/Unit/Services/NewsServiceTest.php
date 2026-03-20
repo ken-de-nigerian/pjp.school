@@ -52,7 +52,7 @@ class NewsServiceTest extends TestCase
 
     public function test_get_by_id_returns_null_for_missing(): void
     {
-        $this->assertNull($this->service->getById((string) Str::uuid()));
+        $this->assertNull($this->service->getById(999_999));
     }
 
     public function test_get_by_id_returns_news(): void
@@ -67,7 +67,7 @@ class NewsServiceTest extends TestCase
             'imagelocation' => 'default.png',
         ]);
 
-        $found = $this->service->getById($news->newsid);
+        $found = $this->service->getById($news->id);
         $this->assertNotNull($found);
         $this->assertSame('One', $found->title);
     }
@@ -84,8 +84,8 @@ class NewsServiceTest extends TestCase
             'imagelocation' => 'default.png',
         ]);
 
-        $this->assertTrue($this->service->hasNewsId($news->newsid));
-        $this->assertFalse($this->service->hasNewsId((string) Str::uuid()));
+        $this->assertTrue($this->service->hasNewsId($news->id));
+        $this->assertFalse($this->service->hasNewsId(999_999));
     }
 
     public function test_create_no_image(): void
@@ -126,7 +126,7 @@ class NewsServiceTest extends TestCase
             'imagelocation' => 'default.png',
         ]);
 
-        $count = $this->service->update($news->newsid, [
+        $count = $this->service->update($news->id, [
             'title' => 'New Title',
             'category' => 'NewCat',
             'content' => 'New body',
@@ -151,7 +151,7 @@ class NewsServiceTest extends TestCase
             'imagelocation' => 'default.png',
         ]);
 
-        $count = $this->service->updateCoverImage($news->newsid, 'new-cover.jpg');
+        $count = $this->service->updateCoverImage($news->id, 'new-cover.jpg');
         $this->assertSame(1, $count);
         $news->refresh();
         $this->assertSame('new-cover.jpg', $news->imagelocation);
@@ -169,7 +169,7 @@ class NewsServiceTest extends TestCase
             'imagelocation' => 'default.png',
         ]);
 
-        $count = $this->service->delete($news->newsid);
+        $count = $this->service->delete($news->id);
         $this->assertSame(1, $count);
         $this->assertDatabaseMissing('news', ['newsid' => $news->newsid]);
     }

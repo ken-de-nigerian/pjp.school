@@ -383,8 +383,10 @@ function toggleDropdown(dropdownId) {
         } else {
             dropdown.classList.toggle('hidden');
         }
-        // Mega menu arrow rotation
-        const megaArrow = document.getElementById('mega-menu-arrow');
+        // Mega menu arrow rotation (admin + teacher use different ids)
+        const megaArrow =
+            document.getElementById('mega-menu-arrow') ||
+            document.getElementById('teacher-mega-menu-arrow');
         if (megaArrow && dropdownId === 'mega-menu-dropdown') {
             megaArrow.style.transform = dropdown.classList.contains('mega-menu-open') ? 'rotate(180deg)' : 'rotate(0deg)';
         }

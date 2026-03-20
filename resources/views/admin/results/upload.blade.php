@@ -9,37 +9,36 @@
             'session' => $session ?? '',
             'subjects' => $subjects ?? '',
         ]);
+        $uploadHeroDescription = !empty($hasFilters ?? null)
+            ? e($class) . ' · ' . e($subjects) . ' · ' . e($term) . ' · ' . e($session) . ' — CA (15) · Assign (25) · Exam (60)'
+            : 'Choose class and subject below, then click "Load result sheet" to enter scores.';
     @endphp
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Upload results</h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
+            <x-admin.hero-page
+                aria-label="Upload results"
+                pill="Admin"
+                title="Upload results"
+                :description="$uploadHeroDescription"
+            >
+                <x-slot name="actions">
+                    <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto lg:flex-shrink-0">
                         @if(!empty($hasFilters))
-                            {{ e($class) }} · {{ e($subjects) }} · {{ e($term) }} · {{ e($session) }} — CA (15) · Assign (25) · Exam (60)
-                        @else
-                            Choose class and subject below, then click &quot;Load result sheet&quot; to enter scores.
+                            <a href="{{ route('admin.upload-results') }}" class="admin-dashboard-hero__btn w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
+                                <i class="fas fa-filter text-xs" aria-hidden="true"></i>
+                                <span>Change filters</span>
+                            </a>
                         @endif
-                    </p>
-                </div>
 
-                <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
-                    @if(!empty($hasFilters))
-                        <a href="{{ route('admin.upload-results') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style="color: var(--on-surface-variant); background: var(--surface-container-high); border-radius: 12px;">
-                            <i class="fas fa-filter text-xs" aria-hidden="true"></i>
-                            <span>Change filters</span>
-                        </a>
-                    @endif
-
-                    @if(Route::has('admin.results.uploaded'))
-                        <a href="{{ route('admin.results.uploaded') }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-95" style="background-color: var(--primary); color: var(--on-primary); border-radius: 12px;">
-                            <i class="fas fa-eye text-xs" aria-hidden="true"></i>
-                            <span>View uploaded</span>
-                        </a>
-                    @endif
-                </div>
-            </header>
+                        @if(Route::has('admin.results.uploaded'))
+                            <a href="{{ route('admin.results.uploaded') }}" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
+                                <i class="fas fa-eye text-xs" aria-hidden="true"></i>
+                                <span>View uploaded</span>
+                            </a>
+                        @endif
+                    </div>
+                </x-slot>
+            </x-admin.hero-page>
 
             @if(empty($hasFilters))
             <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">

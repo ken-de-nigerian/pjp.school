@@ -13,21 +13,18 @@
             $nameB = $tb ? trim(($tb->name ?? ($tb->firstname . ' ' . $tb->lastname))) : '';
             return strcasecmp($nameA, $nameB);
         });
+        $resultsStatusHeroDescription = $hasFilters
+            ? 'Teachers assigned to this class and upload/approval status for each subject.'
+            : 'Choose class, term and session to see which teachers have uploaded results and their approval status.';
     @endphp
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Result status</h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        @if($hasFilters)
-                            Teachers assigned to this class and upload/approval status for each subject.
-                        @else
-                            Choose class, term and session to see which teachers have uploaded results and their approval status.
-                        @endif
-                    </p>
-                </div>
-            </header>
+            <x-admin.hero-page
+                aria-label="Result status"
+                pill="Admin"
+                title="Result status"
+                :description="$resultsStatusHeroDescription"
+            />
 
             <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 <form method="GET" action="{{ route('admin.status.index') }}" class="space-y-4 sm:space-y-5">

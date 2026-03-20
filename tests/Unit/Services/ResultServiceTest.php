@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
+use App\Enums\ResultStatus;
 use App\Models\AnnualResult;
 use App\Services\ResultService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -70,6 +71,30 @@ class ResultServiceTest extends TestCase
         $this->assertSame(1, $count);
         $row = AnnualResult::query()->where('reg_number', '1001')->first();
         $this->assertSame(40.0, (float) $row->total);
+        $this->assertSame(ResultStatus::APPROVED->value, (int) $row->status);
+    }
+
+    public function test_bulk_insert_with_pending_status_for_teacher_upload(): void
+    {
+        $results = [
+            [
+                'studentId' => 1,
+                'class' => 'JSS 1',
+                'term' => '1',
+                'session' => '2024/2025',
+                'subjects' => 'Math',
+                'name' => 'John',
+                'reg_number' => '1001',
+                'ca' => 5,
+                'assignment' => 5,
+                'exam' => 10,
+            ],
+        ];
+
+        $count = $this->service->bulkInsert($results, ResultStatus::PENDING->value);
+        $this->assertSame(1, $count);
+        $row = AnnualResult::query()->where('reg_number', '1001')->first();
+        $this->assertSame(ResultStatus::PENDING->value, (int) $row->status);
     }
 
     public function test_get_uploaded_results_orders_by_name(): void

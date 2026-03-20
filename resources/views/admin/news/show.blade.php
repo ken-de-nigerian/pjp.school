@@ -4,15 +4,12 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <p class="text-xs sm:text-sm font-medium mb-1" style="color: var(--on-surface-variant);">
-                        Announcement
-                    </p>
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-2"
-                        style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        {{ e($news->title) }}
-                    </h1>
+            <x-admin.hero-page
+                aria-label="Announcement"
+                pill="Admin"
+                :title="e($news->title)"
+            >
+                <x-slot name="below">
                     <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm" style="color: var(--on-surface-variant);">
                         @php
                             $publishedAt = $news->created_at
@@ -41,26 +38,23 @@
                             </span>
                         @endif
                     </div>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto lg:flex-shrink-0">
-                    <a href="{{ route('admin.news.index') }}"
-                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors"
-                       style="border-radius: 12px; background: var(--surface-container-low); color: var(--on-surface); border: 1px solid var(--outline-variant);">
-                        <i class="fas fa-arrow-left text-xs" aria-hidden="true"></i>
-                        <span>Back to announcements</span>
-                    </a>
-
-                    @if(Route::has('admin.news.edit'))
-                        <a href="{{ route('admin.news.edit', $news) }}"
-                           class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors"
-                           style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);">
-                            <i class="fas fa-pen text-xs" aria-hidden="true"></i>
-                            <span>Edit</span>
+                </x-slot>
+                <x-slot name="actions">
+                    <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto lg:flex-shrink-0">
+                        <a href="{{ route('admin.news.index') }}" class="admin-dashboard-hero__btn w-full sm:w-auto justify-center min-h-[44px] sm:min-h-0">
+                            <i class="fas fa-arrow-left text-xs" aria-hidden="true"></i>
+                            <span>Back to announcements</span>
                         </a>
-                    @endif
-                </div>
-            </header>
+
+                        @if(Route::has('admin.news.edit'))
+                            <a href="{{ route('admin.news.edit', $news) }}" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full sm:w-auto justify-center min-h-[44px] sm:min-h-0">
+                                <i class="fas fa-pen text-xs" aria-hidden="true"></i>
+                                <span>Edit</span>
+                            </a>
+                        @endif
+                    </div>
+                </x-slot>
+            </x-admin.hero-page>
 
             <section class="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-6 lg:gap-8 items-start">
                 <article class="card-refined rounded-3xl overflow-hidden"

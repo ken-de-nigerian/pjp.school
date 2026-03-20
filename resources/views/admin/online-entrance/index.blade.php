@@ -3,25 +3,21 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        Entrance Examination Applicants
-                    </h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        View and manage online entrance applications. Export the full list to PDF for printing.
-                    </p>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                    @if(!$applicants->isEmpty() && Route::has('admin.online_entrance.pdf'))
-                        <a href="{{ route('admin.online_entrance.pdf') }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors border border-dashed border-gray-300 lg:border-solid" style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);">
+            <x-admin.hero-page
+                aria-label="Entrance examination applicants"
+                pill="Admin"
+                title="Entrance examination applicants"
+                description="View and manage online entrance applications. Export the full list to PDF for printing."
+            >
+                @if(!$applicants->isEmpty() && Route::has('admin.online_entrance.pdf'))
+                    <x-slot name="actions">
+                        <a href="{{ route('admin.online_entrance.pdf') }}" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
                             <i class="fas fa-file-pdf text-[10px] sm:text-xs" aria-hidden="true"></i>
                             <span>Export to PDF</span>
                         </a>
-                    @endif
-                </div>
-            </header>
+                    </x-slot>
+                @endif
+            </x-admin.hero-page>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($applicants->isEmpty())

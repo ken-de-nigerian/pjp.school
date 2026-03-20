@@ -48,6 +48,21 @@ return Application::configure(basePath: dirname(__DIR__))
             }
             // Handle 403 from policies / gates
             elseif ($e instanceof AuthorizationException || $e instanceof AccessDeniedHttpException) {
+                if (request()->expectsJson()) {
+                    $msg = 'You do not have permission to perform this action.';
+                    if ($e instanceof AuthorizationException) {
+                        $m = $e->getMessage();
+                        if ($m !== '' && $m !== 'This action is unauthorized.') {
+                            $msg = $m;
+                        }
+                    }
+
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $msg,
+                    ], 403);
+                }
+
                 $code = 403;
                 $title = 'Access Forbidden';
                 $message = 'You do not have permission to perform this action.';

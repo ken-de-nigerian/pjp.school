@@ -4,62 +4,46 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <div class="mb-4 sm:mb-6 w-fit">
+            <x-admin.hero-page
+                aria-label="Classes and students overview"
+                pill="Admin"
+                :title="$students !== null ? e($selectedClass) : 'Students / Classes'"
+                :description="$students !== null ? 'Students in this class — search, fees, and export below.' : 'Open a class to see students, or register a new student. Add a class if needed.'"
+            >
                 @if($students !== null)
-                    <a href="{{ route('admin.classes') }}"
-                       class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80"
-                       style="color: var(--on-surface-variant);">
-                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                        Change class
-                    </a>
+                    <x-slot name="above">
+                        <a href="{{ route('admin.classes') }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                            Change class
+                        </a>
+                    </x-slot>
                 @endif
-            </div>
 
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5"
-                        style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        @if($students !== null)
-                            {{ e($selectedClass) }}
-                        @else
-                            Students / Classes
-                        @endif
-                    </h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        @if($students !== null)
-                            Students in this class — search, fees, and export below.
-                        @else
-                            Open a class to see students, or register a new student. Add a class if needed.
-                        @endif
-                    </p>
-                </div>
-
-                <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full lg:w-auto lg:flex-shrink-0">
-                    @if($students === null)
-                        @can('create', Student::class)
-                            <a href="{{ route('admin.students.create') }}"
-                               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-95 border"
-                               style="border-radius: 12px; background: var(--surface-container-high); color: var(--on-surface); border-color: var(--outline-variant);">
-                                <i class="fas fa-user-plus text-xs sm:text-sm" aria-hidden="true"></i>
-                                <span>Register student</span>
-                            </a>
-                        @endcan
-                    @endif
-                    @if($students === null && Route::has('admin.add.class'))
-                        <button type="button" id="add-class-btn"
-                                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors border border-dashed border-gray-300 sm:border-solid"
-                                style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);"
-                                aria-haspopup="dialog" aria-expanded="false" aria-controls="add-class-modal">
-                            <i class="fas fa-plus text-[10px] sm:text-xs" aria-hidden="true"></i>
-                            <span>Add class</span>
-                        </button>
-                    @endif
-                </div>
-            </header>
+                @if($students === null)
+                    <x-slot name="actions">
+                        <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full lg:w-auto lg:flex-shrink-0">
+                            @can('create', Student::class)
+                                <a href="{{ route('admin.students.create') }}"
+                                   class="admin-dashboard-hero__btn w-full sm:w-auto justify-center min-h-[44px] sm:min-h-0">
+                                    <i class="fas fa-user-plus text-xs sm:text-sm" aria-hidden="true"></i>
+                                    <span>Register student</span>
+                                </a>
+                            @endcan
+                            @if(Route::has('admin.add.class'))
+                                <button type="button" id="add-class-btn"
+                                        class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full sm:w-auto justify-center min-h-[44px] sm:min-h-0"
+                                        aria-haspopup="dialog" aria-expanded="false" aria-controls="add-class-modal">
+                                    <i class="fas fa-plus text-[10px] sm:text-xs" aria-hidden="true"></i>
+                                    <span>Add class</span>
+                                </button>
+                            @endif
+                        </div>
+                    </x-slot>
+                @endif
+            </x-admin.hero-page>
 
             @if($students === null)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8"
-                     style="background: var(--surface-container-low); box-shadow: var(--elevation-1);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
                         @forelse($classesWithCounts as $c)
                             <div class="h-full min-h-[200px]">

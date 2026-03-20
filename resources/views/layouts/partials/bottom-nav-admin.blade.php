@@ -1,4 +1,4 @@
-<nav class="lg:hidden fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t px-2 py-2 safe-area-bottom z-50 shadow-lg" style="background: var(--mobile-nav-bg); border-color: var(--border);">
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 backdrop-blur-xl px-2 py-2 safe-area-bottom z-50 shadow-lg" style="background: var(--mobile-nav-bg); border-color: var(--border);">
     <div class="flex items-center justify-around">
         <a href="{{ route('admin.dashboard') }}" class="mobile-bottom-nav-item flex flex-col items-center gap-1 transition-all min-h-[60px] px-2 py-2 rounded-xl active:scale-95" style="color: var(--text-primary);" data-page="dashboard">
             <div class="w-12 h-12 rounded-xl card-refined flex items-center justify-center" style="border-color: var(--outline-variant)">

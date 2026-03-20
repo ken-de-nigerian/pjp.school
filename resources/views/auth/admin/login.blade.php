@@ -85,8 +85,6 @@
                     <div class="auth-form-submit">
                         <button type="submit" class="btn-primary" data-preloader>Sign in</button>
                     </div>
-
-                    <p class="auth-form-footer">Protected by reCAPTCHA</p>
                 </form>
             </div>
         </div>

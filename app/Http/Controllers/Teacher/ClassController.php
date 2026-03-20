@@ -5,55 +5,53 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Teacher\Concerns\TeacherScope;
+use App\Models\Setting;
 use App\Services\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ClassController extends Controller
 {
+    use TeacherScope;
+
     public function __construct(
-        private StudentService $studentService
+        private readonly StudentService $studentService
     ) {}
 
-    /** GET teacher/class — class list. */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $classList = $this->studentService->getClassesWithCounts();
+        $assigned = $this->teacherAssignedClasses();
+        $allWithCounts = $this->studentService->getClassesWithCounts();
+        $classesWithCounts = array_values(array_filter($allWithCounts, fn (array $c) => in_array($c['class_name'] ?? '', $assigned, true)));
+
+        if ($request->has('class')) {
+            $validated = $request->validate([
+                'class' => 'required|string|max:100',
+            ]);
+            $class = $validated['class'];
+            $search = $request->query('q', '');
+            $students = $search !== ''
+                ? $this->studentService->getStudentsByClassWithSearch($class, $search)
+                : $this->studentService->getStudentsByClass($class);
+
+            if (method_exists($students, 'withQueryString')) {
+                $students->withQueryString();
+            }
+
+            return view('teacher.class.index', [
+                'students' => $students,
+                'classesWithCounts' => $classesWithCounts,
+                'selectedClass' => $class,
+                'searchQuery' => $search,
+            ]);
+        }
 
         return view('teacher.class.index', [
-            'classList' => $classList,
-        ]);
-    }
-
-    /** GET teacher/class/find-students?class=&search= — students in class, optional search. */
-    public function findStudents(Request $request): View|\Illuminate\Http\RedirectResponse
-    {
-        $class = $request->query('class');
-        $search = $request->query('search');
-
-        if (! $class && ! $search) {
-            return redirect()->route('teacher.class.index')->with('error', 'Missing class or search.');
-        }
-
-        if ($search !== null && $search !== '' && $class) {
-            $searchResult = $this->studentService->search($search, $class);
-            $students = $searchResult['results'];
-            $totalItems = $searchResult['count'];
-        } elseif ($class) {
-            $paginator = $this->studentService->getStudentsByClass($class, 50);
-            $students = $paginator->items();
-            $totalItems = $paginator->total();
-        } else {
-            $students = [];
-            $totalItems = 0;
-        }
-
-        return view('teacher.class.find-students', [
-            'students' => $students,
-            'totalItems' => $totalItems,
-            'class' => $class,
-            'search' => $search,
-            'getClasses' => $this->studentService->getClassesArray(),
+            'students' => null,
+            'classesWithCounts' => $classesWithCounts,
+            'selectedClass' => '',
+            'searchQuery' => $request->query('q', ''),
         ]);
     }
 }

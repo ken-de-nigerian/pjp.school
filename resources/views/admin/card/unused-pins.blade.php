@@ -4,32 +4,29 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <div class="mb-4 sm:mb-6 w-fit">
-                <a href="{{ route('admin.card.index') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Scratch card
-                </a>
-            </div>
-
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        Unused pins
-                    </h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        Scratch card pins that have not been used yet. Session: {{ e($settings['session'] ?? '—') }}
-                    </p>
-                </div>
-                @if(isset($unused) && !$unused->isEmpty())
-                    <a href="{{ route('admin.card.unused-pins.pdf') }}"
-                       target="_blank" rel="noopener noreferrer"
-                       class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90 min-h-[44px] sm:min-h-0 shrink-0"
-                       style="color: var(--on-primary); background: var(--primary); border-radius: 12px;">
-                        <i class="fas fa-file-pdf text-sm" aria-hidden="true"></i>
-                        Export to PDF
+            <x-admin.hero-page
+                aria-label="Unused scratch card pins"
+                pill="Admin"
+                title="Unused pins"
+                :description="'Scratch card pins that have not been used yet. Session: ' . e($settings['session'] ?? '—')"
+            >
+                <x-slot name="above">
+                    <a href="{{ route('admin.card.index') }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Scratch card
                     </a>
+                </x-slot>
+                @if(isset($unused) && !$unused->isEmpty())
+                    <x-slot name="actions">
+                        <a href="{{ route('admin.card.unused-pins.pdf') }}"
+                           target="_blank" rel="noopener noreferrer"
+                           class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
+                            <i class="fas fa-file-pdf text-sm" aria-hidden="true"></i>
+                            Export to PDF
+                        </a>
+                    </x-slot>
                 @endif
-            </header>
+            </x-admin.hero-page>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if(isset($unused) && $unused->isEmpty())

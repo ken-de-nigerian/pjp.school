@@ -5,67 +5,59 @@
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto pb-24 lg:pb-8 scrollbar-hide" style="background: var(--bg-primary);">
         <div id="page-home" class="page-content max-w-7xl mx-auto px-6 lg:px-8 py-8 lg:py-12">
-            <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 lg:mb-8">
-                <div class="flex items-center gap-4 min-w-0 flex-1">
-                    <div class="dashboard-profile-avatar flex-shrink-0 overflow-hidden rounded-full border-2" style="width: 56px; height: 56px; border-color: var(--outline-variant); background: var(--surface-container-low);">
-                        <img class="h-full w-full object-cover" src="{{ asset('storage/staffs/' . ($layoutAdmin->profileImage ?? '')) }}" alt="{{ e($layoutAdmin->name ?? 'Admin') }}" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($layoutAdmin->name ?? 'Admin') }}&size=112&background=bbdefb&color=0d47a1'; this.onerror=null;">
+            <x-admin.hero-shell aria-label="Dashboard overview">
+                <header class="admin-dashboard-hero__header">
+                    <div class="admin-dashboard-hero__welcome">
+                        <div class="dashboard-profile-avatar admin-dashboard-hero__avatar flex-shrink-0 overflow-hidden rounded-full border-2" style="width: 56px; height: 56px;">
+                            <img class="h-full w-full object-cover" src="{{ asset('storage/staffs/' . ($layoutAdmin->profileImage ?? '')) }}" alt="{{ e($layoutAdmin->name ?? 'Admin') }}" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($layoutAdmin->name ?? 'Admin') }}&size=112&background=bbdefb&color=0d47a1'; this.onerror=null;">
+                        </div>
+
+                        <div class="min-w-0 flex-1 flex flex-col gap-0.5">
+                            <p class="admin-dashboard-hero__eyebrow">Welcome back</p>
+                            <p class="admin-dashboard-hero__name text-base sm:text-lg font-semibold truncate">{{ $layoutAdmin->name ?? 'Admin' }}</p>
+                            <p class="admin-dashboard-hero__email text-sm truncate">{{ $layoutAdmin->email ?? '' }}</p>
+                        </div>
                     </div>
 
-                    <div class="min-w-0 flex-1 flex flex-col gap-0.5">
-                        <p class="text-xs font-medium uppercase tracking-wide truncate" style="color: var(--text-secondary);">Welcome back</p>
-                        <p class="text-base sm:text-lg font-semibold truncate" style="color: var(--on-surface);">{{ $layoutAdmin->name ?? 'Admin' }}</p>
-                        <p class="text-sm truncate" style="color: var(--on-surface-variant);">{{ $layoutAdmin->email ?? '' }}</p>
-                    </div>
-                </div>
+                    @if(isset($role) && (($role->manage_scratch_card ?? 0) == 1 || ($role->bulk_sms ?? 0) == 1))
+                        <div class="admin-dashboard-hero__actions">
+                            @if(($role->manage_scratch_card ?? 0) == 1 && Route::has('admin.card.index'))
+                                <a href="{{ route('admin.card.index') }}" class="admin-dashboard-hero__btn">
+                                    <i class="fas fa-ticket-alt" aria-hidden="true"></i>Scratch Card
+                                </a>
+                            @endif
 
-                @if(isset($role) && (($role->manage_scratch_card ?? 0) == 1 || ($role->bulk_sms ?? 0) == 1))
-                    <div class="flex gap-2">
-                        @if(($role->manage_scratch_card ?? 0) == 1 && Route::has('admin.card.index'))
-                            <a href="{{ route('admin.card.index') }}" class="btn-primary-tonal inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium">
-                                <i class="fas fa-ticket-alt" aria-hidden="true"></i>Scratch Card
-                            </a>
-                        @endif
+                            @if(($role->bulk_sms ?? 0) == 1 && Route::has('admin.bulk.index'))
+                                <a href="{{ route('admin.bulk.index') }}" class="admin-dashboard-hero__btn">
+                                    <i class="fas fa-sms" aria-hidden="true"></i>Bulk SMS
+                                </a>
+                            @endif
+                        </div>
+                    @endif
+                </header>
 
-                        @if(($role->bulk_sms ?? 0) == 1 && Route::has('admin.bulk.index'))
-                            <a href="{{ route('admin.bulk.index') }}"
-                               class="btn-primary-tonal inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium">
-                                <i class="fas fa-sms" aria-hidden="true"></i>Bulk SMS
-                            </a>
-                        @endif
-                    </div>
-                @endif
-            </header>
+                <nav class="admin-dashboard-hero__quick-nav" aria-label="Top quick navigation">
+                    <a href="{{ route('admin.classes') }}" class="admin-dashboard-hero__tile group">
+                        <span class="admin-dashboard-hero__tile-icon" aria-hidden="true"><i class="fas fa-chalkboard"></i></span>
+                        <span class="admin-dashboard-hero__tile-label">Classes</span>
+                    </a>
 
-            <!-- Top Quick Nav -->
-            <div class="grid grid-cols-4 gap-3 lg:mb-8">
-                <a href="{{ route('admin.classes') }}" class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
-                    <div class="dashboard-quick-icon dashboard-quick-icon--blue w-12 h-12">
-                        <i class="fas fa-chalkboard text-lg"></i>
-                    </div>
-                    <span class="font-medium text-sm" style="color: var(--text-primary);">Classes</span>
-                </a>
+                    <a href="{{ route('admin.teachers.index') }}" class="admin-dashboard-hero__tile group">
+                        <span class="admin-dashboard-hero__tile-icon" aria-hidden="true"><i class="fas fa-user-tie"></i></span>
+                        <span class="admin-dashboard-hero__tile-label">Teachers</span>
+                    </a>
 
-                <a href="{{ route('admin.teachers.index') }}" class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
-                    <div class="dashboard-quick-icon dashboard-quick-icon--blue w-12 h-12">
-                        <i class="fas fa-user-tie text-lg"></i>
-                    </div>
-                    <span class="font-medium text-sm" style="color: var(--text-primary);">Teachers</span>
-                </a>
+                    <a href="{{ route('admin.subjects.index') }}" class="admin-dashboard-hero__tile group">
+                        <span class="admin-dashboard-hero__tile-icon" aria-hidden="true"><i class="fas fa-book-open"></i></span>
+                        <span class="admin-dashboard-hero__tile-label">Subjects</span>
+                    </a>
 
-                <a href="{{ route('admin.subjects.index') }}" class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
-                    <div class="dashboard-quick-icon dashboard-quick-icon--blue w-12 h-12">
-                        <i class="fas fa-book-open text-lg"></i>
-                    </div>
-                    <span class="font-medium text-sm" style="color: var(--text-primary);">Subjects</span>
-                </a>
-
-                <a href="{{ route('admin.upload-results') }}" class="card-refined rounded-xl p-4 flex flex-col items-center gap-3 hover-lift transition-all group" style="border-color: var(--outline-variant);">
-                    <div class="dashboard-quick-icon dashboard-quick-icon--blue w-12 h-12">
-                        <i class="fas fa-poll text-lg"></i>
-                    </div>
-                    <span class="font-medium text-sm text-center leading-tight" style="color: var(--text-primary);">Results</span>
-                </a>
-            </div>
+                    <a href="{{ route('admin.upload-results') }}" class="admin-dashboard-hero__tile group">
+                        <span class="admin-dashboard-hero__tile-icon" aria-hidden="true"><i class="fas fa-poll"></i></span>
+                        <span class="admin-dashboard-hero__tile-label">Results</span>
+                    </a>
+                </nav>
+            </x-admin.hero-shell>
 
             <div class="grid grid-cols-12 gap-3 lg:gap-4 mb-6 lg:mb-8">
                 <div class="col-span-12 sm:col-span-4 card-refined rounded-xl p-4 lg:p-5 hover-lift transition-all" style="border-color: var(--outline-variant);">

@@ -1,144 +1,454 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="mb-6">
-    <h1 class="text-2xl font-semibold">Profile</h1>
-</div>
+@php
+    $t = $teacher ?? $user;
+    $avatarName = urlencode(trim(($t->firstname ?? '') . ' ' . ($t->lastname ?? '')) ?: 'Teacher');
+    $photo = !empty($t->imagelocation)
+        ? (str_starts_with((string) $t->imagelocation, 'teachers/')
+            ? asset('storage/' . $t->imagelocation)
+            : asset('storage/teachers/' . $t->imagelocation))
+        : asset('storage/teachers/default.png');
+@endphp
 
-<div class="bg-white rounded-lg shadow p-4 max-w-2xl">
-    <h2 class="text-lg font-medium border-b border-gray-200 pb-2 mb-4">Profile Settings</h2>
-    <form id="teacher-profile-form">
-        @csrf
-        <input type="hidden" id="formattedPhone" name="formattedPhone" value="{{ old('formattedPhone', $user->phone ?? '') }}">
-        <div class="space-y-3">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="firstname">First name</label>
-                <input type="text" id="firstname" name="firstname" class="w-full rounded border border-gray-300 px-3 py-2" value="{{ old('firstname', $user->firstname ?? '') }}" placeholder="e.g. John" required>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="lastname">Last name</label>
-                <input type="text" id="lastname" name="lastname" class="w-full rounded border border-gray-300 px-3 py-2" value="{{ old('lastname', $user->lastname ?? '') }}" placeholder="e.g. Smith" required>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="phone">Mobile number</label>
-                <input type="text" id="phone" name="formattedPhone" class="w-full rounded border border-gray-300 px-3 py-2" value="{{ old('formattedPhone', $user->phone ?? '') }}" placeholder="e.g. +234 800 000 0000" required>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="country">Country</label>
-                <input type="text" id="country" name="country" class="w-full rounded border border-gray-300 px-3 py-2" value="{{ old('country', $user->country ?? '') }}" placeholder="e.g. Nigeria" required>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="gender">Gender</label>
-                <select id="gender" name="gender" class="w-full rounded border border-gray-300 px-3 py-2" required>
-                    <option value="">Select</option>
-                    <option value="Male" {{ old('gender', $user->gender ?? '') == 'Male' ? 'selected' : '' }}>Male</option>
-                    <option value="Female" {{ old('gender', $user->gender ?? '') == 'Female' ? 'selected' : '' }}>Female</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="address">Address</label>
-                <textarea id="address" name="address" class="w-full rounded border border-gray-300 px-3 py-2" rows="3" placeholder="e.g. 123 Main Street, City" required>{{ old('address', $user->address ?? '') }}</textarea>
-            </div>
-            <div class="pt-2">
-                <button type="button" id="profileBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save change</button>
+@section('content')
+    <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
+        <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+            <x-admin.hero-page
+                aria-label="Teacher profile"
+                pill="Teacher"
+                title="Profile"
+                description="{{ e(trim(($t->firstname ?? '') . ' ' . ($t->lastname ?? ''))) }} · {{ e($t->email ?? '') }}"
+            >
+                <x-slot name="actions">
+                    <button type="button" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0" data-modal="teacher-password-modal">
+                        <i class="fas fa-lock text-xs" aria-hidden="true"></i>
+                        <span>Change password</span>
+                    </button>
+                </x-slot>
+            </x-admin.hero-page>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+                <div class="lg:col-span-4 order-2 lg:order-1">
+                    <div class="rounded-3xl p-5 sm:p-6 flex flex-col self-start w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                        <p class="text-[11px] font-semibold uppercase tracking-wider mb-4" style="color: var(--on-surface-variant); letter-spacing: 0.06em;">Profile photo</p>
+                        <div class="flex flex-col items-center text-center">
+                            <img id="photoimg-preview-lg" class="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-2 mb-4" style="border-color: var(--outline-variant);" src="{{ $photo }}" alt="" onerror="this.src='https://ui-avatars.com/api/?name={{ $avatarName }}&size=256&background=bbdefb&color=0d47a1'; this.onerror=null;">
+                            <label for="photoimg" class="btn-secondary cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm rounded-xl w-full sm:w-auto mb-2" style="border-radius: 12px;">
+                                <i class="fas fa-image text-xs" aria-hidden="true"></i>
+                                Choose image
+                            </label>
+                            <input type="file" id="photoimg" class="hidden" accept="image/jpeg,image/png,image/jpg" aria-label="Select profile photo">
+                            <button type="button" id="teacher-avatar-upload-btn" class="hidden w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style="background: var(--primary); color: var(--on-primary); border-radius: 12px;">
+                                Upload photo
+                            </button>
+                            <p id="photoimg-error" class="form-error mt-2 text-sm text-left w-full {{ $errors->has('photoimg') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('photoimg') }}</p>
+                            <p class="text-xs mt-3 leading-relaxed" style="color: var(--on-surface-variant);">JPG or PNG, max 5&nbsp;MB.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-8 order-1 lg:order-2">
+                    <div class="rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                        <div class="px-4 sm:px-6 py-4 border-b" style="border-color: var(--outline-variant); background: var(--surface-container-low);">
+                            <h2 class="text-base font-semibold" style="color: var(--on-surface);">Personal information</h2>
+                            <p class="text-sm mt-0.5" style="color: var(--on-surface-variant);">Update how you appear across the teacher portal.</p>
+                        </div>
+                        <form id="teacher-profile-form" class="p-4 sm:p-6 min-w-0" method="post" action="{{ route('teacher.profile.update') }}" novalidate>
+                            @csrf
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0">
+                                <div class="form-group">
+                                    <label for="firstname" class="form-label">First name <span style="color: var(--primary);">*</span></label>
+                                    <input type="text" id="firstname" name="firstname" class="form-input w-full min-w-0" value="{{ old('firstname', $t->firstname) }}" autocomplete="given-name" placeholder="Enter your first name">
+                                    <p id="firstname-error" class="form-error mt-1 text-sm hidden" aria-live="polite"></p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="lastname" class="form-label">Last name <span style="color: var(--primary);">*</span></label>
+                                    <input type="text" id="lastname" name="lastname" class="form-input w-full min-w-0" value="{{ old('lastname', $t->lastname) }}" autocomplete="family-name" placeholder="Enter your last name">
+                                    <p id="lastname-error" class="form-error mt-1 text-sm hidden" aria-live="polite"></p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="othername" class="form-label">Other names</label>
+                                    <input type="text" id="othername" name="othername" class="form-input w-full min-w-0" value="{{ old('othername', $t->othername) }}" placeholder="Middle or other names (optional)">
+                                    <p id="othername-error" class="form-error mt-1 text-sm hidden" aria-live="polite"></p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" id="email" name="email" class="form-input w-full min-w-0" value="{{ old('email', $t->email) }}" autocomplete="email" placeholder="name@school.com" readonly>
+                                    <p id="email-error" class="form-error mt-1 text-sm hidden" aria-live="polite"></p>
+                                </div>
+
+                                <div class="form-group sm:col-span-2">
+                                    <label for="phone" class="form-label">Phone</label>
+                                    <input type="text" id="phone" name="phone" class="form-input w-full min-w-0" value="{{ old('phone', $t->phone) }}" autocomplete="tel" placeholder="+234 800 000 0000">
+                                    <p id="phone-error" class="form-error mt-1 text-sm hidden" aria-live="polite"></p>
+                                </div>
+                                <input type="hidden" id="country" name="country" value="{{ old('country', $t->country) }}">
+                            </div>
+
+                            <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-6 mt-2 border-t" style="border-color: var(--outline-variant);">
+                                <button type="submit" id="teacher-profile-save-btn" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-medium w-full sm:w-auto" style="border-radius: 12px;">
+                                    <i class="fas fa-check text-xs" aria-hidden="true"></i>
+                                    Save changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-    </form>
-</div>
+    </main>
 
-<div class="mt-6 bg-white rounded-lg shadow p-4 max-w-2xl">
-    <h2 class="text-lg font-medium border-b border-gray-200 pb-2 mb-4">Change Password</h2>
-    <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700" data-modal="changePassword">Change Password</button>
-</div>
+    <div id="teacher-password-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="teacher-password-title">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="teacher-password-modal" aria-hidden="true"></div>
+        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+            <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl py-5 px-4 sm:py-6 sm:px-6 my-auto" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-2);">
+                <h3 id="teacher-password-title" class="text-lg font-semibold mb-1" style="color: var(--on-surface);">Change password</h3>
+                <p class="text-sm mb-5" style="color: var(--on-surface-variant);">Enter your current password, then choose a new one.</p>
+                <form id="teacher-password-form" class="min-w-0" method="post" action="{{ route('teacher.profile.password') }}" novalidate>
+                    @csrf
+                    <div class="space-y-4">
+                        <div class="form-group">
+                            <label for="teacher-old-password" class="form-label">Current password</label>
+                            <div class="input-group">
+                                <input type="password" id="teacher-old-password" name="oldPassword" class="form-input" placeholder="Current password" autocomplete="current-password" minlength="6">
+                                <button type="button" class="password-toggle" onclick="togglePassword('teacher-old-password', this)" title="Show password" aria-label="Show password">
+                                    <i class="fas fa-eye" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <p id="teacher-old-password-error" class="form-error hidden mt-1 text-sm" aria-live="polite"></p>
+                        </div>
 
-<div id="changePassword" class="fixed inset-0 z-50 hidden" aria-modal="true">
-    <div class="fixed inset-0 bg-black/50" data-close="changePassword"></div>
-    <div class="fixed inset-0 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <h3 class="text-lg font-semibold mb-4">Change Password</h3>
-            <form id="teacher-password-form">
-                @csrf
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="oldPassword">Current password</label>
-                        <input type="password" id="oldPassword" name="oldPassword" class="w-full rounded border border-gray-300 px-3 py-2" placeholder="Enter current password" required>
+                        <div class="form-group">
+                            <label for="teacher-new-password" class="form-label">New password</label>
+                            <div class="input-group">
+                                <input type="password" id="teacher-new-password" name="password" class="form-input" placeholder="At least 8 characters" autocomplete="new-password" minlength="8">
+                                <button type="button" class="password-toggle" onclick="togglePassword('teacher-new-password', this)" title="Show password" aria-label="Show password">
+                                    <i class="fas fa-eye" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <p id="teacher-new-password-error" class="form-error hidden mt-1 text-sm" aria-live="polite"></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="teacher-confirm-password" class="form-label">Confirm new password</label>
+                            <div class="input-group">
+                                <input type="password" id="teacher-confirm-password" name="confirmPassword" class="form-input" placeholder="Repeat new password" autocomplete="new-password" minlength="8">
+                                <button type="button" class="password-toggle" onclick="togglePassword('teacher-confirm-password', this)" title="Show password" aria-label="Show password">
+                                    <i class="fas fa-eye" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <p id="teacher-confirm-password-error" class="form-error hidden mt-1 text-sm" aria-live="polite"></p>
+                        </div>
+                        <p id="teacher-password-form-error" class="form-error hidden mt-1 text-sm" aria-live="polite"></p>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="password">New password</label>
-                        <input type="password" id="password" name="password" class="w-full rounded border border-gray-300 px-3 py-2" placeholder="Enter new password (min. 8 characters)" required minlength="8">
+
+                    <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 mt-6">
+                        <button type="button" class="btn-secondary px-4 py-2.5 rounded-xl text-sm w-full sm:w-auto" style="border-radius: 12px;" data-close="teacher-password-modal">Cancel</button>
+                        <button type="submit" id="teacher-password-submit" class="btn-primary px-4 py-2.5 rounded-xl text-sm w-full sm:w-auto" style="border-radius: 12px;">Update password</button>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirmPassword">Confirm new password</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" class="w-full rounded border border-gray-300 px-3 py-2" placeholder="Confirm new password" required minlength="8">
-                    </div>
-                    <p id="password-form-error" class="text-red-600 text-sm hidden"></p>
-                </div>
-                <div class="mt-4 flex justify-end gap-2">
-                    <button type="button" class="px-4 py-2 border border-gray-300 rounded" data-close="changePassword">Cancel</button>
-                    <button type="submit" id="passwordBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Change password</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || document.querySelector('input[name="_token"]')?.value;
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const csrf = document.querySelector('meta[name="csrf-token"]') && document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const avatarUploadUrl = @json(route('teacher.profile.avatar'));
+                const passwordUrl = @json(route('teacher.profile.password'));
 
-    document.getElementById('profileBtn')?.addEventListener('click', function(e) {
-        e.preventDefault();
-        const form = document.getElementById('teacher-profile-form');
-        const btn = this;
-        btn.disabled = true;
-        btn.textContent = 'Processing...';
-        fetch('{{ route("teacher.profile.update") }}', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
-            body: new URLSearchParams(new FormData(form))
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.status === 'success') setTimeout(function() { window.location.reload(); }, 2800);
-            else alert(Array.isArray(data.message) ? data.message.join('\n') : data.message);
-        })
-        .catch(() => alert('An error occurred.'))
-        .finally(() => { btn.disabled = false; btn.textContent = 'Save change'; });
-    });
+                const profileFieldIds = ['firstname', 'lastname', 'othername', 'email', 'phone', 'country'];
 
-    document.querySelectorAll('[data-modal="changePassword"]').forEach(el => {
-        el.addEventListener('click', () => document.getElementById('changePassword').classList.remove('hidden'));
-    });
-    document.querySelectorAll('[data-close="changePassword"]').forEach(el => {
-        el.addEventListener('click', () => document.getElementById('changePassword').classList.add('hidden'));
-    });
+                function clearLocalFieldErrors(ids) {
+                    if (!Array.isArray(ids)) return;
+                    ids.forEach(function (id) {
+                        const el = document.getElementById(id + '-error');
+                        if (el) {
+                            el.textContent = '';
+                            el.classList.add('hidden');
+                        }
+                    });
+                }
 
-    document.getElementById('teacher-password-form')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const btn = document.getElementById('passwordBtn');
-        const errEl = document.getElementById('password-form-error');
-        errEl.classList.add('hidden');
-        btn.disabled = true;
-        fetch('{{ route("teacher.profile.password") }}', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
-            body: new URLSearchParams(new FormData(this))
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.status === 'success') {
-                document.getElementById('changePassword').classList.add('hidden');
-                setTimeout(function() { window.location.reload(); }, 2800);
-            } else {
-                errEl.textContent = Array.isArray(data.message) ? data.message.join(' ') : data.message;
-                errEl.classList.remove('hidden');
-            }
-        })
-        .catch(() => { errEl.textContent = 'An error occurred.'; errEl.classList.remove('hidden'); })
-        .finally(() => { btn.disabled = false; });
-    });
-});
-</script>
-@endpush
+                function showFieldError(fieldId, message) {
+                    const el = document.getElementById(fieldId + '-error');
+                    if (el) {
+                        el.textContent = message;
+                        el.classList.remove('hidden');
+                    }
+                }
+
+                function validateTeacherProfileForm() {
+                    const first = (document.getElementById('firstname') && document.getElementById('firstname').value || '').trim();
+                    const last = (document.getElementById('lastname') && document.getElementById('lastname').value || '').trim();
+                    const email = (document.getElementById('email') && document.getElementById('email').value || '').trim();
+                    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+                    if (!first) {
+                        showFieldError('firstname', 'First name is required.');
+                        return false;
+                    }
+                    if (!last) {
+                        showFieldError('lastname', 'Last name is required.');
+                        return false;
+                    }
+                    if (email && !emailOk) {
+                        showFieldError('email', 'Please enter a valid email address.');
+                        return false;
+                    }
+                    return true;
+                }
+
+                const profileForm = document.getElementById('teacher-profile-form');
+                const profileSaveBtn = document.getElementById('teacher-profile-save-btn');
+                if (profileForm && profileSaveBtn) {
+                    profileForm.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        clearLocalFieldErrors(profileFieldIds);
+                        if (!validateTeacherProfileForm()) {
+                            return;
+                        }
+                        if (typeof setButtonLoading === 'function') setButtonLoading(profileSaveBtn, true);
+                        fetch(profileForm.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrf,
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            body: new FormData(profileForm),
+                        })
+                            .then(function (r) {
+                                return r.json().then(function (data) {
+                                    return { ok: r.ok, status: r.status, data: data };
+                                });
+                            })
+                            .then(function (res) {
+                                if (res.ok && res.data && res.data.status === 'success') {
+                                    if (typeof flashSuccess === 'function') flashSuccess(res.data.message || 'Profile updated successfully.');
+                                    setTimeout(function () {
+                                        window.location.reload();
+                                    }, 1200);
+                                } else if (res.data && res.data.errors && typeof showLaravelErrors === 'function') {
+                                    showLaravelErrors(res.data.errors);
+                                } else if (typeof flashError === 'function') {
+                                    const msg = Array.isArray(res.data && res.data.message)
+                                        ? res.data.message.join(' ')
+                                        : (res.data && res.data.message) || 'Update failed.';
+                                    flashError(msg);
+                                }
+                            })
+                            .catch(function () {
+                                if (typeof flashError === 'function') flashError('An error occurred. Please try again.');
+                            })
+                            .finally(function () {
+                                if (typeof setButtonLoading === 'function') setButtonLoading(profileSaveBtn, false);
+                            });
+                    });
+                }
+
+                (function () {
+                    const profilePreview = document.getElementById('photoimg-preview-lg');
+                    const profileInput = document.getElementById('photoimg');
+                    const profileUploadBtn = document.getElementById('teacher-avatar-upload-btn');
+                    const photoErrorEl = document.getElementById('photoimg-error');
+                    if (!profilePreview || !profileInput || !profileUploadBtn) return;
+
+                    const maxBytes = 5 * 1024 * 1024;
+                    const allowed = ['image/jpeg', 'image/png', 'image/jpg'];
+
+                    profileInput.addEventListener('change', function () {
+                        const file = this.files[0];
+                        if (photoErrorEl) {
+                            photoErrorEl.textContent = '';
+                            photoErrorEl.classList.add('hidden');
+                        }
+                        if (!file) return;
+                        if (allowed.indexOf(file.type) === -1) {
+                            if (photoErrorEl) {
+                                photoErrorEl.textContent = 'Please choose a JPG or PNG image.';
+                                photoErrorEl.classList.remove('hidden');
+                            }
+                            this.value = '';
+                            return;
+                        }
+                        if (file.size > maxBytes) {
+                            if (photoErrorEl) {
+                                photoErrorEl.textContent = 'Image must be 5 MB or smaller.';
+                                photoErrorEl.classList.remove('hidden');
+                            }
+                            this.value = '';
+                            return;
+                        }
+                        if (file.type.indexOf('image') === 0) {
+                            const r = new FileReader();
+                            r.onload = function () {
+                                profilePreview.src = r.result;
+                            };
+                            r.readAsDataURL(file);
+                            profileUploadBtn.classList.remove('hidden');
+                        }
+                    });
+
+                    profileUploadBtn.addEventListener('click', function () {
+                        const file = profileInput.files[0];
+                        if (!file) {
+                            if (typeof flashError === 'function') flashError('Please select an image first.');
+                            return;
+                        }
+                        if (typeof setButtonLoading === 'function') setButtonLoading(profileUploadBtn, true);
+                        if (photoErrorEl) {
+                            photoErrorEl.textContent = '';
+                            photoErrorEl.classList.add('hidden');
+                        }
+                        const fd = new FormData();
+                        fd.append('photoimg', file);
+                        fd.append('_token', csrf || '');
+                        fetch(avatarUploadUrl, {
+                            method: 'POST',
+                            body: fd,
+                            headers: {
+                                Accept: 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                        })
+                            .then(function (r) {
+                                return r.json().then(function (data) {
+                                    return { ok: r.ok, data: data };
+                                });
+                            })
+                            .then(function (res) {
+                                const data = res.data || {};
+                                if (res.ok && data.status === 'success') {
+                                    profileInput.value = '';
+                                    profileUploadBtn.classList.add('hidden');
+                                    if (data.image_url && profilePreview) profilePreview.src = data.image_url;
+                                    if (typeof flashSuccess === 'function') flashSuccess(data.message || 'Profile picture updated.');
+                                } else if (data.errors && typeof showLaravelErrors === 'function') {
+                                    showLaravelErrors(data.errors);
+                                } else if (typeof flashError === 'function') {
+                                    flashError(data.message || 'Upload failed.');
+                                }
+                            })
+                            .catch(function () {
+                                if (typeof flashError === 'function') flashError('An error occurred. Please try again.');
+                            })
+                            .finally(function () {
+                                if (typeof setButtonLoading === 'function') setButtonLoading(profileUploadBtn, false);
+                            });
+                    });
+                })();
+
+                const passwordModal = document.getElementById('teacher-password-modal');
+                document.querySelectorAll('[data-modal="teacher-password-modal"]').forEach(function (el) {
+                    el.addEventListener('click', function () {
+                        if (passwordModal) passwordModal.classList.remove('hidden');
+                    });
+                });
+                document.querySelectorAll('[data-close="teacher-password-modal"]').forEach(function (el) {
+                    el.addEventListener('click', function () {
+                        if (passwordModal) passwordModal.classList.add('hidden');
+                    });
+                });
+
+                const passwordForm = document.getElementById('teacher-password-form');
+                const passwordSubmitBtn = document.getElementById('teacher-password-submit');
+                const pwdFieldMap = {
+                    oldPassword: 'teacher-old-password',
+                    password: 'teacher-new-password',
+                    confirmPassword: 'teacher-confirm-password',
+                };
+
+                if (passwordForm && passwordSubmitBtn) {
+                    passwordForm.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        const oldPwd = (document.getElementById('teacher-old-password') && document.getElementById('teacher-old-password').value) || '';
+                        const newPwd = (document.getElementById('teacher-new-password') && document.getElementById('teacher-new-password').value) || '';
+                        const confirmPwd = (document.getElementById('teacher-confirm-password') && document.getElementById('teacher-confirm-password').value) || '';
+                        const formErrEl = document.getElementById('teacher-password-form-error');
+                        const oldErr = document.getElementById('teacher-old-password-error');
+                        const newErr = document.getElementById('teacher-new-password-error');
+                        const confirmErr = document.getElementById('teacher-confirm-password-error');
+
+                        [oldErr, newErr, confirmErr, formErrEl].forEach(function (el) {
+                            if (el) {
+                                el.textContent = '';
+                                el.classList.add('hidden');
+                            }
+                        });
+
+                        if (oldPwd.length < 6) {
+                            if (oldErr) {
+                                oldErr.textContent = 'Current password is required (min. 6 characters).';
+                                oldErr.classList.remove('hidden');
+                            }
+                            return;
+                        }
+                        if (newPwd.length < 8) {
+                            if (newErr) {
+                                newErr.textContent = 'New password must be at least 8 characters.';
+                                newErr.classList.remove('hidden');
+                            }
+                            return;
+                        }
+                        if (newPwd !== confirmPwd) {
+                            if (confirmErr) {
+                                confirmErr.textContent = 'Passwords do not match.';
+                                confirmErr.classList.remove('hidden');
+                            }
+                            return;
+                        }
+
+                        if (typeof setButtonLoading === 'function') setButtonLoading(passwordSubmitBtn, true);
+                        const fd = new FormData(passwordForm);
+                        fetch(passwordUrl, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrf,
+                                Accept: 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            body: fd,
+                        })
+                            .then(function (r) {
+                                return r.json().then(function (data) {
+                                    return { ok: r.ok, data: data };
+                                });
+                            })
+                            .then(function (res) {
+                                const data = res.data;
+                                if (res.ok && data && data.status === 'success') {
+                                    if (typeof flashSuccess === 'function') flashSuccess(data.message || 'Password changed.');
+                                    if (passwordModal) passwordModal.classList.add('hidden');
+                                    passwordForm.reset();
+                                } else if (data && data.errors && typeof showLaravelErrors === 'function') {
+                                    showLaravelErrors(data.errors, pwdFieldMap);
+                                } else if (typeof flashError === 'function') {
+                                    const msg = data && data.message
+                                        ? Array.isArray(data.message)
+                                            ? data.message.join(' ')
+                                            : data.message
+                                        : 'Update failed.';
+                                    flashError(msg);
+                                }
+                            })
+                            .catch(function () {
+                                if (formErrEl) {
+                                    formErrEl.textContent = 'An error occurred. Please try again.';
+                                    formErrEl.classList.remove('hidden');
+                                }
+                            })
+                            .finally(function () {
+                                if (typeof setButtonLoading === 'function') setButtonLoading(passwordSubmitBtn, false);
+                            });
+                    });
+                }
+            });
+        </script>
+    @endpush
 @endsection

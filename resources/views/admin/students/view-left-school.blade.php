@@ -4,23 +4,19 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <div class="mb-4 sm:mb-6 w-fit">
-                <a href="{{ route('admin.left_school') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Back to Left School
-                </a>
-            </div>
-
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        Left school in {{ e($year) }}
-                    </h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        View students who left school in this year. Search by name or reg. number.
-                    </p>
-                </div>
-            </header>
+            <x-admin.hero-page
+                aria-label="Students who left by year"
+                pill="Admin"
+                :title="'Left school in ' . e($year)"
+                description="View students who left school in this year. Search by name or reg. number."
+            >
+                <x-slot name="above">
+                    <a href="{{ route('admin.left_school') }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Back to left school
+                    </a>
+                </x-slot>
+            </x-admin.hero-page>
 
             <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 <form method="GET" action="{{ route('admin.left_school.view') }}" class="space-y-4 sm:space-y-5">

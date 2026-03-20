@@ -4,35 +4,33 @@
     @php
         $records = $students ?? collect();
         $isPresent = fn ($record) => (int) ($record->class_roll_call ?? 0) === 1;
+        $viewAttendanceHeroDescription = $hasFilters
+            ? 'View and edit attendance for the selected date, class, term and session.'
+            : 'Filter by date, class, term and session to view uploaded records.';
     @endphp
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <div class="mb-4 sm:mb-6 w-fit">
-                <a href="{{ route('admin.attendance.index') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Back to Attendance
-                </a>
-            </div>
-
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">View Attendance</h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        @if($hasFilters)
-                            View and edit attendance for the selected date, class, term and session.
-                        @else
-                            Filter by date, class, term and session to view uploaded records.
-                        @endif
-                    </p>
-                </div>
-
-                @if($hasFilters)
-                    <a href="{{ route('admin.attendance.view') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90 shrink-0" style="color: var(--on-surface-variant); background: var(--surface-container-high); border-radius: 12px;">
-                        <i class="fas fa-filter text-xs" aria-hidden="true"></i>
-                        <span>Change filters</span>
+            <x-admin.hero-page
+                aria-label="View attendance"
+                pill="Admin"
+                title="View attendance"
+                :description="$viewAttendanceHeroDescription"
+            >
+                <x-slot name="above">
+                    <a href="{{ route('admin.attendance.index') }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Back to attendance
                     </a>
+                </x-slot>
+                @if($hasFilters)
+                    <x-slot name="actions">
+                        <a href="{{ route('admin.attendance.view') }}" class="admin-dashboard-hero__btn w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
+                            <i class="fas fa-filter text-xs" aria-hidden="true"></i>
+                            <span>Change filters</span>
+                        </a>
+                    </x-slot>
                 @endif
-            </header>
+            </x-admin.hero-page>
 
             @if(!$hasFilters)
             <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
@@ -185,7 +183,7 @@
                                             </div>
                                         </div>
                                         <div class="mt-3 pt-3 border-t md:border-t-0 md:mt-0 md:pt-0 w-full flex flex-wrap items-center justify-between sm:justify-end gap-2 md:contents" style="border-color: var(--outline-variant);" role="group" aria-label="Attendance for {{ e($record->name) }}">
-                                            <span class="text-xs font-medium md:sr-only w-full basis-full sm:basis-auto mb-0.5 sm:mb-0 sm:contents" style="color: var(--on-surface-variant);">Status</span>
+                                            <span class="md:hidden text-xs font-medium md:sr-only w-full basis-full sm:basis-auto mb-0.5 sm:mb-0 sm:contents" style="color: var(--on-surface-variant);">Status</span>
                                             <div class="flex items-center gap-2 flex-1 sm:flex-initial min-w-0">
                                                 <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
                                                     <input type="radio" name="attendance_row_{{ $index }}" value="Present" class="attendance-radio attendance-radio-present sr-only peer" data-reg="{{ e($record->reg_number) }}" data-name="{{ e($record->name) }}" data-initial="{{ $present ? 'Present' : 'Absent' }}" {{ $present ? 'checked' : '' }}>

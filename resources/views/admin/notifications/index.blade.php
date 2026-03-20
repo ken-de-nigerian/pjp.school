@@ -3,25 +3,21 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        Notifications
-                    </h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        View recent system notifications, alerts and messages for this admin account.
-                    </p>
-                </div>
-
+            <x-admin.hero-page
+                aria-label="Notifications overview"
+                pill="Admin"
+                title="Notifications"
+                description="View recent system notifications, alerts and messages for this admin account."
+            >
                 @if($notifications->count() > 0)
-                    <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                        <button type="button" class="inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors min-h-[44px] sm:min-h-0 w-full lg:w-auto" style="border-radius: 12px; background-color: var(--surface-container-high); color: var(--on-surface-variant);" id="notifications-clear-all-btn">
+                    <x-slot name="actions">
+                        <button type="button" class="admin-dashboard-hero__btn w-full sm:w-auto min-h-[44px] sm:min-h-0 justify-center" id="notifications-clear-all-btn">
                             <i class="fas fa-broom text-[10px] sm:text-xs" aria-hidden="true"></i>
                             <span>Clear all</span>
                         </button>
-                    </div>
+                    </x-slot>
                 @endif
-            </header>
+            </x-admin.hero-page>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($notifications->isEmpty())

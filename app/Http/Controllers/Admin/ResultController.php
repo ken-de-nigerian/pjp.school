@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Actions\PublishClassResultsAction;
 use App\Actions\SendNotificationAction;
 use App\Contracts\ResultServiceContract;
+use App\Enums\ResultStatus;
 use App\Enums\Term;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApproveResultsRequest;
@@ -90,7 +91,7 @@ class ResultController extends Controller
             ]);
         }
 
-        $count = $this->resultService->bulkInsert($results);
+        $count = $this->resultService->bulkInsert($results, ResultStatus::APPROVED->value);
         if ($count !== count($results)) {
             return response()->json([
                 'status' => 'error',

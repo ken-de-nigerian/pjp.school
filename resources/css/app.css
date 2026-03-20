@@ -121,16 +121,17 @@ header,
     --primary-rgb: 144, 202, 249;
     --primary-hover: #bbdefb;
     --primary-dark: #bbdefb;
-    --surface: #1c1b1f;
-    --on-surface: #e6e1e5;
-    --on-surface-variant: #cac4d0;
-    --outline: #938f99;
-    --outline-variant: #49454f;
-    --surface-container-lowest: #1c1b1f;
-    --surface-container-low: #252328;
-    --surface-container: #2d2b30;
-    --surface-container-high: #36343b;
-    --surface-container-highest: #413f46;
+    /* Deeper dark surfaces (rich black / charcoal) */
+    --surface: #0c0b0e;
+    --on-surface: #ece8ee;
+    --on-surface-variant: #b0aab4;
+    --outline: #7c7782;
+    --outline-variant: #3d3a42;
+    --surface-container-lowest: #0c0b0e;
+    --surface-container-low: #141318;
+    --surface-container: #1b1a1f;
+    --surface-container-high: #232228;
+    --surface-container-highest: #2c2a31;
     --bg-primary: var(--surface);
     --bg-secondary: var(--surface-container-low);
     --bg-tertiary: var(--surface-container);
@@ -399,17 +400,6 @@ body {
     pointer-events: none;
 }
 
-.auth-banner-bg::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--primary);
-    opacity: 0.9;
-}
-
 .auth-banner-inner {
     position: relative;
     z-index: 2;
@@ -530,33 +520,28 @@ body {
     color: rgba(255, 255, 255, 0.9);
 }
 
-/* Admin login: banner on the left (same as teacher), dark slate panel, right accent (inner edge) */
-.auth-banner--admin {
+/* Admin + teacher login: same split banner (slate panel, grid texture — no edge stripe) */
+.auth-banner--admin,
+.auth-banner--teacher {
     flex: 0 0 42%;
     min-width: 300px;
     background: #1a1f2e;
 }
 
-.auth-banner-bg--admin {
+.auth-banner-bg--admin,
+.auth-banner-bg--teacher {
     background: linear-gradient(180deg, #1f2535 0%, #1a1f2e 40%, #161b28 100%);
 }
 
-.auth-banner-bg--admin::before {
+.auth-banner-bg--admin::before,
+.auth-banner-bg--teacher::before {
     background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
     background-size: 28px 28px;
 }
 
-.auth-banner-bg--admin::after {
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--primary);
-    opacity: 0.9;
-}
-
-.auth-banner-inner--admin {
+.auth-banner-inner--admin,
+.auth-banner-inner--teacher {
     max-width: 380px;
     width: 100%;
     padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.75rem, 3.5vw, 2.5rem);
@@ -566,25 +551,30 @@ body {
     padding-right: max(env(safe-area-inset-right), clamp(1.75rem, 3.5vw, 2.5rem));
 }
 
-.auth-banner-back--admin {
+.auth-banner-back--admin,
+.auth-banner-back--teacher {
     color: rgba(255, 255, 255, 0.5);
     font-size: 0.8125rem;
 }
 
-.auth-banner-back--admin:hover {
+.auth-banner-back--admin:hover,
+.auth-banner-back--teacher:hover {
     color: rgba(255, 255, 255, 0.9);
 }
 
-.auth-banner-brand--admin {
+.auth-banner-brand--admin,
+.auth-banner-brand--teacher {
     margin-bottom: 2rem;
 }
 
-.auth-banner-logo-text--admin {
+.auth-banner-logo-text--admin,
+.auth-banner-logo-text--teacher {
     color: #fff;
     font-size: 1.0625rem;
 }
 
-.auth-banner-pill--admin {
+.auth-banner-pill--admin,
+.auth-banner-pill--teacher {
     color: rgba(255, 255, 255, 0.65);
     background: rgba(255, 255, 255, 0.06);
     border-color: rgba(255, 255, 255, 0.1);
@@ -602,28 +592,32 @@ body {
     margin-bottom: 0.5rem;
 }
 
-.auth-banner-title--admin {
+.auth-banner-title--admin,
+.auth-banner-title--teacher {
     color: #fff;
     font-size: clamp(1.25rem, 2.2vw, 1.5625rem);
     font-weight: 600;
     margin-bottom: 0.625rem;
 }
 
-.auth-banner-tagline--admin {
+.auth-banner-tagline--admin,
+.auth-banner-tagline--teacher {
     color: rgba(255, 255, 255, 0.6);
     font-size: 0.875rem;
     line-height: 1.5;
     margin-bottom: 1.5rem;
 }
 
-.auth-banner-features-wrap--admin {
+.auth-banner-features-wrap--admin,
+.auth-banner-features-wrap--teacher {
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.02);
     padding: 0.25rem 0;
 }
 
-.auth-banner-feature--admin {
+.auth-banner-feature--admin,
+.auth-banner-feature--teacher {
     display: flex;
     align-items: center;
     padding: 0.75rem 1rem;
@@ -631,7 +625,8 @@ body {
     gap: 1rem;
 }
 
-.auth-banner-feature--admin:last-child {
+.auth-banner-feature--admin:last-child,
+.auth-banner-feature--teacher:last-child {
     border-bottom: none;
 }
 
@@ -644,22 +639,789 @@ body {
     flex-shrink: 0;
 }
 
-.auth-banner-feature-text--admin {
+.auth-banner-feature-text--admin,
+.auth-banner-feature-text--teacher {
     color: rgba(255, 255, 255, 0.88);
     font-size: 0.875rem;
     font-weight: 500;
 }
 
-[data-theme="dark"] .auth-banner--admin {
+[data-theme="dark"] .auth-banner--admin,
+[data-theme="dark"] .auth-banner--teacher {
     background: #161b28;
 }
 
-[data-theme="dark"] .auth-banner-bg--admin {
+[data-theme="dark"] .auth-banner-bg--admin,
+[data-theme="dark"] .auth-banner-bg--teacher {
     background: linear-gradient(180deg, #1a1f2e 0%, #161b28 40%, #121620 100%);
 }
 
-[data-theme="dark"] .auth-banner-bg--admin::before {
+[data-theme="dark"] .auth-banner-bg--admin::before,
+[data-theme="dark"] .auth-banner-bg--teacher::before {
     opacity: 0.8;
+}
+
+/* --------------------------------------------------------------------------
+   Admin dashboard hero — same visual language as admin auth-banner (login)
+   -------------------------------------------------------------------------- */
+.admin-dashboard-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+@media (min-width: 1024px) {
+    .admin-dashboard-hero {
+        margin-bottom: 2rem;
+        border-radius: 1.5rem;
+    }
+}
+
+.admin-dashboard-hero__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, #1f2535 0%, #1a1f2e 40%, #161b28 100%);
+}
+
+.admin-dashboard-hero__bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+}
+
+.admin-dashboard-hero__inner {
+    position: relative;
+    z-index: 2;
+    padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1.25rem, 3vw, 2rem);
+    padding-left: max(env(safe-area-inset-left), clamp(1.25rem, 3vw, 2rem));
+    padding-right: max(env(safe-area-inset-right), clamp(1.25rem, 3vw, 2rem));
+}
+
+.admin-dashboard-hero__intro {
+    margin-bottom: 1.25rem;
+}
+
+.admin-dashboard-hero__intro .admin-dashboard-hero__brand {
+    margin-bottom: 0.5rem;
+}
+
+.admin-dashboard-hero__intro .auth-banner-eyebrow {
+    margin-bottom: 0;
+}
+
+.admin-dashboard-hero__brand {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.admin-dashboard-hero__logo-text {
+    font-weight: 600;
+    font-size: 1.0625rem;
+    letter-spacing: -0.02em;
+    font-family: "Roboto", sans-serif;
+    color: #fff;
+}
+
+.admin-dashboard-hero__pill {
+    display: inline-block;
+    width: fit-content;
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.65);
+    padding: 0.3rem 0.6rem;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-dashboard-hero__header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+@media (min-width: 640px) {
+    .admin-dashboard-hero__header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+.admin-dashboard-hero__welcome {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.admin-dashboard-hero__avatar {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.admin-dashboard-hero__eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.admin-dashboard-hero__name {
+    color: #fff !important;
+}
+
+.admin-dashboard-hero__email {
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.admin-dashboard-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.admin-dashboard-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-dashboard-hero__btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.admin-dashboard-hero__quick-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .admin-dashboard-hero__quick-nav {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .admin-dashboard-hero__quick-nav {
+        gap: 1rem;
+    }
+}
+
+.admin-dashboard-hero__tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 0.75rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.admin-dashboard-hero__tile:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.14);
+    transform: translateY(-1px);
+}
+
+.admin-dashboard-hero__tile-icon {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.125rem;
+}
+
+.admin-dashboard-hero__tile-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.92);
+    line-height: 1.25;
+}
+
+[data-theme="dark"] .admin-dashboard-hero {
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="dark"] .admin-dashboard-hero__bg {
+    background: linear-gradient(180deg, #12151f 0%, #0d1018 45%, #080a10 100%);
+}
+
+/* --------------------------------------------------------------------------
+   Shared mega menu bento tiles (admin + teacher banner menus)
+   -------------------------------------------------------------------------- */
+.mega-bento-tile-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 0.92rem;
+    border-radius: 1.2rem;
+    background: color-mix(in srgb, var(--primary) 4%, var(--card-bg));
+    border: 1px solid var(--card-border);
+    box-shadow: var(--elevation-1);
+    text-decoration: none;
+    min-width: 0;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.mega-bento-tile-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(130deg, color-mix(in srgb, var(--primary) 8%, transparent), transparent 62%);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.mega-bento-tile-link:hover {
+    border-color: var(--outline-variant);
+    background: color-mix(in srgb, var(--primary) 7%, var(--surface-container-low));
+    box-shadow: var(--elevation-2);
+    transform: translateY(-1px);
+}
+
+.mega-bento-tile-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.95rem;
+    background: color-mix(in srgb, var(--primary) 14%, transparent);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid color-mix(in srgb, var(--primary) 16%, transparent);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.mega-bento-tile-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.mega-bento-tile-title {
+    font-size: 0.875rem;
+    font-weight: 650;
+    color: var(--on-surface-variant);
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.mega-bento-tile-arrow {
+    color: var(--on-surface-variant);
+    transition: color 0.2s ease, transform 0.2s ease;
+    flex-shrink: 0;
+    margin-top: 2px;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.mega-bento-tile-link:hover .mega-bento-tile-title {
+    color: var(--primary);
+}
+
+.mega-bento-tile-link:hover .mega-bento-tile-arrow {
+    color: var(--primary);
+    transform: translateX(2px);
+    background: color-mix(in srgb, var(--primary) 14%, transparent);
+}
+
+.mega-bento-tile-link:hover .mega-bento-tile-icon {
+    background: color-mix(in srgb, var(--primary) 20%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 24%, transparent);
+}
+
+[data-theme="dark"] .mega-bento-tile-link {
+    background: color-mix(in srgb, var(--primary) 7%, var(--card-bg));
+    border-color: var(--card-border);
+}
+
+[data-theme="dark"] .mega-bento-tile-icon {
+    background: color-mix(in srgb, var(--primary) 18%, transparent);
+    color: var(--primary);
+}
+
+[data-theme="dark"] .mega-bento-tile-title {
+    color: var(--on-surface-variant);
+}
+
+[data-theme="dark"] .mega-bento-tile-arrow {
+    color: var(--on-surface-variant);
+}
+
+[data-theme="dark"] .mega-bento-tile-link:hover {
+    border-color: var(--outline-variant);
+    background: color-mix(in srgb, var(--primary) 10%, var(--surface-container-low));
+}
+
+[data-theme="dark"] .mega-bento-tile-link:hover .mega-bento-tile-title {
+    color: var(--on-surface);
+}
+
+.mega-menu-col--students .mega-bento-tile-link {
+    background: color-mix(in srgb, var(--primary) 5%, var(--card-bg));
+}
+
+.mega-menu-col--teachers .mega-bento-tile-link {
+    background: color-mix(in srgb, var(--primary) 6%, var(--card-bg));
+}
+
+.mega-menu-col--academics .mega-bento-tile-link {
+    background: color-mix(in srgb, var(--primary) 7%, var(--card-bg));
+}
+
+.mega-menu-col--operations .mega-bento-tile-link {
+    background: color-mix(in srgb, var(--primary) 8%, var(--card-bg));
+}
+
+.mega-menu-col--hero .mega-bento-tile-link {
+    background: color-mix(in srgb, var(--on-primary) 9%, transparent);
+    border-color: color-mix(in srgb, var(--on-primary) 15%, transparent);
+}
+
+@media (max-width: 640px) {
+    .mega-bento-tile-link {
+        padding: 0.75rem;
+        border-radius: 1.05rem;
+        gap: 0.4rem;
+    }
+
+    .mega-bento-tile-icon {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.8rem;
+    }
+
+    .mega-bento-tile-title {
+        font-size: 0.82rem;
+        -webkit-line-clamp: 2;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Admin mega menu — same shell as dashboard / auth hero banner
+   -------------------------------------------------------------------------- */
+.admin-mega-menu-banner.mega-menu-bento-panel {
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="dark"] .admin-mega-menu-banner.mega-menu-bento-panel {
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.55);
+}
+
+.admin-mega-menu-banner__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, #1f2535 0%, #1a1f2e 40%, #161b28 100%);
+}
+
+.admin-mega-menu-banner__bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+}
+
+[data-theme="dark"] .admin-mega-menu-banner__bg {
+    background: linear-gradient(180deg, #12151f 0%, #0d1018 45%, #080a10 100%);
+}
+
+.admin-mega-menu-banner__inner {
+    position: relative;
+    z-index: 1;
+}
+
+.admin-mega-menu-intro__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.admin-mega-menu-banner .mega-menu-section-title {
+    color: #fff !important;
+}
+
+.admin-mega-menu-banner .mega-menu-col:not(.mega-menu-col--hero) {
+    background: rgba(255, 255, 255, 0.055) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: none !important;
+}
+
+.admin-mega-menu-banner .mega-menu-col:not(.mega-menu-col--hero):hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    box-shadow: none !important;
+}
+
+/* Glass tiles on banner (not Admin Hub column — that keeps primary-tint tiles) */
+.admin-mega-menu-banner .mega-menu-col:not(.mega-menu-col--hero) .mega-bento-tile-link {
+    background: rgba(255, 255, 255, 0.07) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: none !important;
+}
+
+.admin-mega-menu-banner .mega-menu-col:not(.mega-menu-col--hero) .mega-bento-tile-link::before {
+    background: linear-gradient(130deg, rgba(255, 255, 255, 0.14), transparent 62%);
+    opacity: 0.35;
+}
+
+.admin-mega-menu-banner .mega-menu-col:not(.mega-menu-col--hero) .mega-bento-tile-link:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    box-shadow: none !important;
+}
+
+.admin-mega-menu-banner .mega-menu-col:not(.mega-menu-col--hero) .mega-bento-tile-title {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.admin-mega-menu-banner .mega-menu-col:not(.mega-menu-col--hero) .mega-bento-tile-link:hover .mega-bento-tile-title {
+    color: #fff !important;
+}
+
+.admin-mega-menu-banner .mega-menu-col:not(.mega-menu-col--hero) .mega-bento-tile-icon {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.admin-mega-menu-banner .mega-menu-col:not(.mega-menu-col--hero) .mega-bento-tile-link:hover .mega-bento-tile-icon {
+    background: rgba(255, 255, 255, 0.16) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #fff !important;
+}
+
+.admin-mega-menu-banner .mega-menu-col:not(.mega-menu-col--hero) .mega-bento-tile-arrow {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.admin-mega-menu-banner .mega-menu-col:not(.mega-menu-col--hero) .mega-bento-tile-link:hover .mega-bento-tile-arrow {
+    background: rgba(255, 255, 255, 0.14) !important;
+    color: #fff !important;
+}
+
+/* Admin Hub column: keep primary block readable on banner */
+.admin-mega-menu-banner .mega-menu-col--hero {
+    background: color-mix(in srgb, var(--primary) 92%, transparent) !important;
+    border-color: color-mix(in srgb, var(--primary) 45%, rgba(255, 255, 255, 0.2)) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+}
+
+.admin-mega-menu-banner .mega-menu-col--hero:hover {
+    border-color: color-mix(in srgb, var(--primary) 55%, rgba(255, 255, 255, 0.25)) !important;
+}
+
+/* Mega menu footer row — same glass language as bento columns on the banner */
+.admin-mega-menu-banner__footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+    .admin-mega-menu-banner__footer {
+        gap: 0.75rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+    }
+}
+
+.admin-mega-menu-banner__footer-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.875rem 1rem;
+    border-radius: 1.5rem;
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.92);
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    box-sizing: border-box;
+    box-shadow: none;
+}
+
+.admin-mega-menu-banner__footer-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+.admin-mega-menu-banner__footer-card:active {
+    transform: scale(0.99);
+}
+
+.admin-mega-menu-banner__footer-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-mega-menu-banner__footer-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.admin-mega-menu-banner__footer-card-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.96);
+    line-height: 1.25;
+}
+
+.admin-mega-menu-banner__footer-card-sub {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 0.125rem;
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+.admin-mega-menu-banner__footer-card-chevron {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.42);
+    flex-shrink: 0;
+}
+
+.admin-mega-menu-banner__footer-card:hover .admin-mega-menu-banner__footer-card-chevron {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.admin-mega-menu-banner__footer-card--logout {
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.admin-mega-menu-banner__footer-card--logout .admin-mega-menu-banner__footer-card-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+.admin-mega-menu-banner__footer-card--logout i {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.admin-mega-menu-banner__footer-card--logout:hover {
+    background: rgba(239, 68, 68, 0.18);
+    border-color: rgba(252, 165, 165, 0.35);
+}
+
+.admin-mega-menu-banner__footer-card--logout:hover i,
+.admin-mega-menu-banner__footer-card--logout:hover .admin-mega-menu-banner__footer-card-title {
+    color: #fecaca;
+}
+
+[data-theme="dark"] .admin-mega-menu-banner__footer {
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+#mega-menu-dropdown .admin-mega-menu-banner.mega-menu-bento-panel {
+    max-height: calc(100dvh - 5.5rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+#mega-menu-dropdown .admin-mega-menu-banner.mega-menu-bento-panel::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+@media (min-width: 768px) {
+    #mega-menu-dropdown .admin-mega-menu-banner.mega-menu-bento-panel {
+        max-height: calc(100dvh - 6rem);
+    }
+}
+
+/* Reusable admin page hero (title + actions inside banner) */
+.admin-page-hero__title {
+    color: #fff;
+    letter-spacing: -0.02em;
+}
+
+.admin-page-hero__description {
+    color: rgba(255, 255, 255, 0.68);
+    max-width: 42rem;
+}
+
+.admin-page-hero__above {
+    margin-bottom: 0.25rem;
+}
+
+.admin-page-hero__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+    text-decoration: none;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.admin-page-hero__back:hover {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.admin-page-hero__below {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-dashboard-hero__btn--primary {
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: transparent;
+}
+
+.admin-dashboard-hero__btn--primary:hover {
+    filter: brightness(1.06);
+    border-color: transparent;
+    color: var(--on-primary);
+}
+
+.admin-page-hero__segments {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-page-hero__segment {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.88);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-page-hero__segment:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #fff;
+}
+
+.admin-page-hero__segment--active {
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: transparent;
+}
+
+.admin-page-hero__segment--active:hover {
+    filter: brightness(1.05);
+    color: var(--on-primary);
 }
 
 .auth-form-wrap {
@@ -777,7 +1539,6 @@ body {
     color: var(--text-secondary);
     margin: 0;
     padding-top: 1rem;
-    border-top: 1px solid var(--border);
 }
 
 .form-group {
@@ -1213,7 +1974,8 @@ main.overflow-y-auto {
     }
 
     .auth-banner-eyebrow,
-    .auth-banner-features-wrap--admin {
+    .auth-banner-features-wrap--admin,
+    .auth-banner-features-wrap--teacher {
         display: none;
     }
 

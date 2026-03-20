@@ -3,16 +3,12 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        Scratch card
-                    </h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        Manage result-check scratch cards. View unused and used pins, or generate new pins for a session.
-                    </p>
-                </div>
-            </header>
+            <x-admin.hero-page
+                aria-label="Scratch cards"
+                pill="Admin"
+                title="Scratch card"
+                description="Manage result-check scratch cards. View unused and used pins, or generate new pins for a session."
+            />
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-6">
                 <a href="{{ route('admin.card.unused-pins') }}" class="rounded-2xl overflow-hidden flex flex-col transition-shadow hover:shadow-md" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">

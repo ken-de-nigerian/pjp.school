@@ -6,10 +6,13 @@ use App\Contracts\NotificationServiceContract;
 use App\Contracts\ResultRepositoryContract;
 use App\Contracts\ResultServiceContract;
 use App\Models\Notification;
+use App\Models\Teacher;
+use App\Policies\TeacherPolicy;
 use App\Repositories\ResultRepository;
 use App\Services\NotificationService;
 use App\Services\ResultService;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Gate::policy(Teacher::class, TeacherPolicy::class);
+
         View::composer('*', function ($view) {
             $view->with('layoutRoute', request()->route()?->getName());
             if (auth()->guard('admin')->check()) {
@@ -36,7 +41,10 @@ class AppServiceProvider extends ServiceProvider
                 ]);
             }
             if (auth()->guard('teacher')->check()) {
-                $view->with('layoutTeacher', auth()->guard('teacher')->user());
+                $view->with([
+                    'layoutTeacher' => auth()->guard('teacher')->user(),
+                    'layoutNotifications' => Notification::query()->orderByDesc('date_added')->limit(10)->get(),
+                ]);
             }
         });
 

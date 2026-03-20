@@ -5,50 +5,52 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ChangeTeacherPasswordRequest;
-use App\Http\Requests\UpdateTeacherProfileRequest;
-use App\Http\Requests\UploadTeacherAvatarRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
-class ProfileController extends Controller
+final class ProfileController extends Controller
 {
-    /**
-     * View teacher profile. Legacy: GET teacher/profile.
-     */
-    public function index(): View
+    public function show(): View
     {
-        $user = request()->user('teacher');
+        $teacher = auth('teacher')->user();
+        if (! $teacher) {
+            abort(403, 'Unauthorized.');
+        }
 
         return view('teacher.profile.index', [
-            'user' => $user,
+            'user' => $teacher,
         ]);
     }
 
-    /**
-     * Update teacher profile. Legacy: POST teacher/profile.
-     * Returns JSON { status, message }.
-     */
-    public function update(UpdateTeacherProfileRequest $request): JsonResponse
+    public function update(Request $request): JsonResponse
     {
-        $user = $request->user('teacher');
-        if (! $user) {
+        $teacher = auth('teacher')->user();
+        if (! $teacher) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized.',
             ], 403);
         }
 
-        $user->update([
-            'firstname' => $request->validated('firstname'),
-            'lastname' => $request->validated('lastname'),
-            'phone' => $request->validated('formattedPhone'),
-            'address' => $request->validated('address'),
-            'country' => $request->validated('country'),
-            'gender' => $request->validated('gender'),
+        $v = $request->validate([
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'othername' => 'nullable|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('user', 'email')->ignore($teacher->userId, 'userId'),
+            ],
+            'phone' => 'nullable|string|max:50',
+            'country' => 'nullable|string|max:100',
         ]);
+
+        $teacher->update($v);
 
         return response()->json([
             'status' => 'success',
@@ -56,29 +58,32 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Change teacher password. Legacy: POST teacher/password.
-     * Returns JSON { status, message }.
-     */
-    public function changePassword(ChangeTeacherPasswordRequest $request): JsonResponse
+    public function changePassword(Request $request): JsonResponse
     {
-        $user = $request->user('teacher');
-        if (! $user) {
+        $teacher = auth('teacher')->user();
+        if (! $teacher) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized.',
             ], 403);
         }
 
-        if (! Hash::check($request->input('oldPassword'), $user->password)) {
+        $v = $request->validate([
+            'oldPassword' => 'required|string|min:6',
+            'password' => 'required|string|min:8',
+            'confirmPassword' => 'required|string|min:8|same:password',
+        ]);
+
+        if (! Hash::check($v['oldPassword'], (string) ($teacher->password ?? ''))) {
             return response()->json([
-                'status' => 'error',
                 'message' => 'Your current password does not match our records. Please try again.',
-            ]);
+                'errors' => ['oldPassword' => ['Your current password does not match our records. Please try again.']],
+            ], 422);
         }
 
-        $user->update([
-            'password' => Hash::make($request->input('password')),
+        $teacher->update([
+            'password' => Hash::make($v['password']),
+            'password_change_date' => now(),
         ]);
 
         return response()->json([
@@ -87,16 +92,19 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Upload teacher profile picture. Legacy: GET teacher/upload (form), POST teacher/upload (AJAX photoimg).
-     * Returns JSON { status } or { status, message }.
-     */
-    public function upload(UploadTeacherAvatarRequest $request): JsonResponse
+    public function uploadAvatar(Request $request): JsonResponse
     {
-        $user = $request->user('teacher');
-        if (! $user) {
-            return response()->json(['status' => 'error', 'message' => 'Unauthorized.'], 403);
+        $teacher = auth('teacher')->user();
+        if (! $teacher) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized.',
+            ], 403);
         }
+
+        $request->validate([
+            'photoimg' => 'required|file|mimes:jpg,jpeg,png|max:5120',
+        ]);
 
         $file = $request->file('photoimg');
         $ext = $file->getClientOriginalExtension();
@@ -110,13 +118,12 @@ class ProfileController extends Controller
             ]);
         }
 
-        $user->update(['profileImage' => $filename]);
+        $teacher->update(['imagelocation' => $filename]);
 
-        return response()->json(['status' => 'success']);
-    }
-
-    public function uploadPage()
-    {
-        //
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Profile picture updated.',
+            'image_url' => asset('storage/teachers/'.$filename),
+        ]);
     }
 }

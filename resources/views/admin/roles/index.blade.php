@@ -4,21 +4,21 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 min-w-0">
-                <div class="flex items-start gap-3 sm:gap-4 min-w-0">
-                    <div class="min-w-0 flex-1">
-                        <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-normal tracking-tight mb-1 sm:mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Roles &amp; permissions</h1>
-                        <p class="text-xs sm:text-sm md:text-base font-normal max-w-2xl" style="color: var(--on-surface-variant);">Define who can access attendance, results, students, settings, and more. Edit or add roles below.</p>
-                    </div>
-                </div>
-
+            <x-admin.hero-page
+                aria-label="Roles and permissions"
+                pill="Admin"
+                title="Roles & permissions"
+                description="Define who can access attendance, results, students, settings, and more. Edit or add roles below."
+            >
                 @can('create', Role::class)
-                    <a href="{{ route('admin.roles.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors border border-dashed border-gray-300 sm:border-solid" style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);">
-                        <i class="fas fa-plus text-xs sm:text-sm" aria-hidden="true"></i>
-                        <span>Add role</span>
-                    </a>
+                    <x-slot name="actions">
+                        <a href="{{ route('admin.roles.create') }}" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
+                            <i class="fas fa-plus text-xs sm:text-sm" aria-hidden="true"></i>
+                            <span>Add role</span>
+                        </a>
+                    </x-slot>
                 @endcan
-            </header>
+            </x-admin.hero-page>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($roles->isEmpty())

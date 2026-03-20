@@ -13,10 +13,7 @@
             <div class="flex items-center gap-3">
                 <a href="{{ route('admin.dashboard') }}" class="logo-container" onclick="closeMobileMenu()">
                     <div class="logo-icon-container">
-                        <div class="logo-glow"></div>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon">
-                            <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
-                        </svg>
+                        <img src="{{ asset('storage/logo/logo.jpg') }}" alt="Logo" class="w-9 h-9 rounded-full object-cover ring-2 ring-offset-2">
                     </div>
                     <span class="logo-text">{{ config('app.name') }}</span>
                 </a>

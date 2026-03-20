@@ -7,17 +7,19 @@
     @endphp
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <div class="mb-4 sm:mb-6 w-fit">
-                <a href="{{ route('admin.attendance.index') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Back to Attendance
-                </a>
-            </div>
-
-            <header class="mb-6 lg:mb-8">
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Take Attendance</h1>
-                <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">Mark present or absent for each student. Changes are saved when you click Save.</p>
-            </header>
+            <x-admin.hero-page
+                aria-label="Take attendance"
+                pill="Admin"
+                title="Take attendance"
+                description="Mark present or absent for each student. Changes are saved when you click Save."
+            >
+                <x-slot name="above">
+                    <a href="{{ route('admin.attendance.index') }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Back to attendance
+                    </a>
+                </x-slot>
+            </x-admin.hero-page>
 
             <div class="flex flex-wrap gap-3 sm:gap-4 mb-6">
                 <div class="rounded-xl px-4 py-2.5" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">

@@ -8,17 +8,19 @@
     @endphp
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-6xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <div class="mb-5 sm:mb-6">
-                <a href="{{ route('admin.roles.index') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80 w-fit" style="color: var(--on-surface-variant);">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Back to roles
-                </a>
-            </div>
-
-            <header class="mb-5 lg:mb-6">
-                <h1 class="text-2xl sm:text-3xl font-normal tracking-tight mb-1" style="color: var(--on-surface); letter-spacing: -0.02em;">Add role</h1>
-                <p class="text-sm" style="color: var(--on-surface-variant);">Saves without leaving the page. At least one permission must be on.</p>
-            </header>
+            <x-admin.hero-page
+                aria-label="Add role"
+                pill="Admin"
+                title="Add role"
+                description="Saves without leaving the page. At least one permission must be on."
+            >
+                <x-slot name="above">
+                    <a href="{{ route('admin.roles.index') }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Back to roles
+                    </a>
+                </x-slot>
+            </x-admin.hero-page>
 
             <form action="{{ route('admin.roles.store') }}" method="POST" id="role-form" class="min-w-0 flex flex-col gap-4 sm:gap-5" data-role-form="create" data-total-perms="{{ $totalPerms }}">
                 @csrf

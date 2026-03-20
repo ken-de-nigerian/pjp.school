@@ -6,6 +6,9 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * @property mixed $userId
+ */
 class Teacher extends Authenticatable
 {
     public $timestamps = false;

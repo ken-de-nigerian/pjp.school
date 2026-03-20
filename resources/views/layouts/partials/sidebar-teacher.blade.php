@@ -1,53 +1,117 @@
-@php
-    $route = $layoutRoute ?? '';
-    $teacher = $layoutTeacher ?? null;
-    $formTeacher = (int) ($teacher->form_teacher ?? 0) === 1;
-@endphp
-{{-- Legacy: .offcanvas-lg.offcanvas-end #offcanvasSidebar; .nav-item, .nav-link --}}
-<div class="col-lg-4 col-xl-3 w-full lg:w-1/4 xl:w-1/4 shrink-0">
-    <div class="offcanvas-lg offcanvas-end sidebar-right fixed right-0 top-0 z-40 h-screen w-72 border-l border-gray-200 bg-white transition-transform lg:static lg:block lg:translate-x-0 translate-x-full" tabindex="-1" id="offcanvasSidebar">
-        <div class="offcanvas-header justify-end p-3 lg:hidden">
-            <button type="button" class="btn-close rounded p-1 hover:bg-gray-100" id="teacher-sidebar-close" aria-label="Close">&times;</button>
-        </div>
-        <div class="offcanvas-body p-3 lg:p-0 h-full overflow-y-auto">
-            <div class="card bg-light w-100 rounded-lg border border-gray-200">
-                <div class="card-body p-3">
-                    <div class="text-center mb-3">
-                        @if($teacher && $teacher->profileImage)
-                            <img class="h-16 w-16 rounded-full border-2 border-white object-cover mx-auto mb-2" src="{{ asset('uploads/teachers/' . $teacher->profileImage) }}" alt="">
-                        @else
-                            <span class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white bg-gray-200 text-xl font-medium text-gray-600 mx-auto mb-2">{{ substr($teacher->firstname ?? 'T', 0, 1) }}</span>
-                        @endif
-                        <h6 class="mb-0 font-medium text-gray-900">{{ $teacher->firstname ?? '' }} {{ $teacher->lastname ?? '' }}</h6>
-                        <a href="{{ route('teacher.profile.index') }}" class="text-sm text-blue-600 hover:underline">{{ $teacher->email ?? '' }}</a>
-                        <hr class="my-2 border-gray-200">
+<div id="mobile-menu-overlay" class="mobile-menu-overlay" onclick="closeMobileMenu()">
+    <div id="mobile-menu-panel" class="mobile-menu-panel" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div class="mobile-menu-header">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('teacher.dashboard') }}" class="logo-container" onclick="closeMobileMenu()">
+                    <div class="logo-icon-container">
+                        <img src="{{ asset('storage/logo/logo.jpg') }}" alt="Logo" class="w-9 h-9 rounded-full object-cover ring-2 ring-offset-2">
                     </div>
-                    <ul class="nav flex-column space-y-0">
-                        <li class="nav-item">
-                            <a class="nav-link flex items-center gap-2 rounded-lg px-3 py-2 text-sm {{ $route === 'teacher.dashboard' ? 'active bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}" href="{{ route('teacher.dashboard') }}">Dashboard</a>
-                        </li>
-                        @if($formTeacher)
-                            <li class="nav-item"><a class="nav-link flex items-center gap-2 rounded-lg px-3 py-2 text-sm {{ str_starts_with($route ?? '', 'teacher.attendance') ? 'active bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}" href="{{ route('teacher.attendance.index') }}">Attendance</a></li>
-                            <li class="nav-item"><a class="nav-link flex items-center gap-2 rounded-lg px-3 py-2 text-sm {{ str_starts_with($route ?? '', 'teacher.behavioral') ? 'active bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}" href="{{ route('teacher.behavioral.index') }}">Behavioural</a></li>
-                        @endif
-                        <li class="nav-item"><a class="nav-link flex items-center gap-2 rounded-lg px-3 py-2 text-sm {{ str_starts_with($route ?? '', 'teacher.class') ? 'active bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}" href="{{ route('teacher.class.index') }}">Class | Subjects</a></li>
-                        <li class="nav-item"><a class="nav-link flex items-center gap-2 rounded-lg px-3 py-2 text-sm {{ str_starts_with($route ?? '', 'teacher.subjects') ? 'active bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}" href="{{ route('teacher.subjects.index') }}">Subject Management</a></li>
-                        <li class="nav-item"><a class="nav-link flex items-center gap-2 rounded-lg px-3 py-2 text-sm {{ str_starts_with($route ?? '', 'teacher.results') ? 'active bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}" href="{{ route('teacher.results.index') }}">Upload</a></li>
-                        <li class="nav-item"><a class="nav-link flex items-center gap-2 rounded-lg px-3 py-2 text-sm {{ str_starts_with($route ?? '', 'teacher.uploaded') ? 'active bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}" href="{{ route('teacher.uploaded.index') }}">Uploaded Results</a></li>
-                    </ul>
-                    <hr class="my-2 border-gray-200">
-                    <ul class="nav flex-column space-y-0">
-                        <li class="nav-item"><a class="nav-link flex items-center gap-2 rounded-lg px-3 py-2 text-sm {{ str_starts_with($route ?? '', 'teacher.profile') ? 'active bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}" href="{{ route('teacher.profile.index') }}">Edit Profile</a></li>
-                        <li class="nav-item">
-                            <form method="POST" action="{{ route('teacher.logout') }}">
-                                @csrf
-                                <button type="submit" class="nav-link w-full text-left flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50 bg-transparent border-0 cursor-pointer">Sign Out</button>
-                            </form>
-                        </li>
-                    </ul>
+                    <span class="logo-text">{{ config('app.name') }}</span>
+                </a>
+            </div>
+
+            <button type="button" onclick="closeMobileMenu()" class="w-10 h-10 flex items-center justify-center rounded-xl nav-icon-btn active:scale-95 transition-transform" aria-label="Close menu">
+                <i class="fas fa-times text-charcoal-700 text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="mobile-menu-content">
+            <a href="{{ route('teacher.dashboard') }}" class="mobile-menu-item" onclick="closeMobileMenu()">
+                <div class="mobile-menu-item-icon"><i class="fas fa-chart-pie"></i></div>
+                <div class="mobile-menu-item-content">
+                    <div class="mobile-menu-item-title">Dashboard</div>
+                    <div class="mobile-menu-item-subtitle">Teacher overview</div>
+                </div>
+                <i class="fas fa-chevron-right mobile-menu-item-arrow"></i>
+            </a>
+
+            <a href="{{ route('teacher.attendance.index') }}" class="mobile-menu-item" onclick="closeMobileMenu()">
+                <div class="mobile-menu-item-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="mobile-menu-item-content">
+                    <div class="mobile-menu-item-title">Attendance</div>
+                    <div class="mobile-menu-item-subtitle">Take & view</div>
+                </div>
+                <i class="fas fa-chevron-right mobile-menu-item-arrow"></i>
+            </a>
+
+            <a href="{{ route('teacher.behavioral.index') }}" class="mobile-menu-item" onclick="closeMobileMenu()">
+                <div class="mobile-menu-item-icon"><i class="fas fa-brain"></i></div>
+                <div class="mobile-menu-item-content">
+                    <div class="mobile-menu-item-title">Behavioural</div>
+                    <div class="mobile-menu-item-subtitle">Behaviour analysis</div>
+                </div>
+                <i class="fas fa-chevron-right mobile-menu-item-arrow"></i>
+            </a>
+
+            <a href="{{ route('teacher.class.index') }}" class="mobile-menu-item" onclick="closeMobileMenu()">
+                <div class="mobile-menu-item-icon"><i class="fas fa-chalkboard"></i></div>
+                <div class="mobile-menu-item-content">
+                    <div class="mobile-menu-item-title">Class | Students</div>
+                    <div class="mobile-menu-item-subtitle">Students by class</div>
+                </div>
+                <i class="fas fa-chevron-right mobile-menu-item-arrow"></i>
+            </a>
+
+            <a href="{{ route('teacher.results.index') }}" class="mobile-menu-item" onclick="closeMobileMenu()">
+                <div class="mobile-menu-item-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <div class="mobile-menu-item-content">
+                    <div class="mobile-menu-item-title">Upload</div>
+                    <div class="mobile-menu-item-subtitle">Enter scores</div>
+                </div>
+                <i class="fas fa-chevron-right mobile-menu-item-arrow"></i>
+            </a>
+
+            <a href="{{ route('teacher.uploaded.index') }}" class="mobile-menu-item" onclick="closeMobileMenu()">
+                <div class="mobile-menu-item-icon"><i class="fas fa-save"></i></div>
+                <div class="mobile-menu-item-content">
+                    <div class="mobile-menu-item-title">Uploaded Results</div>
+                    <div class="mobile-menu-item-subtitle">View & edit</div>
+                </div>
+                <i class="fas fa-chevron-right mobile-menu-item-arrow"></i>
+            </a>
+
+            <div class="mobile-menu-divider"></div>
+
+            <a href="{{ route('teacher.profile.index') }}" class="mobile-menu-item" onclick="closeMobileMenu()">
+                <div class="mobile-menu-item-icon"><i class="fas fa-user-edit"></i></div>
+                <div class="mobile-menu-item-content">
+                    <div class="mobile-menu-item-title">Edit Profile</div>
+                    <div class="mobile-menu-item-subtitle">Your account</div>
+                </div>
+                <i class="fas fa-chevron-right mobile-menu-item-arrow"></i>
+            </a>
+
+            <div class="mobile-menu-item">
+                <div class="mobile-menu-item-icon"><i class="fas fa-sign-out-alt text-red-500"></i></div>
+                <div class="mobile-menu-item-content flex-1">
+                    <form action="{{ route('teacher.logout') }}" method="POST" class="block">
+                        @csrf
+                        <button type="submit"
+                                class="mobile-menu-item-title text-left w-full text-red-600 font-semibold">
+                            Sign Out
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mobile-menu-footer">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    @if($layoutTeacher)
+                        <img src="{{ !empty($layoutTeacher->imagelocation) ? asset('storage/teachers/' . $layoutTeacher->imagelocation) : asset('storage/teachers/default.png') }}" alt="Profile" class="w-10 h-10 rounded-xl border-2 border-white shadow object-cover bg-gray-200">
+                        <div>
+                            <div class="font-semibold text-sm" style="color: var(--text-primary);">{{ $layoutTeacher->firstname ?? 'Class' }} {{ $layoutTeacher->lastname ?? 'Teacher' }}</div>
+                            <div class="text-xs font-medium" style="color: var(--text-secondary);">{{ $layoutTeacher->email ?? '' }}</div>
+                        </div>
+                    @else
+                        <div class="font-semibold text-sm" style="color: var(--text-primary);">{{ config('app.name') }}</div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div id="teacher-sidebar-backdrop" class="fixed inset-0 z-30 hidden bg-black/50 lg:hidden" aria-hidden="true"></div>

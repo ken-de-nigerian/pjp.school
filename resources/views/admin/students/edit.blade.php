@@ -3,19 +3,19 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <div class="mb-4 sm:mb-6 w-fit">
-                <a href="{{ route('admin.classes') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Back to Students
-                </a>
-            </div>
-
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Edit Student</h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">{{ e($student->firstname . ' ' . $student->lastname . ($student->othername ? ' ' . $student->othername : '')) }} — {{ e($student->reg_number) }}</p>
-                </div>
-            </header>
+            <x-admin.hero-page
+                aria-label="Edit student"
+                pill="Admin"
+                title="Edit student"
+                :description="e($student->firstname . ' ' . $student->lastname . ($student->othername ? ' ' . $student->othername : '')) . ' — ' . e($student->reg_number)"
+            >
+                <x-slot name="above">
+                    <a href="{{ route('admin.classes') }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Back to students
+                    </a>
+                </x-slot>
+            </x-admin.hero-page>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                 <div class="space-y-4 sm:space-y-6">

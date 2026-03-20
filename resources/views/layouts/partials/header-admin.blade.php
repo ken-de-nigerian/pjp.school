@@ -139,16 +139,6 @@
         opacity: 0;
         transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
     }
-    .mega-menu-inner {
-        background: var(--surface-container-lowest);
-        border: 1px solid var(--outline-variant);
-        border-radius: 1rem;
-        box-shadow: 0 2px 6px 2px rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-        overflow: hidden;
-    }
-    [data-theme="dark"] .mega-menu-inner {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    }
     #mega-menu-dropdown.mega-menu-open .mega-menu-panel {
         transform: translateY(0) scale(1);
         opacity: 1;
@@ -159,23 +149,126 @@
         transition: opacity 0.3s ease, transform 0.3s ease;
     }
     #mega-menu-dropdown.mega-menu-open .mega-menu-panel .mega-menu-col:nth-child(1) { transition-delay: 0.05s; }
-    #mega-menu-dropdown.mega-menu-open .mega-menu-panel .mega-menu-col:nth-child(2) { transition-delay: 0.1s; }
-    #mega-menu-dropdown.mega-menu-open .mega-menu-panel .mega-menu-col:nth-child(3) { transition-delay: 0.15s; }
-    #mega-menu-dropdown.mega-menu-open .mega-menu-panel .mega-menu-col:nth-child(4) { transition-delay: 0.2s; }
+    #mega-menu-dropdown.mega-menu-open .mega-menu-panel .mega-menu-col:nth-child(2) { transition-delay: 0.08s; }
+    #mega-menu-dropdown.mega-menu-open .mega-menu-panel .mega-menu-col:nth-child(3) { transition-delay: 0.11s; }
+    #mega-menu-dropdown.mega-menu-open .mega-menu-panel .mega-menu-col:nth-child(4) { transition-delay: 0.14s; }
+    #mega-menu-dropdown.mega-menu-open .mega-menu-panel .mega-menu-col:nth-child(5) { transition-delay: 0.17s; }
+    #mega-menu-dropdown.mega-menu-open .mega-menu-panel .mega-menu-col:nth-child(6) { transition-delay: 0.2s; }
+    #mega-menu-dropdown.mega-menu-open .mega-menu-panel .mega-menu-col:nth-child(7) { transition-delay: 0.23s; }
     #mega-menu-dropdown.mega-menu-open .mega-menu-panel .mega-menu-col {
         opacity: 1;
         transform: translateY(0);
     }
-    .mega-menu-link {
-        transition: background 0.15s ease, transform 0.15s ease;
-    }
-    .mega-menu-link:hover {
-        background: var(--surface-container);
-    }
-    [data-theme="dark"] .mega-menu-link:hover {
-        background: var(--surface-container);
+    /* Bento panel shell: hero banner look lives in app.css (.admin-mega-menu-banner) */
+    .mega-menu-bento-panel {
+        min-width: 0;
     }
 
+    /* Admin Hub (primary tonal) */
+    .mega-menu-bento-panel .mega-menu-col--hero {
+        background: var(--primary);
+        border-color: color-mix(in srgb, var(--primary) 60%, transparent);
+        box-shadow: none;
+    }
+    .mega-menu-bento-panel .mega-menu-col--hero h3 {
+        color: var(--on-primary);
+    }
+
+    .mega-menu-bento-panel .mega-menu-col h3 {
+        color: var(--on-surface);
+    }
+    .mega-menu-bento-panel .mega-menu-col--hero p {
+        color: color-mix(in srgb, var(--on-primary) 90%, transparent);
+    }
+
+    .mega-menu-bento-panel .mega-menu-col--hero .mega-bento-tile-icon {
+        background: color-mix(in srgb, var(--on-primary) 18%, transparent);
+        color: var(--on-primary);
+    }
+    .mega-menu-bento-panel .mega-menu-col--hero .mega-bento-tile-link {
+        background: color-mix(in srgb, var(--on-primary) 10%, transparent);
+        border-color: color-mix(in srgb, var(--on-primary) 18%, transparent);
+        box-shadow: none;
+    }
+    .mega-menu-bento-panel .mega-menu-col--hero .mega-bento-tile-link:hover {
+        background: color-mix(in srgb, var(--on-primary) 16%, transparent);
+        border-color: color-mix(in srgb, var(--on-primary) 25%, transparent);
+        box-shadow: none;
+    }
+    .mega-menu-bento-panel .mega-menu-col--hero .mega-bento-tile-link:hover .mega-bento-tile-title {
+        color: var(--on-primary);
+    }
+    .mega-menu-bento-panel .mega-menu-col--hero .mega-bento-tile-link:hover .mega-bento-tile-arrow {
+        color: color-mix(in srgb, var(--on-primary) 85%, transparent);
+    }
+    .mega-menu-bento-panel .mega-menu-col--hero .mega-bento-tile-title {
+        color: var(--on-primary);
+    }
+    .mega-menu-bento-panel .mega-menu-col--hero .mega-bento-tile-arrow {
+        color: color-mix(in srgb, var(--on-primary) 85%, transparent);
+    }
+
+
+    /* Viewport + scrollbar: see app.css #mega-menu-dropdown .admin-mega-menu-banner */
+    /* Bento row-link (card list item with arrow) */
+    .mega-bento-row-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        background: white;
+        border: 1px solid rgb(241 245 249);
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+        text-decoration: none;
+        min-width: 0;
+    }
+    .mega-bento-row-link span {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: rgb(71 85 105);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    @media (min-width: 640px) {
+        .mega-bento-row-link span {
+            white-space: normal;
+            word-break: break-word;
+        }
+    }
+    .mega-bento-row-link:hover {
+        border-color: rgb(167 243 208);
+        background: rgba(16, 185, 129, 0.08);
+    }
+    .mega-bento-row-link:hover span { color: rgb(4 120 87); }
+    .mega-bento-row-link i.fa-arrow-right,
+    .mega-bento-row-link i.fa-chevron-right,
+    .mega-bento-row-link i.fa-history {
+        font-size: 0.75rem;
+        color: rgb(203 213 225);
+        transition: transform 0.2s ease, color 0.2s ease;
+        flex-shrink: 0;
+    }
+    .mega-bento-row-link:hover i.fa-arrow-right,
+    .mega-bento-row-link:hover i.fa-chevron-right,
+    .mega-bento-row-link:hover i.fa-history {
+        color: rgb(16, 185, 129);
+        transform: translateX(2px);
+    }
+    [data-theme="dark"] .mega-bento-row-link {
+        background: var(--surface-container-lowest);
+        border-color: var(--outline-variant);
+    }
+    [data-theme="dark"] .mega-bento-row-link span { color: var(--on-surface-variant); }
+    [data-theme="dark"] .mega-bento-row-link:hover {
+        border-color: rgba(52, 211, 153, 0.4);
+        background: rgba(52, 211, 153, 0.1);
+    }
+    [data-theme="dark"] .mega-bento-row-link:hover span { color: var(--on-surface); }
+
+    /* Bento tiles: base styles in app.css (shared with teacher mega menu) */
     /* Nav links: M3 text button style */
     .nav-link-header {
         color: var(--on-surface);
@@ -231,7 +324,7 @@
     }
 </style>
 
-<nav class="sticky top-0 z-50 border-b" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
+<nav class="sticky top-0 z-50" style="background: var(--surface-container-lowest);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="flex justify-between items-center h-16 lg:h-20">
             <div class="flex items-center gap-8 lg:gap-8">
@@ -243,10 +336,7 @@
                 <div class="flex items-center gap-2">
                     <a href="{{ route('admin.dashboard') }}" class="logo-container">
                         <div class="logo-icon-container">
-                            <div class="logo-glow"></div>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon">
-                                <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
-                            </svg>
+                            <img src="{{ asset('storage/logo/logo.jpg') }}" alt="Logo" class="w-9 h-9 rounded-full object-cover ring-2 ring-offset-2">
                         </div>
                         <span class="logo-text">{{ config('app.name') }}</span>
                     </a>
@@ -263,169 +353,391 @@
                         </button>
                     </div>
                 </div>
-
-                <div class="flex items-center gap-2 lg:gap-4">
-                    <!-- Search (Desktop only) -->
-                    <div class="hidden lg:flex items-center mr-4">
-                        <div class="search-wrap-header flex items-center gap-2 rounded-full pl-4 pr-3 py-2 w-48 focus-within:w-64 transition-[width] duration-200" style="background: var(--surface-container);">
-                            <i class="fas fa-search text-sm" style="color: var(--on-surface-variant);"></i>
-                            <input type="text" placeholder="Search..." class="flex-1 min-w-0 border-0 bg-transparent py-0.5 text-sm focus:ring-0 focus:outline-none" style="color: var(--on-surface);">
-                        </div>
-                    </div>
-
-                    <!-- Theme Toggle -->
-                    <button onclick="toggleTheme()" class="header-icon-btn relative" title="Toggle Theme">
-                        <i id="theme-icon" class="fas fa-moon text-sm"></i>
-                    </button>
-
-                    <!-- Notifications -->
-                    @if(Route::has('admin.notifications.index'))
-                        @php $layoutNotifications = $layoutNotifications ?? collect(); @endphp
-                        <button onclick="toggleModal('notifications-modal')" class="header-icon-btn relative" aria-label="Notifications">
-                            <i class="fas fa-bell text-sm"></i>
-                            @if($layoutNotifications->isNotEmpty())
-                                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" aria-hidden="true"></span>
-                            @endif
-                        </button>
-                    @endif
-
-                    <div class="header-nav-divider"></div>
-
-                    <!-- Profile Dropdown (pushed to extreme right on mobile) -->
-                    <div class="relative ml-auto lg:ml-0" id="profile-container">
-                        <button onclick="toggleProfileDropdown()" class="profile-trigger-header flex items-center gap-2 lg:gap-3 px-2 lg:px-3 py-2 rounded-full min-h-[44px] transition-colors">
-                            <img src="{{ asset('storage/staffs/' . ($layoutAdmin->profileImage ?? '')) }}" alt="Profile" class="w-9 h-9 rounded-full object-cover ring-2 ring-offset-2" style="ring-color: var(--surface-container-lowest);">
-                            <div class="hidden xl:block text-left">
-                                <div class="font-medium text-sm leading-tight" style="color: var(--on-surface);">{{ $layoutAdmin->name ?? 'Admin' }}</div>
-                                <div class="text-[10px] font-medium uppercase tracking-wider" style="color: var(--on-surface-variant);">{{ $layoutAdmin->email ?? '' }}</div>
-                            </div>
-                        </button>
-
-                        <div id="profile-dropdown" class="profile-dropdown-panel hidden absolute right-0 mt-2 w-56 rounded-xl py-2 z-50">
-                            <a href="{{ route('admin.profile.show') }}" class="profile-dropdown-link flex items-center gap-3 px-4 py-2.5 text-sm">
-                                <i class="fas fa-user w-5 text-center" style="color: var(--on-surface-variant);"></i> Profile
-                            </a>
-                            <a href="{{ route('admin.settings.index') }}" class="profile-dropdown-link flex items-center gap-3 px-4 py-2.5 text-sm">
-                                <i class="fas fa-cog w-5 text-center" style="color: var(--on-surface-variant);"></i> Settings
-                            </a>
-                            <div class="profile-dropdown-divider my-2"></div>
-                            <form action="{{ route('admin.logout') }}" method="POST" class="block">
-                                @csrf
-                                <button type="submit" class="profile-dropdown-link profile-dropdown-link--danger w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left">
-                                    <i class="fas fa-sign-out-alt w-5 text-center"></i> Logout
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Mega Menu (full width, centered, below nav row) -->
-            <div id="mega-menu-dropdown" class="absolute left-0 right-0 top-full flex justify-center pt-2 z-50 px-4">
-                <div class="mega-menu-backdrop" onclick="toggleDropdown('mega-menu-dropdown')" aria-hidden="true"></div>
-                <div class="mega-menu-panel relative z-10 w-full max-w-[920px] py-2">
-                    <div class="mega-menu-inner rounded-2xl py-6">
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 px-4">
-                        <!-- Column 1: Students -->
-                        <div class="p-4 mega-menu-col">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="mega-col-icon mega-col-icon--blue w-10 h-10 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-user-graduate text-sm"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-sm" style="color: var(--text-primary);">Students / Classes</h3>
-                                    <p class="text-xs" style="color: var(--text-secondary);">Browse by class</p>
-                                </div>
-                            </div>
-                            <div class="space-y-0.5">
-                                @if(Route::has('admin.classes'))<a href="{{ route('admin.classes') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-users w-5 text-blue-500 text-center"></i> Students / Classes</a>@endif
-                                <a href="{{ route('admin.students.create') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-user-plus w-5 text-emerald-500 text-center"></i> Register</a>
-                                <a href="{{ route('admin.students.houses') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-chalkboard w-5 text-purple-500 text-center"></i> Houses</a>
-                                <a href="{{ route('admin.students.academic_advancement') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-arrow-up w-5 text-amber-500 text-center"></i> Promote / Demote</a>
-                                <a href="{{ route('admin.graduated') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-graduation-cap w-5 text-slate-500 text-center"></i> Graduated</a>
-                                <a href="{{ route('admin.left_school') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-sign-out-alt w-5 text-gray-500 text-center"></i> Left School</a>
-                            </div>
-                        </div>
-                        <!-- Column 2: Teachers & Staff -->
-                        <div class="p-4 border-l mega-menu-col" style="border-color: var(--outline-variant);">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="mega-col-icon mega-col-icon--orange w-10 h-10 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-chalkboard-teacher text-sm"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-sm" style="color: var(--text-primary);">Teachers & Staff</h3>
-                                    <p class="text-xs" style="color: var(--text-secondary);">Staff & roles</p>
-                                </div>
-                            </div>
-                            <div class="space-y-0.5">
-                                <a href="{{ route('admin.teachers.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-users w-5 text-orange-500 text-center"></i> Teachers & Classes</a>
-                                <a href="{{ route('admin.register_teacher.form') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-user-plus w-5 text-amber-500 text-center"></i> Register Teacher</a>
-                                <a href="{{ route('admin.assign_teacher_to_class.form') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-link w-5 text-amber-600 text-center"></i> Assign To Class</a>
-                                @if(Route::has('admin.staff.index'))<a href="{{ route('admin.staff.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-user-tie w-5 text-slate-500 text-center"></i> All Staff</a>@endif
-                                @if(Route::has('admin.roles.index'))<a href="{{ route('admin.roles.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-user-shield w-5 text-slate-600 text-center"></i> Roles & Permissions</a>@endif
-                            </div>
-                        </div>
-                        <!-- Column 3: Academics -->
-                        <div class="p-4 border-l mega-menu-col" style="border-color: var(--outline-variant);">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="mega-col-icon mega-col-icon--indigo w-10 h-10 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-book-open text-sm"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-sm" style="color: var(--text-primary);">Academics</h3>
-                                    <p class="text-xs" style="color: var(--text-secondary);">Subjects & results</p>
-                                </div>
-                            </div>
-                            <div class="space-y-0.5">
-                                <a href="{{ route('admin.subjects.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-book w-5 text-indigo-500 text-center"></i> All Subjects</a>
-                                <a href="{{ route('admin.subjects.fetch-classes') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-edit w-5 text-violet-500 text-center"></i> Register Students</a>
-                                <a href="{{ route('admin.subjects.registered') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-list w-5 text-violet-600 text-center"></i> View Registered</a>
-                                <div class="flex items-center gap-2 mt-3 mb-2 px-3">
-                                    <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: var(--primary-container); color: var(--on-primary-container);">
-                                        <i class="fas fa-chart-line text-xs"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-semibold text-xs" style="color: var(--text-primary);">Results</h4>
-                                        <p class="text-[10px] leading-tight" style="color: var(--text-secondary);">Upload &amp; publish</p>
-                                    </div>
-                                </div>
-                                <a href="{{ route('admin.upload-results') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-upload w-5 text-cyan-500 text-center"></i> Upload results</a>
-                                <a href="{{ route('admin.publish-results') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-globe w-5 text-cyan-600 text-center"></i> Publish results</a>
-                                @if(Route::has('admin.results-by-params'))<a href="{{ route('admin.results-by-params') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-search w-5 text-cyan-400 text-center"></i> Search Results</a>@endif
-                                @if(Route::has('admin.transcript'))<a href="{{ route('admin.transcript') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-file-alt w-5 text-teal-500 text-center"></i> Transcript</a>@endif
-                                @if(Route::has('admin.status.index'))<a href="{{ route('admin.status.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-check-circle w-5 text-teal-600 text-center"></i> Check Status</a>@endif
-                            </div>
-                        </div>
-                        <!-- Column 4: Operations & System -->
-                        <div class="p-4 border-l mega-menu-col" style="border-color: var(--outline-variant);">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="mega-col-icon mega-col-icon--emerald w-10 h-10 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-cogs text-sm"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-sm" style="color: var(--text-primary);">Operations</h3>
-                                    <p class="text-xs" style="color: var(--text-secondary);">Daily & settings</p>
-                                </div>
+            <div class="flex items-center gap-2 lg:gap-4 flex-shrink-0">
+                <!-- Search (Desktop only) -->
+                <div class="hidden lg:flex items-center mr-4">
+                    <div class="search-wrap-header flex items-center gap-2 rounded-full pl-4 pr-3 py-2 w-48 focus-within:w-64 transition-[width] duration-200" style="background: var(--surface-container);">
+                        <i class="fas fa-search text-sm" style="color: var(--on-surface-variant);"></i>
+                        <input type="text" placeholder="Search..." class="flex-1 min-w-0 border-0 bg-transparent py-0.5 text-sm focus:ring-0 focus:outline-none" style="color: var(--on-surface);">
+                    </div>
+                </div>
 
-                            </div>
-                            <div class="space-y-0.5">
-                                @if(Route::has('admin.attendance.index'))<a href="{{ route('admin.attendance.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-calendar-check w-5 text-teal-500 text-center"></i> Attendance</a>@endif
-                                @if(Route::has('admin.behavioral.index'))<a href="{{ route('admin.behavioral.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-clipboard-list w-5 text-teal-600 text-center"></i> Behavioural Analysis</a>@endif
-                                @if(Route::has('admin.news.index'))<a href="{{ route('admin.news.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-bullhorn w-5 text-sky-500 text-center"></i> News</a>@endif
-                                @if(Route::has('admin.notifications.index'))<a href="{{ route('admin.notifications.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-bell w-5 text-rose-500 text-center"></i> Notifications</a>@endif
-                                @if(Route::has('admin.online_entrance.index'))<a href="{{ route('admin.online_entrance.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-file-alt w-5 text-lime-500 text-center"></i> Online Entrance</a>@endif
-                                @if(Route::has('admin.bulk.index'))<a href="{{ route('admin.bulk.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-sms w-5 text-blue-600 text-center"></i> Bulk SMS</a>@endif
-                                @if(Route::has('admin.card.index'))<a href="{{ route('admin.card.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-ticket-alt w-5 text-amber-500 text-center"></i> Scratch Card</a>@endif
-                                @if(Route::has('admin.fees.index'))<a href="{{ route('admin.fees.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-money-bill-wave w-5 text-amber-500 text-center"></i> Fees</a>@endif
-                                @if(Route::has('admin.timetable.index'))<a href="{{ route('admin.timetable.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-calendar-alt w-5 text-pink-500 text-center"></i> Timetable</a>@endif
-                                <a href="{{ route('admin.settings.index') }}" class="mega-menu-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style="color: var(--text-primary);"><i class="fas fa-cog w-5 text-gray-500 text-center"></i> Settings</a>
-                            </div>
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()" class="header-icon-btn relative" title="Toggle Theme">
+                    <i id="theme-icon" class="fas fa-moon text-sm"></i>
+                </button>
+
+                <!-- Notifications -->
+                @if(Route::has('admin.notifications.index'))
+                    @php $layoutNotifications = $layoutNotifications ?? collect(); @endphp
+                    <button onclick="toggleModal('notifications-modal')" class="header-icon-btn relative" aria-label="Notifications">
+                        <i class="fas fa-bell text-sm"></i>
+                        @if($layoutNotifications->isNotEmpty())
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" aria-hidden="true"></span>
+                        @endif
+                    </button>
+                @endif
+
+                <div class="header-nav-divider"></div>
+
+                <!-- Profile Dropdown (pushed to extreme right on mobile) -->
+                <div class="relative ml-auto lg:ml-0" id="profile-container">
+                    <button onclick="toggleProfileDropdown()" class="profile-trigger-header flex items-center gap-2 lg:gap-3 px-2 lg:px-3 py-2 rounded-full min-h-[44px] transition-colors">
+                        <img src="{{ asset('storage/staffs/' . ($layoutAdmin->profileImage ?? '')) }}" alt="Profile" class="w-9 h-9 rounded-full object-cover ring-2 ring-offset-2" style="ring-color: var(--surface-container-lowest);">
+                        <div class="hidden xl:block text-left">
+                            <div class="font-medium text-sm leading-tight" style="color: var(--on-surface);">{{ $layoutAdmin->name ?? 'Admin' }}</div>
+                            <div class="text-[10px] font-medium uppercase tracking-wider" style="color: var(--on-surface-variant);">{{ $layoutAdmin->email ?? '' }}</div>
                         </div>
-                        </div>
+                    </button>
+
+                    <div id="profile-dropdown" class="profile-dropdown-panel hidden absolute right-0 mt-2 w-56 rounded-xl py-2 z-50">
+                        <a href="{{ route('admin.profile.show') }}" class="profile-dropdown-link flex items-center gap-3 px-4 py-2.5 text-sm">
+                            <i class="fas fa-user w-5 text-center" style="color: var(--on-surface-variant);"></i> Profile
+                        </a>
+                        <a href="{{ route('admin.settings.index') }}" class="profile-dropdown-link flex items-center gap-3 px-4 py-2.5 text-sm">
+                            <i class="fas fa-cog w-5 text-center" style="color: var(--on-surface-variant);"></i> Settings
+                        </a>
+                        <div class="profile-dropdown-divider my-2"></div>
+                        <form action="{{ route('admin.logout') }}" method="POST" class="block">
+                            @csrf
+                            <button type="submit" class="profile-dropdown-link profile-dropdown-link--danger w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left">
+                                <i class="fas fa-sign-out-alt w-5 text-center"></i> Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+
+            <!-- Mega Menu (bento layout) — sibling of header row so top-full anchors to bar, not a stretched flex column -->
+            <div id="mega-menu-dropdown" class="absolute left-0 right-0 top-full z-50 flex justify-center items-start pt-1 sm:pt-2 px-4 sm:px-6">
+                <div class="mega-menu-backdrop" onclick="toggleDropdown('mega-menu-dropdown')" aria-hidden="true"></div>
+                <div class="mega-menu-panel relative z-10 w-full max-w-[1400px]">
+                    <div class="mega-menu-bento-panel admin-mega-menu-banner rounded-[2.25rem] p-0">
+                        <div class="admin-mega-menu-banner__bg" aria-hidden="true"></div>
+                        <div class="admin-mega-menu-banner__inner p-3 sm:p-5">
+                            <div class="admin-mega-menu-intro flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                                <span class="admin-mega-menu-intro__brand">
+                                    <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(16,185,129,0.18)]" aria-hidden="true"></span>
+                                    Admin
+                                </span>
+                                <span class="text-xs font-medium text-white/55">Quick links — jump to any module</span>
+                            </div>
+                        <div class="grid grid-cols-12 gap-2 sm:gap-3">
+                            <!-- Hero: Admin Hub -->
+                            <div class="mega-menu-col mega-menu-col--hero col-span-12 lg:col-span-4 rounded-3xl p-4 sm:p-5 flex flex-col justify-between min-h-[160px] sm:min-h-[180px] transition-all hover:shadow-lg">
+                                <div class="min-w-0">
+                                    <div class="mega-bento-tile-icon mb-3 sm:mb-4" style="width: 3rem; height: 3rem; border-radius: 1.1rem;">
+                                        <i class="fas fa-graduation-cap text-sm"></i>
+                                    </div>
+                                    <h3 class="text-lg sm:text-xl font-bold mb-1">Admin Hub</h3>
+                                    <p class="text-xs sm:text-sm opacity-90">Manage students, staff, academics and daily operations from one place.</p>
+                                </div>
+
+                                <div class="mt-4 grid grid-cols-2 gap-2">
+                                    <a href="{{ route('admin.dashboard') }}" class="mega-bento-tile-link group">
+                                        <div class="mega-bento-tile-meta">
+                                            <div class="mega-bento-tile-icon"><i class="fas fa-th-large text-sm"></i></div>
+                                        </div>
+                                        <span class="mega-bento-tile-title">Dashboard</span>
+                                    </a>
+
+                                    @if(Route::has('admin.classes'))
+                                        <a href="{{ route('admin.classes') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-graduation-cap text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Classes</span>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Card: Students & Classes -->
+                            <div class="mega-menu-col mega-menu-col--students col-span-12 md:col-span-6 lg:col-span-4 rounded-3xl p-3 sm:p-5 flex flex-col justify-between transition-all border">
+                                <div class="min-w-0">
+                                    <h3 class="mega-menu-section-title font-bold flex items-center gap-2 text-base sm:text-lg">
+                                        <span class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></span>
+                                        Students &amp; Classes
+                                    </h3>
+
+                                    <div class="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                        @if(Route::has('admin.classes'))
+                                            <a href="{{ route('admin.classes') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-graduation-cap text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Students / Classes</span>
+                                            </a>
+                                        @endif
+
+                                        <a href="{{ route('admin.students.create') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-user-plus text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Register student</span>
+                                        </a>
+
+                                        <a href="{{ route('admin.students.houses') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-home text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Houses</span>
+                                        </a>
+
+                                        <a href="{{ route('admin.students.academic_advancement') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-exchange-alt text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Promote / Demote</span>
+                                        </a>
+
+                                        <a href="{{ route('admin.graduated') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-user-check text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Graduated</span>
+                                        </a>
+
+                                        <a href="{{ route('admin.left_school') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-user-minus text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Left School</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card: Teachers & Staff -->
+                            <div class="mega-menu-col mega-menu-col--teachers col-span-12 md:col-span-6 lg:col-span-4 rounded-3xl p-3 sm:p-5 flex flex-col justify-between transition-all border">
+                                <div class="min-w-0">
+                                    <h3 class="mega-menu-section-title font-bold flex items-center gap-2 text-base sm:text-lg">
+                                        <span class="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0"></span>
+                                        Teachers &amp; Staff
+                                    </h3>
+                                    <div class="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                        <a href="{{ route('admin.teachers.index') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-chalkboard-teacher text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Teachers &amp; Classes</span>
+                                        </a>
+
+                                        <a href="{{ route('admin.register_teacher.form') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-user-plus text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Register teacher</span>
+                                        </a>
+
+                                        <a href="{{ route('admin.assign_teacher_to_class.form') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-user-tag text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Assign to class</span>
+                                        </a>
+
+                                        @if(Route::has('admin.staff.index'))
+                                            <a href="{{ route('admin.staff.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-users-cog text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">All staff</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.roles.index'))
+                                            <a href="{{ route('admin.roles.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-user-shield text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Roles &amp; permissions</span>
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card: Academics -->
+                            <div class="mega-menu-col mega-menu-col--academics col-span-12 lg:col-span-6 rounded-3xl p-3 sm:p-5 flex flex-col justify-between transition-all border">
+                                <div class="min-w-0">
+                                    <h3 class="mega-menu-section-title font-bold flex items-center gap-2 text-base sm:text-lg">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                                        Academics &amp; Results
+                                    </h3>
+
+                                    <div class="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                        <a href="{{ route('admin.subjects.index') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-book-open text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">All subjects</span>
+                                        </a>
+
+                                        <a href="{{ route('admin.subjects.fetch-classes') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-clipboard-list text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Register students (subjects)</span>
+                                        </a>
+
+                                        <a href="{{ route('admin.subjects.registered') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-eye text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">View registered</span>
+                                        </a>
+
+                                        <a href="{{ route('admin.upload-results') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-upload text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Upload results</span>
+                                        </a>
+
+                                        <a href="{{ route('admin.publish-results') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-bullhorn text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Publish results</span>
+                                        </a>
+
+                                        @if(Route::has('admin.results-by-params'))
+                                            <a href="{{ route('admin.results-by-params') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-search text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Search results</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.transcript'))
+                                            <a href="{{ route('admin.transcript') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-file-alt text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Transcript</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.status.index'))
+                                            <a href="{{ route('admin.status.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-clipboard-check text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Check status</span>
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card: Operations -->
+                            <div class="mega-menu-col mega-menu-col--operations col-span-12 lg:col-span-6 rounded-3xl p-3 sm:p-5 flex flex-col justify-between transition-all border">
+                                <div class="min-w-0">
+                                    <h3 class="mega-menu-section-title font-bold flex items-center gap-2 text-base sm:text-lg">
+                                        <span class="w-2 h-2 rounded-full bg-indigo-500 flex-shrink-0"></span>
+                                        Operations
+                                    </h3>
+                                    <div class="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                        @if(Route::has('admin.attendance.index'))
+                                            <a href="{{ route('admin.attendance.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-calendar-check text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Attendance</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.behavioral.index'))
+                                            <a href="{{ route('admin.behavioral.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-brain text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Behavioural analysis</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.news.index'))
+                                            <a href="{{ route('admin.news.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-newspaper text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">News</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.notifications.index'))
+                                            <a href="{{ route('admin.notifications.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-bell text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Notifications</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.online_entrance.index'))
+                                            <a href="{{ route('admin.online_entrance.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-door-open text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Online entrance</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.bulk.index'))
+                                            <a href="{{ route('admin.bulk.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-comment-dots text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Bulk SMS</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.card.index'))
+                                            <a href="{{ route('admin.card.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-ticket-alt text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Scratch card</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.fees.index'))
+                                            <a href="{{ route('admin.fees.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-money-bill-wave text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Fees</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.timetable.index'))
+                                            <a href="{{ route('admin.timetable.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-calendar text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Timetable</span>
+                                            </a>
+                                        @endif
+
+                                        <a href="{{ route('admin.settings.index') }}" class="mega-bento-tile-link group">
+                                            <div class="mega-bento-tile-meta">
+                                                <div class="mega-bento-tile-icon"><i class="fas fa-cog text-sm"></i></div>
+                                            </div>
+                                            <span class="mega-bento-tile-title">Settings</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
 </nav>
 

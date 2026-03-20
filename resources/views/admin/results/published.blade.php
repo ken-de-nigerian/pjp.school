@@ -3,34 +3,33 @@
 @section('content')
     @php
         $hasFilters = ($class ?? '') !== '' && ($term ?? '') !== '' && ($session ?? '') !== '';
+        $publishedHeroDescription = $hasFilters
+            ? 'View published positions, subject scores, and set results as live or not live.'
+            : 'Choose class, term and session to view published result positions.';
     @endphp
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <div class="mb-4 sm:mb-6 w-fit">
-                <a href="{{ route('admin.publish-results') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Publish results
-                </a>
-            </div>
-
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Published results</h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        @if($hasFilters)
-                            View published positions, subject scores, and set results as live or not live.
-                        @else
-                            Choose class, term and session to view published result positions.
-                        @endif
-                    </p>
-                </div>
-                @if($hasFilters)
-                    <a href="{{ route('admin.results.published') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90 shrink-0" style="color: var(--on-surface-variant); background: var(--surface-container-high); border-radius: 12px;">
-                        <i class="fas fa-filter text-xs" aria-hidden="true"></i>
-                        <span>Change filters</span>
+            <x-admin.hero-page
+                aria-label="Published results"
+                pill="Admin"
+                title="Published results"
+                :description="$publishedHeroDescription"
+            >
+                <x-slot name="above">
+                    <a href="{{ route('admin.publish-results') }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Publish results
                     </a>
+                </x-slot>
+                @if($hasFilters)
+                    <x-slot name="actions">
+                        <a href="{{ route('admin.results.published') }}" class="admin-dashboard-hero__btn w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
+                            <i class="fas fa-filter text-xs" aria-hidden="true"></i>
+                            <span>Change filters</span>
+                        </a>
+                    </x-slot>
                 @endif
-            </header>
+            </x-admin.hero-page>
 
             @if(!$hasFilters)
                 <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">

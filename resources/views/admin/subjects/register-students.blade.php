@@ -3,39 +3,41 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <div class="mb-4 sm:mb-6 w-fit">
-                <a href="{{ route('admin.subjects.index', ['grade' => 'Junior']) }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Back to Subjects
-                </a>
-            </div>
+            @php
+                $registerSubjectsHeroDescription = $hasFilters
+                    ? 'Class: ' . e($selectedClass) . ' — Select a student to register their subjects.'
+                    : 'Choose a class to view students and register their subjects.';
+            @endphp
 
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Register students to subjects</h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
+            <x-admin.hero-page
+                aria-label="Register students to subjects"
+                pill="Admin"
+                title="Register students to subjects"
+                :description="$registerSubjectsHeroDescription"
+            >
+                <x-slot name="above">
+                    <a href="{{ route('admin.subjects.index', ['grade' => 'Junior']) }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Back to subjects
+                    </a>
+                </x-slot>
+                <x-slot name="actions">
+                    <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto lg:flex-shrink-0">
                         @if($hasFilters)
-                            Class: {{ e($selectedClass) }} — Select a student to register their subjects.
-                        @else
-                            Choose a class to view students and register their subjects.
+                            <a href="{{ route('admin.subjects.fetch-classes') }}" class="admin-dashboard-hero__btn w-full sm:w-auto justify-center min-h-[44px] sm:min-h-0">
+                                <i class="fas fa-filter text-xs" aria-hidden="true"></i>
+                                <span>Change class</span>
+                            </a>
                         @endif
-                    </p>
-                </div>
-                <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
-                    @if($hasFilters)
-                        <a href="{{ route('admin.subjects.fetch-classes') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style="color: var(--on-surface-variant); background: var(--surface-container-high); border-radius: 12px;">
-                            <i class="fas fa-filter text-xs" aria-hidden="true"></i>
-                            <span>Change class</span>
-                        </a>
-                    @endif
-                    @if(Route::has('admin.subjects.registered'))
-                        <a href="{{ route('admin.subjects.registered') }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors border border-dashed border-gray-300 lg:border-solid" style="background-color: var(--primary); color: var(--on-primary);">
-                            <i class="fas fa-eye text-xs" aria-hidden="true"></i>
-                            <span>View Registered</span>
-                        </a>
-                    @endif
-                </div>
-            </header>
+                        @if(Route::has('admin.subjects.registered'))
+                            <a href="{{ route('admin.subjects.registered') }}" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full sm:w-auto justify-center min-h-[44px] sm:min-h-0">
+                                <i class="fas fa-eye text-xs" aria-hidden="true"></i>
+                                <span>View registered</span>
+                            </a>
+                        @endif
+                    </div>
+                </x-slot>
+            </x-admin.hero-page>
 
             @if(!$hasFilters)
             <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">

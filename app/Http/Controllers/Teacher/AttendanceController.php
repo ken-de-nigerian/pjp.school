@@ -4,84 +4,185 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Teacher;
 
+use App\Contracts\NotificationServiceContract;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Teacher\Concerns\TeacherScope;
 use App\Models\Setting;
+use App\Models\Student;
 use App\Services\AttendanceService;
 use App\Services\StudentService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Throwable;
 
-class AttendanceController extends Controller
+final class AttendanceController extends Controller
 {
+    use TeacherScope;
+
     public function __construct(
-        private StudentService $studentService,
-        private AttendanceService $attendanceService
+        private readonly AttendanceService $attendanceService,
+        private readonly NotificationServiceContract $notificationService,
+        private readonly StudentService $studentService
     ) {}
 
-    /** GET teacher/attendance — class list to take or view attendance. */
     public function index(): View
     {
-        $classList = $this->studentService->getClassesWithCounts();
+        $this->authorizeTeacherAbility('manageAttendance');
+
         $settings = Setting::getCached();
-        $sessions = \App\Models\AcademicSession::query()->orderByDesc('session')->get();
+        $assigned = $this->teacherAssignedClasses();
+
+        $allWithCounts = $this->studentService->getClassesWithCounts();
+        $classes = array_values(array_filter($allWithCounts, fn (array $c) => in_array($c['class_name'] ?? '', $assigned, true)));
 
         return view('teacher.attendance.index', [
-            'classList' => $classList,
+            'classes' => $classes,
             'settings' => $settings,
-            'sessions' => $sessions,
         ]);
     }
 
-    /** GET teacher/attendance/take-attendance?class=&term=&session= — form to take attendance. */
-    public function takeAttendance(Request $request): View|\Illuminate\Http\RedirectResponse
+    public function takeAttendance(Request $request): View
     {
-        $class = $request->query('class');
-        $term = $request->query('term');
-        $session = $request->query('session');
+        $this->authorizeTeacherAbility('manageAttendance');
 
-        if (! $class || ! $term || ! $session) {
-            return redirect()->route('teacher.attendance.index')->with('error', 'Missing class, term or session.');
-        }
+        $validated = $request->validate([
+            'class' => 'required|string|max:100',
+            'term' => 'required|string|max:50',
+            'session' => 'required|string|max:50',
+        ]);
 
-        $students = $this->studentService->getStudentsByClass($class, 500);
-        $students = $students->items();
+        $class = $validated['class'];
+        $this->ensureTeacherCanAccessClass($class);
+
+        $students = $this->studentService
+            ->getStudentsByClassAll($class)
+            ->where('status', 2)
+            ->values();
 
         return view('teacher.attendance.take-attendance', [
-            'students' => $students,
             'class' => $class,
-            'term' => $term,
-            'session' => $session,
-            'settings' => Setting::getCached(),
+            'term' => $validated['term'],
+            'session' => $validated['session'],
+            'students' => $students,
         ]);
     }
 
-    /** GET teacher/attendance/view-attendance — form to view by date/class/term/session. */
+    /**
+     * @throws Throwable
+     */
+    public function save(Request $request): JsonResponse
+    {
+        $this->authorizeTeacherAbility('manageAttendance');
+
+        $request->validate([
+            'attendance' => 'required|array|min:1',
+            'attendance.*.class' => 'required|string|max:100',
+            'attendance.*.term' => 'required|string|max:50',
+            'attendance.*.session' => 'required|string|max:50',
+            'attendance.*.reg_number' => 'required|string|max:50',
+            'attendance.*.name' => 'nullable|string|max:255',
+            'attendance.*.class_roll_call' => 'required|string|max:20',
+        ]);
+
+        /** @var array<int, array<string, mixed>> $rows */
+        $rows = (array) $request->input('attendance', []);
+        $first = $rows[0] ?? [];
+        $class = (string) ($first['class'] ?? '');
+        $term = (string) ($first['term'] ?? '');
+        $session = (string) ($first['session'] ?? '');
+
+        $this->ensureTeacherCanAccessClass($class);
+
+        // Hard-scope to the teacher's students in this class (reg_number).
+        $allowedRegs = $this->studentService
+            ->getStudentsByClassAll($class)
+            ->where('status', 2)
+            ->pluck('reg_number')
+            ->filter()
+            ->values()
+            ->all();
+        $allowed = array_flip(array_map('strval', $allowedRegs));
+
+        $scopedRows = array_values(array_filter($rows, static function (array $r) use ($class, $term, $session, $allowed): bool {
+            $reg = (string) ($r['reg_number'] ?? '');
+
+            return $reg !== ''
+                && isset($allowed[$reg])
+                && (string) ($r['class'] ?? '') === $class
+                && (string) ($r['term'] ?? '') === $term
+                && (string) ($r['session'] ?? '') === $session;
+        }));
+
+        $count = $this->attendanceService->saveRecord($scopedRows);
+
+        if ($count > 0) {
+            $teacher = $request->user('teacher');
+            $teacherName = $teacher ? trim($teacher->firstname.' '.$teacher->lastname) : 'Teacher';
+            if ($teacherName === '') {
+                $teacherName = 'Teacher';
+            }
+
+            $this->notificationService->add(
+                'Attendance Record Added',
+                $teacherName.' has added attendance record for class: '.$class.', term: '.$term.', session: '.$session.'.'
+            );
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => $count.' attendance record(s) saved.',
+        ]);
+    }
+
     public function viewAttendance(Request $request): View
     {
-        $date = $request->query('date');
-        $class = $request->query('class');
-        $term = $request->query('term');
-        $session = $request->query('session');
+        $this->authorizeTeacherAbility('manageAttendance');
 
-        if ($date && $class && $term && $session) {
+        $settings = Setting::getCached();
+        $classes = $this->teacherAssignedClasses();
+
+        $date = trim((string) $request->query('date', date('Y-m-d')));
+        $class = trim((string) $request->query('class', ''));
+        $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
+        $session = trim((string) $request->query('session', $settings['session'] ?? ''));
+        $hasFilters = $date !== '' && $class !== '' && $term !== '' && $session !== '';
+
+        if ($hasFilters) {
+            $validated = $request->validate([
+                'date' => 'required|string|max:50',
+                'class' => 'required|string|max:100',
+                'term' => 'required|string|max:50',
+                'session' => 'required|string|max:50',
+            ]);
+            $date = $validated['date'];
+            $class = $validated['class'];
+            $term = $validated['term'];
+            $session = $validated['session'];
+
+            $this->ensureTeacherCanAccessClass($class);
+
             $segment = config('school.no_segment', 'No Segment');
             $records = $this->attendanceService->getRecord($date, $class, $term, $session, $segment);
-
-            return view('teacher.attendance.view-attendance', [
-                'students' => $records,
-                'date' => $date,
-                'class' => $class,
-                'term' => $term,
-                'session' => $session,
-                'classList' => $this->studentService->getClassesWithCounts(),
-                'settings' => Setting::getCached(),
-            ]);
+            $regNumbers = $records->pluck('reg_number')->unique()->filter()->values();
+            $studentsByReg = $regNumbers->isNotEmpty()
+                ? Student::query()->whereIn('reg_number', $regNumbers->all())->get()->keyBy('reg_number')
+                : collect();
+        } else {
+            $records = collect();
+            $studentsByReg = collect();
         }
 
         return view('teacher.attendance.view-attendance', [
-            'students' => collect(),
-            'classList' => $this->studentService->getClassesWithCounts(),
-            'settings' => Setting::getCached(),
+            'classes' => $classes,
+            'settings' => $settings,
+            'hasFilters' => $hasFilters,
+            'students' => $records,
+            'studentsByReg' => $studentsByReg,
+            'date' => $date,
+            'class' => $class,
+            'term' => $term,
+            'session' => $session,
         ]);
     }
 }

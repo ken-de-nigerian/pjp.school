@@ -8,37 +8,35 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        Staffs
-                    </h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        View and manage staff accounts. Add a new staff member or edit roles and details.
-                    </p>
-                </div>
+            <x-admin.hero-page
+                aria-label="Staff directory"
+                pill="Admin"
+                title="Staff"
+                description="View and manage staff accounts. Add a new staff member or edit roles and details."
+            >
+                <x-slot name="actions">
+                    <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto lg:flex-shrink-0">
+                        <form method="GET" action="{{ route('admin.staff.index') }}" class="flex gap-2 flex-1 lg:flex-initial min-w-0">
+                            <div class="flex-1 min-w-0 flex items-center gap-2 rounded-xl pl-3 pr-2 py-2 border transition-colors" style="background: var(--surface-container); border-color: var(--outline-variant);">
+                                <i class="fas fa-search text-sm flex-shrink-0" style="color: var(--on-surface-variant);"></i>
+                                <input type="search" name="search" value="{{ e($searchQuery ?? '') }}" placeholder="Search by name or email" class="flex-1 min-w-0 border-0 bg-transparent py-1 text-sm focus:ring-0 focus:outline-none" style="color: var(--on-surface);" autocomplete="off">
+                            </div>
 
-                <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                    <form method="GET" action="{{ route('admin.staff.index') }}" class="flex gap-2 flex-1 lg:flex-initial min-w-0">
-                        <div class="flex-1 min-w-0 flex items-center gap-2 rounded-xl pl-3 pr-2 py-2 border transition-colors" style="background: var(--surface-container); border-color: var(--outline-variant);">
-                            <i class="fas fa-search text-sm flex-shrink-0" style="color: var(--on-surface-variant);"></i>
-                            <input type="search" name="search" value="{{ e($searchQuery ?? '') }}" placeholder="Search by name or email" class="flex-1 min-w-0 border-0 bg-transparent py-1 text-sm focus:ring-0 focus:outline-none" style="color: var(--on-surface);" autocomplete="off">
-                        </div>
+                            <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium shrink-0" data-preloader style="border-radius: 12px; border: 1px solid var(--outline-variant); background: var(--surface-container-low); color: var(--on-surface);">
+                                <i class="fas fa-search text-xs" aria-hidden="true"></i>
+                                <span class="hidden sm:inline">Search</span>
+                            </button>
+                        </form>
 
-                        <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium shrink-0" data-preloader style="border-radius: 12px; border: 1px solid var(--outline-variant); background: var(--surface-container-low); color: var(--on-surface);">
-                            <i class="fas fa-search text-xs" aria-hidden="true"></i>
-                            <span class="hidden sm:inline">Search</span>
-                        </button>
-                    </form>
-
-                    @if(Route::has('admin.staff.create'))
-                        <a href="{{ route('admin.staff.create') }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors min-h-[44px] sm:min-h-0" style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);">
-                            <i class="fas fa-plus text-[10px] sm:text-xs" aria-hidden="true"></i>
-                            <span>Add Staff</span>
-                        </a>
-                    @endif
-                </div>
-            </header>
+                        @if(Route::has('admin.staff.create'))
+                            <a href="{{ route('admin.staff.create') }}" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
+                                <i class="fas fa-plus text-[10px] sm:text-xs" aria-hidden="true"></i>
+                                <span>Add staff</span>
+                            </a>
+                        @endif
+                    </div>
+                </x-slot>
+            </x-admin.hero-page>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($isEmpty)

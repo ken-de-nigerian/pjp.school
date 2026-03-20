@@ -3,36 +3,25 @@
 @section('content')
     <main class="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
-            <div class="mb-4 sm:mb-6 w-fit">
-                <a href="{{ route('admin.staff.index') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Back to Staff
-                </a>
-            </div>
-
-            @if(session('success'))
-                <div class="mb-4 rounded-xl px-4 py-3 text-sm font-medium" style="background: var(--primary-container); color: var(--on-primary-container);" role="alert">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        Edit Staff
-                    </h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        {{ e($staff->name) }} — {{ e($staff->email ?? '') }}
-                    </p>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                    <button class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors border border-dashed border-gray-300 lg:border-solid" data-modal="staffResetPassword" style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);">
+            <x-admin.hero-page
+                aria-label="Edit staff"
+                pill="Admin"
+                title="Edit staff"
+                :description="e($staff->name) . ' — ' . e($staff->email ?? '')"
+            >
+                <x-slot name="above">
+                    <a href="{{ route('admin.staff.index') }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Back to staff
+                    </a>
+                </x-slot>
+                <x-slot name="actions">
+                    <button type="button" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0" data-modal="staffResetPassword">
                         <i class="fas fa-lock text-[10px] sm:text-xs" aria-hidden="true"></i>
-                        <span>Reset Password</span>
+                        <span>Reset password</span>
                     </button>
-                </div>
-            </header>
+                </x-slot>
+            </x-admin.hero-page>
 
             <div class="space-y-4 sm:space-y-6">
                 <div class="card-refined rounded-xl overflow-hidden" style="border-color: var(--outline-variant);">

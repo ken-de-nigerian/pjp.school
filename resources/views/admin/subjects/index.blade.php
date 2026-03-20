@@ -7,27 +7,27 @@
     @endphp
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col gap-4 sm:gap-5 lg:gap-6">
-                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 min-w-0">
-                    <div class="flex items-start gap-3 sm:gap-4 min-w-0">
-                        <div class="min-w-0 flex-1">
-                            <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-normal tracking-tight mb-1 sm:mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Subjects</h1>
-                            <p class="text-xs sm:text-sm md:text-base font-normal max-w-xl" style="color: var(--on-surface-variant);">Manage subjects by grade. Add or edit subjects from this page.</p>
+            <x-admin.hero-page
+                aria-label="Subjects overview"
+                pill="Admin"
+                title="Subjects"
+                description="Manage subjects by grade. Add or edit subjects from this page."
+            >
+                <x-slot name="below">
+                    <div class="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0 justify-between">
+                        <div class="admin-page-hero__segments">
+                            <a href="{{ route('admin.subjects.index', ['grade' => 'Junior']) }}" class="admin-page-hero__segment {{ $filterGrade === 'Junior' ? 'admin-page-hero__segment--active' : '' }}">Junior ({{ $juniorCount }})</a>
+                            <a href="{{ route('admin.subjects.index', ['grade' => 'Senior']) }}" class="admin-page-hero__segment {{ $filterGrade === 'Senior' ? 'admin-page-hero__segment--active' : '' }}">Senior ({{ $seniorCount }})</a>
                         </div>
+                        @can('create', Subject::class)
+                            <button type="button" id="subject-open-create-modal" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary min-h-[2.5rem] sm:min-h-0 w-full sm:w-auto justify-center">
+                                <i class="fas fa-plus text-[10px] sm:text-xs" aria-hidden="true"></i>
+                                <span>Add Subject</span>
+                            </button>
+                        @endcan
                     </div>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0">
-                    <a href="{{ route('admin.subjects.index', ['grade' => 'Junior']) }}" class="px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors min-h-[2.5rem] sm:min-h-0 flex items-center justify-center {{ $filterGrade !== 'Junior' ? 'opacity-80 hover:opacity-100' : '' }}" style="{{ $filterGrade === 'Junior' ? 'background: var(--primary); color: var(--on-primary);' : 'background: var(--surface-container-high); color: var(--on-surface-variant);' }}">Junior ({{ $juniorCount }})</a>
-                    <a href="{{ route('admin.subjects.index', ['grade' => 'Senior']) }}" class="px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors min-h-[2.5rem] sm:min-h-0 flex items-center justify-center {{ $filterGrade !== 'Senior' ? 'opacity-80 hover:opacity-100' : '' }}" style="{{ $filterGrade === 'Senior' ? 'background: var(--primary); color: var(--on-primary);' : 'background: var(--surface-container-high); color: var(--on-surface-variant);' }}">Senior ({{ $seniorCount }})</a>
-                    @can('create', Subject::class)
-                    <button type="button" id="subject-open-create-modal" class="ml-auto inline-flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors min-h-[2.5rem] sm:min-h-0 hover:opacity-100 border border-dashed border-gray-300 sm:border-solid" style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);">
-                        <i class="fas fa-plus text-[10px] sm:text-xs" aria-hidden="true"></i>
-                        <span>Add Subject</span>
-                    </button>
-                    @endcan
-                </div>
-            </header>
+                </x-slot>
+            </x-admin.hero-page>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($subjects->isEmpty())

@@ -4,25 +4,21 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        Announcements
-                    </h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        Create and manage school-wide announcements and news items.
-                    </p>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                    @if(Route::has('admin.news.create'))
-                        <a href="{{ route('admin.news.create') }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors min-h-[44px] sm:min-h-0" style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);">
+            <x-admin.hero-page
+                aria-label="School announcements"
+                pill="Admin"
+                title="Announcements"
+                description="Create and manage school-wide announcements and news items."
+            >
+                @if(Route::has('admin.news.create'))
+                    <x-slot name="actions">
+                        <a href="{{ route('admin.news.create') }}" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
                             <i class="fas fa-plus text-[10px] sm:text-xs" aria-hidden="true"></i>
-                            <span>Add Announcement</span>
+                            <span>Add announcement</span>
                         </a>
-                    @endif
-                </div>
-            </header>
+                    </x-slot>
+                @endif
+            </x-admin.hero-page>
 
             <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($news->count() > 0)

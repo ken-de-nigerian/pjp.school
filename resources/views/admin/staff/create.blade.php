@@ -3,21 +3,19 @@
 @section('content')
     <main class="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
-            <div class="mb-4 sm:mb-6 w-fit">
-                <a href="{{ route('admin.staff.index') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Back to Staff
-                </a>
-            </div>
-
-            <header class="mb-6 lg:mb-8">
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                    Register Staff
-                </h1>
-                <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                    Create a new staff account. Set name, email, role, and password.
-                </p>
-            </header>
+            <x-admin.hero-page
+                aria-label="Register staff"
+                pill="Admin"
+                title="Register staff"
+                description="Create a new staff account. Set name, email, role, and password."
+            >
+                <x-slot name="above">
+                    <a href="{{ route('admin.staff.index') }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Back to staff
+                    </a>
+                </x-slot>
+            </x-admin.hero-page>
 
             <div class="space-y-4 sm:space-y-6">
                 <div class="card-refined rounded-xl overflow-hidden" style="border-color: var(--outline-variant);">

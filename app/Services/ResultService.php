@@ -13,10 +13,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-final class ResultService implements ResultServiceContract
+final readonly class ResultService implements ResultServiceContract
 {
     public function __construct(
-        private readonly ResultRepositoryContract $resultRepository
+        private ResultRepositoryContract $resultRepository
     ) {}
 
     public function hasUploadedResults(string $class, string $term, string $session, string $subjects): bool
@@ -67,9 +67,11 @@ final class ResultService implements ResultServiceContract
     }
 
     /**
+     * @param  int  $uploadStatus  {@see ResultStatus::APPROVED} for admin uploads; {@see ResultStatus::PENDING} for teacher uploads
+     *
      * @throws Throwable
      */
-    public function bulkInsert(array $results): int
+    public function bulkInsert(array $results, int $uploadStatus = 1): int
     {
         $rows = [];
         foreach ($results as $r) {
@@ -97,7 +99,7 @@ final class ResultService implements ResultServiceContract
                 'assignment' => $assignment,
                 'exam' => $exam,
                 'total' => $total,
-                'status' => 1,
+                'status' => $uploadStatus,
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ];
         }

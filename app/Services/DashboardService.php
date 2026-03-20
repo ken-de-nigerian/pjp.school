@@ -13,35 +13,31 @@ use App\Models\Teacher;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * Replicates legacy admin dashboard data.
- * Same query filters and counts as legacy (Admin::countAllStudents, etc.).
- */
 final class DashboardService
 {
     private const NEWS_PER_PAGE_ADMIN = 6;
 
-    private const NEWS_PER_PAGE_TEACHER = 3;
+    private const NEWS_PER_PAGE_TEACHER = 6;
 
     public function getAdminCounts(): DashboardCountsDTO
     {
         return new DashboardCountsDTO(
-            countAllStudents: (int) Student::query()
+            countAllStudents: Student::query()
                 ->whereNotIn('class', ['Left', 'Graduated'])
                 ->where('status', 2)
                 ->count(),
-            countBoardingStudents: (int) Student::query()
+            countBoardingStudents: Student::query()
                 ->where('category', 'Boarding')
                 ->whereNotIn('class', ['Left', 'Graduated'])
                 ->where('status', 2)
                 ->count(),
-            countDayStudents: (int) Student::query()
+            countDayStudents: Student::query()
                 ->where('category', 'Day')
                 ->whereNotIn('class', ['Left', 'Graduated'])
                 ->where('status', 2)
                 ->count(),
-            countSubjects: (int) Subject::query()->count(),
-            countTeachers: (int) Teacher::query()->count(),
+            countSubjects: Subject::query()->count(),
+            countTeachers: Teacher::query()->count(),
         );
     }
 

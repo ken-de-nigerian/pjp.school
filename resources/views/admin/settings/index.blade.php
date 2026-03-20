@@ -3,10 +3,12 @@
 @section('content')
     <main class="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
-            <header class="mb-6 lg:mb-8">
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Settings</h1>
-                <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">Manage your profile, security, and school configuration.</p>
-            </header>
+            <x-admin.hero-page
+                aria-label="School settings"
+                pill="Admin"
+                title="Settings"
+                description="Manage your profile, security, and school configuration."
+            />
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                 @if($layoutAdmin)

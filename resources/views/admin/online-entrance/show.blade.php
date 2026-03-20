@@ -14,23 +14,19 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <div class="mb-4 sm:mb-6 w-fit">
-                <a href="{{ route('admin.online_entrance.index') }}" class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--on-surface-variant);">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    Back to applicants
-                </a>
-            </div>
-
-            <header class="mb-6 lg:mb-8 flex flex-col sm:flex-row sm:items-center gap-4 lg:gap-6">
-                <div class="min-w-0 text-center sm:text-left flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        {{ $name ?: 'Applicant' }}
-                    </h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        ID: {{ $a->uniqueID ?? $a->id ?? '—' }}
-                    </p>
-                </div>
-            </header>
+            <x-admin.hero-page
+                aria-label="Entrance applicant"
+                pill="Admin"
+                :title="$name ?: 'Applicant'"
+                :description="'ID: ' . e($a->uniqueID ?? $a->id ?? '—')"
+            >
+                <x-slot name="above">
+                    <a href="{{ route('admin.online_entrance.index') }}" class="admin-page-hero__back mb-2 sm:mb-0">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Back to applicants
+                    </a>
+                </x-slot>
+            </x-admin.hero-page>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1);">
                 <div class="rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">

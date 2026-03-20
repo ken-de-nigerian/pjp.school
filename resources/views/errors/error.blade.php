@@ -218,12 +218,12 @@
                     </div>
                 @else
                     <div class="flex justify-center">
-                        <a href="{{ route('home') }}" class="btn-primary sm:w-auto w-full text-center flex items-center justify-center">
+                        <button onclick="history.back()" class="btn-primary sm:w-auto w-full text-center flex items-center justify-center">
                             <span class="flex items-center space-x-2">
                                 <i class="fas fa-home" aria-hidden="true"></i>
-                                <span>Go Home</span>
+                                <span>Go Back</span>
                             </span>
-                        </a>
+                        </button>
                     </div>
                 @endif
             </div>

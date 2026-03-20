@@ -3,23 +3,21 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">Publish Results</h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        Ensure all subject results for a class are uploaded correctly before publishing the final grades.
-                    </p>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
-                    @if(Route::has('admin.results.published'))
-                        <a href="{{ route('admin.results.published') }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-95" style="background-color: var(--primary); color: var(--on-primary); border-radius: 12px;">
+            <x-admin.hero-page
+                aria-label="Publish results"
+                pill="Admin"
+                title="Publish results"
+                description="Ensure all subject results for a class are uploaded correctly before publishing the final grades."
+            >
+                @if(Route::has('admin.results.published'))
+                    <x-slot name="actions">
+                        <a href="{{ route('admin.results.published') }}" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
                             <i class="fas fa-eye text-xs" aria-hidden="true"></i>
                             <span>View published</span>
                         </a>
-                    @endif
-                </div>
-            </header>
+                    </x-slot>
+                @endif
+            </x-admin.hero-page>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1);">
                 <div class="col-span-full flex-1 flex flex-col items-center justify-center min-h-[min(400px,50vh)] py-12 sm:py-16">

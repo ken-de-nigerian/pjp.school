@@ -3,26 +3,24 @@
 @section('content')
     <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-            <header class="mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight mb-1.5" style="color: var(--on-surface); letter-spacing: -0.02em;">
-                        Behavioural Analysis
-                    </h1>
-                    <p class="text-sm sm:text-base font-normal" style="color: var(--on-surface-variant);">
-                        Select a class to take or view behavioural analysis for the current term.
-                    </p>
-                </div>
-
-                @php $canViewBehavioral = ($layoutRole ?? null) === null || (int) (($layoutRole ?? null)->view_uploaded_behavioural_analysis ?? 0) === 1; @endphp
+            @php $canViewBehavioral = ($layoutRole ?? null) === null || (int) (($layoutRole ?? null)->view_uploaded_behavioural_analysis ?? 0) === 1; @endphp
+            <x-admin.hero-page
+                aria-label="Behavioural analysis overview"
+                pill="Admin"
+                title="Behavioural Analysis"
+                description="Select a class to take or view behavioural analysis for the current term."
+            >
                 @if(Route::has('admin.behavioral.view') && $canViewBehavioral)
-                    <a href="{{ route('admin.behavioral.view') }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-medium transition-colors border border-dashed border-gray-300 lg:border-solid" style="border-radius: 12px; background-color: var(--primary); color: var(--on-primary);">
-                        <i class="fas fa-eye text-[10px] sm:text-xs" aria-hidden="true"></i>
-                        <span>View Behavioral</span>
-                    </a>
+                    <x-slot name="actions">
+                        <a href="{{ route('admin.behavioral.view') }}" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
+                            <i class="fas fa-eye text-[10px] sm:text-xs" aria-hidden="true"></i>
+                            <span>View Behavioral</span>
+                        </a>
+                    </x-slot>
                 @endif
-            </header>
+            </x-admin.hero-page>
 
-            <div class="flex-1 flex flex-col min-h-0 w-full min-w-0 rounded-3xl p-4 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1);">
+            <div class="flex-1 flex flex-col min-h-0 w-full min-w-0 rounded-3xl p-4 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 min-w-0">
                     @forelse($classes as $c)
                         <div class="h-full min-h-[200px]">

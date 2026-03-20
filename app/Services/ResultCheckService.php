@@ -18,7 +18,7 @@ final class ResultCheckService
     private const MAX_PIN_USES = 15;
 
     public function __construct(
-        private readonly PinService   $pinService,
+        private readonly PinService $pinService,
         private readonly ResultServiceContract $resultService
     ) {}
 

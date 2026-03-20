@@ -271,4 +271,3 @@ final class ResultController extends Controller
         ]);
     }
 }
-

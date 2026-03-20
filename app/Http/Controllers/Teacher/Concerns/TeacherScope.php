@@ -66,4 +66,3 @@ trait TeacherScope
         return Gate::forUser($teacher)->allows($ability, $teacher);
     }
 }
-

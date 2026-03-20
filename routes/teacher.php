@@ -56,4 +56,3 @@ Route::middleware('auth:teacher')
         Route::post('/profile/password', [ProfileController::class, 'changePassword'])->name('profile.password');
         Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar');
     });
-

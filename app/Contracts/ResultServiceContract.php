@@ -18,7 +18,7 @@ interface ResultServiceContract
     public function getResultsByClass(string $class, string $term, string $session): Collection;
 
     /**
-     * @param array<int, array<string, mixed>> $results
+     * @param  array<int, array<string, mixed>>  $results
      * @param  int  $uploadStatus  ResultStatus: admin uploads use APPROVED (1); teacher uploads use PENDING (2)
      */
     public function bulkInsert(array $results, int $uploadStatus = 1): int;

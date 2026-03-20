@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Teacher\Concerns\TeacherScope;
-use App\Models\Setting;
 use App\Services\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;

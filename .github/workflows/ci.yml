@@ -13,6 +13,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
+          # Match composer.json (ext-gd) and .env.example (sqlite); avoid requiring pecl ext-http
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, gd
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction

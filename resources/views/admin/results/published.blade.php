@@ -155,7 +155,8 @@
                                     <span class="text-xs font-medium flex-shrink-0 w-12 text-right" style="color: var(--on-surface-variant);">Total</span>
                                     <span class="text-xs font-medium flex-shrink-0 w-14 text-right" style="color: var(--on-surface-variant);">Average</span>
                                     <span class="text-xs font-medium flex-shrink-0 w-14 text-center" style="color: var(--on-surface-variant);">Position</span>
-                                    <span class="text-xs font-medium flex-shrink-0 w-20 text-right" style="color: var(--on-surface-variant);">Status</span>
+                                    <span class="text-xs font-medium flex-shrink-0 w-20" style="color: var(--on-surface-variant);">Status</span>
+                                    <span class="text-xs font-medium flex-shrink-0 w-[7.75rem]" style="color: var(--on-surface-variant);">Remark</span>
                                     <span class="text-xs font-medium flex-shrink-0 w-24 text-right" style="color: var(--on-surface-variant);">Subjects</span>
                                 </li>
                                 @foreach($positions as $p)
@@ -205,6 +206,12 @@
                                             @else
                                                 <span class="published-status-badge inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0 md:flex-shrink-0 md:flex md:justify-end border border-current/20" style="background: var(--error-container); color: var(--on-error-container);"><i class="fas fa-eye-slash text-[10px]" aria-hidden="true"></i> Not live</span>
                                             @endif
+
+                                            <button type="button" class="published-principal-remark-btn order-first w-full sm:w-auto md:order-none md:w-[7.75rem] md:flex-shrink-0 inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-opacity hover:opacity-90 border" style="background: var(--surface-container-high); color: var(--on-surface-variant); border-color: var(--outline-variant);" data-reg-number="{{ e($p->reg_number) }}" aria-haspopup="dialog">
+                                                <i class="fas fa-comment-alt text-[10px]" aria-hidden="true"></i>
+                                                <span>Remark</span>
+                                            </button>
+
                                             <button type="button" class="published-toggle-subjects order-last md:order-none shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-opacity hover:opacity-90 md:flex-shrink-0 md:justify-end" style="background: var(--primary-container); color: var(--on-primary-container);" aria-expanded="false" aria-controls="published-subjects-{{ $loop->index }}" id="published-toggle-{{ $loop->index }}">
                                                 <i class="fas fa-book-open text-xs" aria-hidden="true"></i>
                                                 <span>Subjects ({{ $subjects->count() }})</span>
@@ -256,6 +263,31 @@
         </div>
     </main>
 
+    <div id="published-remark-modal" class="fixed inset-0 z-[60] hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="published-remark-modal-title">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="published-remark-modal" aria-hidden="true"></div>
+        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+            <div class="relative w-full max-w-lg min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant); border-radius: 16px;">
+                <h3 id="published-remark-modal-title" class="text-lg font-semibold mb-1" style="color: var(--on-surface);">Principal&rsquo;s remark</h3>
+                <p class="text-sm mb-4" style="color: var(--on-surface-variant);">This text appears on the student&rsquo;s published result sheet.</p>
+                <form id="published-remark-form" class="space-y-4">
+                    <div class="form-group">
+                        <label for="published-remark-textarea" class="form-label">Remark</label>
+                        <textarea id="published-remark-textarea" name="remark" rows="5" maxlength="1000" class="form-input w-full min-h-[7.5rem] resize-y" placeholder="Optional — max 1000 characters" style="font-size: 0.9375rem;"></textarea>
+                        <p class="text-xs mt-1" style="color: var(--on-surface-variant);"><span id="published-remark-char-count">0</span> / 1000</p>
+                    </div>
+                    <input type="hidden" name="reg_number" id="published-remark-reg-number" value="">
+                    <input type="hidden" name="class" id="published-remark-class" value="">
+                    <input type="hidden" name="term" id="published-remark-term" value="">
+                    <input type="hidden" name="session" id="published-remark-session" value="">
+                    <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2" style="border-top: 1px solid var(--outline-variant);">
+                        <button type="button" class="btn-secondary px-4 py-2.5 rounded-xl text-sm w-full sm:w-auto" data-close="published-remark-modal">Cancel</button>
+                        <button type="submit" id="published-remark-submit" class="btn-primary px-4 py-2.5 rounded-xl text-sm font-medium w-full sm:w-auto inline-flex items-center justify-center gap-2">Save remark</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div id="published-confirm-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="published-confirm-modal-title">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="published-confirm-modal" aria-hidden="true"></div>
         <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
@@ -276,12 +308,14 @@
                 (function () {
                     const setLiveUrl = @json(route('admin.results.published.set-live'));
                     const deleteUrl = @json(route('admin.results.published.delete'));
+                    const remarkUrl = @json(route('admin.results.remark'));
                     const csrf = document.querySelector('meta[name="csrf-token"]') && document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                     const classVal = @json($class);
                     const termVal = @json($term);
                     const sessionVal = @json($session);
                     const positionsCount = @json($positions->count());
                     const RELOAD_DELAY_MS = 2800;
+                    const remarksByReg = @json($positions->pluck('remark', 'reg_number')->all());
 
                     const toolbar = document.getElementById('published-results-toolbar');
                     const selectAll = document.getElementById('published-select-all');
@@ -398,6 +432,95 @@
                         const msg = 'Delete all ' + positionsCount + ' published result(s) for ' + classVal + ', ' + termVal + ', ' + sessionVal + '? This cannot be undone.';
                         openConfirmModal('Delete published results', msg, 'Delete all', 'error', { deleteAll: true });
                     });
+
+                    const remarkModal = document.getElementById('published-remark-modal');
+                    const remarkForm = document.getElementById('published-remark-form');
+                    const remarkTextarea = document.getElementById('published-remark-textarea');
+                    const remarkRegInput = document.getElementById('published-remark-reg-number');
+                    const remarkClassInput = document.getElementById('published-remark-class');
+                    const remarkTermInput = document.getElementById('published-remark-term');
+                    const remarkSessionInput = document.getElementById('published-remark-session');
+                    const remarkSubmit = document.getElementById('published-remark-submit');
+                    const remarkCharCount = document.getElementById('published-remark-char-count');
+
+                    function openRemarkModal(regNumber) {
+                        if (!remarkModal || !remarkTextarea || !remarkRegInput) return;
+                        remarkRegInput.value = regNumber;
+                        if (remarkClassInput) remarkClassInput.value = classVal;
+                        if (remarkTermInput) remarkTermInput.value = termVal;
+                        if (remarkSessionInput) remarkSessionInput.value = sessionVal;
+                        const existing = remarksByReg[regNumber];
+                        remarkTextarea.value = existing != null && existing !== '' ? String(existing) : '';
+                        updateRemarkCharCount();
+                        remarkModal.classList.remove('hidden');
+                        remarkTextarea.focus();
+                    }
+
+                    function closeRemarkModal() {
+                        if (remarkModal) remarkModal.classList.add('hidden');
+                    }
+
+                    function updateRemarkCharCount() {
+                        if (remarkCharCount && remarkTextarea) {
+                            remarkCharCount.textContent = String(remarkTextarea.value.length);
+                        }
+                    }
+
+                    document.querySelectorAll('[data-close="published-remark-modal"]').forEach(function (el) {
+                        el.addEventListener('click', closeRemarkModal);
+                    });
+
+                    document.querySelectorAll('.published-principal-remark-btn').forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            const reg = btn.getAttribute('data-reg-number');
+                            if (!reg) return;
+                            openRemarkModal(reg);
+                        });
+                    });
+
+                    if (remarkTextarea) {
+                        remarkTextarea.addEventListener('input', updateRemarkCharCount);
+                    }
+
+                    if (remarkForm) {
+                        remarkForm.addEventListener('submit', function (e) {
+                            e.preventDefault();
+                            if (!csrf || !remarkUrl) return;
+                            const payload = {
+                                reg_number: remarkRegInput ? remarkRegInput.value : '',
+                                class: remarkClassInput ? remarkClassInput.value : classVal,
+                                term: remarkTermInput ? remarkTermInput.value : termVal,
+                                session: remarkSessionInput ? remarkSessionInput.value : sessionVal,
+                                remark: remarkTextarea ? remarkTextarea.value : ''
+                            };
+                            if (typeof setButtonLoading === 'function') setButtonLoading(remarkSubmit, true);
+                            fetch(remarkUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': csrf,
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify(payload)
+                            }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); }).then(function (_ref) {
+                                if (typeof setButtonLoading === 'function') setButtonLoading(remarkSubmit, false);
+                                const d = _ref.d;
+                                if (_ref.ok && d.status === 'success') {
+                                    if (payload.reg_number) {
+                                        remarksByReg[payload.reg_number] = d.remark != null ? d.remark : null;
+                                    }
+                                    if (typeof flashSuccess === 'function') flashSuccess(d.message || 'Saved.');
+                                    closeRemarkModal();
+                                } else {
+                                    const msg = (d && d.message) ? d.message : (d && d.errors && Object.keys(d.errors).length ? Object.values(d.errors).flat().join(' ') : 'Could not save remark.');
+                                    if (typeof flashError === 'function') flashError(msg);
+                                }
+                            }).catch(function () {
+                                if (typeof setButtonLoading === 'function') setButtonLoading(remarkSubmit, false);
+                                if (typeof flashError === 'function') flashError('Request failed.');
+                            });
+                        });
+                    }
                 })();
             </script>
         @endpush

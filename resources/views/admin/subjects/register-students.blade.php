@@ -40,31 +40,31 @@
             </x-admin.hero-page>
 
             @if(!$hasFilters)
-            <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
-                <form method="GET" action="{{ route('admin.subjects.fetch-classes') }}" class="space-y-4 sm:space-y-5">
-                    <div class="form-group min-w-0">
-                        <label for="class" class="form-label">Select class</label>
-                        <select id="class" name="class" class="form-select w-full min-w-0">
-                            <option value="">Choose class</option>
-                            @foreach($getClasses as $c)
-                                @php $className = is_object($c) ? $c->class_name : $c; @endphp
-                                <option value="{{ e($className) }}" {{ ($selectedClass ?? '') === $className ? 'selected' : '' }}>{{ e($className) }}</option>
-                            @endforeach
-                        </select>
-                        <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
-                    </div>
-                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
-                        <a href="{{ route('admin.subjects.fetch-classes') }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
-                            <i class="fas fa-times text-sm" aria-hidden="true"></i>
-                            Clear
-                        </a>
-                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
-                            <i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
-                            View students
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                    <form method="GET" action="{{ route('admin.subjects.fetch-classes') }}" class="space-y-4 sm:space-y-5">
+                        <div class="form-group min-w-0">
+                            <label for="class" class="form-label">Select class</label>
+                            <select id="class" name="class" class="form-select w-full min-w-0">
+                                <option value="">Choose class</option>
+                                @foreach($getClasses as $c)
+                                    @php $className = is_object($c) ? $c->class_name : $c; @endphp
+                                    <option value="{{ e($className) }}" {{ ($selectedClass ?? '') === $className ? 'selected' : '' }}>{{ e($className) }}</option>
+                                @endforeach
+                            </select>
+                            <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
+                        </div>
+                        <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
+                            <a href="{{ route('admin.subjects.fetch-classes') }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
+                                <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                                Clear
+                            </a>
+                            <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
+                                <i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
+                                View students
+                            </button>
+                        </div>
+                    </form>
+                </div>
             @endif
 
             @if(!$hasFilters)

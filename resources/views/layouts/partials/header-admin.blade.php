@@ -417,17 +417,17 @@
                 <div class="mega-menu-panel relative z-10 w-full max-w-[1400px]">
                     <div class="mega-menu-bento-panel admin-mega-menu-banner rounded-[2.25rem] p-0">
                         <div class="admin-mega-menu-banner__bg" aria-hidden="true"></div>
-                        <div class="admin-mega-menu-banner__inner p-3 sm:p-5">
-                            <div class="admin-mega-menu-intro flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                        <div class="admin-mega-menu-banner__inner p-2.5 sm:p-4">
+                            <div class="admin-mega-menu-intro flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                                 <span class="admin-mega-menu-intro__brand">
                                     <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(16,185,129,0.18)]" aria-hidden="true"></span>
                                     Admin
                                 </span>
                                 <span class="text-xs font-medium text-white/55">Quick links — jump to any module</span>
                             </div>
-                        <div class="grid grid-cols-12 gap-2 sm:gap-3">
+                        <div class="grid grid-cols-12 gap-2">
                             <!-- Hero: Admin Hub -->
-                            <div class="mega-menu-col mega-menu-col--hero col-span-12 lg:col-span-4 rounded-3xl p-4 sm:p-5 flex flex-col justify-between min-h-[160px] sm:min-h-[180px] transition-all hover:shadow-lg">
+                            <div class="mega-menu-col mega-menu-col--hero col-span-12 lg:col-span-4 rounded-3xl p-3 sm:p-4 flex flex-col justify-between min-h-[140px] sm:min-h-[156px] transition-all hover:shadow-lg">
                                 <div class="min-w-0">
                                     <div class="mega-bento-tile-icon mb-3 sm:mb-4" style="width: 3rem; height: 3rem; border-radius: 1.1rem;">
                                         <i class="fas fa-graduation-cap text-sm"></i>
@@ -456,14 +456,14 @@
                             </div>
 
                             <!-- Card: Students & Classes -->
-                            <div class="mega-menu-col mega-menu-col--students col-span-12 md:col-span-6 lg:col-span-4 rounded-3xl p-3 sm:p-5 flex flex-col justify-between transition-all border">
-                                <div class="min-w-0">
-                                    <h3 class="mega-menu-section-title font-bold flex items-center gap-2 text-base sm:text-lg">
-                                        <span class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></span>
+                            <div class="mega-menu-col mega-menu-col--students col-span-12 md:col-span-6 lg:col-span-4 flex h-full min-h-0 flex-col rounded-3xl border p-3 transition-all sm:p-4">
+                                <div class="flex min-h-0 min-w-0 flex-1 flex-col">
+                                    <h3 class="mega-menu-section-title flex shrink-0 items-center gap-2 text-sm font-bold sm:text-base">
+                                        <span class="h-2 w-2 flex-shrink-0 rounded-full bg-blue-500"></span>
                                         Students &amp; Classes
                                     </h3>
 
-                                    <div class="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                    <div class="mt-2 grid min-h-0 flex-1 grid-cols-2 gap-1.5 self-stretch sm:mt-3 sm:grid-cols-3 sm:gap-2 xl:grid-cols-3">
                                         @if(Route::has('admin.classes'))
                                             <a href="{{ route('admin.classes') }}" class="mega-bento-tile-link group">
                                                 <div class="mega-bento-tile-meta">
@@ -512,13 +512,13 @@
                             </div>
 
                             <!-- Card: Teachers & Staff -->
-                            <div class="mega-menu-col mega-menu-col--teachers col-span-12 md:col-span-6 lg:col-span-4 rounded-3xl p-3 sm:p-5 flex flex-col justify-between transition-all border">
-                                <div class="min-w-0">
-                                    <h3 class="mega-menu-section-title font-bold flex items-center gap-2 text-base sm:text-lg">
-                                        <span class="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0"></span>
+                            <div class="mega-menu-col mega-menu-col--teachers col-span-12 md:col-span-6 lg:col-span-4 flex h-full min-h-0 flex-col rounded-3xl border p-3 transition-all sm:p-4">
+                                <div class="flex min-h-0 min-w-0 flex-1 flex-col">
+                                    <h3 class="mega-menu-section-title flex shrink-0 items-center gap-2 text-sm font-bold sm:text-base">
+                                        <span class="h-2 w-2 flex-shrink-0 rounded-full bg-amber-500"></span>
                                         Teachers &amp; Staff
                                     </h3>
-                                    <div class="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                    <div class="mt-2 grid min-h-0 flex-1 grid-cols-2 gap-1.5 self-stretch sm:mt-3 sm:grid-cols-3 sm:gap-2 xl:grid-cols-3">
                                         <a href="{{ route('admin.teachers.index') }}" class="mega-bento-tile-link group">
                                             <div class="mega-bento-tile-meta">
                                                 <div class="mega-bento-tile-icon"><i class="fas fa-chalkboard-teacher text-sm"></i></div>
@@ -562,14 +562,14 @@
                             </div>
 
                             <!-- Card: Academics -->
-                            <div class="mega-menu-col mega-menu-col--academics col-span-12 lg:col-span-6 rounded-3xl p-3 sm:p-5 flex flex-col justify-between transition-all border">
+                            <div class="mega-menu-col mega-menu-col--academics col-span-12 lg:col-span-6 rounded-3xl p-3 sm:p-4 flex flex-col justify-between transition-all border">
                                 <div class="min-w-0">
-                                    <h3 class="mega-menu-section-title font-bold flex items-center gap-2 text-base sm:text-lg">
+                                    <h3 class="mega-menu-section-title font-bold flex items-center gap-2 text-sm sm:text-base">
                                         <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
                                         Academics &amp; Results
                                     </h3>
 
-                                    <div class="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                    <div class="mt-2 sm:mt-3 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-1.5 sm:gap-2">
                                         <a href="{{ route('admin.subjects.index') }}" class="mega-bento-tile-link group">
                                             <div class="mega-bento-tile-meta">
                                                 <div class="mega-bento-tile-icon"><i class="fas fa-book-open text-sm"></i></div>
@@ -631,18 +631,36 @@
                                                 <span class="mega-bento-tile-title">Check status</span>
                                             </a>
                                         @endif
+
+                                        @if(Route::has('admin.fees.index'))
+                                            <a href="{{ route('admin.fees.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-money-bill-wave text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Result fees</span>
+                                            </a>
+                                        @endif
+
+                                        @if(Route::has('admin.checklists.index'))
+                                            <a href="{{ route('admin.checklists.index') }}" class="mega-bento-tile-link group">
+                                                <div class="mega-bento-tile-meta">
+                                                    <div class="mega-bento-tile-icon"><i class="fas fa-list-check text-sm"></i></div>
+                                                </div>
+                                                <span class="mega-bento-tile-title">Result checklist</span>
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Card: Operations -->
-                            <div class="mega-menu-col mega-menu-col--operations col-span-12 lg:col-span-6 rounded-3xl p-3 sm:p-5 flex flex-col justify-between transition-all border">
+                            <div class="mega-menu-col mega-menu-col--operations col-span-12 lg:col-span-6 rounded-3xl p-3 sm:p-4 flex flex-col justify-between transition-all border">
                                 <div class="min-w-0">
-                                    <h3 class="mega-menu-section-title font-bold flex items-center gap-2 text-base sm:text-lg">
+                                    <h3 class="mega-menu-section-title font-bold flex items-center gap-2 text-sm sm:text-base">
                                         <span class="w-2 h-2 rounded-full bg-indigo-500 flex-shrink-0"></span>
                                         Operations
                                     </h3>
-                                    <div class="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                    <div class="mt-2 sm:mt-3 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-3 gap-1.5 sm:gap-2">
                                         @if(Route::has('admin.attendance.index'))
                                             <a href="{{ route('admin.attendance.index') }}" class="mega-bento-tile-link group">
                                                 <div class="mega-bento-tile-meta">
@@ -706,15 +724,6 @@
                                             </a>
                                         @endif
 
-                                        @if(Route::has('admin.fees.index'))
-                                            <a href="{{ route('admin.fees.index') }}" class="mega-bento-tile-link group">
-                                                <div class="mega-bento-tile-meta">
-                                                    <div class="mega-bento-tile-icon"><i class="fas fa-money-bill-wave text-sm"></i></div>
-                                                </div>
-                                                <span class="mega-bento-tile-title">Fees</span>
-                                            </a>
-                                        @endif
-
                                         @if(Route::has('admin.timetable.index'))
                                             <a href="{{ route('admin.timetable.index') }}" class="mega-bento-tile-link group">
                                                 <div class="mega-bento-tile-meta">
@@ -744,7 +753,7 @@
 <!-- Offcanvas Notifications: full-screen on mobile (scrollable above bottom nav), right panel on desktop -->
 @if(Route::has('admin.notifications.index'))
     <div id="notifications-modal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[60] hidden flex items-stretch lg:items-center lg:justify-end p-0">
-        <div class="notifications-modal-panel card-refined flex flex-col w-full h-full max-h-screen lg:max-w-md lg:max-h-screen lg:rounded-l-2xl lg:rounded-r-none rounded-none" style="background: var(--card-bg); box-shadow: var(--elevation-2);">
+        <div class="notifications-modal-panel card-refined flex flex-col w-full h-full max-h-screen lg:max-w-md lg:max-h-screen lg:rounded-l-2xl lg:rounded-r-none rounded-none" style="background: var(--card-bg);">
             <div class="flex-shrink-0 p-4 sm:p-6 border-b flex items-center justify-between" style="background: var(--card-bg); border-color: var(--outline-variant);">
                 <h2 class="text-xl sm:text-2xl font-bold" style="color: var(--on-surface);">Notifications</h2>
                 <button type="button" onclick="closeModal('notifications-modal')" class="header-icon-btn w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" aria-label="Close">

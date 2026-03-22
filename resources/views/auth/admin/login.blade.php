@@ -2,37 +2,46 @@
 
 @section('content')
     <div class="auth-container auth-with-banner auth-banner--admin">
-        <aside class="auth-banner auth-banner--admin" aria-label="Admin portal info">
+        <aside class="auth-banner auth-banner--admin" aria-label="School administration sign-in">
             <div class="auth-banner-bg auth-banner-bg--admin" aria-hidden="true"></div>
+            <div class="auth-banner-accent auth-banner-accent--admin" aria-hidden="true"></div>
             <div class="auth-banner-inner auth-banner-inner--admin">
                 <a href="{{ route('home') }}" class="auth-banner-back auth-banner-back--admin">
                     <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    <span>Back to home</span>
+                    <span>Back to school site</span>
                 </a>
 
-                <div class="auth-banner-brand auth-banner-brand--admin">
-                    <span class="auth-banner-logo-text auth-banner-logo-text--admin">{{ config('app.name') }}</span>
-                    <span class="auth-banner-pill auth-banner-pill--admin">Admin</span>
+                <div class="auth-banner-school-mark">
+                    <div class="auth-banner-school-mark__seal" aria-hidden="true">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="auth-banner-school-mark__text">
+                        <span class="auth-banner-logo-text auth-banner-logo-text--admin">{{ config('app.name') }}</span>
+                        <span class="auth-banner-pill auth-banner-pill--admin">School office</span>
+                    </div>
                 </div>
 
                 <div class="auth-banner-content">
-                    <p class="auth-banner-eyebrow">Administrator portal</p>
-                    <h2 class="auth-banner-title auth-banner-title--admin">Sign in to manage your school</h2>
-                    <p class="auth-banner-tagline auth-banner-tagline--admin">Full access to settings, staff, attendance, and reporting.</p>
-                    <div class="auth-banner-features-wrap auth-banner-features-wrap--admin">
-                        <div class="auth-banner-feature auth-banner-feature--admin">
-                            <span class="auth-banner-feature-num" aria-hidden="true">01</span>
-                            <span class="auth-banner-feature-text auth-banner-feature-text--admin">Settings & security</span>
-                        </div>
-                        <div class="auth-banner-feature auth-banner-feature--admin">
-                            <span class="auth-banner-feature-num" aria-hidden="true">02</span>
-                            <span class="auth-banner-feature-text auth-banner-feature-text--admin">Staff & roster</span>
-                        </div>
-                        <div class="auth-banner-feature auth-banner-feature--admin">
-                            <span class="auth-banner-feature-num" aria-hidden="true">03</span>
-                            <span class="auth-banner-feature-text auth-banner-feature-text--admin">Reports & data</span>
-                        </div>
-                    </div>
+                    <p class="auth-banner-eyebrow auth-banner-eyebrow--admin">Administrator sign-in</p>
+                    <h2 class="auth-banner-title auth-banner-title--admin">Where registers, results, and bursary work meet</h2>
+                    <p class="auth-banner-tagline auth-banner-tagline--admin">This desk handles the term’s paperwork: class lists, report cards, fee reminders, and the records parents and teachers rely on.</p>
+
+                    <ul class="auth-banner-duties" aria-label="What you can do after signing in">
+                        <li class="auth-banner-duty">
+                            <span class="auth-banner-duty__icon" aria-hidden="true"><i class="fas fa-clipboard-list"></i></span>
+                            <span class="auth-banner-duty__label">Registers, attendance, and class rolls</span>
+                        </li>
+                        <li class="auth-banner-duty">
+                            <span class="auth-banner-duty__icon" aria-hidden="true"><i class="fas fa-file-signature"></i></span>
+                            <span class="auth-banner-duty__label">Results, promotions, and report sheets</span>
+                        </li>
+                        <li class="auth-banner-duty">
+                            <span class="auth-banner-duty__icon" aria-hidden="true"><i class="fas fa-coins"></i></span>
+                            <span class="auth-banner-duty__label">Fees, checklists, and school-wide notices</span>
+                        </li>
+                    </ul>
+
+                    <p class="auth-banner-foot auth-banner-foot--admin">For authorised staff only. If you need an account reset, contact the ICT lead or <a class="auth-banner-foot__link" href="mailto:{{ config('school.school_email') }}">{{ config('school.school_email') }}</a>.</p>
                 </div>
             </div>
         </aside>

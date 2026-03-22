@@ -2,14 +2,20 @@
 
 namespace App\Providers;
 
+use App\Contracts\ChecklistServiceContract;
+use App\Contracts\FeeServiceContract;
 use App\Contracts\NotificationServiceContract;
+use App\Contracts\ResultRemarkServiceContract;
 use App\Contracts\ResultRepositoryContract;
 use App\Contracts\ResultServiceContract;
 use App\Models\Notification;
 use App\Models\Teacher;
 use App\Policies\TeacherPolicy;
 use App\Repositories\ResultRepository;
+use App\Services\ChecklistService;
+use App\Services\FeeService;
 use App\Services\NotificationService;
+use App\Services\ResultRemarkService;
 use App\Services\ResultService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Gate;
@@ -23,6 +29,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(NotificationServiceContract::class, NotificationService::class);
         $this->app->bind(ResultServiceContract::class, ResultService::class);
         $this->app->bind(ResultRepositoryContract::class, ResultRepository::class);
+        $this->app->bind(ResultRemarkServiceContract::class, ResultRemarkService::class);
+        $this->app->bind(FeeServiceContract::class, FeeService::class);
+        $this->app->bind(ChecklistServiceContract::class, ChecklistService::class);
     }
 
     public function boot(): void

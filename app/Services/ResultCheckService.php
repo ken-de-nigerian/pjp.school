@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Contracts\ResultServiceContract;
+use App\Enums\ResultStatus;
 use App\Models\AnnualResult;
 use App\Models\Behavioral;
 use App\Models\Position;
 use App\Models\Setting;
 use App\Models\Student;
+use App\Support\AnnualResultAggregation;
 use Illuminate\Support\Collection;
 use Throwable;
 
@@ -111,18 +113,29 @@ final class ResultCheckService
             ->where('reg_number', $regNumber)
             ->where('term', $term)
             ->where('session', $session)
-            ->orderBy('segment')
+            ->orderBy('id')
             ->get();
     }
 
     public function getSegment(string $regNumber, string $class, string $term, string $session): Collection
     {
-        return AnnualResult::query()
+        $base = AnnualResult::query()
             ->where('reg_number', $regNumber)
             ->where('class_arm', $class)
             ->where('term', $term)
             ->where('session', $session)
+            ->where('status', ResultStatus::APPROVED->value);
+
+        return AnnualResultAggregation::applyAggregatedSubjectScores($base)
             ->orderBy('subjects')
             ->get();
+    }
+
+    public function getClassCount(string $class): int
+    {
+        return Student::query()
+            ->where('class_arm', $class)
+            ->whereNotIn('class', ['Left', 'Graduated'])
+            ->count();
     }
 }

@@ -247,7 +247,7 @@ final class ResultController extends Controller
             $v['exam']
         );
 
-        if ($updated === 1) {
+        if ($updated > 0) {
             $teacher = $request->user('teacher');
             $teacherName = $teacher ? trim($teacher->firstname.' '.$teacher->lastname) : 'Teacher';
             if ($teacherName === '') {

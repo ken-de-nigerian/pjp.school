@@ -4,13 +4,16 @@ use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\BehavioralController;
 use App\Http\Controllers\Admin\BulkController;
 use App\Http\Controllers\Admin\CardController;
+use App\Http\Controllers\Admin\ChecklistController;
 use App\Http\Controllers\Admin\ClassController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\FeeController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\NotificationsController;
 use App\Http\Controllers\Admin\OnlineEntranceController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\ResultController;
+use App\Http\Controllers\Admin\ResultRemarkController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\StaffController;
@@ -215,6 +218,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         Route::post('/results/published/toggle-live', 'togglePublishedLive')->name('results.published.toggle-live');
         Route::post('/results/published/set-live', 'setPublishedLiveBulk')->name('results.published.set-live');
         Route::post('/results/published/delete', 'deletePublished')->name('results.published.delete');
+        Route::post('/results/remark', [ResultRemarkController::class, 'storeOrUpdate'])->name('results.remark');
         Route::put('/results/edit', 'edit')->name('results.edit');
         Route::post('/results/approve', 'approve')->name('results.approve');
         Route::post('/results/reject', 'reject')->name('results.reject');
@@ -290,4 +294,12 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/card/used-pins', 'usedPins')->name('card.used-pins');
         Route::post('/card/generate-pins', 'generatePins')->name('card.generate-pins.store');
     });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Report card fees & checklists (student result page content)
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('fees', FeeController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('checklists', ChecklistController::class)->only(['index', 'store', 'update', 'destroy']);
 });

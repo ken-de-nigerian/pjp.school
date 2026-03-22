@@ -35,7 +35,7 @@
             </x-admin.hero-page>
 
             @if(!$hasFilters)
-                <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <form method="GET" action="{{ route('teacher.attendance.view') }}" class="space-y-4 sm:space-y-5">
                         <div class="grid grid-cols-12 gap-4 min-w-0">
                             <div class="col-span-12 sm:col-span-6 form-group min-w-0">
@@ -99,7 +99,7 @@
             @endif
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -126,7 +126,7 @@
                     </div>
                 </div>
 
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     @if($records->isEmpty())
                         <div class="flex flex-col items-center justify-center py-16 px-6">
                             <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5" style="border-radius: 16px;">
@@ -146,7 +146,7 @@
                             @csrf
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 sm:px-6 py-4" style="border-bottom: 1px solid var(--outline-variant);">
                                 <p class="text-sm font-medium" style="color: var(--on-surface-variant);">
-                                    <span id="records-count">{{ $records->count() }}</span> record(s) · <span id="present-count">0</span> present, <span id="absent-count">0</span> absent
+                                    <span id="records-count">{{ $records->count() }}</span> record(s) Â· <span id="present-count">0</span> present, <span id="absent-count">0</span> absent
                                 </p>
                                 <div class="flex flex-wrap gap-2">
                                     <button type="button" id="mark-all-present" class="attendance-bulk-btn attendance-bulk-btn--present" aria-pressed="false">All Present</button>
@@ -179,9 +179,9 @@
                                                     <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Name</span>
                                                     <p class="text-sm font-medium break-words" style="color: var(--on-surface);">
                                                         @if($studentForRecord && Route::has('teacher.students.show'))
-                                                            <a href="{{ route('teacher.students.show', $studentForRecord) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $record->name ?? '—' }}</a>
+                                                            <a href="{{ route('teacher.students.show', $studentForRecord) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $record->name ?? 'â€”' }}</a>
                                                         @else
-                                                            {{ $record->name ?? '—' }}
+                                                            {{ $record->name ?? 'â€”' }}
                                                         @endif
                                                     </p>
                                                     <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $record->reg_number ?? '' }}</p>

@@ -48,8 +48,8 @@
                         @forelse($classesWithCounts as $c)
                             <div class="h-full min-h-[200px]">
                                 <div
-                                    class="relative flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-200 hover:shadow-[var(--elevation-2)]"
-                                    style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-1);">
+                                    class="relative flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-200"
+                                    style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
                                     <button type="button"
                                             class="absolute top-3 right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center hover:bg-[rgba(0,0,0,0.04)]"
                                             style="color: var(--on-surface-variant);"

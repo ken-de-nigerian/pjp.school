@@ -176,4 +176,71 @@ class ResultServiceTest extends TestCase
         $r1->refresh();
         $this->assertSame(1, (int) $r1->status);
     }
+
+    public function test_get_uploaded_results_aggregates_legacy_segment_duplicates(): void
+    {
+        $base = [
+            'studentId' => 1,
+            'class' => 'JSS 1',
+            'class_arm' => 'JSS 1',
+            'term' => '1',
+            'session' => '2024/2025',
+            'subjects' => 'Math',
+            'name' => 'A',
+            'reg_number' => '1001',
+            'status' => 1,
+            'date_added' => now(),
+        ];
+        AnnualResult::query()->create(array_merge($base, [
+            'segment' => '1',
+            'ca' => 10,
+            'assignment' => 10,
+            'exam' => 20,
+            'total' => 40,
+        ]));
+        AnnualResult::query()->create(array_merge($base, [
+            'segment' => '2',
+            'ca' => 20,
+            'assignment' => 20,
+            'exam' => 40,
+            'total' => 80,
+        ]));
+
+        $collection = $this->service->getUploadedResults('JSS 1', '1', '2024/2025', 'Math');
+        $this->assertCount(1, $collection);
+        $row = $collection->first();
+        $this->assertSame(60.0, (float) $row->total);
+        $this->assertSame(15.0, (float) $row->ca);
+        $this->assertSame(15.0, (float) $row->assignment);
+        $this->assertSame(30.0, (float) $row->exam);
+    }
+
+    public function test_approve_by_ids_expands_legacy_segment_duplicates(): void
+    {
+        $base = [
+            'studentId' => 1,
+            'class' => 'JSS 1',
+            'class_arm' => 'JSS 1',
+            'term' => '1',
+            'session' => '2024/2025',
+            'subjects' => 'Math',
+            'name' => 'A',
+            'reg_number' => '1001',
+            'ca' => 0,
+            'assignment' => 0,
+            'exam' => 0,
+            'total' => 0,
+            'status' => 2,
+            'date_added' => now(),
+        ];
+        $r1 = AnnualResult::query()->create(array_merge($base, ['segment' => '1']));
+        $r2 = AnnualResult::query()->create(array_merge($base, ['segment' => '2']));
+
+        $count = $this->service->approveByIds([(int) $r1->id]);
+        $this->assertSame(2, $count);
+        $r1->refresh();
+        $r2->refresh();
+        $this->assertSame(1, (int) $r1->status);
+        $this->assertSame(1, (int) $r2->status);
+    }
 }

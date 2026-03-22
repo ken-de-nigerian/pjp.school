@@ -11,7 +11,7 @@
             />
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-6">
-                <a href="{{ route('admin.card.unused-pins') }}" class="rounded-2xl overflow-hidden flex flex-col transition-shadow hover:shadow-md" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <a href="{{ route('admin.card.unused-pins') }}" class="rounded-2xl overflow-hidden flex flex-col transition-colors" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="p-4 sm:p-5 flex flex-col flex-1">
                         <div class="flex items-center justify-between mb-3">
                             <div class="dashboard-stat-icon dashboard-stat-icon--blue w-10 h-10 rounded-xl flex items-center justify-center" style="border-radius: 12px;">
@@ -28,7 +28,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('admin.card.used-pins') }}" class="rounded-2xl overflow-hidden flex flex-col transition-shadow hover:shadow-md" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <a href="{{ route('admin.card.used-pins') }}" class="rounded-2xl overflow-hidden flex flex-col transition-colors" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="p-4 sm:p-5 flex flex-col flex-1">
                         <div class="flex items-center justify-between mb-3">
                             <div class="dashboard-stat-icon dashboard-stat-icon--blue w-10 h-10 rounded-xl flex items-center justify-center" style="border-radius: 12px;">
@@ -46,7 +46,7 @@
                 </a>
             </div>
 
-            <div class="rounded-3xl overflow-hidden p-4 sm:p-5 lg:p-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+            <div class="rounded-3xl overflow-hidden p-4 sm:p-5 lg:p-6" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-4">
                     <div class="flex-1 min-w-0">
                         <h2 class="text-lg font-semibold mb-1" style="color: var(--on-surface);">

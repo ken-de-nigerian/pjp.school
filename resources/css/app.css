@@ -520,67 +520,12 @@ body {
     color: rgba(255, 255, 255, 0.9);
 }
 
-/* Admin + teacher login: same split banner (slate panel, grid texture — no edge stripe) */
+/* Split side panels: admin login, teacher login, check result */
 .auth-banner--admin,
-.auth-banner--teacher {
+.auth-banner--teacher,
+.auth-banner--check-result {
     flex: 0 0 42%;
     min-width: 300px;
-    background: #1a1f2e;
-}
-
-.auth-banner-bg--admin,
-.auth-banner-bg--teacher {
-    background: linear-gradient(180deg, #1f2535 0%, #1a1f2e 40%, #161b28 100%);
-}
-
-.auth-banner-bg--admin::before,
-.auth-banner-bg--teacher::before {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-    background-size: 28px 28px;
-}
-
-.auth-banner-inner--admin,
-.auth-banner-inner--teacher {
-    max-width: 380px;
-    width: 100%;
-    padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.75rem, 3.5vw, 2.5rem);
-    padding-top: max(env(safe-area-inset-top), clamp(1.75rem, 4vw, 2.75rem));
-    padding-bottom: max(env(safe-area-inset-bottom), clamp(1.75rem, 4vw, 2.75rem));
-    padding-left: max(env(safe-area-inset-left), clamp(1.75rem, 3.5vw, 2.5rem));
-    padding-right: max(env(safe-area-inset-right), clamp(1.75rem, 3.5vw, 2.5rem));
-}
-
-.auth-banner-back--admin,
-.auth-banner-back--teacher {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.8125rem;
-}
-
-.auth-banner-back--admin:hover,
-.auth-banner-back--teacher:hover {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.auth-banner-brand--admin,
-.auth-banner-brand--teacher {
-    margin-bottom: 2rem;
-}
-
-.auth-banner-logo-text--admin,
-.auth-banner-logo-text--teacher {
-    color: #fff;
-    font-size: 1.0625rem;
-}
-
-.auth-banner-pill--admin,
-.auth-banner-pill--teacher {
-    color: rgba(255, 255, 255, 0.65);
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.1);
-    font-size: 0.625rem;
-    letter-spacing: 0.1em;
-    padding: 0.3rem 0.6rem;
 }
 
 .auth-banner-eyebrow {
@@ -592,85 +537,280 @@ body {
     margin-bottom: 0.5rem;
 }
 
-.auth-banner-title--admin,
-.auth-banner-title--teacher {
+/* --------------------------------------------------------------------------
+   Material 3 primary tonal side banners (admin, teacher, check result)
+   -------------------------------------------------------------------------- */
+.auth-banner.auth-banner--admin,
+.auth-banner.auth-banner--teacher,
+.auth-banner.auth-banner--check-result {
     color: #fff;
-    font-size: clamp(1.25rem, 2.2vw, 1.5625rem);
+    background: color-mix(in srgb, var(--primary) 16%, #0c1524);
+}
+
+.auth-banner-accent--admin,
+.auth-banner-accent--teacher,
+.auth-banner-accent--check-result {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    z-index: 1;
+    border-radius: 0 3px 3px 0;
+    background: linear-gradient(180deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 50%, #000) 100%);
+    pointer-events: none;
+}
+
+.auth-banner-bg--admin,
+.auth-banner-bg--teacher,
+.auth-banner-bg--check-result {
+    background: linear-gradient(
+        165deg,
+        color-mix(in srgb, var(--primary) 42%, #1a237e) 0%,
+        color-mix(in srgb, var(--primary) 24%, #0e2848) 48%,
+        color-mix(in srgb, var(--primary) 11%, #0a1628) 100%
+    );
+}
+
+.auth-banner-bg--admin::before,
+.auth-banner-bg--teacher::before,
+.auth-banner-bg--check-result::before {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.038) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.038) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: 0 0, 0 0;
+}
+
+.auth-banner-inner--admin,
+.auth-banner-inner--teacher,
+.auth-banner-inner--check-result {
+    max-width: 400px;
+    width: 100%;
+    padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.75rem, 3.5vw, 2.5rem);
+    padding-top: max(env(safe-area-inset-top), clamp(1.75rem, 4vw, 2.75rem));
+    padding-bottom: max(env(safe-area-inset-bottom), clamp(1.75rem, 4vw, 2.75rem));
+    padding-left: max(env(safe-area-inset-left), clamp(1.75rem, 3.5vw, 2.5rem));
+    padding-right: max(env(safe-area-inset-right), clamp(1.75rem, 3.5vw, 2.5rem));
+}
+
+.auth-banner--admin .auth-banner-content,
+.auth-banner--teacher .auth-banner-content,
+.auth-banner--check-result .auth-banner-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.auth-banner-back--admin,
+.auth-banner-back--teacher,
+.auth-banner-back--check-result {
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.8125rem;
+}
+
+.auth-banner-back--admin:hover,
+.auth-banner-back--teacher:hover,
+.auth-banner-back--check-result:hover {
+    color: #fff;
+}
+
+.auth-banner-school-mark {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.auth-banner-school-mark__seal {
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: color-mix(in srgb, var(--primary) 28%, rgba(255, 255, 255, 0.06));
+    color: #fff;
+    font-size: 1.125rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.auth-banner-school-mark__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.auth-banner-logo-text--admin,
+.auth-banner-logo-text--teacher,
+.auth-banner-logo-text--check-result {
+    color: #fff;
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+    font-family: "Roboto", sans-serif;
+}
+
+.auth-banner-pill--admin,
+.auth-banner-pill--teacher,
+.auth-banner-pill--check-result {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.18);
+    letter-spacing: 0.08em;
+}
+
+.auth-banner-eyebrow--admin,
+.auth-banner-eyebrow--teacher,
+.auth-banner-eyebrow--check-result {
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.14em;
+}
+
+.auth-banner-title--admin,
+.auth-banner-title--teacher,
+.auth-banner-title--check-result {
+    font-family: "Roboto", sans-serif;
     font-weight: 600;
+    color: #fff;
+    font-size: clamp(1.3rem, 2.3vw, 1.6rem);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
     margin-bottom: 0.625rem;
 }
 
 .auth-banner-tagline--admin,
-.auth-banner-tagline--teacher {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.875rem;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
+.auth-banner-tagline--teacher,
+.auth-banner-tagline--check-result {
+    color: rgba(255, 255, 255, 0.74);
+    font-size: 0.9375rem;
+    line-height: 1.58;
+    margin-bottom: 1.35rem;
 }
 
-.auth-banner-features-wrap--admin,
-.auth-banner-features-wrap--teacher {
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.02);
-    padding: 0.25rem 0;
+.auth-banner--admin .auth-banner-duties,
+.auth-banner--teacher .auth-banner-duties,
+.auth-banner--check-result .auth-banner-duties {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.05);
+    overflow: hidden;
 }
 
-.auth-banner-feature--admin,
-.auth-banner-feature--teacher {
+.auth-banner--admin .auth-banner-duty,
+.auth-banner--teacher .auth-banner-duty,
+.auth-banner--check-result .auth-banner-duty {
     display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    gap: 1rem;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.auth-banner-feature--admin:last-child,
-.auth-banner-feature--teacher:last-child {
+.auth-banner--admin .auth-banner-duty:last-child,
+.auth-banner--teacher .auth-banner-duty:last-child,
+.auth-banner--check-result .auth-banner-duty:last-child {
     border-bottom: none;
 }
 
-.auth-banner-feature-num {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.35);
-    min-width: 1.75rem;
+.auth-banner--admin .auth-banner-duty__icon,
+.auth-banner--teacher .auth-banner-duty__icon,
+.auth-banner--check-result .auth-banner-duty__icon {
     flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    color: #fff;
+    background: color-mix(in srgb, var(--primary) 38%, rgba(255, 255, 255, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
-.auth-banner-feature-text--admin,
-.auth-banner-feature-text--teacher {
-    color: rgba(255, 255, 255, 0.88);
+.auth-banner--admin .auth-banner-duty__label,
+.auth-banner--teacher .auth-banner-duty__label,
+.auth-banner--check-result .auth-banner-duty__label {
     font-size: 0.875rem;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.92);
+    padding-top: 0.25rem;
+}
+
+.auth-banner-foot--admin,
+.auth-banner-foot--teacher,
+.auth-banner-foot--check-result {
+    margin-top: clamp(1.35rem, 4vh, 2.25rem);
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.58);
+    max-width: 36em;
+}
+
+.auth-banner-foot__link {
+    color: var(--primary-container);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: color-mix(in srgb, var(--primary-container) 55%, transparent);
     font-weight: 500;
 }
 
-[data-theme="dark"] .auth-banner--admin,
-[data-theme="dark"] .auth-banner--teacher {
-    background: #161b28;
+.auth-banner-foot__link:hover {
+    color: #fff;
+    text-decoration-color: rgba(255, 255, 255, 0.55);
+}
+
+[data-theme="dark"] .auth-banner.auth-banner--admin,
+[data-theme="dark"] .auth-banner.auth-banner--teacher,
+[data-theme="dark"] .auth-banner.auth-banner--check-result {
+    color: #fff;
+    background: color-mix(in srgb, var(--primary) 12%, #080c14);
 }
 
 [data-theme="dark"] .auth-banner-bg--admin,
-[data-theme="dark"] .auth-banner-bg--teacher {
-    background: linear-gradient(180deg, #1a1f2e 0%, #161b28 40%, #121620 100%);
+[data-theme="dark"] .auth-banner-bg--teacher,
+[data-theme="dark"] .auth-banner-bg--check-result {
+    background: linear-gradient(
+        165deg,
+        color-mix(in srgb, var(--primary) 30%, #121c2e) 0%,
+        color-mix(in srgb, var(--primary) 14%, #0c1220) 52%,
+        color-mix(in srgb, var(--primary) 6%, #080c14) 100%
+    );
 }
 
-[data-theme="dark"] .auth-banner-bg--admin::before,
-[data-theme="dark"] .auth-banner-bg--teacher::before {
-    opacity: 0.8;
+[data-theme="dark"] .auth-banner-foot__link {
+    color: var(--primary);
+}
+
+[data-theme="dark"] .auth-banner-foot__link:hover {
+    color: var(--primary-hover);
 }
 
 /* --------------------------------------------------------------------------
    Admin dashboard hero — same visual language as admin auth-banner (login)
    -------------------------------------------------------------------------- */
+@keyframes admin-hero-grid-matrix {
+    0% {
+        background-position: 0 0, 0 0;
+    }
+    100% {
+        /* One full cell shift: horizontal lines drift down, vertical lines drift right */
+        background-position: 0 28px, 28px 0;
+    }
+}
+
 .admin-dashboard-hero {
     position: relative;
     overflow: hidden;
     border-radius: 1.25rem;
     margin-bottom: 1.5rem;
     color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
 }
 
@@ -692,10 +832,20 @@ body {
     content: "";
     position: absolute;
     inset: 0;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(255, 255, 255, 0.034) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.034) 1px, transparent 1px);
     background-size: 28px 28px;
+    background-repeat: repeat;
     pointer-events: none;
+    animation: admin-hero-grid-matrix 42s linear infinite;
+    will-change: background-position;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-dashboard-hero__bg::before {
+        animation: none;
+        will-change: auto;
+    }
 }
 
 .admin-dashboard-hero__inner {
@@ -712,6 +862,11 @@ body {
 
 .admin-dashboard-hero__intro .admin-dashboard-hero__brand {
     margin-bottom: 0.5rem;
+}
+
+/* Stronger chip outline than Tailwind border-white/15 — still soft for readability */
+.admin-dashboard-hero__intro > span.admin-dashboard-hero__brand {
+    border-color: rgba(255, 255, 255, 0.22) !important;
 }
 
 .admin-dashboard-hero__intro .auth-banner-eyebrow {
@@ -745,7 +900,7 @@ body {
     padding: 0.3rem 0.6rem;
     background: rgba(255, 255, 255, 0.06);
     border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 .admin-dashboard-hero__header {
@@ -811,13 +966,13 @@ body {
     text-decoration: none;
     color: rgba(255, 255, 255, 0.92);
     background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .admin-dashboard-hero__btn:hover {
     background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.28);
     color: #fff;
 }
 
@@ -850,13 +1005,13 @@ body {
     text-decoration: none;
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.13);
     transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .admin-dashboard-hero__tile:hover {
     background: rgba(255, 255, 255, 0.09);
-    border-color: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.22);
     transform: translateY(-1px);
 }
 
@@ -880,7 +1035,7 @@ body {
 }
 
 [data-theme="dark"] .admin-dashboard-hero {
-    border-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.11);
     box-shadow: 0 4px 32px rgba(0, 0, 0, 0.55);
 }
 
@@ -1317,23 +1472,63 @@ body {
     border-top-color: rgba(255, 255, 255, 0.08);
 }
 
+/*
+ * No max-height / inner scroll (removed calc(100dvh) + overflow-y: auto).
+ * Keep overflow: hidden so Tailwind rounded-[2.25rem] clips the banner __bg layer;
+ * overflow: visible breaks border-radius appearance (background paints square).
+ */
 #mega-menu-dropdown .admin-mega-menu-banner.mega-menu-bento-panel {
-    max-height: calc(100dvh - 5.5rem);
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    max-height: none;
+    overflow: hidden;
 }
 
-#mega-menu-dropdown .admin-mega-menu-banner.mega-menu-bento-panel::-webkit-scrollbar {
-    width: 0;
-    height: 0;
+#mega-menu-dropdown .admin-mega-menu-banner .mega-bento-tile-link {
+    padding: 0.65rem 0.72rem;
+    gap: 0.4rem;
+    border-radius: 1rem;
 }
 
-@media (min-width: 768px) {
-    #mega-menu-dropdown .admin-mega-menu-banner.mega-menu-bento-panel {
-        max-height: calc(100dvh - 6rem);
-    }
+#mega-menu-dropdown .admin-mega-menu-banner .mega-bento-tile-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.8rem;
+}
+
+#mega-menu-dropdown .admin-mega-menu-banner .mega-bento-tile-title {
+    font-size: 0.8125rem;
+    line-height: 1.2;
+}
+
+/* Students & Teachers: no ellipsis; tiles stretch to fill each grid cell (and row) */
+#mega-menu-dropdown .mega-menu-col--students,
+#mega-menu-dropdown .mega-menu-col--teachers {
+    align-self: stretch;
+}
+
+#mega-menu-dropdown .mega-menu-col--students .mega-bento-tile-title,
+#mega-menu-dropdown .mega-menu-col--teachers .mega-bento-tile-title {
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    -webkit-box-orient: unset;
+    overflow: visible;
+    word-break: break-word;
+    line-height: 1.35;
+}
+
+#mega-menu-dropdown .mega-menu-col--students .grid,
+#mega-menu-dropdown .mega-menu-col--teachers .grid {
+    align-items: stretch;
+    align-content: stretch;
+    /* Equal row heights so extra vertical space is shared across tile rows */
+    grid-auto-rows: minmax(0, 1fr);
+}
+
+#mega-menu-dropdown .mega-menu-col--students .mega-bento-tile-link,
+#mega-menu-dropdown .mega-menu-col--teachers .mega-bento-tile-link {
+    height: 100%;
+    min-height: 100%;
+    box-sizing: border-box;
 }
 
 /* Reusable admin page hero (title + actions inside banner) */
@@ -1369,7 +1564,7 @@ body {
 .admin-page-hero__below {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .admin-dashboard-hero__btn--primary {
@@ -1403,13 +1598,13 @@ body {
     text-decoration: none;
     color: rgba(255, 255, 255, 0.88);
     background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .admin-page-hero__segment:hover {
     background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.24);
     color: #fff;
 }
 
@@ -1437,6 +1632,26 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+/* Split login: M3 tonal wash + calmer form column */
+.auth-with-banner .auth-form-wrap {
+    background: linear-gradient(
+        165deg,
+        var(--surface) 0%,
+        var(--surface-container-low) 38%,
+        color-mix(in srgb, var(--primary) 4.5%, var(--surface)) 100%
+    );
+    padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+[data-theme="dark"] .auth-with-banner .auth-form-wrap {
+    background: linear-gradient(
+        165deg,
+        var(--surface) 0%,
+        var(--surface-container-low) 45%,
+        color-mix(in srgb, var(--primary) 7%, var(--surface)) 100%
+    );
+}
+
 .auth-card {
     width: 100%;
     max-width: 520px;
@@ -1444,22 +1659,39 @@ body {
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 2.5rem;
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: none;
     transition: all 0.3s ease;
 }
 
 .auth-card--modern {
-    border-radius: 12px;
-    padding: clamp(1.5rem, 4vw, 2.5rem);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
+    max-width: 440px;
+    margin-inline: auto;
+    border-radius: 1rem;
+    padding: clamp(1.75rem, 4vw, 2.5rem);
+    border: 1px solid var(--outline-variant);
+    background: var(--surface-container-lowest);
+    box-shadow: none;
+}
+
+.auth-card--modern .auth-form-header {
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--divider);
+}
+
+/* Check result: slightly wider card for stacked selects */
+.auth-card--check-result {
+    max-width: 480px;
 }
 
 [data-theme="dark"] .auth-card {
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: none;
 }
 
 [data-theme="dark"] .auth-card--modern {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: var(--surface-container-low);
+    border-color: var(--outline-variant);
+    box-shadow: none;
 }
 
 .auth-title {
@@ -1707,6 +1939,10 @@ textarea.form-input {
 }
 
 .input-icon + .form-input {
+    padding-left: 2.5rem;
+}
+
+.input-icon + .form-select {
     padding-left: 2.5rem;
 }
 
@@ -1975,7 +2211,10 @@ main.overflow-y-auto {
 
     .auth-banner-eyebrow,
     .auth-banner-features-wrap--admin,
-    .auth-banner-features-wrap--teacher {
+    .auth-banner-features-wrap--teacher,
+    .auth-banner--admin .auth-banner-duties,
+    .auth-banner--teacher .auth-banner-duties,
+    .auth-banner--check-result .auth-banner-duties {
         display: none;
     }
 
@@ -2314,13 +2553,12 @@ button, a, input, textarea, select {
 .card-refined {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    box-shadow: var(--elevation-1);
+    box-shadow: none;
     border-radius: var(--radius-lg);
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: border-color 0.2s ease;
 }
 
 .card-refined:hover {
-    box-shadow: var(--elevation-2);
     border-color: var(--outline-variant);
 }
 
@@ -2329,11 +2567,11 @@ button, a, input, textarea, select {
     background: var(--surface-container-low);
     border: 1px solid var(--card-border);
     border-radius: 1rem;
-    box-shadow: var(--elevation-1);
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    box-shadow: none;
+    transition: border-color 0.2s ease;
 }
 .role-m3-card:hover {
-    box-shadow: var(--elevation-2);
+    border-color: var(--outline-variant);
 }
 .role-m3-card--tonal {
     background: var(--primary-container);
@@ -2391,11 +2629,11 @@ button, a, input, textarea, select {
 }
 
 .hover-lift {
-    transition: box-shadow 0.2s ease, background-color 0.2s ease;
+    transition: background-color 0.2s ease;
 }
 
 .hover-lift:hover {
-    box-shadow: var(--shadow-md);
+    box-shadow: none;
 }
 
 .nav-refined {
@@ -2726,8 +2964,22 @@ textarea.input-refined {
     background: var(--card-bg);
     border: none;
     border-radius: var(--radius-lg);
-    box-shadow: var(--elevation-1);
+    box-shadow: none;
     position: relative;
+}
+
+/* Inline elevation on surfaced panels (dashboard shells) — border-only cards */
+[style*="box-shadow: var(--elevation-1)"] {
+    box-shadow: none !important;
+}
+
+[style*="box-shadow: var(--elevation-2)"] {
+    box-shadow: none !important;
+}
+
+/* Keep M3 switch thumb shadow (small span, not a card) */
+span[style*="box-shadow: var(--elevation-1)"] {
+    box-shadow: var(--elevation-1) !important;
 }
 
 /* Mobile Navigation Styles */

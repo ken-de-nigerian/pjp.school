@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -52,6 +53,9 @@ class AnnualResult extends Model
             ->where('session', $session);
     }
 
+    /**
+     * @deprecated Segment is no longer used; do not filter by segment in new code.
+     */
     public function scopeBySegment(Builder $query, string $segment): void
     {
         $query->where('segment', $segment);
@@ -67,36 +71,39 @@ class AnnualResult extends Model
         return $this->belongsTo(Student::class, 'studentId', 'id');
     }
 
-    /**
-     * Letter grade when the total is scored out of 100. F for total < 40.
-     */
-    public function gradeLetter(): string
+    protected function gradeLetter(): Attribute
     {
-        $score = (float) $this->total;
-        if ($score >= 70) {
-            return 'A';
-        }
-        if ($score >= 60) {
-            return 'B';
-        }
-        if ($score >= 50) {
-            return 'C';
-        }
-        if ($score >= 45) {
-            return 'D';
-        }
-        if ($score >= 40) {
-            return 'E';
-        }
+        return Attribute::make(
+            get: function () {
+                $score = (float) $this->total;
 
-        return 'F';
+                return match (true) {
+                    $score >= 70 => 'A',
+                    $score >= 60 => 'B',
+                    $score >= 50 => 'C',
+                    $score >= 45 => 'D',
+                    $score >= 40 => 'E',
+                    default => 'F',
+                };
+            }
+        );
     }
 
-    /**
-     * Accessor for use in views: $result->grade_letter
-     */
-    public function getGradeLetterAttribute(): string
+    protected function resultRemarks(): Attribute
     {
-        return $this->gradeLetter();
+        return Attribute::make(
+            get: function () {
+                $score = (float) $this->total;
+
+                return match (true) {
+                    $score >= 80 => 'Excellent',
+                    $score >= 70 => 'V.Good',
+                    $score >= 60 => 'Good',
+                    $score >= 50 => 'Fair',
+                    $score >= 40 => 'Poor',
+                    default => 'V.Poor',
+                };
+            }
+        );
     }
 }

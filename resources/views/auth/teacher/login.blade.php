@@ -2,37 +2,46 @@
 
 @section('content')
     <div class="auth-container auth-with-banner auth-banner--teacher">
-        <aside class="auth-banner auth-banner--teacher" aria-label="Teacher portal info">
+        <aside class="auth-banner auth-banner--teacher" aria-label="Teacher portal sign-in">
             <div class="auth-banner-bg auth-banner-bg--teacher" aria-hidden="true"></div>
+            <div class="auth-banner-accent auth-banner-accent--teacher" aria-hidden="true"></div>
             <div class="auth-banner-inner auth-banner-inner--teacher">
                 <a href="{{ route('home') }}" class="auth-banner-back auth-banner-back--teacher">
                     <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    <span>Back to home</span>
+                    <span>Back to school site</span>
                 </a>
 
-                <div class="auth-banner-brand auth-banner-brand--teacher">
-                    <span class="auth-banner-logo-text auth-banner-logo-text--teacher">{{ config('app.name') }}</span>
-                    <span class="auth-banner-pill auth-banner-pill--teacher">Teacher</span>
+                <div class="auth-banner-school-mark">
+                    <div class="auth-banner-school-mark__seal" aria-hidden="true">
+                        <i class="fas fa-chalkboard-user"></i>
+                    </div>
+                    <div class="auth-banner-school-mark__text">
+                        <span class="auth-banner-logo-text auth-banner-logo-text--teacher">{{ config('app.name') }}</span>
+                        <span class="auth-banner-pill auth-banner-pill--teacher">Teaching staff</span>
+                    </div>
                 </div>
 
                 <div class="auth-banner-content">
-                    <p class="auth-banner-eyebrow">Teacher portal</p>
-                    <h2 class="auth-banner-title auth-banner-title--teacher">Sign in to your classroom tools</h2>
-                    <p class="auth-banner-tagline auth-banner-tagline--teacher">Take attendance, record behaviour, upload results, and manage your assigned classes.</p>
-                    <div class="auth-banner-features-wrap auth-banner-features-wrap--teacher">
-                        <div class="auth-banner-feature auth-banner-feature--teacher">
-                            <span class="auth-banner-feature-num" aria-hidden="true">01</span>
-                            <span class="auth-banner-feature-text auth-banner-feature-text--teacher">Classes &amp; attendance</span>
-                        </div>
-                        <div class="auth-banner-feature auth-banner-feature--teacher">
-                            <span class="auth-banner-feature-num" aria-hidden="true">02</span>
-                            <span class="auth-banner-feature-text auth-banner-feature-text--teacher">Behaviour &amp; results</span>
-                        </div>
-                        <div class="auth-banner-feature auth-banner-feature--teacher">
-                            <span class="auth-banner-feature-num" aria-hidden="true">03</span>
-                            <span class="auth-banner-feature-text auth-banner-feature-text--teacher">Secure teacher access</span>
-                        </div>
-                    </div>
+                    <p class="auth-banner-eyebrow auth-banner-eyebrow--teacher">Teacher sign-in</p>
+                    <h2 class="auth-banner-title auth-banner-title--teacher">Your classes, registers, and mark book</h2>
+                    <p class="auth-banner-tagline auth-banner-tagline--teacher">Take attendance, record behaviour, upload scores for your subjects, and see only the groups the office has assigned to you.</p>
+
+                    <ul class="auth-banner-duties" aria-label="Typical tasks in the teacher portal">
+                        <li class="auth-banner-duty">
+                            <span class="auth-banner-duty__icon" aria-hidden="true"><i class="fas fa-user-check"></i></span>
+                            <span class="auth-banner-duty__label">Registers and attendance for your classes</span>
+                        </li>
+                        <li class="auth-banner-duty">
+                            <span class="auth-banner-duty__icon" aria-hidden="true"><i class="fas fa-upload"></i></span>
+                            <span class="auth-banner-duty__label">Continuous assessment and exam marks</span>
+                        </li>
+                        <li class="auth-banner-duty">
+                            <span class="auth-banner-duty__icon" aria-hidden="true"><i class="fas fa-clipboard-check"></i></span>
+                            <span class="auth-banner-duty__label">Behavioural notes and class context</span>
+                        </li>
+                    </ul>
+
+                    <p class="auth-banner-foot auth-banner-foot--teacher">For staff accounts issued by the school only. If you cannot sign in, contact the office or <a class="auth-banner-foot__link" href="mailto:{{ config('school.school_email') }}">{{ config('school.school_email') }}</a>.</p>
                 </div>
             </div>
         </aside>

@@ -21,7 +21,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
                     @forelse($graduationYearsWithCounts as $row)
                         <div class="h-full min-h-[200px]">
-                            <div class="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-200 hover:shadow-[var(--elevation-2)]" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-1);">
+                            <div class="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-200" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
                                 <div class="p-5 sm:p-6 text-center flex-1 flex flex-col items-center justify-center gap-3">
                                     <div class="dashboard-quick-icon dashboard-quick-icon--blue w-14 h-14 rounded-2xl flex-shrink-0 flex items-center justify-center" style="border-radius: 16px;">
                                         <i class="fas fa-graduation-cap text-xl" aria-hidden="true"></i>

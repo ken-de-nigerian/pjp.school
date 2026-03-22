@@ -43,7 +43,7 @@
             </x-admin.hero-page>
 
             @if(!$hasFilters)
-                <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <form method="GET" action="{{ route('teacher.behavioral.view') }}" class="space-y-4 sm:space-y-5">
                         <div class="grid grid-cols-12 gap-4 min-w-0">
                             <div class="col-span-12 sm:col-span-6 form-group min-w-0">
@@ -96,7 +96,7 @@
             @endif
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -119,7 +119,7 @@
                     </div>
                 </div>
 
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     @if($records->isEmpty())
                         <div class="flex flex-col items-center justify-center py-16 px-6">
                             <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5" style="border-radius: 16px;">
@@ -168,7 +168,7 @@
                                                 <img src="{{ $avatarSrc }}" alt="" width="40" height="40" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2 lg:place-self-center" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
                                                 <div class="flex flex-col justify-center min-w-0 flex-1 lg:flex-none lg:min-w-0 lg:py-1 lg:pr-2 overflow-hidden">
                                                     <p class="text-sm font-semibold truncate" style="color: var(--on-surface);" title="{{ e($record->name ?? '') }}">
-                                                        {{ e($record->name ?? '—') }}
+                                                        {{ e($record->name ?? 'â€”') }}
                                                     </p>
                                                     <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);" title="{{ e($record->reg_number ?? '') }}">{{ e($record->reg_number ?? '') }}</p>
                                                 </div>
@@ -177,7 +177,7 @@
                                             @foreach($behaviorFields as $key => $config)
                                                 <div class="behavioral-view-cell flex flex-col justify-center min-w-0 overflow-hidden lg:py-1" data-field="{{ $key }}">
                                                     <span class="lg:sr-only text-xs font-medium mt-1 lg:mt-0" style="color: var(--on-surface-variant);">{{ $config['label'] }}:</span>
-                                                    <p class="behavioral-view-value text-sm font-normal overflow-hidden line-clamp-2 break-words" style="color: var(--on-surface);" title="{{ e($record->$key ?? '') }}">{{ e($record->$key ?? '—') }}</p>
+                                                    <p class="behavioral-view-value text-sm font-normal overflow-hidden line-clamp-2 break-words" style="color: var(--on-surface);" title="{{ e($record->$key ?? '') }}">{{ e($record->$key ?? 'â€”') }}</p>
                                                 </div>
                                             @endforeach
 
@@ -192,7 +192,7 @@
                                         <div class="behavioral-edit-mode hidden flex flex-col gap-4 p-4 sm:px-6 pb-5 min-w-0 overflow-hidden" style="background: var(--surface-container-low); border-top: 1px solid var(--outline-variant);">
                                             <div class="flex items-center gap-3 min-w-0">
                                                 <img src="{{ $avatarSrc }}" alt="" width="40" height="40" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
-                                                <p class="text-sm font-semibold truncate flex-1 min-w-0" style="color: var(--on-surface);" title="{{ e($record->name ?? '') }}">Edit · <span class="font-normal" style="color: var(--on-surface-variant);">{{ e($record->name ?? '') }}</span></p>
+                                                <p class="text-sm font-semibold truncate flex-1 min-w-0" style="color: var(--on-surface);" title="{{ e($record->name ?? '') }}">Edit Â· <span class="font-normal" style="color: var(--on-surface-variant);">{{ e($record->name ?? '') }}</span></p>
                                             </div>
                                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-w-0">
                                                 @foreach($behaviorFields as $key => $config)

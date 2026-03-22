@@ -83,13 +83,11 @@
 
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                                 @foreach($get_news ?? [] as $item)
-                                    <div class="card-refined rounded-2xl shadow-sm p-3 sm:p-4 overflow-hidden" style="border-color: var(--outline-variant);">
-                                        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                                            <!-- Card image: responsive aspect ratio -->
-                                            <div
-                                                class="w-full sm:w-1/4 flex-shrink-0 overflow-hidden rounded-xl aspect-video sm:aspect-square sm:min-w-[100px] max-sm:max-h-44">
-                                                @if($item->imagelocation ?? null)
-                                                    <img src="{{ asset('storage/news/'.$item->imagelocation) }}" alt="{{ e($item->title ?? '') }}" class="w-full h-full object-cover object-center" loading="lazy" onerror="this.src='{{ asset('storage/news/default.png') }}'; this.onerror=null;">
+                                    <div class="card-refined rounded-2xl p-3 sm:p-4 overflow-hidden flex flex-col" style="border-color: var(--outline-variant);">
+                                        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 flex-1 min-h-0">
+                                            <div class="w-full sm:w-1/4 flex-shrink-0 overflow-hidden rounded-xl aspect-video sm:aspect-square sm:min-w-[100px] max-sm:max-h-44">
+                                                @if($item->cover_image)
+                                                    <img src="{{ asset('storage/news/'.$item->cover_image) }}" alt="{{ e($item->title ?? '') }}" class="w-full h-full object-cover object-center" loading="lazy" onerror="this.src='{{ asset('storage/news/default.png') }}'; this.onerror=null;">
                                                 @else
                                                     <div class="news-placeholder-bg w-full h-full rounded-xl flex items-center justify-center dashboard-stat-icon dashboard-stat-icon--blue">
                                                         <i class="fas fa-bullhorn text-xl sm:text-2xl"></i>
@@ -97,31 +95,28 @@
                                                 @endif
                                             </div>
 
-                                            <!-- Card body -->
                                             <div class="flex-1 min-w-0 flex flex-col relative">
-                                                <!-- Title -->
                                                 <h5 class="font-semibold mb-0 text-sm sm:text-base line-clamp-2" style="color: var(--text-primary);">
-                                                    <a>{{ e($item->title ?? '') }}</a>
+                                                    {{ e($item->title ?? '') }}
                                                 </h5>
 
                                                 @if(!empty($item->category))
                                                     <small class="mt-1 flex items-center gap-1.5 text-xs" style="color: var(--text-secondary);">
-                                                        <i class="fas fa-tag flex-shrink-0"></i><span class="truncate">{{ e($item->category) }}</span>
+                                                        <i class="fas fa-tag flex-shrink-0"></i>
+                                                        <span class="truncate">{{ e($item->category) }}</span>
                                                     </small>
                                                 @endif
 
-                                                <!-- Date and buttons -->
-                                                <div class="flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center gap-2 mt-3 mt-auto pt-2 border-t" style="border-color: var(--card-border);">
-                                                    <div class="flex items-center flex-wrap gap-1 text-xs sm:text-sm">
-                                                        <span class="font-semibold" style="color: var(--text-primary);">Posted</span>
-                                                        <span style="color: var(--text-secondary);">
-                                                            /
-                                                            @if(isset($item->created_at))
-                                                                {{ Carbon::parse($item->created_at)->diffForHumans() }}
-                                                            @else
-                                                                {{ $item->date_added?->format('M j, Y') }}
-                                                            @endif
-                                                        </span>
+                                                <p class="mt-2 text-xs sm:text-sm" style="color: var(--text-secondary);">
+                                                    {{ $item->created_at
+                                                        ? Carbon::parse($item->created_at)->diffForHumans()
+                                                        : ($item->date_added?->format('M j, Y') ?? '') }}
+                                                </p>
+
+                                                <div class="flex flex-wrap justify-between items-center gap-2 mt-3 mt-auto pt-2 border-t" style="border-color: var(--card-border);">
+                                                    <div class="flex items-center gap-1.5 text-xs sm:text-sm" style="color: var(--text-secondary);">
+                                                        <i class="fas fa-user text-xs" aria-hidden="true"></i>
+                                                        <span class="truncate">{{ e($item->author ?? 'Admin') }}</span>
                                                     </div>
                                                 </div>
                                             </div>

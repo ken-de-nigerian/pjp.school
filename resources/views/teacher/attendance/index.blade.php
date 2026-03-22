@@ -17,11 +17,11 @@
                 </x-slot>
             </x-admin.hero-page>
 
-            <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+            <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
                     @forelse($classes as $c)
                         <div class="h-full min-h-[200px]">
-                            <div class="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-200 hover:shadow-[var(--elevation-2)]" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-1);">
+                            <div class="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-200" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
                                 <div class="p-5 sm:p-6 text-center flex-1 flex flex-col items-center justify-center gap-3">
                                     <div class="dashboard-quick-icon dashboard-quick-icon--blue w-14 h-14 rounded-2xl flex-shrink-0" style="border-radius: 16px;">
                                         <i class="fas fa-calendar-check text-xl" aria-hidden="true"></i>
@@ -45,12 +45,12 @@
                         </div>
                     @empty
                         <div class="col-span-full flex-1 flex flex-col items-center justify-center min-h-[min(400px,50vh)] py-12 sm:py-16">
-                            <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-1);">
+                            <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
                                 <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6" style="border-radius: 16px;">
                                     <i class="fas fa-calendar-check text-4xl" aria-hidden="true"></i>
                                 </div>
                                 <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No assigned classes</h2>
-                                <p class="text-sm font-normal mb-0" style="color: var(--on-surface-variant);">You don’t have any assigned class yet. Please contact the admin.</p>
+                                <p class="text-sm font-normal mb-0" style="color: var(--on-surface-variant);">You donâ€™t have any assigned class yet. Please contact the admin.</p>
                             </div>
                         </div>
                     @endforelse

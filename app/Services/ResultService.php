@@ -9,7 +9,10 @@ use App\Contracts\ResultServiceContract;
 use App\Enums\ResultStatus;
 use App\Helpers\ClassArm;
 use App\Models\AnnualResult;
+use App\Models\Student;
+use App\Support\AnnualResultAggregation;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -36,6 +39,7 @@ final readonly class ResultService implements ResultServiceContract
             ->where('term', $term)
             ->where('session', $session)
             ->where('subjects', $subject)
+            ->select(['status'])
             ->first();
         if ($row === null) {
             return ['uploaded' => false, 'status' => null];
@@ -46,24 +50,31 @@ final readonly class ResultService implements ResultServiceContract
 
     public function getUploadedResults(string $class, string $term, string $session, string $subjects): Collection
     {
-        return AnnualResult::query()
-            ->with('student')
+        $base = AnnualResult::query()
             ->where('class', $class)
             ->where('term', $term)
             ->where('session', $session)
-            ->where('subjects', $subjects)
+            ->where('subjects', $subjects);
+
+        $results = AnnualResultAggregation::applyAggregatedSubjectScores($base)
             ->orderBy('name')
             ->get();
+
+        return $this->hydrateStudentsForAggregatedAnnualResults($results);
     }
 
     public function getResultsByClass(string $class, string $term, string $session): Collection
     {
-        return AnnualResult::query()
+        $base = AnnualResult::query()
             ->where('class', $class)
             ->where('term', $term)
-            ->where('session', $session)
+            ->where('session', $session);
+
+        $results = AnnualResultAggregation::applyAggregatedSubjectScores($base)
             ->orderBy('name')
             ->get();
+
+        return $this->hydrateStudentsForAggregatedAnnualResults($results);
     }
 
     /**
@@ -114,6 +125,8 @@ final readonly class ResultService implements ResultServiceContract
             }
         });
 
+        Cache::forget('annual_result.distinct_sessions');
+
         return count($rows);
     }
 
@@ -148,23 +161,27 @@ final readonly class ResultService implements ResultServiceContract
 
     public function approveByIds(array $ids): int
     {
-        if (empty($ids)) {
+        if ($ids === []) {
             return 0;
         }
 
+        $expanded = $this->expandAnnualResultRowIdsForLegacyDuplicates($ids);
+
         return AnnualResult::query()
-            ->whereIn('id', $ids)
+            ->whereIn('id', $expanded)
             ->update(['status' => ResultStatus::APPROVED->value]);
     }
 
     public function rejectByIds(array $ids): int
     {
-        if (empty($ids)) {
+        if ($ids === []) {
             return 0;
         }
 
+        $expanded = $this->expandAnnualResultRowIdsForLegacyDuplicates($ids);
+
         return AnnualResult::query()
-            ->whereIn('id', $ids)
+            ->whereIn('id', $expanded)
             ->update(['status' => ResultStatus::REJECTED->value]);
     }
 
@@ -172,13 +189,17 @@ final readonly class ResultService implements ResultServiceContract
     {
         $like = '%'.addcslashes($name, '%_\\').'%';
 
-        return AnnualResult::query()
+        $base = AnnualResult::query()
             ->where(function ($q) use ($like) {
                 $q->where('name', 'like', $like)
                     ->orWhere('reg_number', 'like', $like);
-            })
+            });
+
+        $results = AnnualResultAggregation::applyAggregatedSubjectScores($base)
             ->orderByDesc('date_added')
             ->get();
+
+        return $this->hydrateStudentsForAggregatedAnnualResults($results);
     }
 
     /**
@@ -188,55 +209,58 @@ final readonly class ResultService implements ResultServiceContract
     public function searchResults(string $param, ?string $class = null): Collection
     {
         $like = '%'.addcslashes($param, '%_\\').'%';
-        $query = AnnualResult::query()
-            ->with('student')
-            ->where(function ($q) use ($like) {
-                $q->where('name', 'like', $like)
-                    ->orWhere('reg_number', 'like', $like);
-            });
+        $query = AnnualResult::query();
         if ($class !== null && $class !== '') {
             $query->where(function ($q) use ($class) {
                 $q->where('class_arm', $class)->orWhere('class', $class);
             });
         }
+        $query->where(function ($q) use ($like) {
+            $q->where('name', 'like', $like)
+                ->orWhere('reg_number', 'like', $like);
+        });
 
-        return $query
+        $results = AnnualResultAggregation::applyAggregatedSubjectScores($query)
             ->orderBy('session', 'desc')
             ->orderBy('term')
             ->orderBy('subjects')
             ->get();
+
+        return $this->hydrateStudentsForAggregatedAnnualResults($results);
     }
 
     /** Distinct sessions from annual_result, for search filters. */
     public function getDistinctSessionsFromResults(): Collection
     {
-        return AnnualResult::query()
-            ->distinct()
-            ->orderByRaw('session DESC')
-            ->pluck('session')
-            ->filter();
+        return Cache::remember('annual_result.distinct_sessions', 120, function () {
+            return AnnualResult::query()
+                ->select('session')
+                ->distinct()
+                ->orderByDesc('session')
+                ->pluck('session')
+                ->filter();
+        });
     }
 
-    /** Distinct segments from annual_result (including empty as "No segment"). */
+    /** @deprecated Segment is no longer used; kept for contract compatibility. */
     public function getDistinctSegmentsFromResults(): Collection
     {
-        $segments = AnnualResult::query()
-            ->distinct()
-            ->orderBy('segment')
-            ->pluck('segment')
-            ->map(fn ($s) => $s === null || $s === '' ? 'No segment' : $s);
-
-        return $segments->unique()->values();
+        return collect();
     }
 
     public function deleteByContext(string $class, string $term, string $session, string $subjects): int
     {
-        return (int) AnnualResult::query()
+        $deleted = (int) AnnualResult::query()
             ->where('class', $class)
             ->where('term', $term)
             ->where('session', $session)
             ->where('subjects', $subjects)
             ->delete();
+        if ($deleted > 0) {
+            Cache::forget('annual_result.distinct_sessions');
+        }
+
+        return $deleted;
     }
 
     public function hasPublishedResults(string $class, string $term, string $session): bool
@@ -272,5 +296,92 @@ final readonly class ResultService implements ResultServiceContract
     public function deletePublishedResults(string $class, string $term, string $session): int
     {
         return $this->resultRepository->deletePublishedResults($class, $term, $session);
+    }
+
+    /**
+     * @param  Collection<int, AnnualResult>  $results
+     * @return Collection<int, AnnualResult>
+     */
+    private function hydrateStudentsForAggregatedAnnualResults(Collection $results): Collection
+    {
+        $studentIds = $results->pluck('studentId')->filter()->map(static fn ($id) => (int) $id)->unique()->values()->all();
+        if ($studentIds === []) {
+            return $results;
+        }
+
+        $students = Student::query()
+            ->whereIn('id', $studentIds)
+            ->get(['id', 'reg_number', 'imagelocation', 'firstname', 'lastname', 'othername'])
+            ->keyBy('id');
+        foreach ($results as $row) {
+            $sid = $row->studentId ?? null;
+            if ($sid !== null && isset($students[(int) $sid])) {
+                $row->setRelation('student', $students[(int) $sid]);
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * When the UI shows one aggregated row (MIN id), approve/reject must touch every legacy
+     * duplicate row for the same subject context.
+     *
+     * @param  array<int|string>  $ids
+     * @return list<int>
+     */
+    private function expandAnnualResultRowIdsForLegacyDuplicates(array $ids): array
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids))));
+        if ($ids === []) {
+            return [];
+        }
+
+        $rows = AnnualResult::query()
+            ->whereIn('id', $ids)
+            ->get(['id', 'reg_number', 'subjects', 'class', 'class_arm', 'term', 'session']);
+
+        if ($rows->isEmpty()) {
+            return [];
+        }
+
+        $tuples = [];
+        $seenTuple = [];
+        foreach ($rows as $row) {
+            $key = $row->reg_number.'|'.$row->subjects.'|'.$row->class.'|'.$row->class_arm.'|'.$row->term.'|'.$row->session;
+            if (isset($seenTuple[$key])) {
+                continue;
+            }
+            $seenTuple[$key] = true;
+            $tuples[] = [
+                'reg_number' => $row->reg_number,
+                'subjects' => $row->subjects,
+                'class' => $row->class,
+                'class_arm' => $row->class_arm,
+                'term' => $row->term,
+                'session' => $row->session,
+            ];
+        }
+
+        $expanded = AnnualResult::query()
+            ->where(function ($q) use ($tuples) {
+                foreach ($tuples as $t) {
+                    $q->orWhere(function ($w) use ($t) {
+                        $w->where('reg_number', $t['reg_number'])
+                            ->where('subjects', $t['subjects'])
+                            ->where('class', $t['class'])
+                            ->where('class_arm', $t['class_arm'])
+                            ->where('term', $t['term'])
+                            ->where('session', $t['session']);
+                    });
+                }
+            })
+            ->pluck('id')
+            ->map(static fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        return $expanded;
     }
 }

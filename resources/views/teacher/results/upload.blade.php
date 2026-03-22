@@ -14,7 +14,7 @@
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
             @php
                 $uploadHeroDescription = !empty($hasFilters)
-                    ? e($class) . ' · ' . e($subjects) . ' · ' . e($term) . ' · ' . e($session) . ' — CA (15) · Assign (25) · Exam (60)'
+                    ? e($class) . ' Â· ' . e($subjects) . ' Â· ' . e($term) . ' Â· ' . e($session) . ' â€” CA (15) Â· Assign (25) Â· Exam (60)'
                     : 'Choose class and subject below, then click "Load result sheet" to enter scores.';
             @endphp
             <x-admin.hero-page
@@ -42,7 +42,7 @@
             </x-admin.hero-page>
 
             @if(empty($hasFilters))
-                <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <form method="GET" action="{{ route('teacher.results.index') }}" class="space-y-4 sm:space-y-5">
                         <input type="hidden" name="term" value="{{ e($term ?? '') }}">
                         <input type="hidden" name="session" value="{{ e($session ?? '') }}">
@@ -84,7 +84,7 @@
             @endif
 
             @if(empty($hasFilters))
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -93,7 +93,7 @@
                 </div>
             @else
                 @if(!empty($showSheet))
-                    <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                    <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                         <div class="flex flex-col border-b" style="border-color: var(--outline-variant); background: var(--surface-container-low);">
                             <div class="px-4 sm:px-6 pt-4 pb-3">
                                 <p class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--on-surface-variant); letter-spacing: 0.06em;">Result sheet context</p>
@@ -150,7 +150,7 @@
                         @else
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 sm:px-6 py-4" style="border-bottom: 1px solid var(--outline-variant); background: var(--surface-container-low);">
                                 <p class="text-sm font-medium" style="color: var(--on-surface-variant);">
-                                    <span>{{ $students->count() }}</span> student(s) · Enter CA (15), Assign (25), Exam (60)
+                                    <span>{{ $students->count() }}</span> student(s) Â· Enter CA (15), Assign (25), Exam (60)
                                 </p>
                             </div>
 
@@ -183,9 +183,9 @@
                                                     <div class="flex flex-col justify-center min-w-0 flex-1">
                                                         <p class="text-sm font-semibold break-words" style="color: var(--on-surface);">
                                                             @if(Route::has('teacher.students.show'))
-                                                                <a href="{{ route('teacher.students.show', $s) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: '—' }}</a>
+                                                                <a href="{{ route('teacher.students.show', $s) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $fullName ?: 'â€”' }}</a>
                                                             @else
-                                                                {{ $fullName ?: '—' }}
+                                                                {{ $fullName ?: 'â€”' }}
                                                             @endif
                                                         </p>
                                                         <p class="text-xs truncate mt-0.5 tabular-nums" style="color: var(--on-surface-variant);">{{ e($s->reg_number ?? '') }}</p>
@@ -200,7 +200,7 @@
                                                         <i class="fas fa-clipboard-check text-xs opacity-70" style="color: var(--on-surface-variant);" aria-hidden="true"></i>
                                                         <span>CA (max 15)</span>
                                                     </label>
-                                                    <input id="score-ca-{{ $loop->index }}" type="number" name="ca" min="0" max="15" step="0.5" value="" inputmode="decimal" required class="form-input results-score-input w-full min-w-[7rem] tabular-nums rounded-xl border text-sm py-2.5 px-3 text-center sm:min-w-[6.5rem]" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);" placeholder="0 – 15" {{ $alreadyUploaded ? 'disabled' : '' }}>
+                                                    <input id="score-ca-{{ $loop->index }}" type="number" name="ca" min="0" max="15" step="0.5" value="" inputmode="decimal" required class="form-input results-score-input w-full min-w-[7rem] tabular-nums rounded-xl border text-sm py-2.5 px-3 text-center sm:min-w-[6.5rem]" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);" placeholder="0 â€“ 15" {{ $alreadyUploaded ? 'disabled' : '' }}>
                                                 </div>
 
                                                 <div class="form-group min-w-0 flex flex-col lg:py-1">
@@ -208,7 +208,7 @@
                                                         <i class="fas fa-tasks text-xs opacity-70" style="color: var(--on-surface-variant);" aria-hidden="true"></i>
                                                         <span>Assign (max 25)</span>
                                                     </label>
-                                                    <input id="score-as-{{ $loop->index }}" type="number" name="assignment" min="0" max="25" step="0.5" value="" inputmode="decimal" required class="form-input results-score-input w-full min-w-[7rem] tabular-nums rounded-xl border text-sm py-2.5 px-3 text-center sm:min-w-[6.5rem]" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);" placeholder="0 – 25" {{ $alreadyUploaded ? 'disabled' : '' }}>
+                                                    <input id="score-as-{{ $loop->index }}" type="number" name="assignment" min="0" max="25" step="0.5" value="" inputmode="decimal" required class="form-input results-score-input w-full min-w-[7rem] tabular-nums rounded-xl border text-sm py-2.5 px-3 text-center sm:min-w-[6.5rem]" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);" placeholder="0 â€“ 25" {{ $alreadyUploaded ? 'disabled' : '' }}>
                                                 </div>
 
                                                 <div class="form-group min-w-0 flex flex-col lg:py-1">
@@ -216,7 +216,7 @@
                                                         <i class="fas fa-file-alt text-xs opacity-70" style="color: var(--on-surface-variant);" aria-hidden="true"></i>
                                                         <span>Exam (max 60)</span>
                                                     </label>
-                                                    <input id="score-ex-{{ $loop->index }}" type="number" name="exam" min="0" max="60" step="0.5" value="" inputmode="decimal" required class="form-input results-score-input w-full min-w-[7rem] tabular-nums rounded-xl border text-sm py-2.5 px-3 text-center sm:min-w-[6.5rem]" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);" placeholder="0 – 60" {{ $alreadyUploaded ? 'disabled' : '' }}>
+                                                    <input id="score-ex-{{ $loop->index }}" type="number" name="exam" min="0" max="60" step="0.5" value="" inputmode="decimal" required class="form-input results-score-input w-full min-w-[7rem] tabular-nums rounded-xl border text-sm py-2.5 px-3 text-center sm:min-w-[6.5rem]" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);" placeholder="0 â€“ 60" {{ $alreadyUploaded ? 'disabled' : '' }}>
                                                 </div>
                                             </li>
                                         @endforeach
@@ -304,7 +304,7 @@
                         const asV = parseFloat(as.value);
                         const exV = parseFloat(ex.value);
                         if (isNaN(caV) || isNaN(asV) || isNaN(exV)) { err = 'Enter all scores for every student.'; return; }
-                        if (caV < 0 || caV > 15 || asV < 0 || asV > 25 || exV < 0 || exV > 60) { err = 'CA must be ≤15, Assign ≤25, Exam ≤60.'; return; }
+                        if (caV < 0 || caV > 15 || asV < 0 || asV > 25 || exV < 0 || exV > 60) { err = 'CA must be â‰¤15, Assign â‰¤25, Exam â‰¤60.'; return; }
                         results.push({
                             studentId: row.querySelector('.r-studentId').value,
                             class: className,

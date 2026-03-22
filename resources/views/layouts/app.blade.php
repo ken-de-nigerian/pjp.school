@@ -19,53 +19,57 @@
         @stack('styles')
     </head>
     <body>
-        @auth('admin')
-            <div class="flex h-screen overflow-hidden" style="background: var(--bg-primary);">
-                <!-- Main Content Area -->
-                <div class="flex-1 flex flex-col overflow-hidden">
-                    <!-- Header -->
-                    @include('layouts.partials.header-admin')
-                    <!-- Header -->
-
-                    <!-- Sidebar -->
-                    @include('layouts.partials.sidebar-admin')
-                    <!-- Sidebar -->
-
-                    <!-- Main -->
-                    @yield('content')
-                    <!-- Main -->
-                </div>
-            </div>
-
-            <!-- Premium Mobile Bottom Navigation -->
-            @include('layouts.partials.bottom-nav-admin')
-        @elseauth('teacher')
-            <div class="flex h-screen overflow-hidden" style="background: var(--bg-primary);">
-                <!-- Main Content Area -->
-                <div class="flex-1 flex flex-col overflow-hidden">
-                    <!-- Header -->
-                    @include('layouts.partials.header-teacher')
-                    <!-- Header -->
-
-                    <!-- Sidebar -->
-                    @include('layouts.partials.sidebar-teacher')
-                    <!-- Sidebar -->
-
-                    <!-- Main -->
-                    @yield('content')
-                    <!-- Main -->
-                </div>
-            </div>
-
-            <!-- Premium Mobile Bottom Navigation -->
-            @include('layouts.partials.bottom-nav-teacher')
-        @endauth
-
-        @guest
-            <!-- Main -->
+        @if(request()->routeIs('admin.login', 'teacher.login'))
             @yield('content')
-            <!-- Main -->
-        @endguest
+        @else
+            @auth('admin')
+                <div class="flex h-screen overflow-hidden" style="background: var(--bg-primary);">
+                    <!-- Main Content Area -->
+                    <div class="flex-1 flex flex-col overflow-hidden">
+                        <!-- Header -->
+                        @include('layouts.partials.header-admin')
+                        <!-- Header -->
+
+                        <!-- Sidebar -->
+                        @include('layouts.partials.sidebar-admin')
+                        <!-- Sidebar -->
+
+                        <!-- Main -->
+                        @yield('content')
+                        <!-- Main -->
+                    </div>
+                </div>
+
+                <!-- Premium Mobile Bottom Navigation -->
+                @include('layouts.partials.bottom-nav-admin')
+            @elseauth('teacher')
+                <div class="flex h-screen overflow-hidden" style="background: var(--bg-primary);">
+                    <!-- Main Content Area -->
+                    <div class="flex-1 flex flex-col overflow-hidden">
+                        <!-- Header -->
+                        @include('layouts.partials.header-teacher')
+                        <!-- Header -->
+
+                        <!-- Sidebar -->
+                        @include('layouts.partials.sidebar-teacher')
+                        <!-- Sidebar -->
+
+                        <!-- Main -->
+                        @yield('content')
+                        <!-- Main -->
+                    </div>
+                </div>
+
+                <!-- Premium Mobile Bottom Navigation -->
+                @include('layouts.partials.bottom-nav-teacher')
+            @endauth
+
+            @guest
+                <!-- Main -->
+                @yield('content')
+                <!-- Main -->
+            @endguest
+        @endif
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>

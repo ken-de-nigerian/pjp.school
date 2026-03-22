@@ -287,10 +287,10 @@
     .profile-dropdown-panel {
         background: var(--surface-container-lowest);
         border: 1px solid var(--outline-variant);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: none;
     }
     [data-theme="dark"] .profile-dropdown-panel {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        box-shadow: none;
     }
     .profile-dropdown-link {
         color: var(--on-surface);
@@ -415,7 +415,7 @@
                         </div>
                         <div class="grid grid-cols-12 gap-2 sm:gap-3">
                             <!-- Hero: Admin Hub -->
-                            <div class="mega-menu-col mega-menu-col--hero col-span-12 lg:col-span-5 rounded-3xl p-4 sm:p-5 flex flex-col justify-between min-h-[160px] sm:min-h-[180px] transition-all hover:shadow-lg">
+                            <div class="mega-menu-col mega-menu-col--hero col-span-12 lg:col-span-5 rounded-3xl p-4 sm:p-5 flex flex-col justify-between min-h-[160px] sm:min-h-[180px] transition-colors">
                                 <div class="min-w-0">
                                     <div class="mega-bento-tile-icon mb-3 sm:mb-4" style="width: 3rem; height: 3rem; border-radius: 1.1rem;">
                                         <i class="fas fa-graduation-cap text-sm"></i>

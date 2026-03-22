@@ -255,7 +255,7 @@ class ResultController extends Controller
         $class = trim((string) $request->query('class', ''));
         $groupBy = $request->query('group_by', 'session');
 
-        $validGroupBy = ['session', 'segment', 'term', 'none'];
+        $validGroupBy = ['session', 'term', 'none'];
         if (! in_array($groupBy, $validGroupBy, true)) {
             $groupBy = 'session';
         }
@@ -263,7 +263,6 @@ class ResultController extends Controller
         $classes = $this->studentService->getClassesArray();
         $sessions = $this->resultService->getDistinctSessionsFromResults();
         $terms = Term::labels();
-        $segments = $this->resultService->getDistinctSegmentsFromResults();
 
         $payload = [
             'param' => $param,
@@ -272,7 +271,6 @@ class ResultController extends Controller
             'classes' => $classes,
             'sessions' => $sessions,
             'terms' => $terms,
-            'segments' => $segments,
             'groupedResults' => [],
         ];
 
@@ -285,8 +283,6 @@ class ResultController extends Controller
         foreach ($rows as $row) {
             if ($groupBy === 'session') {
                 $key = $row->session ?? 'Unknown';
-            } elseif ($groupBy === 'segment') {
-                $key = $row->segment === null || $row->segment === '' ? 'No segment' : $row->segment;
             } elseif ($groupBy === 'term') {
                 $key = $row->term ?? 'Unknown';
             } else {
@@ -321,7 +317,7 @@ class ResultController extends Controller
             $v['exam']
         );
 
-        if ($updated === 1) {
+        if ($updated > 0) {
             $admin = $request->user('admin');
             $adminName = $admin ? $admin->name : 'Admin';
             $this->sendNotificationAction->execute(

@@ -34,7 +34,7 @@
             </x-admin.hero-page>
 
             @if(!$hasFilters)
-                <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="rounded-3xl p-4 sm:p-5 lg:p-6 mb-6 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <form method="GET" action="{{ route('teacher.uploaded.index') }}" class="space-y-4 sm:space-y-5">
                         <input hidden name="term" value="{{ $term }}">
                         <input hidden name="session" value="{{ $session }}">
@@ -77,7 +77,7 @@
             @endif
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -85,7 +85,7 @@
                     <p class="text-sm text-center max-w-sm" style="color: var(--on-surface-variant);">Choose class and subject in the form above, then click &quot;Filter&quot; to see uploaded scores for that combination.</p>
                 </div>
             @else
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="flex flex-col border-b" style="border-color: var(--outline-variant); background: var(--surface-container-low);">
                         <div class="px-4 sm:px-6 pt-4 pb-3">
                             <p class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--on-surface-variant); letter-spacing: 0.06em;">Result sheet context</p>
@@ -121,7 +121,7 @@
                     @else
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-6 py-4" style="border-bottom: 1px solid var(--outline-variant); background: var(--surface-container-low);">
                             <p class="text-sm font-medium" style="color: var(--on-surface-variant);">
-                                <span>{{ $results->count() }}</span> result(s) · Select results to edit below.
+                                <span>{{ $results->count() }}</span> result(s) Â· Select results to edit below.
                             </p>
                         </div>
 
@@ -223,15 +223,15 @@
                     <input type="hidden" name="reg_number" id="edit-result-reg">
                     <div class="form-group">
                         <label for="edit-result-ca" class="form-label">CA (max 15)</label>
-                        <input type="number" id="edit-result-ca" name="ca" min="0" max="15" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 – 15">
+                        <input type="number" id="edit-result-ca" name="ca" min="0" max="15" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 â€“ 15">
                     </div>
                     <div class="form-group">
                         <label for="edit-result-assignment" class="form-label">Assign (max 25)</label>
-                        <input type="number" id="edit-result-assignment" name="assignment" min="0" max="25" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 – 25">
+                        <input type="number" id="edit-result-assignment" name="assignment" min="0" max="25" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 â€“ 25">
                     </div>
                     <div class="form-group">
                         <label for="edit-result-exam" class="form-label">Exam (max 60)</label>
-                        <input type="number" id="edit-result-exam" name="exam" min="0" max="60" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 – 60">
+                        <input type="number" id="edit-result-exam" name="exam" min="0" max="60" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 â€“ 60">
                     </div>
                     <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2">
                         <button type="button" class="btn-secondary px-4 py-2.5 rounded-xl text-sm w-full sm:w-auto" data-close="edit-result-modal">Cancel</button>
@@ -286,7 +286,7 @@
                         btn.addEventListener('click', function () {
                             document.getElementById('edit-result-studentId').value = btn.getAttribute('data-student-id') || btn.closest('li').getAttribute('data-student-id') || '';
                             document.getElementById('edit-result-reg').value = btn.getAttribute('data-reg') || '';
-                            document.getElementById('edit-result-modal-student').textContent = (btn.getAttribute('data-name') || '') + ' · ' + (btn.getAttribute('data-reg') || '');
+                            document.getElementById('edit-result-modal-student').textContent = (btn.getAttribute('data-name') || '') + ' Â· ' + (btn.getAttribute('data-reg') || '');
                             document.getElementById('edit-result-ca').value = btn.getAttribute('data-ca') || '';
                             document.getElementById('edit-result-assignment').value = btn.getAttribute('data-assignment') || '';
                             document.getElementById('edit-result-exam').value = btn.getAttribute('data-exam') || '';

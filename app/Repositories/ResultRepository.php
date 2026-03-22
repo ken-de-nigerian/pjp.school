@@ -7,6 +7,7 @@ namespace App\Repositories;
 use App\Contracts\ResultRepositoryContract;
 use App\Models\AnnualResult;
 use App\Models\Position;
+use App\Support\AnnualResultAggregation;
 use App\Traits\HasTermSessionFilters;
 use Illuminate\Support\Collection;
 
@@ -28,22 +29,20 @@ final class ResultRepository implements ResultRepositoryContract
 
     public function getSegmentsForPublished(string $class, string $term, string $session): Collection
     {
-        return AnnualResult::query()
-            ->where('class_arm', $class)
-            ->where('term', $term)
-            ->where('session', $session)
-            ->distinct()
-            ->pluck('segment');
+        return collect();
     }
 
     public function getSubjectBreakdownForPublished(string $class, string $term, string $session): Collection
     {
-        return AnnualResult::query()
+        $base = AnnualResult::query()
             ->forClassTermSession($class, $term, $session)
-            ->approved()
+            ->approved();
+
+        $rows = AnnualResultAggregation::applyAggregatedSubjectScores($base)
             ->orderBy('subjects')
-            ->get()
-            ->groupBy('reg_number');
+            ->get();
+
+        return $rows->groupBy('reg_number');
     }
 
     public function setPublishedLiveStatus(string $class, string $term, string $session, string $regNumber, int $live): int

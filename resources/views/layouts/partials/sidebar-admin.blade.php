@@ -101,6 +101,8 @@
                     <div id="staff-mobile-dropdown" class="mobile-menu-dropdown-content hidden">
                         @if($can('manage_staffs'))<a href="{{ route('admin.staff.index') }}" class="mobile-menu-subitem" onclick="closeMobileMenu()"><i class="fas fa-users"></i><span>All Staff</span></a>@endif
                         @if($can('general_settings'))<a href="{{ route('admin.roles.index') }}" class="mobile-menu-subitem" onclick="closeMobileMenu()"><i class="fas fa-user-shield"></i><span>Roles & Permissions</span></a>@endif
+                        @if($can('general_settings') && Route::has('admin.fees.index'))<a href="{{ route('admin.fees.index') }}" class="mobile-menu-subitem" onclick="closeMobileMenu()"><i class="fas fa-money-bill-wave"></i><span>Result fees</span></a>@endif
+                        @if($can('general_settings') && Route::has('admin.checklists.index'))<a href="{{ route('admin.checklists.index') }}" class="mobile-menu-subitem" onclick="closeMobileMenu()"><i class="fas fa-list-check"></i><span>Result checklist</span></a>@endif
                     </div>
                 </div>
             @endif
@@ -166,6 +168,8 @@
                         @if(Route::has('admin.results-by-params'))<a href="{{ route('admin.results-by-params') }}" class="mobile-menu-subitem" onclick="closeMobileMenu()"><i class="fas fa-search"></i><span>Search Results</span></a>@endif
                         @if(Route::has('admin.transcript'))<a href="{{ route('admin.transcript') }}" class="mobile-menu-subitem" onclick="closeMobileMenu()"><i class="fas fa-file-alt"></i><span>Transcript</span></a>@endif
                         @if(Route::has('admin.status.index'))<a href="{{ route('admin.status.index') }}" class="mobile-menu-subitem" onclick="closeMobileMenu()"><i class="fas fa-check-circle"></i><span>Check Status</span></a>@endif
+                        @if($can('general_settings') && Route::has('admin.fees.index'))<a href="{{ route('admin.fees.index') }}" class="mobile-menu-subitem" onclick="closeMobileMenu()"><i class="fas fa-money-bill-wave"></i><span>Result fees</span></a>@endif
+                        @if($can('general_settings') && Route::has('admin.checklists.index'))<a href="{{ route('admin.checklists.index') }}" class="mobile-menu-subitem" onclick="closeMobileMenu()"><i class="fas fa-list-check"></i><span>Result checklist</span></a>@endif
                     </div>
                 </div>
             @endif

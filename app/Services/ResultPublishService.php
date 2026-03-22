@@ -9,6 +9,7 @@ use App\Enums\ResultStatus;
 use App\Models\AnnualResult;
 use App\Models\Position;
 use App\Models\Student;
+use App\Support\AnnualResultAggregation;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -47,11 +48,13 @@ final class ResultPublishService
             ];
         }
 
-        $allResults = AnnualResult::query()
-            ->forClassTermSession($class, $term, $session)
-            ->approved()
-            ->get()
-            ->groupBy('reg_number');
+        $aggregatedRows = AnnualResultAggregation::applyAggregatedSubjectScores(
+            AnnualResult::query()
+                ->forClassTermSession($class, $term, $session)
+                ->approved()
+        )->get();
+
+        $allResults = $aggregatedRows->groupBy('reg_number');
 
         $insertData = [];
 
@@ -67,7 +70,7 @@ final class ResultPublishService
                 continue;
             }
 
-            $total = $results->sum('total');
+            $total = $results->sum(fn ($r) => (float) $r->total);
             $average = $total / $numSubjects;
             $first = $results->first();
 

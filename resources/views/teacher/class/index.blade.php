@@ -8,7 +8,7 @@
                 aria-label="Teacher classes and students"
                 pill="Teacher"
                 :title="$students !== null ? e($selectedClass) : 'Students / Classes'"
-                :description="$students !== null ? 'Students in this class — search and export below.' : 'Open a class to see students assigned to you.'"
+                :description="$students !== null ? 'Students in this class â€” search and export below.' : 'Open a class to see students assigned to you.'"
             >
                 @if($students !== null)
                     <x-slot name="above">
@@ -21,11 +21,11 @@
             </x-admin.hero-page>
 
             @if($students === null)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
                         @forelse($classesWithCounts as $c)
                             <div class="h-full min-h-[200px]">
-                                <div class="relative flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-200 hover:shadow-[var(--elevation-2)]" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-1);">
+                                <div class="relative flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-200" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
                                     <div class="p-5 sm:p-6 flex-1 flex flex-col items-center justify-center gap-3 text-center">
                                         <div
                                             class="dashboard-quick-icon dashboard-quick-icon--blue w-14 h-14 rounded-2xl flex-shrink-0 flex items-center justify-center"
@@ -50,7 +50,7 @@
 
                                     <div class="px-4 pb-4 sm:px-5 sm:pb-5 pt-0" style="border-top: 1px solid var(--outline-variant);">
                                         <a href="{{ route('teacher.class.index', ['class' => $c['class_name']]) }}"
-                                           class="btn-primary flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98] shadow-sm w-full"
+                                           class="btn-primary flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98] w-full"
                                            style="background: var(--primary); color: var(--on-primary); margin-top: 15px;">
                                             <i class="fas fa-door-open" aria-hidden="true"></i>
                                             <span>Open class</span>
@@ -62,7 +62,7 @@
                             <div
                                 class="col-span-full flex-1 flex flex-col items-center justify-center min-h-[min(400px,50vh)] py-12 sm:py-16">
                                 <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg"
-                                     style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-1);">
+                                     style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
                                     <div
                                         class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center"
                                         style="border-radius: 16px;">
@@ -81,7 +81,7 @@
             @endif
 
             @if($students !== null)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="flex flex-col gap-3 px-4 sm:px-6 py-3 border-b sm:flex-row sm:flex-wrap sm:items-center sm:justify-between" style="border-color: var(--outline-variant); background: var(--surface-container-low);">
                         <div
                             class="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto sm:flex-1 sm:max-w-md">
@@ -140,7 +140,7 @@
                                             <div class="min-w-0 flex-1 md:min-w-0 md:flex-1">
                                                 <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Name</span>
                                                 <p class="text-sm font-medium truncate" style="color: var(--on-surface);">
-                                                    {{ $fullName ?: '—' }}
+                                                    {{ $fullName ?: 'â€”' }}
                                                 </p>
                                                 <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $s->reg_number ?? '' }}</p>
                                             </div>

@@ -61,7 +61,7 @@
                     <div class="flex-1 flex flex-col min-h-0">
                         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-3 sm:gap-4">
                             @foreach($news as $item)
-                                <div class="card-refined rounded-2xl shadow-sm p-3 sm:p-4 overflow-hidden flex flex-col" style="border-color: var(--outline-variant);">
+                                <div class="card-refined rounded-2xl p-3 sm:p-4 overflow-hidden flex flex-col" style="border-color: var(--outline-variant);">
                                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 flex-1 min-h-0">
                                         <div class="w-full sm:w-1/4 flex-shrink-0 overflow-hidden rounded-xl aspect-video sm:aspect-square sm:min-w-[100px] max-sm:max-h-44">
                                             @if($item->cover_image)

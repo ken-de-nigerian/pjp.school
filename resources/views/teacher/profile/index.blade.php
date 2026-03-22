@@ -17,7 +17,7 @@
                 aria-label="Teacher profile"
                 pill="Teacher"
                 title="Profile"
-                description="{{ e(trim(($t->firstname ?? '') . ' ' . ($t->lastname ?? ''))) }} · {{ e($t->email ?? '') }}"
+                description="{{ e(trim(($t->firstname ?? '') . ' ' . ($t->lastname ?? ''))) }} Â· {{ e($t->email ?? '') }}"
             >
                 <x-slot name="actions">
                     <button type="button" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0" data-modal="teacher-password-modal">
@@ -29,7 +29,7 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
                 <div class="lg:col-span-4 order-2 lg:order-1">
-                    <div class="rounded-3xl p-5 sm:p-6 flex flex-col self-start w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                    <div class="rounded-3xl p-5 sm:p-6 flex flex-col self-start w-full" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                         <p class="text-[11px] font-semibold uppercase tracking-wider mb-4" style="color: var(--on-surface-variant); letter-spacing: 0.06em;">Profile photo</p>
                         <div class="flex flex-col items-center text-center">
                             <img id="photoimg-preview-lg" class="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-2 mb-4" style="border-color: var(--outline-variant);" src="{{ $photo }}" alt="" onerror="this.src='https://ui-avatars.com/api/?name={{ $avatarName }}&size=256&background=bbdefb&color=0d47a1'; this.onerror=null;">
@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="lg:col-span-8 order-1 lg:order-2">
-                    <div class="rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                    <div class="rounded-3xl overflow-hidden" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                         <div class="px-4 sm:px-6 py-4 border-b" style="border-color: var(--outline-variant); background: var(--surface-container-low);">
                             <h2 class="text-base font-semibold" style="color: var(--on-surface);">Personal information</h2>
                             <p class="text-sm mt-0.5" style="color: var(--on-surface-variant);">Update how you appear across the teacher portal.</p>
@@ -105,7 +105,7 @@
     <div id="teacher-password-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="teacher-password-title">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="teacher-password-modal" aria-hidden="true"></div>
         <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
-            <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl py-5 px-4 sm:py-6 sm:px-6 my-auto" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-2);">
+            <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl py-5 px-4 sm:py-6 sm:px-6 my-auto" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
                 <h3 id="teacher-password-title" class="text-lg font-semibold mb-1" style="color: var(--on-surface);">Change password</h3>
                 <p class="text-sm mb-5" style="color: var(--on-surface-variant);">Enter your current password, then choose a new one.</p>
                 <form id="teacher-password-form" class="min-w-0" method="post" action="{{ route('teacher.profile.password') }}" novalidate>

@@ -1,5 +1,5 @@
 @php use Carbon\Carbon; @endphp
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Dashboard'])
 
 @section('content')
     <!-- Main Content -->
@@ -67,7 +67,7 @@
                         </div>
                         <span class="text-xs font-medium" style="color: var(--text-secondary);">All Students</span>
                     </div>
-                    <div class="text-xl lg:text-2xl font-bold mb-1" style="color: var(--text-primary);">{{ $count_all_students ?? 0 }}</div>
+                    <div class="text-xl lg:text-2xl font-bold tabular-nums mb-1" style="color: var(--text-primary);">{{ $count_all_students ?? 0 }}</div>
                     <div class="text-xs" style="color: var(--text-secondary);">Total Students</div>
                 </div>
 
@@ -78,7 +78,7 @@
                         </div>
                         <span class="text-xs font-medium" style="color: var(--text-secondary);">Boarding</span>
                     </div>
-                    <div class="text-xl lg:text-2xl font-bold mb-1" style="color: var(--text-primary);">{{ $count_boarding_students ?? 0 }}</div>
+                    <div class="text-xl lg:text-2xl font-bold tabular-nums mb-1" style="color: var(--text-primary);">{{ $count_boarding_students ?? 0 }}</div>
                     <div class="text-xs" style="color: var(--text-secondary);">Boarding Students</div>
                 </div>
 
@@ -89,7 +89,7 @@
                         </div>
                         <span class="text-xs font-medium" style="color: var(--text-secondary);">Day</span>
                     </div>
-                    <div class="text-xl lg:text-2xl font-bold mb-1" style="color: var(--text-primary);">{{ $count_day_students ?? 0 }}</div>
+                    <div class="text-xl lg:text-2xl font-bold tabular-nums mb-1" style="color: var(--text-primary);">{{ $count_day_students ?? 0 }}</div>
                     <div class="text-xs" style="color: var(--text-secondary);">Day Students</div>
                 </div>
 
@@ -100,7 +100,7 @@
                         </div>
                         <span class="text-xs font-medium" style="color: var(--text-secondary);">Subjects</span>
                     </div>
-                    <div class="text-xl lg:text-2xl font-bold mb-1" style="color: var(--text-primary);">{{ $count_subjects ?? 0 }}</div>
+                    <div class="text-xl lg:text-2xl font-bold tabular-nums mb-1" style="color: var(--text-primary);">{{ $count_subjects ?? 0 }}</div>
                     <div class="text-xs" style="color: var(--text-secondary);">Junior &amp; Senior Subjects</div>
                 </div>
 
@@ -111,7 +111,7 @@
                         </div>
                         <span class="text-xs font-medium" style="color: var(--text-secondary);">Teachers</span>
                     </div>
-                    <div class="text-xl lg:text-2xl font-bold mb-1" style="color: var(--text-primary);">{{ $count_teachers ?? 0 }}</div>
+                    <div class="text-xl lg:text-2xl font-bold tabular-nums mb-1" style="color: var(--text-primary);">{{ $count_teachers ?? 0 }}</div>
                     <div class="text-xs" style="color: var(--text-secondary);">Total Teachers</div>
                 </div>
             </div>

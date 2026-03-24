@@ -1,5 +1,5 @@
 @php use App\Models\Role; @endphp
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Edit role — ' . ($role->name ?? '')])
 
 @section('content')
     @php

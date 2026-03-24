@@ -6,128 +6,88 @@
         $sessionValue = old('session', $settings['session'] ?? '');
         $classValue = old('class', $settings['class'] ?? 'JSS 1');
     @endphp
-    <div class="auth-container auth-with-banner auth-banner--check-result">
-        <aside class="auth-banner auth-banner--check-result" aria-label="Check school result">
-            <div class="auth-banner-bg auth-banner-bg--check-result" aria-hidden="true"></div>
-            <div class="auth-banner-accent auth-banner-accent--check-result" aria-hidden="true"></div>
-            <div class="auth-banner-inner auth-banner-inner--check-result">
-                <a href="{{ route('home') }}" class="auth-banner-back auth-banner-back--check-result">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    <span>Back to school site</span>
-                </a>
 
-                <div class="auth-banner-school-mark">
-                    <div class="auth-banner-school-mark__seal" aria-hidden="true">
-                        <i class="fas fa-file-lines"></i>
+    <x-auth-split-card
+        heading="{{ __('Check result') }}"
+        :intro="__('View your published report for the selected term.')"
+        container-max-class="lg:max-w-6xl"
+        image-alt="">
+
+        <form id="check-result-form" action="{{ route('result.check') }}" method="GET" class="auth-form mt-6 sm:mt-7" novalidate>
+            <div class="auth-form-body">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-0">
+                    <div class="form-group">
+                        <label for="term" class="form-label">{{ __('Term') }}</label>
+                        <div class="auth-glass-field">
+                            <i class="fas fa-calendar-alt auth-glass-field__icon" aria-hidden="true"></i>
+                            <select id="term" name="term" class="auth-glass-select @error('term') form-select--error @enderror" @if ($errors->has('term')) aria-invalid="true" aria-describedby="term-error" @else aria-invalid="false" @endif>
+                                <option value="First Term" {{ $termValue === 'First Term' ? 'selected' : '' }}>{{ __('First Term') }}</option>
+                                <option value="Second Term" {{ $termValue === 'Second Term' ? 'selected' : '' }}>{{ __('Second Term') }}</option>
+                                <option value="Third Term" {{ $termValue === 'Third Term' ? 'selected' : '' }}>{{ __('Third Term') }}</option>
+                            </select>
+                        </div>
+                        <p id="term-error" class="form-error {{ $errors->has('term') ? '' : 'hidden' }}" role="alert" aria-live="polite">{{ $errors->first('term') }}</p>
                     </div>
-                    <div class="auth-banner-school-mark__text">
-                        <span class="auth-banner-logo-text auth-banner-logo-text--check-result">{{ config('app.name') }}</span>
-                        <span class="auth-banner-pill auth-banner-pill--check-result">Report cards</span>
+
+                    <div class="form-group">
+                        <label for="session" class="form-label">{{ __('Session') }}</label>
+                        <div class="auth-glass-field">
+                            <i class="fas fa-calendar auth-glass-field__icon" aria-hidden="true"></i>
+                            <select id="session" name="session" class="auth-glass-select @error('session') form-select--error @enderror" @if ($errors->has('session')) aria-invalid="true" aria-describedby="session-error" @else aria-invalid="false" @endif>
+                                @foreach (range((int) date('Y') - 5, (int) date('Y') + 5) as $y)
+                                    @php $opt = $y . '/' . ($y + 1); @endphp
+                                    <option value="{{ $opt }}" {{ $sessionValue === $opt ? 'selected' : '' }}>{{ $opt }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <p id="session-error" class="form-error {{ $errors->has('session') ? '' : 'hidden' }}" role="alert" aria-live="polite">{{ $errors->first('session') }}</p>
                     </div>
                 </div>
 
-                <div class="auth-banner-content">
-                    <p class="auth-banner-eyebrow auth-banner-eyebrow--check-result">Students &amp; parents</p>
-                    <h2 class="auth-banner-title auth-banner-title--check-result">Look up a published term report</h2>
-                    <p class="auth-banner-tagline auth-banner-tagline--check-result">Use the same term, session, class, and student ID that appear on the school register. A scratch card is only asked when your school has that policy turned on.</p>
-
-                    <ul class="auth-banner-duties" aria-label="What you will need">
-                        <li class="auth-banner-duty">
-                            <span class="auth-banner-duty__icon" aria-hidden="true"><i class="fas fa-calendar-check"></i></span>
-                            <span class="auth-banner-duty__label">Correct term and academic session</span>
-                        </li>
-                        <li class="auth-banner-duty">
-                            <span class="auth-banner-duty__icon" aria-hidden="true"><i class="fas fa-id-card"></i></span>
-                            <span class="auth-banner-duty__label">Class and student ID exactly as issued</span>
-                        </li>
-                        <li class="auth-banner-duty">
-                            <span class="auth-banner-duty__icon" aria-hidden="true"><i class="fas fa-lock-open"></i></span>
-                            <span class="auth-banner-duty__label">Results show only after the office publishes them</span>
-                        </li>
-                    </ul>
-
-                    <p class="auth-banner-foot auth-banner-foot--check-result">Wrong class or ID usually means “not found.” For help, ask the school office or email <a class="auth-banner-foot__link" href="mailto:{{ config('school.school_email') }}">{{ config('school.school_email') }}</a>.</p>
+                <div class="form-group">
+                    <label for="class" class="form-label">{{ __('Class') }}</label>
+                    <div class="auth-glass-field">
+                        <i class="fas fa-graduation-cap auth-glass-field__icon" aria-hidden="true"></i>
+                        <select id="class" name="class" class="auth-glass-select @error('class') form-select--error @enderror" @if ($errors->has('class')) aria-invalid="true" aria-describedby="class-error" @else aria-invalid="false" @endif>
+                            @foreach (['JSS 1', 'JSS 2', 'JSS 3', 'SSS 1', 'SSS 2', 'SSS 3'] as $c)
+                                <option value="{{ $c }}" {{ $classValue === $c ? 'selected' : '' }}>{{ $c }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <p id="class-error" class="form-error {{ $errors->has('class') ? '' : 'hidden' }}" role="alert" aria-live="polite">{{ $errors->first('class') }}</p>
                 </div>
-            </div>
-        </aside>
 
-        <div class="auth-form-wrap">
-            <div class="auth-card auth-card--modern auth-card--check-result">
-                <header class="auth-form-header">
-                    <h1 class="auth-title">Check result</h1>
-                    <p class="auth-subtitle">View your published report for the selected term</p>
-                </header>
-
-                <form id="check-result-form" action="{{ route('result.check') }}" method="GET" class="auth-form" novalidate>
-                    <div class="auth-form-body">
-                        <div class="form-group">
-                            <label for="term" class="form-label">Term</label>
-                            <div class="input-group">
-                                <i class="fas fa-calendar-alt input-icon" aria-hidden="true"></i>
-                                <select id="term" name="term" class="form-select @error('term') form-select--error @enderror" @if($errors->has('term')) aria-invalid="true" aria-describedby="term-error" @else aria-invalid="false" @endif>
-                                    <option value="First Term" {{ $termValue === 'First Term' ? 'selected' : '' }}>First Term</option>
-                                    <option value="Second Term" {{ $termValue === 'Second Term' ? 'selected' : '' }}>Second Term</option>
-                                    <option value="Third Term" {{ $termValue === 'Third Term' ? 'selected' : '' }}>Third Term</option>
-                                </select>
-                            </div>
-                            <p id="term-error" class="form-error {{ $errors->has('term') ? '' : 'hidden' }}" role="alert" aria-live="polite">{{ $errors->first('term') }}</p>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="session" class="form-label">Session</label>
-                            <div class="input-group">
-                                <i class="fas fa-calendar input-icon" aria-hidden="true"></i>
-                                <select id="session" name="session" class="form-select @error('session') form-select--error @enderror" @if($errors->has('session')) aria-invalid="true" aria-describedby="session-error" @else aria-invalid="false" @endif>
-                                    @foreach(range((int)date('Y') - 5, (int)date('Y') + 5) as $y)
-                                        @php $opt = $y . '/' . ($y + 1); @endphp
-                                        <option value="{{ $opt }}" {{ $sessionValue === $opt ? 'selected' : '' }}>{{ $opt }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <p id="session-error" class="form-error {{ $errors->has('session') ? '' : 'hidden' }}" role="alert" aria-live="polite">{{ $errors->first('session') }}</p>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="class" class="form-label">Class</label>
-                            <div class="input-group">
-                                <i class="fas fa-graduation-cap input-icon" aria-hidden="true"></i>
-                                <select id="class" name="class" class="form-select @error('class') form-select--error @enderror" @if($errors->has('class')) aria-invalid="true" aria-describedby="class-error" @else aria-invalid="false" @endif>
-                                    @foreach(['JSS 1','JSS 2','JSS 3','SSS 1','SSS 2','SSS 3'] as $c)
-                                        <option value="{{ $c }}" {{ $classValue === $c ? 'selected' : '' }}>{{ $c }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <p id="class-error" class="form-error {{ $errors->has('class') ? '' : 'hidden' }}" role="alert" aria-live="polite">{{ $errors->first('class') }}</p>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="reg_number" class="form-label">Student ID</label>
-                            <div class="input-group">
-                                <i class="fas fa-id-card input-icon" aria-hidden="true"></i>
-                                <input type="text" id="reg_number" name="reg_number" value="{{ old('reg_number') }}" class="form-input @error('reg_number') form-input--error @enderror" autocomplete="off" placeholder="Enter your student ID" @if($errors->has('reg_number')) aria-invalid="true" aria-describedby="reg_number-error" @else aria-invalid="false" @endif>
-                            </div>
-                            <p id="reg_number-error" class="form-error {{ $errors->has('reg_number') ? '' : 'hidden' }}" role="alert" aria-live="polite">{{ $errors->first('reg_number') }}</p>
-                        </div>
-
-                        @if($scratchRequired)
-                            <div class="form-group">
-                                <label for="scratch_card" class="form-label">Scratch card number</label>
-                                <div class="input-group">
-                                    <i class="fas fa-ticket input-icon" aria-hidden="true"></i>
-                                    <input type="text" id="scratch_card" name="scratch_card" value="{{ old('scratch_card') }}" class="form-input @error('scratch_card') form-input--error @enderror" autocomplete="off" placeholder="Enter scratch card number" @if($errors->has('scratch_card')) aria-invalid="true" aria-describedby="scratch_card-error" @else aria-invalid="false" @endif>
-                                </div>
-                                <p id="scratch_card-error" class="form-error {{ $errors->has('scratch_card') ? '' : 'hidden' }}" role="alert" aria-live="polite">{{ $errors->first('scratch_card') }}</p>
-                            </div>
-                        @endif
+                <div class="form-group">
+                    <label for="reg_number" class="form-label">{{ __('Student ID') }}</label>
+                    <div class="auth-glass-field">
+                        <i class="fas fa-id-card auth-glass-field__icon" aria-hidden="true"></i>
+                        <input type="text" id="reg_number" name="reg_number" value="{{ old('reg_number') }}" class="auth-glass-input @error('reg_number') form-input--error @enderror" autocomplete="off" placeholder="{{ __('Enter your student ID') }}" @if ($errors->has('reg_number')) aria-invalid="true" aria-describedby="reg_number-error" @else aria-invalid="false" @endif>
                     </div>
+                    <p id="reg_number-error" class="form-error {{ $errors->has('reg_number') ? '' : 'hidden' }}" role="alert" aria-live="polite">{{ $errors->first('reg_number') }}</p>
+                </div>
 
-                    <div class="auth-form-submit">
-                        <button type="submit" class="btn-primary" data-preloader>Check result</button>
+                @if ($scratchRequired)
+                    <div class="form-group">
+                        <label for="scratch_card" class="form-label">{{ __('Scratch card number') }}</label>
+                        <div class="auth-glass-field">
+                            <i class="fas fa-ticket auth-glass-field__icon" aria-hidden="true"></i>
+                            <input type="text" id="scratch_card" name="scratch_card" value="{{ old('scratch_card') }}" class="auth-glass-input @error('scratch_card') form-input--error @enderror" autocomplete="off" placeholder="{{ __('Enter scratch card number') }}" @if ($errors->has('scratch_card')) aria-invalid="true" aria-describedby="scratch_card-error" @else aria-invalid="false" @endif>
+                        </div>
+                        <p id="scratch_card-error" class="form-error {{ $errors->has('scratch_card') ? '' : 'hidden' }}" role="alert" aria-live="polite">{{ $errors->first('scratch_card') }}</p>
                     </div>
-                </form>
+                @endif
             </div>
-        </div>
-    </div>
+
+            <p class="text-xs text-[var(--text-secondary)] leading-relaxed mt-2 mb-0 max-w-prose">
+                {{ __('Wrong class or ID usually means “not found.” For help, ask the school office or email') }}
+                <a href="mailto:{{ config('school.school_email') }}" class="text-[var(--primary)] font-medium underline underline-offset-2 decoration-[color-mix(in_srgb,var(--primary)_45%,transparent)] hover:opacity-90">{{ config('school.school_email') }}</a>.
+            </p>
+
+            <div class="auth-form-submit mt-6">
+                <button type="submit" class="btn-primary inline-flex w-full items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">{{ __('Check result') }}</button>
+            </div>
+        </form>
+    </x-auth-split-card>
 @endsection
 
 @push('scripts')

@@ -46,7 +46,7 @@ class Teacher extends Authenticatable
         'modify_results',
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password', 'remember_token'];
 
     protected function casts(): array
     {

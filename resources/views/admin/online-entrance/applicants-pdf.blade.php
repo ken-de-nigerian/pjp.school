@@ -6,7 +6,7 @@
     <title>Entrance Applicants — {{ now()->format('Y') }}</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: system-ui, -apple-system, sans-serif; font-size: 12px; line-height: 1.4; color: #1a1a1a; margin: 0; padding: 16px; }
+        body { font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif; font-size: 12px; line-height: 1.4; color: #1a1a1a; margin: 0; padding: 16px; }
         @media print {
             body { padding: 0; }
             .no-print { display: none !important; }

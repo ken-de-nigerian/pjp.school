@@ -1,113 +1,4 @@
 <style>
-    /* M3: logo – no glow, no scale/translate, state layer only */
-    .logo-container {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 8px 12px;
-        margin: -8px -12px;
-        border-radius: 20px;
-        transition: background-color 0.2s ease;
-    }
-
-    .logo-container:hover {
-        background: rgba(var(--primary-rgb), 0.08);
-    }
-
-    [data-theme="dark"] .logo-container:hover {
-        background: rgba(255, 255, 255, 0.08);
-    }
-
-    .logo-icon-container {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 9999px;
-        overflow: hidden;
-        background: var(--primary-container);
-        border: none;
-        box-shadow: none;
-    }
-
-    .logo-glow {
-        display: none;
-    }
-
-    .logo-icon {
-        color: var(--on-primary-container);
-        fill: var(--on-primary-container);
-    }
-
-    .logo-text {
-        font-family: 'Roboto', sans-serif;
-        font-weight: 500;
-        font-size: 1.25rem;
-        letter-spacing: 0;
-        color: var(--on-surface);
-    }
-
-    .logo-text-accent {
-        font-weight: 400;
-        color: var(--primary);
-    }
-
-    /* Responsive Sizes */
-    .logo-icon-container {
-        width: 2.5rem;
-        height: 2.5rem;
-    }
-
-    .logo-icon {
-        width: 1.25rem;
-        height: 1.25rem;
-    }
-
-    .logo-text {
-        font-size: 1.25rem;
-        line-height: 1.2;
-    }
-
-    @media (min-width: 640px) {
-        .logo-icon-container {
-            width: 2.75rem;
-            height: 2.75rem;
-        }
-
-        .logo-icon {
-            width: 1.5rem;
-            height: 1.5rem;
-        }
-
-        .logo-text {
-            font-size: 1.5rem;
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .logo-icon-container {
-            width: 3rem;
-            height: 3rem;
-        }
-
-        .logo-icon {
-            width: 1.75rem;
-            height: 1.75rem;
-        }
-
-        .logo-text {
-            font-size: 1.75rem;
-        }
-    }
-
-    [data-theme="dark"] .logo-icon-container {
-        background: var(--primary-container);
-    }
-    [data-theme="dark"] .logo-icon {
-        color: var(--on-primary-container);
-        fill: var(--on-primary-container);
-    }
-
     /* Mega menu: centered wrapper + panel with open animation */
     #mega-menu-dropdown {
         visibility: hidden;
@@ -328,18 +219,18 @@
 <nav class="sticky top-0 z-50" style="background: var(--surface-container-lowest);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="flex justify-between items-center h-16 lg:h-20">
-            <div class="flex items-center gap-8 lg:gap-8">
+            <div class="flex min-w-0 items-center gap-8 lg:gap-8">
                 <button onclick="toggleMobileMenu()" class="header-icon-btn" aria-label="Open menu">
                     <i class="fas fa-bars text-sm"></i>
                 </button>
 
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('teacher.dashboard') }}" class="logo-container">
-                        <div class="logo-icon-container">
-                            <img src="{{ asset('storage/logo/logo.jpg') }}" alt="Logo" class="w-9 h-9 rounded-full object-cover ring-2 ring-offset-2">
-                        </div>
-                        <span class="logo-text">{{ config('app.name') }}</span>
-                    </a>
+                <div class="flex min-w-0 items-center gap-2">
+                    <x-site-logo
+                        :href="route('home')"
+                        loading="eager"
+                        variant="app"
+                        :aria-label="__('Teacher dashboard')"
+                    />
                 </div>
 
                 <div class="hidden lg:flex items-center gap-1 relative">

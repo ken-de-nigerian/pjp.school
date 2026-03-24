@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'My profile'])
 
 @php
     $t = $teacher ?? $user;

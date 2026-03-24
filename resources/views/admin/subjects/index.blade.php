@@ -1,5 +1,5 @@
 @php use App\Models\Subject; @endphp
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Subjects'])
 
 @section('content')
     @php

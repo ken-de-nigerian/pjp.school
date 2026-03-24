@@ -2,7 +2,7 @@
     use App\Enums\FeeCategoryEnum;
     use Carbon\Carbon;
 @endphp
-@extends('layouts.result')
+@extends('layouts.result', ['title' => trim(($student->firstname ?? '') . ' ' . ($student->lastname ?? '') . ' ' . ($student->othername ?? '')) ?: 'Student result'])
 
 @section('content')
     @php
@@ -366,7 +366,7 @@
     <div class="result-page-outer min-h-screen bg-[var(--surface-container-low)] py-6 pb-16 text-[var(--on-surface)] sm:py-8 sm:pb-20">
         <div class="mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-8">
         <div id="infoForm" class="result-shell relative z-[2] w-full min-w-0 overflow-hidden rounded-2xl border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] shadow-[var(--elevation-2)]" style="--result-print-scale: 1;">
-            <div class="result-watermark-layer" aria-hidden="true" style="--result-watermark-url: url('{{ asset('storage/logo/logo.jpg') }}')">
+            <div class="result-watermark-layer" aria-hidden="true" style="--result-watermark-url: url('{{ asset('storage/' . config('school.logo_file', 'logo/logo.jpg')) }}')">
                 <div class="result-watermark-layer__pattern"></div>
             </div>
 
@@ -402,7 +402,7 @@
                                     <p class="mt-1 text-sm text-white/75">{{ $class }} · ID {{ $student->reg_number }} · {{ $student->gender }}</p>
                                 </div>
                                 <div class="flex min-w-0 flex-1 basis-[72px] justify-center sm:basis-[88px] sm:justify-end">
-                                    <img src="{{ asset('storage/logo/logo.jpg') }}" width="88" height="96" alt="" class="h-[88px] w-[80px] rounded-xl object-contain shadow-lg sm:w-[88px]">
+                                    <x-site-logo-mark width="88" height="96" alt="" class="h-[88px] w-[80px] rounded-xl object-contain shadow-lg sm:w-[88px]"/>
                                 </div>
                             </div>
                         </x-slot>

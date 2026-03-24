@@ -41,7 +41,7 @@ class Admin extends Authenticatable
         'password_change_date',
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password', 'remember_token'];
 
     protected function casts(): array
     {

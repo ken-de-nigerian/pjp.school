@@ -2,7 +2,7 @@
     use App\Models\Checklist;
     use Illuminate\Support\Str;
 @endphp
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Result checklist'])
 
 @section('content')
     @php

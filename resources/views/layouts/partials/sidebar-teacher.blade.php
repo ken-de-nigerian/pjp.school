@@ -2,13 +2,13 @@
     <div id="mobile-menu-panel" class="mobile-menu-panel" onclick="event.stopPropagation()">
         <!-- Header -->
         <div class="mobile-menu-header">
-            <div class="flex items-center gap-3">
-                <a href="{{ route('teacher.dashboard') }}" class="logo-container" onclick="closeMobileMenu()">
-                    <div class="logo-icon-container">
-                        <img src="{{ asset('storage/logo/logo.jpg') }}" alt="Logo" class="w-9 h-9 rounded-full object-cover ring-2 ring-offset-2">
-                    </div>
-                    <span class="logo-text">{{ config('app.name') }}</span>
-                </a>
+            <div class="flex min-w-0 items-center gap-3">
+                <x-site-logo
+                    :href="route('home')"
+                    onclick="closeMobileMenu()"
+                    variant="app"
+                    :aria-label="__('Teacher dashboard')"
+                />
             </div>
 
             <button type="button" onclick="closeMobileMenu()" class="w-10 h-10 flex items-center justify-center rounded-xl nav-icon-btn active:scale-95 transition-transform" aria-label="Close menu">

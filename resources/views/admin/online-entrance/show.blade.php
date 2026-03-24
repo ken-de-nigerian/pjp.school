@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => trim(($applicant->candidates_surname ?? '') . ', ' . ($applicant->candidates_firstname ?? '') . ' ' . ($applicant->candidates_middlename ?? '')) ?: 'Entrance application'])
 
 @php
     $a = $applicant;

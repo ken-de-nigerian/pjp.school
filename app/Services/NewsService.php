@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\News;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Schema;
 
@@ -22,6 +23,30 @@ final class NewsService
         }
 
         return $query->paginate($perPage);
+    }
+
+    /**
+     * Guest home: most recent item for the featured block, remaining for the list column.
+     *
+     * @return array{featured: News|null, more: Collection<int, News>}
+     */
+    public function forHomePage(int $additionalListCount = 5): array
+    {
+        $query = News::query();
+
+        if (Schema::hasColumn('news', 'created_at')) {
+            $query->orderByDesc('created_at');
+        } else {
+            $query->orderByDesc('date_added');
+        }
+
+        $take = 1 + max(0, $additionalListCount);
+        $all = $query->limit($take)->get();
+
+        return [
+            'featured' => $all->first(),
+            'more' => $all->slice(1)->values(),
+        ];
     }
 
     public function getById(int|string $id): ?News

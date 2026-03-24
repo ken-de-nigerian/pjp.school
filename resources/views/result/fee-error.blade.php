@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+@extends('layouts.guest', ['title' => 'Result check'])
 
 @section('content')
 <div class="bg-white rounded-lg shadow p-6 max-w-md mx-auto text-center">

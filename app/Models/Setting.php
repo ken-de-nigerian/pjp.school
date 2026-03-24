@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * @property mixed $name
+ */
 class Setting extends Model
 {
     public $timestamps = false;
@@ -55,7 +58,7 @@ class Setting extends Model
     public static function getCached(): array
     {
         return Cache::remember(self::CACHE_KEY, self::CACHE_TTL_SECONDS, function () {
-            $row = self::first();
+            $row = self::orderBy('id', 'desc')->first();
 
             return $row ? $row->toArray() : [];
         });
@@ -64,5 +67,15 @@ class Setting extends Model
     public static function clearSettingsCache(): void
     {
         Cache::forget(self::CACHE_KEY);
+    }
+
+    /**
+     * Get the latest Site settings.
+     *
+     * @return Setting|null
+     */
+    public static function getLatest(): ?Setting
+    {
+        return self::orderBy('id', 'desc')->first();
     }
 }

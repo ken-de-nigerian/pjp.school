@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => trim(($student->firstname ?? '') . ' ' . ($student->lastname ?? '') . ($student->othername ? ' ' . $student->othername : '')) ?: 'Student profile'])
 
 @section('content')
     <main class="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">

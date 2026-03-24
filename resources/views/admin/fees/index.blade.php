@@ -2,7 +2,7 @@
     use App\Enums\FeeCategoryEnum;
     use App\Models\Fee;
 @endphp
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Result fees'])
 
 @section('content')
     @php

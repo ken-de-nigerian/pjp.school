@@ -1,5 +1,5 @@
 @php use Carbon\Carbon; @endphp
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Teacher dashboard'])
 
 @section('content')
     <!-- Main Content -->

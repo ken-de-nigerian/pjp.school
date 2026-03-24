@@ -1,9 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 @import 'tailwindcss';
 
 @theme {
     --color-primary: var(--primary);
     --color-primary-hover: var(--primary-hover);
+    --font-serif:
+        "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -32,11 +34,13 @@ header,
     transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
-/* View Transitions API: smooth crossfade when switching theme */
+/* View Transitions API: https://www.w3.org/TR/css-view-transitions-1/ */
+/*noinspection CssInvalidPseudoSelector */
 @supports (view-transition-name: none) {
     ::view-transition-old(root) {
         animation: theme-fade-out 0.2s ease-out forwards;
     }
+
     ::view-transition-new(root) {
         animation: theme-fade-in 0.25s ease-in 0.05s both;
     }
@@ -111,6 +115,7 @@ header,
     --on-success-container: #1b5e20;
     --error-container: #ffcdd2;
     --on-error-container: #b71c1c;
+    --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 [data-theme="dark"] {
@@ -187,10 +192,85 @@ header,
 body {
     background: var(--surface);
     color: var(--on-surface);
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-serif), serif;
     font-size: 14px;
     line-height: 1.5;
-    letter-spacing: 0.25px;
+    letter-spacing: 0;
+}
+
+/* Guest parity: Playfair for headings & display titles; DM Sans stays on body, forms, and buttons */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-serif), serif;
+}
+
+/*
+ * Portal: Playfair for title-like copy that is not a heading tag (common Tailwind div/p/span patterns).
+ * Scope to .app-portal (see layouts). KPI / tabular figures: use class tabular-nums to stay on DM Sans.
+ */
+.app-portal .admin-page-hero__title {
+    font-family: var(--font-serif), serif;
+}
+
+.app-portal,
+:is(.page-content, #page-home, main.flex-1, .result-print-inner),
+:where(
+        :is([class*="font-bold"], [class*="font-black"], [class*="font-extrabold"]):is(
+            [class*="text-base"],
+            [class*="text-lg"],
+            [class*="text-xl"],
+            [class*="text-2xl"],
+            [class*="text-3xl"],
+            [class*="text-4xl"],
+            [class*="text-5xl"],
+            [class*="text-6xl"],
+            [class*="text-7xl"],
+            [class*="text-8xl"],
+            [class*="text-9xl"]
+        ),
+        [class*="font-semibold"]:is(
+            [class*="text-base"],
+            [class*="text-lg"],
+            [class*="text-xl"],
+            [class*="text-2xl"],
+            [class*="text-3xl"],
+            [class*="text-4xl"],
+            [class*="text-5xl"],
+            [class*="text-6xl"],
+            [class*="text-7xl"],
+            [class*="text-8xl"],
+            [class*="text-9xl"]
+        )
+    ):not(button):not([type="submit"]):not([type="button"]):not(.tabular-nums):not(.btn-primary):not(.btn-secondary):not(.btn-primary-tonal):not(.form-input):not(.nav-link-header):not(
+        label
+    ):not(.admin-dashboard-hero__tile-label) {
+    font-family: var(--font-serif), serif;
+}
+
+/*
+ * Portal: explicit sans on UI + body copy (do not target span — spans inside serif headings must inherit Playfair).
+ */
+.app-portal p,
+.app-portal li,
+.app-portal dd,
+.app-portal dt,
+.app-portal small,
+.app-portal figcaption,
+.app-portal label,
+.app-portal button,
+.app-portal input,
+.app-portal select,
+.app-portal textarea,
+.app-portal optgroup,
+.app-portal option,
+.app-portal td,
+.app-portal th,
+.app-portal a {
+    font-family: var(--font-serif), serif;
 }
 
 /* Dashboard icons: black in light mode, white in dark mode */
@@ -357,13 +437,12 @@ body {
     background: var(--bg-primary);
 }
 
-/* Teacher login: split layout with sidebanner — modern & mobile-first */
+/* Teacher login */
 .auth-with-banner {
     padding: 0;
     align-items: stretch;
     justify-content: stretch;
     flex-direction: row;
-    min-height: 100vh;
     min-height: 100dvh;
     overflow-x: hidden;
 }
@@ -378,9 +457,7 @@ body {
     display: flex;
     align-items: stretch;
     justify-content: center;
-    padding: 0;
-    padding-top: max(env(safe-area-inset-top), 0);
-    padding-bottom: max(env(safe-area-inset-bottom), 0);
+    padding: max(env(safe-area-inset-top), 0) 0 max(env(safe-area-inset-bottom), 0);
 }
 
 .auth-banner-bg {
@@ -436,28 +513,6 @@ body {
     margin-bottom: 2.25rem;
 }
 
-.auth-banner-logo-text {
-    font-weight: 600;
-    font-size: 1.125rem;
-    letter-spacing: -0.02em;
-    font-family: 'Roboto', sans-serif;
-    color: #fff;
-}
-
-.auth-banner-pill {
-    display: inline-block;
-    width: fit-content;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.7);
-    padding: 0.35rem 0.65rem;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .auth-banner-content {
     flex: 1;
     display: flex;
@@ -472,7 +527,7 @@ body {
     margin-bottom: 0.75rem;
     letter-spacing: -0.02em;
     line-height: 1.3;
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-serif), serif;
     color: #fff;
 }
 
@@ -586,11 +641,19 @@ body {
 .auth-banner-inner--check-result {
     max-width: 400px;
     width: 100%;
-    padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.75rem, 3.5vw, 2.5rem);
-    padding-top: max(env(safe-area-inset-top), clamp(1.75rem, 4vw, 2.75rem));
-    padding-bottom: max(env(safe-area-inset-bottom), clamp(1.75rem, 4vw, 2.75rem));
-    padding-left: max(env(safe-area-inset-left), clamp(1.75rem, 3.5vw, 2.5rem));
-    padding-right: max(env(safe-area-inset-right), clamp(1.75rem, 3.5vw, 2.5rem));
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: max(env(safe-area-inset-top), clamp(1.75rem, 4vw, 2.75rem)) max(env(safe-area-inset-right), clamp(1.75rem, 3.5vw, 2.5rem)) max(env(safe-area-inset-bottom), clamp(1.75rem, 4vw, 2.75rem)) max(env(safe-area-inset-left), clamp(1.75rem, 3.5vw, 2.5rem));
+}
+
+/* Desktop: stack grows and pins copy + foot low; mobile/tablet: wrapper is transparent */
+.auth-banner-stack {
+    display: contents;
+}
+
+.auth-banner-stack__spacer {
+    display: none;
 }
 
 .auth-banner--admin .auth-banner-content,
@@ -598,7 +661,9 @@ body {
 .auth-banner--check-result .auth-banner-content {
     display: flex;
     flex-direction: column;
+    flex: 0 1 auto;
     min-height: 0;
+    justify-content: flex-start;
 }
 
 .auth-banner-back--admin,
@@ -614,53 +679,6 @@ body {
     color: #fff;
 }
 
-.auth-banner-school-mark {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.75rem;
-}
-
-.auth-banner-school-mark__seal {
-    flex-shrink: 0;
-    width: 3rem;
-    height: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    background: color-mix(in srgb, var(--primary) 28%, rgba(255, 255, 255, 0.06));
-    color: #fff;
-    font-size: 1.125rem;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.auth-banner-school-mark__text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    min-width: 0;
-}
-
-.auth-banner-logo-text--admin,
-.auth-banner-logo-text--teacher,
-.auth-banner-logo-text--check-result {
-    color: #fff;
-    font-size: 1.125rem;
-    letter-spacing: -0.02em;
-    font-family: "Roboto", sans-serif;
-}
-
-.auth-banner-pill--admin,
-.auth-banner-pill--teacher,
-.auth-banner-pill--check-result {
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.18);
-    letter-spacing: 0.08em;
-}
-
 .auth-banner-eyebrow--admin,
 .auth-banner-eyebrow--teacher,
 .auth-banner-eyebrow--check-result {
@@ -671,13 +689,13 @@ body {
 .auth-banner-title--admin,
 .auth-banner-title--teacher,
 .auth-banner-title--check-result {
-    font-family: "Roboto", sans-serif;
+    font-family: var(--font-serif), serif;
     font-weight: 600;
     color: #fff;
     font-size: clamp(1.3rem, 2.3vw, 1.6rem);
     line-height: 1.3;
     letter-spacing: -0.02em;
-    margin-bottom: 0.625rem;
+    margin-bottom: 0.75rem;
 }
 
 .auth-banner-tagline--admin,
@@ -686,7 +704,7 @@ body {
     color: rgba(255, 255, 255, 0.74);
     font-size: 0.9375rem;
     line-height: 1.58;
-    margin-bottom: 1.35rem;
+    margin-bottom: 1.5rem;
 }
 
 .auth-banner--admin .auth-banner-duties,
@@ -750,6 +768,79 @@ body {
     line-height: 1.55;
     color: rgba(255, 255, 255, 0.58);
     max-width: 36em;
+}
+
+/* Desktop split aside: center column; stack + capped spacer sit copy + foot toward bottom */
+@media (min-width: 901px) {
+    .auth-banner.auth-banner--admin,
+    .auth-banner.auth-banner--teacher,
+    .auth-banner.auth-banner--check-result {
+        justify-content: center;
+    }
+
+    .auth-banner-inner--admin,
+    .auth-banner-inner--teacher,
+    .auth-banner-inner--check-result {
+        max-width: min(32rem, 100%);
+        margin-inline: auto;
+        width: 100%;
+        padding-top: max(env(safe-area-inset-top), clamp(2rem, 4.5vh, 3.5rem));
+        padding-bottom: max(env(safe-area-inset-bottom), clamp(2rem, 4.5vh, 3.5rem));
+        padding-left: max(env(safe-area-inset-left), clamp(1.75rem, 3.5vw, 3rem));
+        padding-right: max(env(safe-area-inset-right), clamp(1.75rem, 3.5vw, 3rem));
+    }
+
+    .auth-banner-back--admin,
+    .auth-banner-back--teacher,
+    .auth-banner-back--check-result {
+        margin-bottom: clamp(1rem, 2.2vh, 1.75rem);
+    }
+
+    .auth-banner-stack {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        justify-content: flex-start;
+        min-height: 0;
+        padding-bottom: clamp(1.25rem, 3vh, 2.5rem);
+    }
+
+    .auth-banner-stack__spacer {
+        display: block;
+        flex: 1 1 0;
+        min-height: clamp(0.75rem, 2vh, 1.5rem);
+        max-height: clamp(2.75rem, 22vh, 10.5rem);
+        width: 100%;
+    }
+
+    .auth-banner-title--admin,
+    .auth-banner-title--teacher,
+    .auth-banner-title--check-result {
+        font-size: clamp(1.45rem, 2.1vw + 0.85rem, 1.95rem);
+        line-height: 1.25;
+        margin-bottom: 0.875rem;
+    }
+
+    .auth-banner-tagline--admin,
+    .auth-banner-tagline--teacher,
+    .auth-banner-tagline--check-result {
+        font-size: clamp(0.9375rem, 0.35vw + 0.875rem, 1.0625rem);
+        line-height: 1.6;
+        margin-bottom: clamp(1.5rem, 3vh, 2.25rem);
+    }
+
+    .auth-banner--admin .auth-banner-duties,
+    .auth-banner--teacher .auth-banner-duties,
+    .auth-banner--check-result .auth-banner-duties {
+        border-radius: 14px;
+    }
+
+    .auth-banner--admin .auth-banner-duty,
+    .auth-banner--teacher .auth-banner-duty,
+    .auth-banner--check-result .auth-banner-duty {
+        padding: clamp(0.95rem, 1.8vh, 1.15rem) clamp(1rem, 2vw, 1.25rem);
+        gap: 0.875rem;
+    }
 }
 
 .auth-banner-foot__link {
@@ -851,9 +942,7 @@ body {
 .admin-dashboard-hero__inner {
     position: relative;
     z-index: 2;
-    padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1.25rem, 3vw, 2rem);
-    padding-left: max(env(safe-area-inset-left), clamp(1.25rem, 3vw, 2rem));
-    padding-right: max(env(safe-area-inset-right), clamp(1.25rem, 3vw, 2rem));
+    padding: clamp(1.25rem, 3vw, 1.75rem) max(env(safe-area-inset-right), clamp(1.25rem, 3vw, 2rem)) clamp(1.25rem, 3vw, 1.75rem) max(env(safe-area-inset-left), clamp(1.25rem, 3vw, 2rem));
 }
 
 .admin-dashboard-hero__intro {
@@ -885,7 +974,7 @@ body {
     font-weight: 600;
     font-size: 1.0625rem;
     letter-spacing: -0.02em;
-    font-family: "Roboto", sans-serif;
+    font-family: var(--font-serif), serif;
     color: #fff;
 }
 
@@ -942,6 +1031,7 @@ body {
 }
 
 .admin-dashboard-hero__name {
+    font-family: var(--font-serif), serif;
     color: #fff !important;
 }
 
@@ -1103,6 +1193,7 @@ body {
 }
 
 .mega-bento-tile-title {
+    font-family: var(--font-serif), serif;
     font-size: 0.875rem;
     font-weight: 650;
     color: var(--on-surface-variant);
@@ -1270,6 +1361,7 @@ body {
 }
 
 .admin-mega-menu-banner .mega-menu-section-title {
+    font-family: var(--font-serif), serif;
     color: #fff !important;
 }
 
@@ -1619,14 +1711,64 @@ body {
     color: var(--on-primary);
 }
 
+/* Tailwind-friendly split card (auth / result check) — tokens match app theme */
+.auth-split-section {
+    background: var(--bg-primary);
+}
+
+.auth-split-card {
+    background: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
+    border-radius: 1rem;
+    box-shadow: var(--elevation-2);
+    overflow: hidden;
+}
+
+@media (max-width: 1023px) {
+    .auth-split-section {
+        min-height: 100dvh;
+        min-height: 100svh;
+    }
+
+    .auth-split-card {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        background: var(--bg-primary);
+        overflow: visible;
+    }
+
+    .auth-split-card__panel {
+        background: var(--bg-primary);
+    }
+}
+
+.auth-split-card__visual {
+    background: linear-gradient(
+        165deg,
+        color-mix(in srgb, var(--primary) 10%, var(--surface-container-low)) 0%,
+        var(--surface-container-low) 52%,
+        var(--surface) 100%
+    );
+}
+
+.auth-split-card__rule {
+    position: absolute;
+    right: 0;
+    top: 2.5rem;
+    bottom: 2.5rem;
+    width: 1px;
+    background: var(--outline-variant);
+    opacity: 0.45;
+    pointer-events: none;
+}
+
 .auth-form-wrap {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: clamp(1rem, 3vw, 2.5rem);
-    padding-left: max(env(safe-area-inset-left), clamp(1rem, 3vw, 2.5rem));
-    padding-right: max(env(safe-area-inset-right), clamp(1rem, 3vw, 2.5rem));
+    padding: clamp(1rem, 3vw, 2.5rem) max(env(safe-area-inset-right), clamp(1rem, 3vw, 2.5rem)) clamp(1rem, 3vw, 2.5rem) max(env(safe-area-inset-left), clamp(1rem, 3vw, 2.5rem));
     background: var(--bg-primary);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -1656,7 +1798,6 @@ body {
     width: 100%;
     max-width: 520px;
     background: var(--card-bg);
-    border: 1px solid var(--border);
     border-radius: 14px;
     padding: 2.5rem;
     box-shadow: none;
@@ -1668,7 +1809,6 @@ body {
     margin-inline: auto;
     border-radius: 1rem;
     padding: clamp(1.75rem, 4vw, 2.5rem);
-    border: 1px solid var(--outline-variant);
     background: var(--surface-container-lowest);
     box-shadow: none;
 }
@@ -1700,7 +1840,7 @@ body {
     color: var(--text-primary);
     margin: 0 0 0.25rem 0;
     text-align: center;
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-serif), serif;
     letter-spacing: -0.02em;
 }
 
@@ -1771,6 +1911,105 @@ body {
     color: var(--text-secondary);
     margin: 0;
     padding-top: 1rem;
+}
+
+/* Glass-style fields (auth + result check): only the form controls, not the page chrome */
+.auth-card--glass {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+.auth-card--glass.auth-card--modern .auth-form-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.auth-glass-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.25rem 0.125rem 0.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--outline) 28%, transparent);
+    background: color-mix(in srgb, var(--surface-container-lowest) 78%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+[data-theme='dark'] .auth-glass-field {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.auth-glass-field:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.14);
+}
+
+.auth-glass-field--error,
+.auth-glass-field:has(.form-input--error),
+.auth-glass-field:has(.form-select--error) {
+    border-color: #dc2626;
+    box-shadow: none;
+}
+
+.auth-glass-field--error:focus-within {
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.18);
+}
+
+.auth-glass-field__icon {
+    flex-shrink: 0;
+    width: 2rem;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.auth-glass-input,
+.auth-glass-select {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    padding: 0.65rem 0.5rem;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    outline: none;
+    box-shadow: none;
+}
+
+@media (min-width: 641px) {
+    .auth-glass-input,
+    .auth-glass-select {
+        font-size: 0.9375rem;
+    }
+}
+
+.auth-glass-select {
+    cursor: pointer;
+    padding-right: 1.75rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2379747e' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.65rem center;
+}
+
+[data-theme='dark'] .auth-glass-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23cac4d0' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.auth-glass-field .password-toggle {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    flex-shrink: 0;
 }
 
 .form-group {
@@ -2089,7 +2328,7 @@ main.overflow-y-auto {
     background: var(--primary);
     color: var(--on-primary);
     border: none;
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-serif), serif;
     font-weight: 500;
     font-size: 14px;
     letter-spacing: 0.1em;
@@ -2170,7 +2409,6 @@ main.overflow-y-auto {
     .auth-with-banner {
         flex-direction: column;
         min-height: 100vh;
-        min-height: 100dvh;
     }
 
     .auth-banner {
@@ -2181,8 +2419,7 @@ main.overflow-y-auto {
 
     .auth-banner-inner {
         max-width: 100%;
-        padding: 1.5rem 1.25rem;
-        padding-top: max(env(safe-area-inset-top), 1.5rem);
+        padding: max(env(safe-area-inset-top), 1.5rem) 1.25rem 1.5rem;
     }
 
     .auth-banner-back {
@@ -2219,10 +2456,8 @@ main.overflow-y-auto {
     }
 
     .auth-form-wrap {
-        padding: 1.5rem 1.25rem;
-        padding-bottom: max(env(safe-area-inset-bottom), 1.5rem);
+        padding: 1.5rem 1.25rem max(env(safe-area-inset-bottom), 1.5rem);
         align-items: flex-start;
-        padding-top: 1.5rem;
     }
 
     .auth-card--modern {
@@ -2237,10 +2472,7 @@ main.overflow-y-auto {
     }
 
     .auth-with-banner .auth-form-wrap {
-        padding: 1rem;
-        padding-bottom: max(env(safe-area-inset-bottom), 1.5rem);
-        padding-left: max(env(safe-area-inset-left), 1rem);
-        padding-right: max(env(safe-area-inset-right), 1rem);
+        padding: 1rem max(env(safe-area-inset-right), 1rem) max(env(safe-area-inset-bottom), 1.5rem) max(env(safe-area-inset-left), 1rem);
     }
 
     .auth-card {
@@ -2685,7 +2917,7 @@ button, a, input, textarea, select {
     background: var(--primary-container);
     color: var(--on-primary-container);
     border: none;
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-serif), serif;
     font-weight: 500;
     font-size: 14px;
     letter-spacing: 0.1em;
@@ -2705,7 +2937,7 @@ button, a, input, textarea, select {
     background: var(--primary-container);
     color: var(--on-primary-container);
     border: 1px solid var(--outline-variant);
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-serif), serif;
     font-weight: 500;
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
@@ -3264,6 +3496,7 @@ span[style*="box-shadow: var(--elevation-1)"] {
 }
 
 .mobile-menu-item-title {
+    font-family: var(--font-serif), serif;
     font-size: 16px;
     font-weight: 600;
     color: var(--text-primary);
@@ -3291,13 +3524,10 @@ span[style*="box-shadow: var(--elevation-1)"] {
 }
 
 .mobile-menu-dropdown-content {
-    padding-left: 64px;
-    padding-right: 20px;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease, padding 0.3s ease;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 0 20px 0 64px;
 }
 
 .mobile-menu-dropdown-content:not(.hidden) {

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Behavioural records'])
 
 @section('content')
     @php

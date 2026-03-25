@@ -91,7 +91,7 @@
     @if($notifications->count() > 0)
         <div id="notifications-delete-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="notifications-delete-modal-title">
             <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="notifications-delete-modal" aria-hidden="true"></div>
-            <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+            <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
                 <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                     <h3 id="notifications-delete-modal-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);">Delete notification</h3>
                     <p id="notifications-delete-modal-message" class="text-sm mb-6" style="color: var(--on-surface-variant);"></p>

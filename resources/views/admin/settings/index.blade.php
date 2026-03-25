@@ -176,22 +176,22 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 min-w-0">
                             <div class="form-group">
                                 <label for="term" class="form-label">Current Term</label>
-                                <select id="term" name="term" class="form-select">
+                                <x-forms.md-select-native id="term" name="term" class="form-select">
                                     <option value="First Term" {{ ($settings['term'] ?? '') === 'First Term' ? 'selected' : '' }}>First Term</option>
                                     <option value="Second Term" {{ ($settings['term'] ?? '') === 'Second Term' ? 'selected' : '' }}>Second Term</option>
                                     <option value="Third Term" {{ ($settings['term'] ?? '') === 'Third Term' ? 'selected' : '' }}>Third Term</option>
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="term-error" class="form-error hidden" aria-live="polite"></p>
                             </div>
 
                             <div class="form-group">
                                 <label for="session" class="form-label">Current Session</label>
-                                <select id="session" name="session" class="form-select">
+                                <x-forms.md-select-native id="session" name="session" class="form-select">
                                     @foreach(range((int)date('Y') - 5, (int)date('Y') + 5) as $y)
                                         @php $opt = $y . '/' . ($y + 1); @endphp
                                         <option value="{{ $opt }}" {{ ($settings['session'] ?? '') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="session-error" class="form-error hidden" aria-live="polite"></p>
                             </div>
                         </div>
@@ -221,7 +221,7 @@
 
     <div id="changePassword" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="changePassword" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
             <h3 class="text-lg font-semibold mb-4" style="color: var(--on-surface);">Reset Password</h3>
             <form id="password-form" class="min-w-0">

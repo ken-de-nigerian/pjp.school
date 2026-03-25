@@ -94,13 +94,13 @@
 
                                 <div class="form-group min-w-0">
                                     <label for="gender" class="form-label">Gender <span style="color: var(--primary);">*</span></label>
-                                    <select id="gender" name="gender" class="form-select w-full min-w-0">
+                                    <x-forms.md-select-native id="gender" name="gender" class="form-select w-full min-w-0">
                                         <option value="">Select gender</option>
                                         <option value="Male" {{ old('gender', $teacher->gender) === 'Male' ? 'selected' : '' }}>Male</option>
                                         <option value="Female" {{ old('gender', $teacher->gender) === 'Female' ? 'selected' : '' }}>
                                             Female
                                         </option>
-                                    </select>
+                                    </x-forms.md-select-native>
                                     <p id="gender-error" class="form-error mt-1 text-sm {{ $errors->has('gender') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('gender') }}</p>
                                 </div>
                             </div>
@@ -191,12 +191,12 @@
 
                             <div class="form-group min-w-0">
                                 <label for="state" class="form-label">State</label>
-                                <select id="state" name="state" class="form-select w-full min-w-0">
+                                <x-forms.md-select-native id="state" name="state" class="form-select w-full min-w-0">
                                     <option value="">Select State</option>
                                     @foreach($states as $st)
                                         <option value="{{ e($st) }}" {{ old('state', $teacher->state) === $st ? 'selected' : '' }}>{{ e($st) }}</option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="state-error" class="form-error mt-1 text-sm {{ $errors->has('state') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('state') }}</p>
                             </div>
 
@@ -318,7 +318,7 @@
 
     <div id="teacherChangePassword" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="teacherChangePassword" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                 <h3 class="text-lg font-semibold mb-4" style="color: var(--on-surface);">Reset Teacher Password</h3>
                 <form id="teacher-password-form" class="min-w-0">
@@ -361,7 +361,7 @@
 
     <div id="teacher-delete-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="teacher-delete-modal-title">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="teacher-delete-modal" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                 <h3 id="teacher-delete-modal-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);">Delete teacher</h3>
                 <p id="teacher-delete-modal-message" class="text-sm mb-6" style="color: var(--on-surface-variant);">Are you sure you want to delete this teacher? This action cannot be undone.</p>

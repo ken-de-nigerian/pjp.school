@@ -4,7 +4,8 @@
     <x-auth-split-card
         heading="{{ __('Welcome back') }}"
         :intro="__('Sign in to the teacher dashboard.')"
-        image-alt="">
+        :image-src="asset('assets/img/signin.svg')"
+        image-alt="Teacher sign in">
 
         <form method="POST" action="{{ route('teacher.login') }}" class="auth-form mt-6 sm:mt-7" id="teacher-login-form">
             @csrf

@@ -29,13 +29,13 @@
                     <div class="grid grid-cols-12 gap-4 min-w-0">
                         <div class="col-span-12 sm:col-span-6 lg:col-span-4 form-group min-w-0">
                             <label for="search-class" class="form-label">Class</label>
-                            <select id="search-class" name="class" class="form-select w-full min-w-0">
+                            <x-forms.md-select-native id="search-class" name="class" class="form-select w-full min-w-0">
                                 <option value="">All classes</option>
                                 @foreach($classes ?? [] as $c)
                                     @php $cn = is_object($c) ? $c->class_name : $c; @endphp
                                     <option value="{{ e($cn) }}" {{ ($class ?? '') === $cn ? 'selected' : '' }}>{{ e($cn) }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                         </div>
 
                         <div class="col-span-12 sm:col-span-6 lg:col-span-4 form-group min-w-0">
@@ -45,11 +45,11 @@
 
                         <div class="col-span-12 sm:col-span-6 lg:col-span-4 form-group min-w-0">
                             <label for="group_by" class="form-label">Group results by</label>
-                            <select id="group_by" name="group_by" class="form-select w-full min-w-0">
+                            <x-forms.md-select-native id="group_by" name="group_by" class="form-select w-full min-w-0">
                                 <option value="session" {{ ($group_by ?? 'session') === 'session' ? 'selected' : '' }}>Session</option>
                                 <option value="none" {{ ($group_by ?? '') === 'none' ? 'selected' : '' }}>Single list</option>
                                 <option value="term" {{ ($group_by ?? '') === 'term' ? 'selected' : '' }}>Term</option>
-                            </select>
+                            </x-forms.md-select-native>
                         </div>
                     </div>
                     <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
@@ -66,7 +66,7 @@
             </div>
 
             @if(!$hasSearch)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -74,7 +74,7 @@
                     <p class="text-sm text-center max-w-sm" style="color: var(--on-surface-variant);">Enter a student name or registration number above and click &quot;Search&quot; to view their results. You can filter by class and choose how to group the results.</p>
                 </div>
             @elseif(!$hasResults)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-inbox text-3xl" aria-hidden="true"></i>
                     </div>

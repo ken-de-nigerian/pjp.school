@@ -42,24 +42,24 @@
                         <div class="grid grid-cols-12 gap-4 min-w-0">
                             <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                                 <label for="upload-class" class="form-label">Class <span style="color: var(--primary);">*</span></label>
-                                <select id="upload-class" name="class" class="form-select w-full min-w-0" required>
+                                <x-forms.md-select-native id="upload-class" name="class" class="form-select w-full min-w-0" required>
                                     <option value="">Select class</option>
                                     @foreach($getClasses as $c)
                                         @php $cn = is_object($c) ? $c->class_name : $c; @endphp
                                         <option value="{{ e($cn) }}" {{ ($class ?? '') === $cn ? 'selected' : '' }}>{{ e($cn) }}</option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                             </div>
 
                             <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                                 <label for="upload-subjects" class="form-label">Subject <span style="color: var(--primary);">*</span></label>
-                                <select id="upload-subjects" name="subjects" class="form-select w-full min-w-0" required>
+                                <x-forms.md-select-native id="upload-subjects" name="subjects" class="form-select w-full min-w-0" required>
                                     <option value="">Select subject</option>
                                     @foreach($getSubjects as $s)
                                         @php $sn = is_string($s) ? $s : ($s->subject_name ?? ''); @endphp
                                         <option value="{{ e($sn) }}" {{ ($subjects ?? '') === $sn ? 'selected' : '' }}>{{ e($sn) }}</option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                             </div>
                         </div>
 
@@ -77,7 +77,7 @@
             @endif
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -121,7 +121,7 @@
                     @else
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-6 py-4" style="border-bottom: 1px solid var(--outline-variant); background: var(--surface-container-low);">
                             <p class="text-sm font-medium" style="color: var(--on-surface-variant);">
-                                <span>{{ $results->count() }}</span> result(s) Â· Select results to edit below.
+                                <span>{{ $results->count() }}</span> result(s) · Select results to edit below.
                             </p>
                         </div>
 
@@ -205,7 +205,7 @@
 
     <div id="edit-result-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="edit-result-modal-title">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="edit-result-modal" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                 <h3 id="edit-result-modal-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);">Edit result</h3>
                 <p id="edit-result-modal-student" class="text-sm mb-3" style="color: var(--on-surface-variant);"></p>
@@ -223,15 +223,15 @@
                     <input type="hidden" name="reg_number" id="edit-result-reg">
                     <div class="form-group">
                         <label for="edit-result-ca" class="form-label">CA (max 15)</label>
-                        <input type="number" id="edit-result-ca" name="ca" min="0" max="15" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 â€“ 15">
+                        <input type="number" id="edit-result-ca" name="ca" min="0" max="15" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 - 15">
                     </div>
                     <div class="form-group">
                         <label for="edit-result-assignment" class="form-label">Assign (max 25)</label>
-                        <input type="number" id="edit-result-assignment" name="assignment" min="0" max="25" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 â€“ 25">
+                        <input type="number" id="edit-result-assignment" name="assignment" min="0" max="25" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 - 25">
                     </div>
                     <div class="form-group">
                         <label for="edit-result-exam" class="form-label">Exam (max 60)</label>
-                        <input type="number" id="edit-result-exam" name="exam" min="0" max="60" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 â€“ 60">
+                        <input type="number" id="edit-result-exam" name="exam" min="0" max="60" step="0.5" inputmode="decimal" class="form-input w-full results-score-input edit-result-score-input" placeholder="0 - 60">
                     </div>
                     <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2">
                         <button type="button" class="btn-secondary px-4 py-2.5 rounded-xl text-sm w-full sm:w-auto" data-close="edit-result-modal">Cancel</button>
@@ -286,7 +286,7 @@
                         btn.addEventListener('click', function () {
                             document.getElementById('edit-result-studentId').value = btn.getAttribute('data-student-id') || btn.closest('li').getAttribute('data-student-id') || '';
                             document.getElementById('edit-result-reg').value = btn.getAttribute('data-reg') || '';
-                            document.getElementById('edit-result-modal-student').textContent = (btn.getAttribute('data-name') || '') + ' Â· ' + (btn.getAttribute('data-reg') || '');
+                            document.getElementById('edit-result-modal-student').textContent = (btn.getAttribute('data-name') || '') + ' · ' + (btn.getAttribute('data-reg') || '');
                             document.getElementById('edit-result-ca').value = btn.getAttribute('data-ca') || '';
                             document.getElementById('edit-result-assignment').value = btn.getAttribute('data-assignment') || '';
                             document.getElementById('edit-result-exam').value = btn.getAttribute('data-exam') || '';

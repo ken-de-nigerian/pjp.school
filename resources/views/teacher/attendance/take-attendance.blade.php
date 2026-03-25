@@ -58,7 +58,7 @@
                         @csrf
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 sm:px-6 py-4" style="border-bottom: 1px solid var(--outline-variant);">
                             <p class="text-sm font-medium" style="color: var(--on-surface-variant);">
-                                <span id="attendance-count">{{ $studentList->count() }}</span> student(s) Â· <span id="present-count">0</span> present, <span id="absent-count">0</span> absent
+                                <span id="attendance-count">{{ $studentList->count() }}</span> student(s) · <span id="present-count">0</span> present, <span id="absent-count">0</span> absent
                             </p>
                             <div class="flex gap-2">
                                 <button type="button" id="mark-all-present" class="attendance-bulk-btn attendance-bulk-btn--present" aria-pressed="false">All Present</button>
@@ -89,7 +89,7 @@
                                             <div class="min-w-0 flex-1 md:min-w-0 md:flex-1">
                                                 <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Name</span>
                                                 <p class="text-sm font-medium truncate" style="color: var(--on-surface);">
-                                                    {{ $fullName ?: 'â€”' }}
+                                                    {{ $fullName ?: '—' }}
                                                 </p>
                                                 <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $student->reg_number ?? '' }}</p>
                                             </div>

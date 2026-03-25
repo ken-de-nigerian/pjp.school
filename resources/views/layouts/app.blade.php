@@ -33,6 +33,7 @@
         <meta name="twitter:title" content="{{ ($title ?? 'Portal') . ' | ' . (site_settings()?->name ?? config('app.name')) }}">
         <meta name="twitter:description" content="A leading Catholic secondary school in Imo State — rooted in faith, driven by excellence, and committed to the formation of the whole child.">
         <meta name="twitter:image" content="{{ asset('storage/' . config('school.logo_file', 'logo/logo.jpg')) }}">
+        @include('layouts.partials.font-system')
 
         @unless(app()->runningUnitTests())
             @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -44,7 +45,7 @@
 
         @stack('styles')
     </head>
-    <body class="app-portal">
+    <body class="app-portal font-sans">
         @if(request()->routeIs('admin.login', 'teacher.login'))
             @yield('content')
         @else

@@ -50,7 +50,7 @@
                                     <i class="fas fa-calendar-check text-4xl" aria-hidden="true"></i>
                                 </div>
                                 <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No assigned classes</h2>
-                                <p class="text-sm font-normal mb-0" style="color: var(--on-surface-variant);">You donâ€™t have any assigned class yet. Please contact the admin.</p>
+                                <p class="text-sm font-normal mb-0" style="color: var(--on-surface-variant);">You don't have any assigned class yet. Please contact the admin.</p>
                             </div>
                         </div>
                     @endforelse

@@ -33,12 +33,14 @@ Route::middleware('auth:teacher')
         Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
         Route::get('/attendance/take', [AttendanceController::class, 'takeAttendance'])->name('attendance.take');
         Route::post('/attendance', [AttendanceController::class, 'save'])->name('attendance.save');
+        Route::put('/attendance/edit', [AttendanceController::class, 'edit'])->name('attendance.edit');
         Route::get('/attendance/view', [AttendanceController::class, 'viewAttendance'])->name('attendance.view');
 
         // Behavioural
         Route::get('/behavioral', [BehavioralController::class, 'index'])->name('behavioral.index');
         Route::get('/behavioral/take', [BehavioralController::class, 'takeBehavioral'])->name('behavioral.take');
         Route::post('/behavioral', [BehavioralController::class, 'save'])->name('behavioral.save');
+        Route::put('/behavioral/edit', [BehavioralController::class, 'edit'])->name('behavioral.edit');
         Route::get('/behavioral/view', [BehavioralController::class, 'viewBehavioral'])->name('behavioral.view');
 
         // Classes (assigned class + student list)

@@ -37,6 +37,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property mixed $house
  * @property mixed $category
  * @property mixed $fee_status
+ * @property mixed $time_of_reg
+ * @property mixed $left_school_date
+ * @property mixed $graduation_date
  */
 class Student extends Model
 {

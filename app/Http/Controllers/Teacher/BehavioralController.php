@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Teacher;
 use App\Contracts\NotificationServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Teacher\Concerns\TeacherScope;
+use App\Http\Requests\EditBehavioralRequest;
 use App\Models\Setting;
 use App\Models\Student;
 use App\Services\BehavioralService;
@@ -148,6 +149,66 @@ final class BehavioralController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Behavioral analysis for '.$class.' has been added successfully.',
+        ]);
+    }
+
+    public function edit(EditBehavioralRequest $request): JsonResponse
+    {
+        $this->authorizeTeacherAbility('manageBehavioral');
+
+        $v = $request->validated();
+        $this->ensureTeacherCanAccessClass($v['class']);
+
+        $allowedRegs = $this->studentService
+            ->getStudentsByClassAll($v['class'])
+            ->where('status', 2)
+            ->pluck('reg_number')
+            ->map(static fn ($r) => (string) $r)
+            ->filter()
+            ->flip()
+            ->all();
+
+        if (! isset($allowedRegs[(string) $v['reg_number']])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You cannot edit behavioural records for this student.',
+            ], 403);
+        }
+
+        $updated = $this->behavioralService->editRecord(
+            $v['reg_number'],
+            $v['class'],
+            $v['term'],
+            $v['session'],
+            $v['neatness'],
+            $v['music'],
+            $v['sports'],
+            $v['attentiveness'],
+            $v['punctuality'],
+            $v['health'],
+            $v['politeness']
+        );
+
+        if ($updated === 1) {
+            $teacher = $request->user('teacher');
+            $teacherName = $teacher ? trim($teacher->firstname.' '.$teacher->lastname) : 'Teacher';
+            if ($teacherName === '') {
+                $teacherName = 'Teacher';
+            }
+            $this->notificationService->add(
+                'Behavioral Record Edited',
+                $teacherName.' has edited a behavioural record for class: '.$v['class'].', term: '.$v['term'].', session: '.$v['session'].'.'
+            );
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'This student\'s behavioural record has been updated successfully.',
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'No changes were made to this student\'s behavioural record.',
         ]);
     }
 

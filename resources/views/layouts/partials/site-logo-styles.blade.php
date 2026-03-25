@@ -184,7 +184,7 @@
         background: var(--surface-container-high, #2b2930);
     }
 
-    /* Guest layout: inherit body font (e.g. DM Sans), same metrics on both lines */
+    /* Guest layout: inherit body font (Inter), same metrics on both lines */
     .site-logo--guest .site-logo__line {
         font-family: inherit;
     }

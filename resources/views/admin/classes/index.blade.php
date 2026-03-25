@@ -349,7 +349,7 @@
                         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="fee-confirm-modal"
                              aria-hidden="true"></div>
                         <div
-                            class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+                            class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
                             <div
                                 class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto"
                                 style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
@@ -376,7 +376,7 @@
     </main>
 
     <div id="add-class-modal"
-         class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
+         class="fixed inset-0 z-[60] hidden items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
          aria-modal="true" role="dialog" aria-labelledby="add-class-modal-title" aria-hidden="true">
         <div
             class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl shadow-2xl flex flex-col"
@@ -423,7 +423,7 @@
     </div>
 
     <div id="edit-class-modal"
-         class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
+         class="fixed inset-0 z-[60] hidden items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
          aria-modal="true" role="dialog" aria-labelledby="edit-class-modal-title" aria-hidden="true">
         <div
             class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl shadow-2xl flex flex-col"
@@ -475,7 +475,7 @@
     </div>
 
     <div id="delete-class-modal"
-         class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
+         class="fixed inset-0 z-[60] hidden items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
          aria-modal="true" role="dialog" aria-labelledby="delete-class-modal-title" aria-hidden="true">
         <div
             class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl shadow-2xl flex flex-col"

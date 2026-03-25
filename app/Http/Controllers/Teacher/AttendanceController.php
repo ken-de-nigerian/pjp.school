@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Teacher;
 use App\Contracts\NotificationServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Teacher\Concerns\TeacherScope;
+use App\Http\Requests\EditAttendanceRequest;
 use App\Models\Setting;
 use App\Models\Student;
 use App\Services\AttendanceService;
@@ -132,6 +133,66 @@ final class AttendanceController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => $count.' attendance record(s) saved.',
+        ]);
+    }
+
+    public function edit(EditAttendanceRequest $request): JsonResponse
+    {
+        $this->authorizeTeacherAbility('manageAttendance');
+
+        $v = $request->validated();
+        $this->ensureTeacherCanAccessClass($v['class']);
+
+        $allowedRegs = $this->studentService
+            ->getStudentsByClassAll($v['class'])
+            ->where('status', 2)
+            ->pluck('reg_number')
+            ->map(static fn ($r) => (string) $r)
+            ->filter()
+            ->flip()
+            ->all();
+
+        $filtered = array_values(array_filter(
+            $v['updates'],
+            static fn (array $u): bool => isset($allowedRegs[(string) ($u['reg_number'] ?? '')])
+        ));
+
+        if ($filtered === []) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No permitted changes to save for your assigned students.',
+            ], 422);
+        }
+
+        $segment = config('school.no_segment', 'No Segment');
+        $updated = $this->attendanceService->editRecord(
+            $v['class'],
+            $v['term'],
+            $v['session'],
+            $segment,
+            $v['date'],
+            $filtered
+        );
+
+        if ($updated > 0) {
+            $teacher = $request->user('teacher');
+            $teacherName = $teacher ? trim($teacher->firstname.' '.$teacher->lastname) : 'Teacher';
+            if ($teacherName === '') {
+                $teacherName = 'Teacher';
+            }
+            $this->notificationService->add(
+                'Attendance Records Edited',
+                $teacherName.' has edited '.$updated.' attendance record(s) for class: '.$v['class']
+                    .', term: '.$v['term']
+                    .', session: '.$v['session']
+            );
+        }
+
+        return response()->json([
+            'status' => $updated > 0 ? 'success' : 'error',
+            'message' => $updated > 0
+                ? $updated.' attendance record(s) updated successfully.'
+                : 'No changes were made to the attendance records.',
         ]);
     }
 

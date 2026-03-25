@@ -25,14 +25,14 @@
 
                             <div class="form-group min-w-0">
                                 <label for="teachersList" class="form-label">Select teacher <span class="text-red-500" aria-hidden="true">*</span></label>
-                                <select id="teachersList" name="teachersList" class="form-select w-full min-w-0" required>
+                                <x-forms.md-select-native id="teachersList" name="teachersList" class="form-select w-full min-w-0" required>
                                     <option value="">Choose teacher</option>
                                     @foreach($getTeachers as $t)
                                         <option value="{{ e($t->userId) }}" {{ old('teachersList') == $t->userId ? 'selected' : '' }}>
                                             {{ e(trim($t->firstname . ' ' . $t->lastname)) }}
                                         </option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="teachersList-error" class="form-error mt-1 text-sm {{ $errors->has('teachersList') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('teachersList') }}</p>
                             </div>
 

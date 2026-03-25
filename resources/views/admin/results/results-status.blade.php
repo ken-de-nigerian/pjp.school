@@ -5,7 +5,7 @@
         $hasFilters = ($class ?? '') !== '' && ($term ?? '') !== '' && ($session ?? '') !== '';
         $teacherSubjects = $teacherSubjects ?? [];
 
-        // Sort teachers alphabetically by name for consistent display
+        // Sort teachers alphabetically by name for a consistent display
         usort($teacherSubjects, function ($a, $b) {
             $ta = $a['teacher'] ?? null;
             $tb = $b['teacher'] ?? null;
@@ -31,32 +31,32 @@
                     <div class="grid grid-cols-12 gap-4 min-w-0">
                         <div class="col-span-12 sm:col-span-6 lg:col-span-4 form-group min-w-0">
                             <label for="status-class" class="form-label">Class <span style="color: var(--primary);">*</span></label>
-                            <select id="status-class" name="class" class="form-select w-full min-w-0" required>
+                            <x-forms.md-select-native id="status-class" name="class" class="form-select w-full min-w-0" required>
                                 <option value="">Select class</option>
                                 @foreach($getClasses ?? [] as $c)
                                     @php $cn = is_object($c) ? $c->class_name : $c; @endphp
                                     <option value="{{ e($cn) }}" {{ ($class ?? '') === $cn ? 'selected' : '' }}>{{ e($cn) }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                         </div>
                         <div class="col-span-12 sm:col-span-6 lg:col-span-4 form-group min-w-0">
                             <label for="status-term" class="form-label">Term <span style="color: var(--primary);">*</span></label>
-                            <select id="status-term" name="term" class="form-select w-full min-w-0" required>
+                            <x-forms.md-select-native id="status-term" name="term" class="form-select w-full min-w-0" required>
                                 <option value="">Select term</option>
                                 <option value="First Term" {{ ($term ?? '') === 'First Term' ? 'selected' : '' }}>First Term</option>
                                 <option value="Second Term" {{ ($term ?? '') === 'Second Term' ? 'selected' : '' }}>Second Term</option>
                                 <option value="Third Term" {{ ($term ?? '') === 'Third Term' ? 'selected' : '' }}>Third Term</option>
-                            </select>
+                            </x-forms.md-select-native>
                         </div>
                         <div class="col-span-12 sm:col-span-6 lg:col-span-4 form-group min-w-0">
                             <label for="status-session" class="form-label">Session <span style="color: var(--primary);">*</span></label>
-                            <select id="status-session" name="session" class="form-select w-full min-w-0" required>
+                            <x-forms.md-select-native id="status-session" name="session" class="form-select w-full min-w-0" required>
                                 <option value="">Select session</option>
                                 @foreach(range((int)date('Y') - 5, (int)date('Y') + 5) as $y)
                                     @php $opt = $y . '/' . ($y + 1); @endphp
                                     <option value="{{ $opt }}" {{ ($session ?? '') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                         </div>
                     </div>
                     <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
@@ -73,7 +73,7 @@
             </div>
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-check-circle text-3xl" aria-hidden="true"></i>
                     </div>

@@ -37,7 +37,7 @@
                         <div class="grid grid-cols-12 gap-4 min-w-0">
                             <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                                 <label for="published-class" class="form-label">Class <span style="color: var(--primary);">*</span></label>
-                                <select id="published-class" name="class" class="form-select w-full min-w-0" required>
+                                <x-forms.md-select-native id="published-class" name="class" class="form-select w-full min-w-0" required>
                                     <option value="">Select class</option>
                                     <option value="JSS 1">JSS 1</option>
                                     <option value="JSS 2">JSS 2</option>
@@ -45,28 +45,28 @@
                                     <option value="SSS 1">SSS 1</option>
                                     <option value="SSS 2">SSS 2</option>
                                     <option value="SSS 3">SSS 3</option>
-                                </select>
+                                </x-forms.md-select-native>
                             </div>
 
                             <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                                 <label for="published-term" class="form-label">Term <span style="color: var(--primary);">*</span></label>
-                                <select id="published-term" name="term" class="form-select w-full min-w-0" required>
+                                <x-forms.md-select-native id="published-term" name="term" class="form-select w-full min-w-0" required>
                                     <option value="">Select term</option>
                                     <option value="First Term" {{ ($term ?? '') === 'First Term' ? 'selected' : '' }}>First Term</option>
                                     <option value="Second Term" {{ ($term ?? '') === 'Second Term' ? 'selected' : '' }}>Second Term</option>
                                     <option value="Third Term" {{ ($term ?? '') === 'Third Term' ? 'selected' : '' }}>Third Term</option>
-                                </select>
+                                </x-forms.md-select-native>
                             </div>
 
                             <div class="col-span-12 sm:col-span-12 form-group min-w-0">
                                 <label for="published-session" class="form-label">Session <span style="color: var(--primary);">*</span></label>
-                                <select id="published-session" name="session" class="form-select w-full min-w-0" required>
+                                <x-forms.md-select-native id="published-session" name="session" class="form-select w-full min-w-0" required>
                                     <option value="">Select session</option>
                                     @foreach(range((int)date('Y') - 5, (int)date('Y') + 5) as $y)
                                         @php $opt = $y . '/' . ($y + 1); @endphp
                                         <option value="{{ $opt }}" {{ ($session ?? '') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                             </div>
                         </div>
 
@@ -85,7 +85,7 @@
             @endif
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -134,7 +134,7 @@
                             </button>
                         </div>
 
-                        <div id="published-results-toolbar" class="hidden flex flex-wrap items-center gap-2 px-5 sm:px-6 py-3" style="background: var(--surface-container); border-bottom: 1px solid var(--outline-variant);">
+                        <div id="published-results-toolbar" class="hidden flex-wrap items-center gap-2 px-5 sm:px-6 py-3" style="background: var(--surface-container); border-bottom: 1px solid var(--outline-variant);">
                             <span class="text-xs font-medium mr-2" style="color: var(--on-surface-variant);"><span id="published-selected-count">0</span> selected</span>
                             <button type="button" id="published-mark-live-btn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-opacity hover:opacity-90" style="background: var(--success-container); color: var(--on-success-container); border-radius: 12px;">
                                 <i class="fas fa-broadcast-tower" aria-hidden="true"></i> Mark live
@@ -265,7 +265,7 @@
 
     <div id="published-remark-modal" class="fixed inset-0 z-[60] hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="published-remark-modal-title">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="published-remark-modal" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-lg min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant); border-radius: 16px;">
                 <h3 id="published-remark-modal-title" class="text-lg font-semibold mb-1" style="color: var(--on-surface);">Principal&rsquo;s remark</h3>
                 <p class="text-sm mb-4" style="color: var(--on-surface-variant);">This text appears on the student&rsquo;s published result sheet.</p>
@@ -290,7 +290,7 @@
 
     <div id="published-confirm-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="published-confirm-modal-title">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="published-confirm-modal" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                 <h3 id="published-confirm-modal-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);"></h3>
                 <p id="published-confirm-modal-message" class="text-sm mb-6" style="color: var(--on-surface-variant);"></p>

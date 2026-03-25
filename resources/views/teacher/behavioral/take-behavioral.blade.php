@@ -66,7 +66,7 @@
                         @csrf
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 sm:px-6 py-4" style="border-bottom: 1px solid var(--outline-variant); background: var(--surface-container-low);">
                             <p class="text-sm font-medium" style="color: var(--on-surface-variant);">
-                                <span id="behavioral-count">{{ $students->count() }}</span> student(s) Â· Rate each trait below
+                                <span id="behavioral-count">{{ $students->count() }}</span> student(s) · Rate each trait below
                             </p>
                         </div>
 
@@ -95,7 +95,7 @@
                                             <img src="{{ $avatarSrc }}" alt="" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
                                             <div class="flex flex-col justify-center min-w-0">
                                                 <p class="text-sm font-semibold break-words" style="color: var(--on-surface);">
-                                                    {{ $fullName ?: 'â€”' }}
+                                                    {{ $fullName ?: '—' }}
                                                 </p>
                                                 <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $student->reg_number ?? '' }}</p>
                                             </div>

@@ -66,11 +66,11 @@
 
                             <div class="form-group sm:col-span-2">
                                 <label for="user_type" class="form-label">Role <span style="color: var(--primary);">*</span></label>
-                                <select id="user_type" name="user_type" class="form-select w-full min-w-0">
+                                <x-forms.md-select-native id="user_type" name="user_type" class="form-select w-full min-w-0">
                                     @foreach($roles as $role)
                                         <option value="{{ $role->id }}" {{ (int) old('user_type', $staff->user_type) === (int) $role->id ? 'selected' : '' }}>{{ e($role->name) }}</option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="user_type-error" class="form-error mt-1 text-sm {{ $errors->has('user_type') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('user_type') }}</p>
                             </div>
                         </div>
@@ -87,7 +87,7 @@
 
     <div id="staffResetPassword" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="staffResetPassword" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                 <h3 class="text-lg font-semibold mb-4" style="color: var(--on-surface);">Reset Password</h3>
                 <form id="staff-password-form" class="min-w-0">

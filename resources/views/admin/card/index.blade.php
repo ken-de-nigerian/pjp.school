@@ -70,7 +70,7 @@
 
     <div id="card-generate-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="card-generate-modal-title" aria-hidden="true">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="card-generate-modal" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                 <h2 id="card-generate-modal-title" class="text-lg font-semibold mb-4" style="color: var(--on-surface);">Generate pins</h2>
 

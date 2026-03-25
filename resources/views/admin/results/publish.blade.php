@@ -28,7 +28,7 @@
                             <div class="grid grid-cols-12 gap-4 min-w-0">
                                 <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                                     <label for="class" class="form-label">Class <span style="color: var(--primary);">*</span></label>
-                                    <select id="class" name="class" class="form-select w-full min-w-0">
+                                    <x-forms.md-select-native id="class" name="class" class="form-select w-full min-w-0">
                                         <option value="">Select class</option>
                                         <option value="JSS 1">JSS 1</option>
                                         <option value="JSS 2">JSS 2</option>
@@ -36,30 +36,30 @@
                                         <option value="SSS 1">SSS 1</option>
                                         <option value="SSS 2">SSS 2</option>
                                         <option value="SSS 3">SSS 3</option>
-                                    </select>
+                                    </x-forms.md-select-native>
                                     <p id="class-error" class="form-error mt-1 text-sm hidden" aria-live="polite"></p>
                                 </div>
 
                                 <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                                     <label for="term" class="form-label">Term <span style="color: var(--primary);">*</span></label>
-                                    <select id="term" name="term" class="form-select w-full min-w-0">
+                                    <x-forms.md-select-native id="term" name="term" class="form-select w-full min-w-0">
                                         <option value="">Select term</option>
                                         <option value="First Term" {{ ($settings['term'] ?? '') === 'First Term' ? 'selected' : '' }}>First Term</option>
                                         <option value="Second Term" {{ ($settings['term'] ?? '') === 'Second Term' ? 'selected' : '' }}>Second Term</option>
                                         <option value="Third Term" {{ ($settings['term'] ?? '') === 'Third Term' ? 'selected' : '' }}>Third Term</option>
-                                    </select>
+                                    </x-forms.md-select-native>
                                     <p id="term-error" class="form-error mt-1 text-sm hidden" aria-live="polite"></p>
                                 </div>
 
                                 <div class="col-span-12 sm:col-span-12 form-group min-w-0">
                                     <label for="session" class="form-label">Session <span style="color: var(--primary);">*</span></label>
-                                    <select id="session" name="session" class="form-select w-full min-w-0">
+                                    <x-forms.md-select-native id="session" name="session" class="form-select w-full min-w-0">
                                         <option value="">Select session</option>
                                         @foreach(range((int)date('Y') - 5, (int)date('Y') + 5) as $y)
                                             @php $opt = $y . '/' . ($y + 1); @endphp
                                             <option value="{{ $opt }}" {{ ($settings['session'] ?? '') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
                                         @endforeach
-                                    </select>
+                                    </x-forms.md-select-native>
                                     <p id="session-error" class="form-error mt-1 text-sm hidden" aria-live="polite"></p>
                                 </div>
                             </div>

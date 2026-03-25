@@ -8,7 +8,7 @@
                 aria-label="Teacher classes and students"
                 pill="Teacher"
                 :title="$students !== null ? e($selectedClass) : 'Students / Classes'"
-                :description="$students !== null ? 'Students in this class â€” search and export below.' : 'Open a class to see students assigned to you.'"
+                :description="$students !== null ? 'Students in this class - search and export below.' : 'Open a class to see students assigned to you.'"
             >
                 @if($students !== null)
                     <x-slot name="above">
@@ -140,7 +140,7 @@
                                             <div class="min-w-0 flex-1 md:min-w-0 md:flex-1">
                                                 <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Name</span>
                                                 <p class="text-sm font-medium truncate" style="color: var(--on-surface);">
-                                                    {{ $fullName ?: 'â€”' }}
+                                                    {{ $fullName ?: '—' }}
                                                 </p>
                                                 <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $s->reg_number ?? '' }}</p>
                                             </div>

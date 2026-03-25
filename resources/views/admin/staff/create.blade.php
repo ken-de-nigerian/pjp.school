@@ -46,12 +46,12 @@
 
                             <div class="form-group sm:col-span-2">
                                 <label for="user_type" class="form-label">Role <span style="color: var(--primary);">*</span></label>
-                                <select id="user_type" name="user_type" class="form-select w-full min-w-0">
+                                <x-forms.md-select-native id="user_type" name="user_type" class="form-select w-full min-w-0">
                                     <option value="">Select role</option>
                                     @foreach($roles as $role)
                                         <option value="{{ $role->id }}" {{ (int) old('user_type') === (int) $role->id ? 'selected' : '' }}>{{ e($role->name) }}</option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="user_type-error" class="form-error mt-1 text-sm {{ $errors->has('user_type') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('user_type') }}</p>
                             </div>
 

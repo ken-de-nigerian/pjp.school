@@ -37,23 +37,23 @@
                     <div class="grid grid-cols-12 gap-4 min-w-0">
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="filter-class" class="form-label">Select class</label>
-                            <select id="filter-class" name="class" class="form-select w-full min-w-0">
+                            <x-forms.md-select-native id="filter-class" name="class" class="form-select w-full min-w-0">
                                 <option value="">Choose class</option>
                                 @foreach($getClasses as $c)
                                     @php $className = is_object($c) ? $c->class_name : $c; @endphp
                                     <option value="{{ e($className) }}" {{ ($filterClass ?? '') === $className ? 'selected' : '' }}>{{ e($className) }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                             <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
                         </div>
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="filter-subjects" class="form-label">Select subject</label>
-                            <select id="filter-subjects" name="subjects" class="form-select w-full min-w-0">
+                            <x-forms.md-select-native id="filter-subjects" name="subjects" class="form-select w-full min-w-0">
                                 <option value="">Choose subject</option>
                                 @foreach($getSubjects as $s)
                                     <option value="{{ e($s->subject_name) }}" data-grade="{{ e($s->grade) }}" {{ ($filterSubject ?? '') === $s->subject_name ? 'selected' : '' }}>{{ e($s->subject_name) }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                             <p id="subjects-error" class="form-error mt-1 text-sm {{ $errors->has('subjects') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('subjects') }}</p>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
             @endif
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>

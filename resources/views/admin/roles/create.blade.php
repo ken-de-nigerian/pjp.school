@@ -66,7 +66,7 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                     @foreach($groups as $group)
-                        <div class="role-m3-card flex flex-col min-h-0 overflow-hidden h-full min-h-[280px]">
+                        <div class="role-m3-card flex flex-col min-h-0 overflow-hidden h-full">
                             <div class="role-m3-card-header px-4 sm:px-5 py-4 flex items-start gap-3 shrink-0">
                                 <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0" style="background: var(--primary-container); color: var(--on-primary-container);">
                                     <i class="fas {{ $group['icon'] }} text-sm" aria-hidden="true"></i>

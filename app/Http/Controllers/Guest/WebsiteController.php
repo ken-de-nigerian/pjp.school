@@ -23,7 +23,10 @@ final class WebsiteController extends Controller
 
     public function faqs(): View
     {
-        return view('guest.pages.faqs', ['title' => 'FAQs']);
+        return view('guest.pages.faqs', [
+            'title' => 'FAQs',
+            'faqTopics' => config('faqs.topics'),
+        ]);
     }
 
     public function adminProcess(): View

@@ -48,22 +48,22 @@
                     <div class="grid grid-cols-12 gap-4 min-w-0">
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="upload-class" class="form-label">Class <span style="color: var(--primary);">*</span></label>
-                            <select id="upload-class" name="class" class="form-select w-full min-w-0">
+                            <x-forms.md-select-native id="upload-class" name="class" class="form-select w-full min-w-0">
                                 <option value="">Select class</option>
                                 @foreach($getClasses as $c)
                                     @php $cn = is_object($c) ? $c->class_name : $c; @endphp
                                     <option value="{{ e($cn) }}" {{ ($class ?? '') === $cn ? 'selected' : '' }}>{{ e($cn) }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                         </div>
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="upload-subjects" class="form-label">Subject <span style="color: var(--primary);">*</span></label>
-                            <select id="upload-subjects" name="subjects" class="form-select w-full min-w-0">
+                            <x-forms.md-select-native id="upload-subjects" name="subjects" class="form-select w-full min-w-0">
                                 <option value="">Select subject</option>
                                 @foreach($getSubjects as $s)
                                     <option value="{{ e($s->subject_name) }}" data-grade="{{ e($s->grade) }}" {{ ($subjects ?? '') === $s->subject_name ? 'selected' : '' }}>{{ e($s->subject_name) }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                         </div>
                     </div>
                     <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
@@ -81,7 +81,7 @@
             @endif
 
             @if(empty($hasFilters))
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -160,7 +160,7 @@
                                 <span class="min-w-0 text-center">Exam (60)</span>
                             </div>
 
-                            <div id="results-upload-form" class="min-w-0 min-w-[min(100%,520px)] lg:min-w-0">
+                            <div id="results-upload-form" class="min-w-0 lg:min-w-0">
                                 @csrf
                                 <ul class="divide-y divide-[var(--outline-variant)] list-none p-0 m-0" id="results-sheet-list" role="list">
                                     @foreach($students as $s)

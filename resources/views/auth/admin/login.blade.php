@@ -4,7 +4,8 @@
     <x-auth-split-card
         heading="{{ __('Admin sign in') }}"
         :intro="__('Sign in to the administrator dashboard.')"
-        image-alt="">
+        :image-src="asset('assets/img/signin.svg')"
+        image-alt="Admin sign in">
 
         <form method="POST" action="{{ route('admin.login') }}" class="auth-form mt-6 sm:mt-7" id="admin-login-form">
             @csrf

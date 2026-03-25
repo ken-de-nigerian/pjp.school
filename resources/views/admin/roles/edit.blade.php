@@ -69,7 +69,7 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                     @foreach($groups as $group)
-                        <div class="role-m3-card flex flex-col min-h-0 overflow-hidden h-full min-h-[280px]">
+                        <div class="role-m3-card flex flex-col min-h-0 overflow-hidden h-full">
                             <div class="role-m3-card-header px-4 sm:px-5 py-4 flex items-start gap-3 shrink-0">
                                 <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0" style="background: var(--primary-container); color: var(--on-primary-container);">
                                     <i class="fas {{ $group['icon'] }} text-sm" aria-hidden="true"></i>
@@ -88,7 +88,7 @@
                                             <span class="text-sm font-medium leading-snug text-left flex-1 min-w-0 pr-2" style="color: var(--on-surface);">{{ $label }}</span>
                                             <div class="relative flex items-center justify-end shrink-0 w-11 h-7">
                                                 <input type="checkbox" name="{{ $col }}" value="1" {{ old($col, $val) == 1 ? 'checked' : '' }} class="role-perm-cb peer sr-only absolute inset-0 w-full h-full cursor-pointer z-10 opacity-0" aria-label="{{ e($label) }}" data-col="{{ $col }}">
-                                                <span class="pointer-events-none absolute inset-0 rounded-full transition-colors duration-200 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-[var(--primary)] peer-focus-visible:ring-offset-2" style="background: var(--surface-container-highest);"></span>
+                                                <span class="pointer-events-none absolute inset-0 rounded-full transition-colors duration-200 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-[var(--primary)]" style="background: var(--surface-container-highest);"></span>
                                                 <span class="pointer-events-none absolute inset-0 rounded-full opacity-0 peer-checked:opacity-100 transition-opacity duration-200" style="background: var(--primary);"></span>
                                                 <span class="pointer-events-none absolute top-1 left-1 w-5 h-5 rounded-full transition-transform duration-200 ease-out bg-white peer-checked:translate-x-[1.125rem]" style="box-shadow: var(--elevation-1);"></span>
                                             </div>

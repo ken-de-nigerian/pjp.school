@@ -96,7 +96,7 @@
                                         @endif
                                     </div>
 
-                                    <div class="p-3 sm:p-4 pt-0 flex flex-row sm:flex-wrap items-stretch sm:items-center justify-center gap-2 pt-4 w-full" style="border-top: 1px solid var(--outline-variant); background: var(--surface-container);">
+                                    <div class="p-3 sm:p-4 pt-0 flex flex-row sm:flex-wrap items-stretch sm:items-center justify-center gap-2 w-full" style="border-top: 1px solid var(--outline-variant); background: var(--surface-container);">
                                         @can('update', $s)
                                             <a href="{{ route('admin.staff.edit', $s->adminId) }}" class="inline-flex items-center justify-center gap-1.5 flex-1 sm:flex-initial min-h-[44px] sm:min-h-0 px-3 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-w-0" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;">
                                                 <i class="fas fa-pen text-xs flex-shrink-0" aria-hidden="true"></i>
@@ -128,7 +128,7 @@
     @if(!$isEmpty)
         <div id="staff-delete-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="staff-delete-modal-title">
             <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="staff-delete-modal" aria-hidden="true"></div>
-            <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+            <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
                 <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                     <h3 id="staff-delete-modal-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);">Delete staff</h3>
                     <p id="staff-delete-modal-message" class="text-sm mb-6" style="color: var(--on-surface-variant);">Are you sure you want to delete this staff member? This action cannot be undone.</p>

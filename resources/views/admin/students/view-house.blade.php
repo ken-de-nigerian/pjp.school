@@ -31,13 +31,13 @@
 
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="house-class" class="form-label">Class</label>
-                            <select id="house-class" name="class" class="form-select w-full min-w-0">
+                            <x-forms.md-select-native id="house-class" name="class" class="form-select w-full min-w-0">
                                 <option value="">All classes</option>
                                 @foreach($getClasses as $c)
                                     @php $className = is_object($c) ? $c->class_name : $c; @endphp
                                     <option value="{{ e($className) }}" {{ old('class', $classFilter ?? '') === $className ? 'selected' : '' }}>{{ e($className) }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                             <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
                         </div>
                     </div>

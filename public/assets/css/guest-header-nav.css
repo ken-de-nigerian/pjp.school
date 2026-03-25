@@ -206,7 +206,7 @@
 }
 
 #guest-mobile-menu-overlay .mobile-menu-item-title {
-    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+    font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
     font-size: 16px;
     font-weight: 600;
     color: rgb(17 24 39);

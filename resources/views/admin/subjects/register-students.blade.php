@@ -44,13 +44,13 @@
                     <form method="GET" action="{{ route('admin.subjects.fetch-classes') }}" class="space-y-4 sm:space-y-5">
                         <div class="form-group min-w-0">
                             <label for="class" class="form-label">Select class</label>
-                            <select id="class" name="class" class="form-select w-full min-w-0">
+                            <x-forms.md-select-native id="class" name="class" class="form-select w-full min-w-0">
                                 <option value="">Choose class</option>
                                 @foreach($getClasses as $c)
                                     @php $className = is_object($c) ? $c->class_name : $c; @endphp
                                     <option value="{{ e($className) }}" {{ ($selectedClass ?? '') === $className ? 'selected' : '' }}>{{ e($className) }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                             <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
                         </div>
                         <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
@@ -68,7 +68,7 @@
             @endif
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -148,7 +148,7 @@
         </div>
     </main>
 
-    <div id="register-subject-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm" aria-modal="true" role="dialog" aria-labelledby="register-subject-modal-title">
+    <div id="register-subject-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm" aria-modal="true" role="dialog" aria-labelledby="register-subject-modal-title">
         <div class="register-subject-modal-panel relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl shadow-2xl flex flex-col" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-2);">
             <div class="flex-shrink-0 px-5 sm:px-6 pt-5 sm:pt-6 pb-3 flex items-start justify-between gap-3" style="border-bottom: 1px solid var(--outline-variant);">
                 <div class="min-w-0 flex-1">
@@ -162,7 +162,7 @@
                 </button>
             </div>
 
-            <form id="register-subject-form" class="flex flex-col flex-1 min-h-0 flex">
+            <form id="register-subject-form" class="flex flex-col flex-1 min-h-0">
                 <input type="hidden" name="studentsList" id="modal-students-list">
                 <div class="flex-1 min-h-0 overflow-y-auto px-5 sm:px-6 py-4">
                     <p id="studentsList-error" class="form-error text-sm mb-2 hidden" aria-live="polite"></p>

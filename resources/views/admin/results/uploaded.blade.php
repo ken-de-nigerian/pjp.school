@@ -40,23 +40,23 @@
                     <div class="grid grid-cols-12 gap-4 min-w-0">
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="upload-class" class="form-label">Class <span style="color: var(--primary);">*</span></label>
-                            <select id="upload-class" name="class" class="form-select w-full min-w-0" required>
+                            <x-forms.md-select-native id="upload-class" name="class" class="form-select w-full min-w-0" required>
                                 <option value="">Select class</option>
                                 @foreach($getClasses as $c)
                                     @php $cn = is_object($c) ? $c->class_name : $c; @endphp
                                     <option value="{{ e($cn) }}" {{ ($class ?? '') === $cn ? 'selected' : '' }}>{{ e($cn) }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                         </div>
 
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="upload-subjects" class="form-label">Subject <span style="color: var(--primary);">*</span></label>
-                            <select id="upload-subjects" name="subjects" class="form-select w-full min-w-0" required>
+                            <x-forms.md-select-native id="upload-subjects" name="subjects" class="form-select w-full min-w-0" required>
                                 <option value="">Select subject</option>
                                 @foreach($getSubjects as $s)
                                     <option value="{{ e($s->subject_name) }}" data-grade="{{ e($s->grade) }}" {{ ($subjects ?? '') === $s->subject_name ? 'selected' : '' }}>{{ e($s->subject_name) }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                         </div>
                     </div>
 
@@ -74,7 +74,7 @@
             @endif
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -124,7 +124,7 @@
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i> Delete all results
                             </button>
                         </div>
-                        <div id="uploaded-results-toolbar" class="hidden flex flex-wrap items-center gap-2 px-5 sm:px-6 py-3" style="background: var(--surface-container); border-bottom: 1px solid var(--outline-variant);">
+                        <div id="uploaded-results-toolbar" class="hidden flex-wrap items-center gap-2 px-5 sm:px-6 py-3" style="background: var(--surface-container); border-bottom: 1px solid var(--outline-variant);">
                             <span class="text-xs font-medium mr-2" style="color: var(--on-surface-variant);"><span id="uploaded-selected-count">0</span> selected</span>
 
                             <button type="button" id="uploaded-approve-btn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-opacity hover:opacity-90" style="background: var(--success-container); color: var(--on-success-container); border-radius: 12px;">
@@ -219,7 +219,7 @@
 
     <div id="uploaded-results-confirm-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="uploaded-confirm-modal-title">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="uploaded-results-confirm-modal" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                 <h3 id="uploaded-confirm-modal-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);"></h3>
                 <p id="uploaded-confirm-modal-message" class="text-sm mb-6" style="color: var(--on-surface-variant);"></p>
@@ -233,7 +233,7 @@
 
     <div id="edit-result-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="edit-result-modal-title">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="edit-result-modal" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                 <h3 id="edit-result-modal-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);">Edit result</h3>
                 <p id="edit-result-modal-student" class="text-sm mb-3" style="color: var(--on-surface-variant);"></p>

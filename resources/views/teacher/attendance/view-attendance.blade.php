@@ -46,7 +46,7 @@
 
                             <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                                 <label for="view-attendance-class" class="form-label">Class</label>
-                                <select id="view-attendance-class" name="class" class="form-select w-full min-w-0">
+                                <x-forms.md-select-native id="view-attendance-class" name="class" class="form-select w-full min-w-0">
                                     <option value="">Select class</option>
                                     @foreach($classes as $c)
                                         @php
@@ -58,29 +58,29 @@
                                             {{ e($cn) }}
                                         </option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
                             </div>
 
                             <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                                 <label for="view-attendance-term" class="form-label">Term</label>
-                                <select id="view-attendance-term" name="term" class="form-select w-full min-w-0">
+                                <x-forms.md-select-native id="view-attendance-term" name="term" class="form-select w-full min-w-0">
                                     <option value="First Term" {{ ($term ?? $settings['term'] ?? '') === 'First Term' ? 'selected' : '' }}>First Term</option>
                                     <option value="Second Term" {{ ($term ?? $settings['term'] ?? '') === 'Second Term' ? 'selected' : '' }}>Second Term</option>
                                     <option value="Third Term" {{ ($term ?? $settings['term'] ?? '') === 'Third Term' ? 'selected' : '' }}>Third Term</option>
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="term-error" class="form-error mt-1 text-sm {{ $errors->has('term') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('term') }}</p>
                             </div>
 
                             <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                                 <label for="view-attendance-session" class="form-label">Session</label>
-                                <select id="view-attendance-session" name="session" class="form-select w-full min-w-0">
+                                <x-forms.md-select-native id="view-attendance-session" name="session" class="form-select w-full min-w-0">
                                     <option value="">Select session</option>
                                     @foreach(range((int)date('Y') - 5, (int)date('Y') + 5) as $y)
                                         @php $opt = $y . '/' . ($y + 1); @endphp
                                         <option value="{{ $opt }}" {{ ($session ?? $settings['session'] ?? '') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="session-error" class="form-error mt-1 text-sm {{ $errors->has('session') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('session') }}</p>
                             </div>
                         </div>
@@ -99,7 +99,7 @@
             @endif
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -146,7 +146,7 @@
                             @csrf
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 sm:px-6 py-4" style="border-bottom: 1px solid var(--outline-variant);">
                                 <p class="text-sm font-medium" style="color: var(--on-surface-variant);">
-                                    <span id="records-count">{{ $records->count() }}</span> record(s) Â· <span id="present-count">0</span> present, <span id="absent-count">0</span> absent
+                                    <span id="records-count">{{ $records->count() }}</span> record(s) · <span id="present-count">0</span> present, <span id="absent-count">0</span> absent
                                 </p>
                                 <div class="flex flex-wrap gap-2">
                                     <button type="button" id="mark-all-present" class="attendance-bulk-btn attendance-bulk-btn--present" aria-pressed="false">All Present</button>
@@ -179,9 +179,9 @@
                                                     <span class="text-xs font-medium md:sr-only" style="color: var(--on-surface-variant);">Name</span>
                                                     <p class="text-sm font-medium break-words" style="color: var(--on-surface);">
                                                         @if($studentForRecord && Route::has('teacher.students.show'))
-                                                            <a href="{{ route('teacher.students.show', $studentForRecord) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $record->name ?? 'â€”' }}</a>
+                                                            <a href="{{ route('teacher.students.show', $studentForRecord) }}" class="transition-opacity hover:opacity-80" style="color: var(--primary);">{{ $record->name ?? '—' }}</a>
                                                         @else
-                                                            {{ $record->name ?? 'â€”' }}
+                                                            {{ $record->name ?? '—' }}
                                                         @endif
                                                     </p>
                                                     <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);">{{ $record->reg_number ?? '' }}</p>

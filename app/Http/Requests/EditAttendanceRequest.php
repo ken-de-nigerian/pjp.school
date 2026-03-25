@@ -10,7 +10,7 @@ class EditAttendanceRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user('admin') !== null;
+        return $this->user('admin') !== null || $this->user('teacher') !== null;
     }
 
     public function rules(): array

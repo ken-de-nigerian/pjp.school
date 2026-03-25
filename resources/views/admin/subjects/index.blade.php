@@ -107,7 +107,7 @@
     @auth('admin')
     <div id="subject-form-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="subject-form-modal-title">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="subject-form-modal" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                 <h3 id="subject-form-modal-title" class="text-lg font-semibold mb-1" style="color: var(--on-surface);">Add Subject</h3>
                 <p class="text-sm mb-5" style="color: var(--on-surface-variant);">Subject name and grade are required.</p>
@@ -122,11 +122,11 @@
                     </div>
                     <div class="form-group min-w-0">
                         <label for="modal_grade" class="form-label">Grade</label>
-                        <select id="modal_grade" name="grade" class="form-select w-full min-w-0">
+                        <x-forms.md-select-native id="modal_grade" name="grade" class="form-select w-full min-w-0">
                             <option value="">Select grade</option>
                             <option value="Junior" @selected($filterGrade === 'Junior')>Junior</option>
                             <option value="Senior" @selected($filterGrade === 'Senior')>Senior</option>
-                        </select>
+                        </x-forms.md-select-native>
                         <p id="modal_grade-error" class="form-error hidden mt-1.5 text-sm" style="color: var(--on-error-container);" aria-live="polite"></p>
                     </div>
                     <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2">
@@ -145,7 +145,7 @@
     @if($subjects->isNotEmpty())
     <div id="subject-delete-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="subject-delete-modal-title">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="subject-delete-modal" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                 <h3 id="subject-delete-modal-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);">Delete subject</h3>
                 <p id="subject-delete-modal-message" class="text-sm mb-6" style="color: var(--on-surface-variant);">Are you sure you want to delete this subject?</p>

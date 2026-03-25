@@ -6,12 +6,12 @@
     <title>Class List — {{ e($selectedClass) }}</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif; font-size: 12px; line-height: 1.4; color: #1a1a1a; margin: 0; padding: 16px; }
+        body { font-family: "Inter", ui-sans-serif, system-ui, sans-serif; font-size: 12px; line-height: 1.4; color: #1a1a1a; margin: 0; padding: 16px; }
         @media print {
             body { padding: 0; }
             .no-print { display: none !important; }
         }
-        h1 { font-size: 18px; font-weight: 600; margin: 0 0 4px 0; }
+        h1 { font-family: "Poppins", ui-sans-serif, system-ui, sans-serif; font-size: 18px; font-weight: 600; margin: 0 0 4px 0; }
         .meta { font-size: 11px; color: #666; margin-bottom: 12px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #e5e5e5; }

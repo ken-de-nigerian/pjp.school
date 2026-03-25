@@ -44,34 +44,34 @@
 
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="view-attendance-class" class="form-label">Class</label>
-                            <select id="view-attendance-class" name="class" class="form-select w-full min-w-0">
+                            <x-forms.md-select-native id="view-attendance-class" name="class" class="form-select w-full min-w-0">
                                 <option value="">Select class</option>
                                 @foreach($classes as $c)
                                     <option value="{{ e($c->class_name) }}" {{ ($class ?? '') === $c->class_name ? 'selected' : '' }}>{{ e($c->class_name) }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                             <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
                         </div>
 
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="view-attendance-term" class="form-label">Term</label>
-                            <select id="view-attendance-term" name="term" class="form-select w-full min-w-0">
+                            <x-forms.md-select-native id="view-attendance-term" name="term" class="form-select w-full min-w-0">
                                 <option value="First Term" {{ ($term ?? $settings['term'] ?? '') === 'First Term' ? 'selected' : '' }}>First Term</option>
                                 <option value="Second Term" {{ ($term ?? $settings['term'] ?? '') === 'Second Term' ? 'selected' : '' }}>Second Term</option>
                                 <option value="Third Term" {{ ($term ?? $settings['term'] ?? '') === 'Third Term' ? 'selected' : '' }}>Third Term</option>
-                            </select>
+                            </x-forms.md-select-native>
                             <p id="term-error" class="form-error mt-1 text-sm {{ $errors->has('term') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('term') }}</p>
                         </div>
 
                         <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                             <label for="view-attendance-session" class="form-label">Session</label>
-                            <select id="view-attendance-session" name="session" class="form-select w-full min-w-0">
+                            <x-forms.md-select-native id="view-attendance-session" name="session" class="form-select w-full min-w-0">
                                 <option value="">Select session</option>
                                 @foreach(range((int)date('Y') - 5, (int)date('Y') + 5) as $y)
                                     @php $opt = $y . '/' . ($y + 1); @endphp
                                     <option value="{{ $opt }}" {{ ($session ?? $settings['session'] ?? '') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
                                 @endforeach
-                            </select>
+                            </x-forms.md-select-native>
                             <p id="session-error" class="form-error mt-1 text-sm {{ $errors->has('session') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('session') }}</p>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
             @endif
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -216,7 +216,7 @@
             @if($hasFilters && $records->isNotEmpty())
             <div id="attendance-delete-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="attendance-delete-modal-title">
                 <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="attendance-delete-modal" aria-hidden="true"></div>
-                <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+                <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
                     <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                         <h3 id="attendance-delete-modal-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);">Delete record</h3>
                         <p id="attendance-delete-modal-message" class="text-sm mb-6" style="color: var(--on-surface-variant);">Are you sure you want to delete this attendance record?</p>

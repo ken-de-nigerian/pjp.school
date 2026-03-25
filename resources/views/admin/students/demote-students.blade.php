@@ -34,23 +34,23 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                                 <div class="md:col-span-1 form-group">
                                     <label for="demoteStudentFrom" class="form-label">Demote from this class</label>
-                                    <select id="demoteStudentFrom" name="from_class" class="form-select" data-load-students>
+                                    <x-forms.md-select-native id="demoteStudentFrom" name="from_class" class="form-select" data-load-students>
                                         <option value="">Select a class</option>
                                         @foreach(array_reverse($getClasses) as $class)
                                             <option value="{{ e($class->class_name) }}">{{ e($class->class_name) }}</option>
                                         @endforeach
-                                    </select>
+                                    </x-forms.md-select-native>
                                     <p id="from_class-error" class="form-error {{ $errors->has('from_class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('from_class') }}</p>
                                 </div>
 
                                 <div class="md:col-span-1 form-group">
                                     <label for="demoteStudentTo" class="form-label">To this class</label>
-                                    <select id="demoteStudentTo" name="to_class" class="form-select">
+                                    <x-forms.md-select-native id="demoteStudentTo" name="to_class" class="form-select">
                                         <option value="">Select a class</option>
                                         @foreach(array_reverse($getClasses) as $class)
                                             <option value="{{ e($class->class_name) }}">{{ e($class->class_name) }}</option>
                                         @endforeach
-                                    </select>
+                                    </x-forms.md-select-native>
                                     <p id="to_class-error" class="form-error {{ $errors->has('to_class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('to_class') }}</p>
                                 </div>
                             </div>

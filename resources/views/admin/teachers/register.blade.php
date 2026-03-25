@@ -87,11 +87,11 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0">
                                     <div class="form-group min-w-0">
                                         <label for="gender" class="form-label">Gender <span style="color: var(--primary);">*</span></label>
-                                        <select id="gender" name="gender" class="form-select w-full min-w-0">
+                                        <x-forms.md-select-native id="gender" name="gender" class="form-select w-full min-w-0">
                                             <option value="">Select gender</option>
                                             <option value="Male" {{ old('gender') === 'Male' ? 'selected' : '' }}>Male</option>
                                             <option value="Female" {{ old('gender') === 'Female' ? 'selected' : '' }}>Female</option>
-                                        </select>
+                                        </x-forms.md-select-native>
                                         <p id="gender-error" class="form-error mt-1 text-sm {{ $errors->has('gender') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('gender') }}</p>
                                     </div>
 
@@ -138,12 +138,12 @@
                                     </div>
                                     <div class="form-group min-w-0">
                                         <label for="state" class="form-label">State</label>
-                                        <select id="state" name="state" class="form-select w-full min-w-0">
+                                        <x-forms.md-select-native id="state" name="state" class="form-select w-full min-w-0">
                                             <option value="">Select State</option>
                                             @foreach($states ?? [] as $st)
                                                 <option value="{{ e($st) }}" {{ old('state') === $st ? 'selected' : '' }}>{{ e($st) }}</option>
                                             @endforeach
-                                        </select>
+                                        </x-forms.md-select-native>
                                         <p id="state-error" class="form-error mt-1 text-sm {{ $errors->has('state') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('state') }}</p>
                                     </div>
 

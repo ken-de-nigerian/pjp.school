@@ -192,7 +192,7 @@
                                                         : ($item->date_added?->format('M j, Y') ?? '') }}
                                                 </p>
 
-                                                <div class="flex flex-wrap justify-between items-center gap-2 mt-3 mt-auto pt-2 border-t" style="border-color: var(--card-border);">
+                                                <div class="flex flex-wrap justify-between items-center gap-2 mt-3 pt-2 border-t" style="border-color: var(--card-border);">
                                                     <div class="flex items-center gap-1.5 text-xs sm:text-sm" style="color: var(--text-secondary);">
                                                         <i class="fas fa-user text-xs" aria-hidden="true"></i>
                                                         <span class="truncate">{{ e($item->author ?? 'Admin') }}</span>
@@ -236,7 +236,7 @@
     @if(!empty($get_news))
         <div id="dashboard-news-delete-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="dashboard-news-delete-modal-title">
             <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="dashboard-news-delete-modal" aria-hidden="true"></div>
-            <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+            <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
                 <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                     <h3 id="dashboard-news-delete-modal-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);">Delete announcement</h3>
                     <p id="dashboard-news-delete-modal-message" class="text-sm mb-6" style="color: var(--on-surface-variant);">

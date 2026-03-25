@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 @import 'tailwindcss';
 
 @theme {
     --color-primary: var(--primary);
     --color-primary-hover: var(--primary-hover);
-    --font-serif:
-        "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-heading: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-serif: var(--font-heading);
 }
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -115,7 +115,10 @@ header,
     --on-success-container: #1b5e20;
     --error-container: #ffcdd2;
     --on-error-container: #b71c1c;
-    --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-primary: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-heading: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-sans: var(--font-primary);
+    --font-serif: var(--font-heading);
 }
 
 [data-theme="dark"] {
@@ -192,25 +195,38 @@ header,
 body {
     background: var(--surface);
     color: var(--on-surface);
-    font-family: var(--font-serif), serif;
+    font-family: var(--font-primary);
     font-size: 14px;
     line-height: 1.5;
     letter-spacing: 0;
 }
 
-/* Guest parity: Playfair for headings & display titles; DM Sans stays on body, forms, and buttons */
+/* Global typography */
+html,
+body {
+    font-family: var(--font-primary);
+}
+
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-    font-family: var(--font-serif), serif;
+    font-family: var(--font-heading);
+}
+
+.font-body {
+    font-family: var(--font-primary);
+}
+
+.font-heading {
+    font-family: var(--font-heading);
 }
 
 /*
  * Portal: Playfair for title-like copy that is not a heading tag (common Tailwind div/p/span patterns).
- * Scope to .app-portal (see layouts). KPI / tabular figures: use class tabular-nums to stay on DM Sans.
+ * Scope to .app-portal (see layouts). KPI / tabular figures: use class tabular-nums for numeric alignment.
  */
 .app-portal .admin-page-hero__title {
     font-family: var(--font-serif), serif;
@@ -270,7 +286,7 @@ h6 {
 .app-portal td,
 .app-portal th,
 .app-portal a {
-    font-family: var(--font-serif), serif;
+    font-family: var(--font-primary);
 }
 
 /* Dashboard icons: black in light mode, white in dark mode */
@@ -2119,6 +2135,351 @@ textarea.form-input {
 
 .form-select--error {
     border-color: #dc2626;
+}
+
+/* Material Design 3 select field */
+.m3-select {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface-container-lowest) 92%, transparent);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.m3-select:hover {
+    border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+    background: color-mix(in srgb, var(--surface-container-low) 24%, var(--surface-container-lowest));
+}
+
+.m3-select:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.14);
+}
+
+.m3-select__icon {
+    flex-shrink: 0;
+    width: 2.5rem;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.m3-select__control {
+    width: 100%;
+    min-width: 0;
+    border: none;
+    border-radius: inherit;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 16px;
+    font-family: inherit;
+    line-height: 1.4;
+    padding: 0.75rem 2.25rem 0.75rem 0.5rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2360696c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+}
+
+.m3-select__control:focus {
+    outline: none;
+}
+
+/* Drop-in MD3 select (no structural wrapper needed) */
+.md3-native-select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface-container-lowest) 92%, transparent);
+    color: var(--text-primary);
+    font-size: 16px;
+    font-family: inherit;
+    line-height: 1.4;
+    padding: 0.75rem 2.25rem 0.75rem 0.875rem;
+    cursor: pointer;
+    appearance: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2360696c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+}
+
+.md3-native-select:hover {
+    border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+    background: color-mix(in srgb, var(--surface-container-low) 24%, var(--surface-container-lowest));
+}
+
+.md3-native-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.14);
+}
+
+.md3-native-select.form-select--error {
+    border-color: #dc2626;
+}
+
+.md3-native-select.form-select--error:focus {
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.18);
+}
+
+[data-theme="dark"] .md3-native-select {
+    background: color-mix(in srgb, var(--surface-container-low) 88%, transparent);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23cac4d0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.m3-select__control.form-select--error,
+.m3-select--error,
+.m3-select:has(.m3-select__control.form-select--error) {
+    border-color: #dc2626;
+}
+
+.m3-select--error:focus-within,
+.m3-select:has(.m3-select__control.form-select--error):focus-within {
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.18);
+}
+
+[data-theme="dark"] .m3-select {
+    background: color-mix(in srgb, var(--surface-container-low) 88%, transparent);
+}
+
+[data-theme="dark"] .m3-select__control {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23cac4d0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* Custom searchable dropdown (enhances select.md3-native-select via md-select-enhance.js) */
+.md3-select-enhanced {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    isolation: isolate;
+    z-index: 0;
+    overflow: visible;
+}
+
+.m3-select .md3-select-enhanced {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.md3-select-native-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.md3-select__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface-container-lowest) 92%, transparent);
+    color: var(--text-primary);
+    font-size: 16px;
+    font-family: inherit;
+    line-height: 1.4;
+    padding: 0.75rem 2.25rem 0.75rem 0.875rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.m3-select .md3-select__trigger {
+    border: none;
+    border-radius: inherit;
+    background: transparent;
+    min-height: 0;
+    padding: 0.75rem 2.25rem 0.75rem 0.5rem;
+}
+
+.md3-select__trigger:hover {
+    border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+    background: color-mix(in srgb, var(--surface-container-low) 24%, var(--surface-container-lowest));
+}
+
+.m3-select .md3-select__trigger:hover {
+    background: transparent;
+}
+
+.md3-select__trigger:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.14);
+}
+
+.m3-select:focus-within .md3-select__trigger:focus {
+    box-shadow: none;
+}
+
+.md3-select__trigger:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.md3-select__trigger-value {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.md3-select__trigger-value--placeholder {
+    color: var(--text-secondary);
+}
+
+.md3-select__trigger-chevron {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2360696c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+[data-theme="dark"] .md3-select__trigger-chevron {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23cac4d0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.md3-select-native-hidden.form-select--error + .md3-select__trigger,
+.md3-select__trigger.md3-select__trigger--error {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.18);
+}
+
+/* Panel is portaled to document.body while open (see md-select-enhance.js) */
+.md3-select__panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface-container-lowest);
+    box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.12),
+        0 4px 6px -4px rgba(0, 0, 0, 0.08);
+}
+
+.md3-select__panel--layer {
+    position: fixed;
+    z-index: 10040;
+    margin: 0;
+    max-height: min(20rem, calc(100vh - 1rem));
+    box-sizing: border-box;
+}
+
+[data-theme="dark"] .md3-select__panel {
+    background: color-mix(in srgb, var(--surface-container-low) 94%, transparent);
+}
+
+.md3-select__panel[hidden] {
+    display: none !important;
+}
+
+.md3-select__search-wrap {
+    flex-shrink: 0;
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.md3-select__search {
+    position: relative;
+}
+
+.md3-select__search::before {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2360696c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21 21-4.34-4.34'/%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+[data-theme="dark"] .md3-select__search::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23cac4d0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21 21-4.34-4.34'/%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3C/svg%3E");
+}
+
+.md3-select__filter {
+    width: 100%;
+    padding-left: 2.5rem !important;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.md3-select__options {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.md3-select__optgroup-label {
+    padding: 0.5rem 0.75rem 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+}
+
+.md3-select__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75rem;
+    margin: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.md3-select__option:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--surface-container-high) 55%, transparent);
+}
+
+.md3-select__option--selected {
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+.md3-select__option:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.md3-select__option-label {
+    flex: 1;
+    min-width: 0;
 }
 
 .form-error {

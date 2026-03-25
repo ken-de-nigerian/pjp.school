@@ -304,6 +304,19 @@
                     font-size: 7pt !important;
                 }
 
+                /* Behavioural: screen shows cards on small viewports; print always uses table */
+                .result-behavioral-mobile-cards {
+                    display: none !important;
+                }
+
+                .result-behavioral-desktop-table {
+                    display: block !important;
+                }
+
+                .result-behavioral-desktop-table > .overflow-x-auto {
+                    overflow: visible !important;
+                }
+
                 .result-summary-row th,
                 .result-summary-row td {
                     font-size: 8pt !important;
@@ -496,34 +509,75 @@
                             <h2 id="result-behavioral-heading" class="text-sm font-semibold tracking-tight text-[var(--on-surface)] sm:text-base">Behavioural analysis</h2>
                             <p class="mt-0.5 max-w-2xl text-xs leading-snug text-[var(--on-surface-variant)]">Non-academic traits recorded for this term: conduct, participation, and wellbeing indicators.</p>
                         </div>
-                        <div class="overflow-x-auto [-webkit-overflow-scrolling:touch]">
-                            <table class="result-sheet-table w-full min-w-[560px] border-collapse text-sm">
-                                <caption class="sr-only">Behavioural analysis: ratings for neatness, music, sports, attentiveness, punctuality, health, and politeness.</caption>
-                                <thead>
-                                    <tr class="bg-[var(--surface-container)]">
-                                        <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Neatness</th>
-                                        <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Music</th>
-                                        <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Sports</th>
-                                        <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Attentive</th>
-                                        <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Punctual</th>
-                                        <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Health</th>
-                                        <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Polite</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($behavioral as $b)
-                                        <tr class="bg-[var(--surface-container-lowest)] even:bg-[color-mix(in_srgb,var(--surface-container-low)_55%,var(--surface-container-lowest))]">
-                                            <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->neatness ?? '' }}</td>
-                                            <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->music ?? '' }}</td>
-                                            <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->sports ?? '' }}</td>
-                                            <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->attentiveness ?? '' }}</td>
-                                            <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->punctuality ?? '' }}</td>
-                                            <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->health ?? '' }}</td>
-                                            <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->politeness ?? '' }}</td>
+                        <ul class="result-behavioral-mobile-cards flex flex-col gap-3 p-4 sm:px-5 list-none m-0 md:hidden" role="list" aria-label="Behavioural analysis: ratings for neatness, music, sports, attentiveness, punctuality, health, and politeness.">
+                            @foreach($behavioral as $index => $b)
+                                <li class="flex flex-col rounded-xl p-4" style="background: var(--surface-container);">
+                                    @if($behavioral->count() > 1)
+                                        <p class="mb-2.5 text-xs font-semibold uppercase tracking-wide" style="color: var(--on-surface-variant);">Record {{ $index + 1 }}</p>
+                                    @endif
+                                    <div class="flex flex-col divide-y divide-[color-mix(in_srgb,var(--outline-variant)_22%,transparent)]">
+                                        <div class="flex flex-col gap-1.5 py-2.5 first:pt-0">
+                                            <span class="inline-flex w-fit items-center rounded-lg px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide" style="background: var(--surface-container-high); color: var(--on-surface-variant);">Neatness</span>
+                                            <span class="text-sm font-medium tabular-nums leading-snug" style="color: var(--on-surface);">{{ $b->neatness !== null && $b->neatness !== '' ? $b->neatness : '—' }}</span>
+                                        </div>
+                                        <div class="flex flex-col gap-1.5 py-2.5">
+                                            <span class="inline-flex w-fit items-center rounded-lg px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide" style="background: var(--surface-container-high); color: var(--on-surface-variant);">Music</span>
+                                            <span class="text-sm font-medium tabular-nums leading-snug" style="color: var(--on-surface);">{{ $b->music !== null && $b->music !== '' ? $b->music : '—' }}</span>
+                                        </div>
+                                        <div class="flex flex-col gap-1.5 py-2.5">
+                                            <span class="inline-flex w-fit items-center rounded-lg px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide" style="background: var(--surface-container-high); color: var(--on-surface-variant);">Sports</span>
+                                            <span class="text-sm font-medium tabular-nums leading-snug" style="color: var(--on-surface);">{{ $b->sports !== null && $b->sports !== '' ? $b->sports : '—' }}</span>
+                                        </div>
+                                        <div class="flex flex-col gap-1.5 py-2.5">
+                                            <span class="inline-flex w-fit items-center rounded-lg px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide" style="background: var(--surface-container-high); color: var(--on-surface-variant);">Attentive</span>
+                                            <span class="text-sm font-medium tabular-nums leading-snug" style="color: var(--on-surface);">{{ $b->attentiveness !== null && $b->attentiveness !== '' ? $b->attentiveness : '—' }}</span>
+                                        </div>
+                                        <div class="flex flex-col gap-1.5 py-2.5">
+                                            <span class="inline-flex w-fit items-center rounded-lg px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide" style="background: var(--surface-container-high); color: var(--on-surface-variant);">Punctual</span>
+                                            <span class="text-sm font-medium tabular-nums leading-snug" style="color: var(--on-surface);">{{ $b->punctuality !== null && $b->punctuality !== '' ? $b->punctuality : '—' }}</span>
+                                        </div>
+                                        <div class="flex flex-col gap-1.5 py-2.5">
+                                            <span class="inline-flex w-fit items-center rounded-lg px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide" style="background: var(--surface-container-high); color: var(--on-surface-variant);">Health</span>
+                                            <span class="text-sm font-medium tabular-nums leading-snug" style="color: var(--on-surface);">{{ $b->health !== null && $b->health !== '' ? $b->health : '—' }}</span>
+                                        </div>
+                                        <div class="flex flex-col gap-1.5 py-2.5 last:pb-0">
+                                            <span class="inline-flex w-fit items-center rounded-lg px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide" style="background: var(--surface-container-high); color: var(--on-surface-variant);">Polite</span>
+                                            <span class="text-sm font-medium tabular-nums leading-snug" style="color: var(--on-surface);">{{ $b->politeness !== null && $b->politeness !== '' ? $b->politeness : '—' }}</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                        <div class="result-behavioral-desktop-table hidden md:block">
+                            <div class="overflow-x-auto [-webkit-overflow-scrolling:touch]">
+                                <table class="result-sheet-table w-full min-w-[560px] border-collapse text-sm">
+                                    <caption class="sr-only">Behavioural analysis: ratings for neatness, music, sports, attentiveness, punctuality, health, and politeness.</caption>
+                                    <thead>
+                                        <tr class="bg-[var(--surface-container)]">
+                                            <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Neatness</th>
+                                            <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Music</th>
+                                            <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Sports</th>
+                                            <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Attentive</th>
+                                            <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Punctual</th>
+                                            <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Health</th>
+                                            <th scope="col" class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-[0.6rem] font-semibold uppercase leading-tight text-[var(--on-surface-variant)]">Polite</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($behavioral as $b)
+                                            <tr class="bg-[var(--surface-container-lowest)] even:bg-[color-mix(in_srgb,var(--surface-container-low)_55%,var(--surface-container-lowest))]">
+                                                <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->neatness ?? '' }}</td>
+                                                <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->music ?? '' }}</td>
+                                                <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->sports ?? '' }}</td>
+                                                <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->attentiveness ?? '' }}</td>
+                                                <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->punctuality ?? '' }}</td>
+                                                <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->health ?? '' }}</td>
+                                                <td class="border border-[var(--outline-variant)] px-1 py-1.5 text-center text-xs text-[var(--on-surface)]">{{ $b->politeness ?? '' }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </section>
                 @endif

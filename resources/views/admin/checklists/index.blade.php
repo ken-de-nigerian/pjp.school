@@ -32,23 +32,23 @@
                 <form method="get" action="{{ route('admin.checklists.index') }}" class="space-y-4 sm:space-y-5">
                     <div class="form-group min-w-0">
                         <label for="filter_term" class="form-label text-xs">Term</label>
-                        <select id="filter_term" name="term" class="form-select w-full min-w-[10rem]">
+                        <x-forms.md-select-native id="filter_term" name="term" class="form-select w-full min-w-[10rem]">
                             <option value="">All terms</option>
                             @foreach($termOptions as $t)
                                 <option value="{{ $t }}" @selected($filterTerm === $t)>{{ $t }}</option>
                             @endforeach
-                        </select>
+                        </x-forms.md-select-native>
                     </div>
 
                     <div class="form-group min-w-0">
                         <label for="filter_session" class="form-label text-xs">Session</label>
-                        <select id="filter_session" name="session" class="form-select w-full min-w-[10rem]">
+                        <x-forms.md-select-native id="filter_session" name="session" class="form-select w-full min-w-[10rem]">
                             <option value="">All sessions</option>
                             @foreach(range((int) date('Y') - 5, (int) date('Y') + 5) as $y)
                                 @php $opt = $y . '/' . ($y + 1); @endphp
                                 <option value="{{ $opt }}" @selected($filterSession === $opt)>{{ $opt }}</option>
                             @endforeach
-                        </select>
+                        </x-forms.md-select-native>
                     </div>
 
                     <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
@@ -148,7 +148,7 @@
     @auth('admin')
         <div id="cl-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="cl-modal-title">
             <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="cl-modal" aria-hidden="true"></div>
-            <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+            <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
                 <div class="relative w-full max-w-lg min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                     <h3 id="cl-modal-title" class="text-lg font-semibold mb-1" style="color: var(--on-surface);">Add checklist item</h3>
                     <p class="text-sm mb-5" style="color: var(--on-surface-variant);">Long text is supported (supplies, payment notes).</p>
@@ -164,21 +164,21 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="form-group min-w-0">
                                 <label for="cl_term" class="form-label">Term</label>
-                                <select id="cl_term" name="term" class="form-select w-full min-w-0">
+                                <x-forms.md-select-native id="cl_term" name="term" class="form-select w-full min-w-0">
                                     @foreach($termOptions as $t)
                                         <option value="{{ $t }}" @selected($filterTerm === $t)>{{ $t }}</option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="cl_term-error" class="form-error hidden mt-1.5 text-sm" style="color: var(--on-error-container);" aria-live="polite"></p>
                             </div>
                             <div class="form-group min-w-0">
                                 <label for="cl_session" class="form-label">Session</label>
-                                <select id="cl_session" name="session" class="form-select w-full min-w-0">
+                                <x-forms.md-select-native id="cl_session" name="session" class="form-select w-full min-w-0">
                                     @foreach(range((int) date('Y') - 5, (int) date('Y') + 5) as $y)
                                         @php $opt = $y . '/' . ($y + 1); @endphp
                                         <option value="{{ $opt }}" @selected($filterSession === $opt)>{{ $opt }}</option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="cl_session-error" class="form-error hidden mt-1.5 text-sm" style="color: var(--on-error-container);" aria-live="polite"></p>
                             </div>
                         </div>
@@ -206,7 +206,7 @@
 
         <div id="cl-delete-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="cl-delete-title">
             <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="cl-delete-modal" aria-hidden="true"></div>
-            <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+            <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
                 <div class="relative w-full max-w-md min-w-0 rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto" style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
                     <h3 id="cl-delete-title" class="text-lg font-semibold mb-2" style="color: var(--on-surface);">Delete item</h3>
                     <p id="cl-delete-message" class="text-sm mb-6" style="color: var(--on-surface-variant);"></p>

@@ -75,10 +75,10 @@
 
                                 <div class="form-group">
                                     <label for="gender" class="form-label">Gender</label>
-                                    <select id="gender" name="gender" class="form-select">
+                                    <x-forms.md-select-native id="gender" name="gender" class="form-select">
                                         <option value="Male" {{ old('gender') === 'Male' ? 'selected' : '' }}>Male</option>
                                         <option value="Female" {{ old('gender') === 'Female' ? 'selected' : '' }}>Female</option>
-                                    </select>
+                                    </x-forms.md-select-native>
                                 </div>
 
                                 <div class="form-group">
@@ -98,12 +98,12 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0">
                                     <div class="form-group">
                                         <label for="class" class="form-label">Student's Class <span style="color: var(--primary);">*</span></label>
-                                        <select id="class" name="class" class="form-select">
+                                        <x-forms.md-select-native id="class" name="class" class="form-select">
                                             <option value="">Select Class</option>
                                             @foreach($classes as $c)
                                                 <option value="{{ e($c->class_name) }}" {{ old('class', $selectedClass ?? '') === $c->class_name ? 'selected' : '' }}>{{ e($c->class_name) }}</option>
                                             @endforeach
-                                        </select>
+                                        </x-forms.md-select-native>
                                         <p id="class-error" class="form-error {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
                                     </div>
 
@@ -146,12 +146,12 @@
 
                                     <div class="form-group">
                                         <label for="state" class="form-label">State <span style="color: var(--primary);">*</span></label>
-                                        <select id="state" name="state" class="form-select">
+                                        <x-forms.md-select-native id="state" name="state" class="form-select">
                                             <option value="">Select State</option>
                                             @foreach($states as $st)
                                                 <option value="{{ e($st) }}" {{ old('state') === $st ? 'selected' : '' }}>{{ e($st) }}</option>
                                             @endforeach
-                                        </select>
+                                        </x-forms.md-select-native>
                                         <p id="state-error" class="form-error {{ $errors->has('state') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('state') }}</p>
                                     </div>
 
@@ -264,19 +264,19 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0">
                                 <div class="form-group">
                                     <label for="house" class="form-label">House</label>
-                                    <select id="house" name="house" class="form-select">
+                                    <x-forms.md-select-native id="house" name="house" class="form-select">
                                         @foreach($houses as $h)
                                             <option value="{{ e($h) }}" {{ old('house') === $h ? 'selected' : '' }}>{{ e($h) }}</option>
                                         @endforeach
-                                    </select>
+                                    </x-forms.md-select-native>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="category" class="form-label">Category</label>
-                                    <select id="category" name="category" class="form-select">
+                                    <x-forms.md-select-native id="category" name="category" class="form-select">
                                         <option value="Boarding" {{ old('category', 'Boarding') === 'Boarding' ? 'selected' : '' }}>Boarding</option>
                                         <option value="Day" {{ old('category') === 'Day' ? 'selected' : '' }}>Day</option>
-                                    </select>
+                                    </x-forms.md-select-native>
                                 </div>
                             </div>
                         </div>

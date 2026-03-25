@@ -17,7 +17,7 @@
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
             @php
                 $viewBehDesc = $hasFilters
-                    ? 'View records for the selected class, term and session.'
+                    ? 'View and edit behavioural records for the selected class, term and session.'
                     : 'Filter by class, term and session to view uploaded behavioural records.';
             @endphp
             <x-admin.hero-page
@@ -48,36 +48,36 @@
                         <div class="grid grid-cols-12 gap-4 min-w-0">
                             <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                                 <label for="view-behavioral-class" class="form-label">Class</label>
-                                <select id="view-behavioral-class" name="class" class="form-select w-full min-w-0">
+                                <x-forms.md-select-native id="view-behavioral-class" name="class" class="form-select w-full min-w-0">
                                     <option value="">Select class</option>
                                     @foreach($classes as $c)
                                         <option value="{{ e(is_string($c)?$c:($c['class_name'] ?? '')) }}" {{ ($class ?? '') === (is_string($c)?$c:($c['class_name'] ?? '')) ? 'selected' : '' }}>
                                             {{ e(is_string($c)?$c:($c['class_name'] ?? '')) }}
                                         </option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="class-error" class="form-error mt-1 text-sm {{ $errors->has('class') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('class') }}</p>
                             </div>
 
                             <div class="col-span-12 sm:col-span-6 form-group min-w-0">
                                 <label for="view-behavioral-term" class="form-label">Term</label>
-                                <select id="view-behavioral-term" name="term" class="form-select w-full min-w-0">
+                                <x-forms.md-select-native id="view-behavioral-term" name="term" class="form-select w-full min-w-0">
                                     <option value="First Term" {{ ($term ?? $settings['term'] ?? '') === 'First Term' ? 'selected' : '' }}>First Term</option>
                                     <option value="Second Term" {{ ($term ?? $settings['term'] ?? '') === 'Second Term' ? 'selected' : '' }}>Second Term</option>
                                     <option value="Third Term" {{ ($term ?? $settings['term'] ?? '') === 'Third Term' ? 'selected' : '' }}>Third Term</option>
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="term-error" class="form-error mt-1 text-sm {{ $errors->has('term') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('term') }}</p>
                             </div>
 
                             <div class="col-span-12 sm:col-span-12 form-group min-w-0">
                                 <label for="view-behavioral-session" class="form-label">Session</label>
-                                <select id="view-behavioral-session" name="session" class="form-select w-full min-w-0">
+                                <x-forms.md-select-native id="view-behavioral-session" name="session" class="form-select w-full min-w-0">
                                     <option value="">Select session</option>
                                     @foreach(range((int)date('Y') - 5, (int)date('Y') + 5) as $y)
                                         @php $opt = $y . '/' . ($y + 1); @endphp
                                         <option value="{{ $opt }}" {{ ($session ?? $settings['session'] ?? '') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
                                     @endforeach
-                                </select>
+                                </x-forms.md-select-native>
                                 <p id="session-error" class="form-error mt-1 text-sm {{ $errors->has('session') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('session') }}</p>
                             </div>
                         </div>
@@ -96,7 +96,7 @@
             @endif
 
             @if(!$hasFilters)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
+                <div class="flex-1 min-h-0 w-full rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 md:py-24 px-6" style="background: var(--surface-container-low); border: 1px solid var(--outline-variant);">
                     <div class="dashboard-stat-icon dashboard-stat-icon--blue w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="border-radius: 16px;">
                         <i class="fas fa-search text-3xl" aria-hidden="true"></i>
                     </div>
@@ -168,7 +168,7 @@
                                                 <img src="{{ $avatarSrc }}" alt="" width="40" height="40" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2 lg:place-self-center" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
                                                 <div class="flex flex-col justify-center min-w-0 flex-1 lg:flex-none lg:min-w-0 lg:py-1 lg:pr-2 overflow-hidden">
                                                     <p class="text-sm font-semibold truncate" style="color: var(--on-surface);" title="{{ e($record->name ?? '') }}">
-                                                        {{ e($record->name ?? 'â€”') }}
+                                                        {{ e($record->name ?? '—') }}
                                                     </p>
                                                     <p class="text-xs truncate mt-0.5" style="color: var(--on-surface-variant);" title="{{ e($record->reg_number ?? '') }}">{{ e($record->reg_number ?? '') }}</p>
                                                 </div>
@@ -177,22 +177,22 @@
                                             @foreach($behaviorFields as $key => $config)
                                                 <div class="behavioral-view-cell flex flex-col justify-center min-w-0 overflow-hidden lg:py-1" data-field="{{ $key }}">
                                                     <span class="lg:sr-only text-xs font-medium mt-1 lg:mt-0" style="color: var(--on-surface-variant);">{{ $config['label'] }}:</span>
-                                                    <p class="behavioral-view-value text-sm font-normal overflow-hidden line-clamp-2 break-words" style="color: var(--on-surface);" title="{{ e($record->$key ?? '') }}">{{ e($record->$key ?? 'â€”') }}</p>
+                                                    <p class="behavioral-view-value text-sm font-normal overflow-hidden line-clamp-2 break-words" style="color: var(--on-surface);" title="{{ e($record->$key ?? '') }}">{{ e($record->$key ?? '—') }}</p>
                                                 </div>
                                             @endforeach
 
                                             <div class="flex flex-wrap items-stretch sm:items-center gap-2 pt-1 lg:pt-0 lg:py-1 lg:justify-end lg:place-self-center flex-shrink-0 w-full lg:w-auto">
                                                 <button type="button" class="behavioral-edit-btn inline-flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-medium transition-opacity hover:opacity-95 whitespace-nowrap" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;" title="Edit this record">
                                                     <i class="fas fa-pen text-xs"></i>
-                                                    View
+                                                    Edit
                                                 </button>
                                             </div>
                                         </div>
 
-                                        <div class="behavioral-edit-mode hidden flex flex-col gap-4 p-4 sm:px-6 pb-5 min-w-0 overflow-hidden" style="background: var(--surface-container-low); border-top: 1px solid var(--outline-variant);">
+                                        <div class="behavioral-edit-mode hidden flex-col gap-4 p-4 sm:px-6 pb-5 min-w-0 overflow-hidden" style="background: var(--surface-container-low); border-top: 1px solid var(--outline-variant);">
                                             <div class="flex items-center gap-3 min-w-0">
                                                 <img src="{{ $avatarSrc }}" alt="" width="40" height="40" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2" style="border-color: var(--outline-variant);" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($avatarInitial) }}&size=80'">
-                                                <p class="text-sm font-semibold truncate flex-1 min-w-0" style="color: var(--on-surface);" title="{{ e($record->name ?? '') }}">Edit Â· <span class="font-normal" style="color: var(--on-surface-variant);">{{ e($record->name ?? '') }}</span></p>
+                                                <p class="text-sm font-semibold truncate flex-1 min-w-0" style="color: var(--on-surface);" title="{{ e($record->name ?? '') }}">Edit · <span class="font-normal" style="color: var(--on-surface-variant);">{{ e($record->name ?? '') }}</span></p>
                                             </div>
                                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-w-0">
                                                 @foreach($behaviorFields as $key => $config)
@@ -201,13 +201,15 @@
                                                             <i class="fas {{ $config['icon'] }} opacity-70 flex-shrink-0" style="color: var(--on-surface-variant);"></i>
                                                             <span class="truncate">{{ $config['label'] }}</span>
                                                         </label>
-                                                        <textarea id="record-{{ $index }}-{{ $key }}" class="behavioral-record-field form-input w-full min-w-0 resize-y rounded-xl border min-h-[2.5rem] text-sm py-2 px-3 max-h-24" rows="6" maxlength="255" data-field="{{ $key }}" placeholder="Comment or note" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);" readonly>{{ e($record->$key ?? '') }}</textarea>
+                                                        <textarea id="record-{{ $index }}-{{ $key }}" class="behavioral-record-field form-input w-full min-w-0 resize-y rounded-xl border min-h-[2.5rem] text-sm py-2 px-3 max-h-24" rows="2" maxlength="255" data-field="{{ $key }}" placeholder="Comment or note" style="border-color: var(--outline-variant); background: var(--surface-container-lowest);">{{ e($record->$key ?? '') }}</textarea>
                                                     </div>
                                                 @endforeach
                                             </div>
                                             <div class="flex flex-col-reverse w-full gap-3 sm:flex-row sm:justify-end sm:gap-2">
-                                                <button type="button" class="behavioral-cancel-edit btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-3 sm:px-5 sm:py-2.5 rounded-xl text-sm font-medium hover:opacity-95 whitespace-nowrap min-h-[2.75rem] sm:min-h-0" style="border-radius: 12px;">
-                                                    Cancel
+                                                <button type="button" class="behavioral-cancel-edit btn-secondary w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-3 sm:px-5 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap min-h-[2.75rem] sm:min-h-0" style="border-radius: 12px;">Cancel</button>
+                                                <button type="button" class="behavioral-save-row btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-3 sm:px-5 sm:py-2.5 rounded-xl text-sm font-medium hover:opacity-95 whitespace-nowrap min-h-[2.75rem] sm:min-h-0" style="border-radius: 12px;">
+                                                    <i class="fas fa-save text-xs"></i>
+                                                    Save
                                                 </button>
                                             </div>
                                         </div>
@@ -253,6 +255,32 @@
         @push('scripts')
             <script>
                 (function() {
+                    const editUrl = @json(route('teacher.behavioral.edit'));
+                    const classVal = @json($class);
+                    const termVal = @json($term);
+                    const sessionVal = @json($session);
+                    const fieldKeys = @json(array_keys($behaviorFields));
+                    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+                    function getPayload(row) {
+                        const reg = row.dataset.reg || '';
+                        const payload = { reg_number: reg, class: classVal, term: termVal, session: sessionVal };
+                        fieldKeys.forEach(function(key) {
+                            const input = row.querySelector('.behavioral-record-field[data-field="' + key + '"]');
+                            payload[key] = input ? (input.value || '').trim().slice(0, 255) : '';
+                        });
+                        return payload;
+                    }
+
+                    function setRowViewValues(row, data) {
+                        fieldKeys.forEach(function(key) {
+                            const cell = row.querySelector('.behavioral-view-cell[data-field="' + key + '"]');
+                            const input = row.querySelector('.behavioral-record-field[data-field="' + key + '"]');
+                            if (cell) cell.querySelector('p').textContent = (data && data[key]) ? data[key] : '—';
+                            if (input) input.value = (data && data[key]) ? data[key] : '';
+                        });
+                    }
+
                     function closeEditMode(row) {
                         row.classList.remove('is-editing');
                         row.querySelector('.behavioral-edit-mode').classList.add('hidden');
@@ -275,6 +303,32 @@
                         if (e.target.closest('.behavioral-cancel-edit')) {
                             e.preventDefault();
                             closeEditMode(row);
+                        }
+                        if (e.target.closest('.behavioral-save-row')) {
+                            e.preventDefault();
+                            const saveBtn = row.querySelector('.behavioral-save-row');
+                            setButtonLoading(saveBtn, true);
+                            const payload = getPayload(row);
+                            fetch(editUrl, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf, 'X-Requested-With': 'XMLHttpRequest' },
+                                body: JSON.stringify(payload)
+                            })
+                            .then(function(res) { return res.json().catch(function() { return {}; }).then(function(data) { return { ok: res.ok, data: data }; }); })
+                            .then(function(result) {
+                                setButtonLoading(saveBtn, false);
+                                if (result.ok && result.data.status === 'success') {
+                                    setRowViewValues(row, payload);
+                                    closeEditMode(row);
+                                    flashSuccess(result.data.message || 'Record updated.');
+                                } else {
+                                    flashError(result.data.message || 'Failed to update record.');
+                                }
+                            })
+                            .catch(function() {
+                                setButtonLoading(saveBtn, false);
+                                flashError('Network error. Please try again.');
+                            });
                         }
                     });
                 })();

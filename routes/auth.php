@@ -22,3 +22,8 @@ Route::middleware('guest:teacher')->group(function () {
         Route::post('/teacher/login', 'login');
     });
 });
+
+/*
+| Fallback
+*/
+Route::get('/login', fn () => redirect()->route('home'))->name('login');

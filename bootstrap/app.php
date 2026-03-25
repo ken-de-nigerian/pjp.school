@@ -7,6 +7,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -20,7 +22,27 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->redirectGuestsTo(function (Request $request): string {
+            if (($request->is('admin') || $request->is('admin/*')) && ! $request->is('admin/login')) {
+                return route('admin.login');
+            }
+            if (($request->is('teacher') || $request->is('teacher/*')) && ! $request->is('teacher/login')) {
+                return route('teacher.login');
+            }
+
+            return route('home');
+        });
+
+        $middleware->redirectUsersTo(function (): string {
+            if (Auth::guard('admin')->check()) {
+                return route('admin.dashboard');
+            }
+            if (Auth::guard('teacher')->check()) {
+                return route('teacher.dashboard');
+            }
+
+            return route('home');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->renderable(function (Throwable $e) {
@@ -40,11 +62,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 $title = 'Bad Request';
                 $message = 'The request could not be understood due to malformed syntax or invalid parameters.';
             }
-            // Handle 401 Unauthorized
+            // Let Laravel convert this to a redirect to the correct login (see redirectGuestsTo).
             elseif ($e instanceof AuthenticationException) {
-                $code = 401;
-                $title = 'Unauthorized Access';
-                $message = 'You need to be authenticated to access this resource. Please log in to continue.';
+                return null;
             }
             // Handle 403 from policies / gates
             elseif ($e instanceof AuthorizationException || $e instanceof AccessDeniedHttpException) {

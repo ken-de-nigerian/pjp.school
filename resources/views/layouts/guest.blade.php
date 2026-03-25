@@ -32,9 +32,7 @@
         <meta name="twitter:description" content="A leading Catholic secondary school in Imo State — rooted in faith, driven by excellence, and committed to the formation of the whole child.">
         <meta name="twitter:image" content="{{ asset('storage/' . config('school.logo_file', 'logo/logo.jpg')) }}">
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+        @include('layouts.partials.font-system')
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link rel="stylesheet" crossorigin="" href="{{ asset('assets/css/index-BYEfoYjf.css') }}" />
@@ -42,6 +40,18 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/iziToast.min.css') }}">
 
         <style>
+            :root {
+                --font-primary: 'Inter', sans-serif;
+                --font-heading: 'Poppins', sans-serif;
+            }
+            html, body {
+                font-family: var(--font-primary);
+            }
+            h1, h2, h3, h4, h5, h6,
+            .font-heading,
+            .font-serif {
+                font-family: var(--font-heading) !important;
+            }
             .form-error {
                 font-size: 0.8125rem;
                 color: #dc2626;
@@ -53,7 +63,7 @@
         @stack('styles')
     </head>
 
-    <body>
+    <body class="font-sans">
         <div class="w-full min-h-screen bg-white text-gray-800 font-sans selection:bg-educave-800 selection:text-white">
             @include('layouts.partials.page-header')
 

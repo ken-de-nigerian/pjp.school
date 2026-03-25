@@ -17,7 +17,7 @@
                 aria-label="Teacher profile"
                 pill="Teacher"
                 title="Profile"
-                description="{{ e(trim(($t->firstname ?? '') . ' ' . ($t->lastname ?? ''))) }} Â· {{ e($t->email ?? '') }}"
+                description="{{ e(trim(($t->firstname ?? '') . ' ' . ($t->lastname ?? ''))) }} · {{ e($t->email ?? '') }}"
             >
                 <x-slot name="actions">
                     <button type="button" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0" data-modal="teacher-password-modal">
@@ -38,7 +38,7 @@
                                 Choose image
                             </label>
                             <input type="file" id="photoimg" class="hidden" accept="image/jpeg,image/png,image/jpg" aria-label="Select profile photo">
-                            <button type="button" id="teacher-avatar-upload-btn" class="hidden w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style="background: var(--primary); color: var(--on-primary); border-radius: 12px;">
+                            <button type="button" id="teacher-avatar-upload-btn" class="hidden w-full sm:w-auto items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style="background: var(--primary); color: var(--on-primary); border-radius: 12px;">
                                 Upload photo
                             </button>
                             <p id="photoimg-error" class="form-error mt-2 text-sm text-left w-full {{ $errors->has('photoimg') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('photoimg') }}</p>
@@ -104,7 +104,7 @@
 
     <div id="teacher-password-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain" aria-modal="true" role="dialog" aria-labelledby="teacher-password-title">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="teacher-password-modal" aria-hidden="true"></div>
-        <div class="relative min-h-full min-h-[100dvh] flex items-center justify-center p-4 py-6 sm:p-6">
+        <div class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
             <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl py-5 px-4 sm:py-6 sm:px-6 my-auto" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
                 <h3 id="teacher-password-title" class="text-lg font-semibold mb-1" style="color: var(--on-surface);">Change password</h3>
                 <p class="text-sm mb-5" style="color: var(--on-surface-variant);">Enter your current password, then choose a new one.</p>

@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Throwable;
 
 final class ChecklistController extends Controller
 {
@@ -44,6 +45,9 @@ final class ChecklistController extends Controller
         ]);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function store(StoreChecklistRequest $request): JsonResponse
     {
         Gate::authorize('create', Checklist::class);

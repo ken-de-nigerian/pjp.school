@@ -20,13 +20,12 @@
                                 "We are not just looking for bright students — we are looking for children who are ready to be formed. If your child is prepared to grow in faith, character and excellence, their journey starts here."
                             </p>
                             <div class="flex flex-col sm:flex-row gap-4">
-                                <a href="{{ route('apply_online') }}" target="_blank" rel="noopener noreferrer"
-                                   class="bg-educave-900 text-white px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-educave-700 transition-colors flex items-center justify-center gap-2 group">
-                                    Apply Online
+                                <a href="{{ route('apply_online') }}" class="rounded-xl bg-educave-900 text-white px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-educave-700 transition-colors flex items-center justify-center gap-2 group">
+                                    Start Application
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right group-hover:translate-x-1 transition-transform" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                                 </a>
                                 <a href="mailto:{{ config('school.school_email') }}"
-                                   class="border border-gray-300 text-educave-900 px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-educave-50 transition-colors flex items-center justify-center gap-2">
+                                   class="rounded-xl border border-gray-300 text-educave-900 px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-educave-50 transition-colors flex items-center justify-center gap-2">
                                     Contact Admissions
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail" aria-hidden="true"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
                                 </a>
@@ -203,8 +202,7 @@
                                     <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Next Exam Date</p>
                                     <p class="text-2xl font-serif font-bold text-white">14th Saturday, March</p>
                                 </div>
-                                <a href="{{ route('apply_online') }}" target="_blank" rel="noopener noreferrer"
-                                   class="bg-white text-educave-900 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-educave-800 hover:text-white transition-colors">
+                                <a href="{{ route('apply_online') }}" class="rounded-xl bg-white text-educave-900 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-educave-800 hover:text-white transition-colors">
                                     Apply Now
                                 </a>
                             </div>
@@ -222,11 +220,11 @@
                             <p class="text-gray-500 text-sm leading-relaxed max-w-lg">Our admissions office is happy to assist. Reach us by phone or email and we will guide you through every step of the process.</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-4 shrink-0">
-                            <a href="tel:{{ config('school.school_phone') }}" class="flex items-center gap-3 px-8 py-4 border border-gray-300 text-educave-900 text-xs font-bold uppercase tracking-widest hover:bg-educave-900 hover:text-white hover:border-educave-900 transition-colors">
+                            <a href="tel:{{ config('school.school_phone') }}" class="flex items-center gap-3 rounded-xl px-8 py-4 border border-gray-300 text-educave-900 text-xs font-bold uppercase tracking-widest hover:bg-educave-900 hover:text-white hover:border-educave-900 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>
                                 {{ config('school.school_phone') }}
                             </a>
-                            <a href="mailto:{{ config('school.school_email') }}" class="flex items-center gap-3 px-8 py-4 bg-educave-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-educave-700 transition-colors">
+                            <a href="mailto:{{ config('school.school_email') }}" class="flex items-center gap-3 rounded-xl px-8 py-4 bg-educave-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-educave-700 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
                                 {{ config('school.school_email') }}
                             </a>

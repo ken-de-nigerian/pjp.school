@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Teacher\Concerns;
 
 use App\Models\Teacher;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Gate;
 
 trait TeacherScope
@@ -46,7 +47,7 @@ trait TeacherScope
     /**
      * Authorize against TeacherPolicy using the teacher guard user (default app guard is not "teacher").
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     protected function authorizeTeacherAbility(string $ability): void
     {

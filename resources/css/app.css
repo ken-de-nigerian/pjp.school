@@ -1,17 +1,131 @@
 @import 'tailwindcss';
 
+/*
+| PJP crest palette (Tailwind @theme)
+| — Flag: yellow / white / green · Emblem: ink, flame red, gold ribbon, torch metal
+| — Green: brand / CTAs (educave-* ramp). Gold / yellow / torch: accents & warmth — not green-only.
+| — Portal M3 tokens in :root add --accent (gold) alongside --primary (green).
+*/
 @theme {
     --color-primary: var(--primary);
     --color-primary-hover: var(--primary-hover);
+    --color-accent: var(--accent);
+    --color-on-accent: var(--on-accent);
+    --color-accent-container: var(--accent-container);
+    --color-on-accent-container: var(--on-accent-container);
     --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-heading: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-serif: var(--font-heading);
+
+    /* Semantic (crest) */
+    --color-pjp-ink: #0a0a0a;
+    --color-pjp-paper: #ffffff;
+    --color-pjp-yellow: #f2e631;
+    --color-pjp-white: #ffffff;
+    --color-pjp-green: #2e7d32;
+    --color-pjp-flame: #c62828;
+    --color-pjp-gold: #e6a000;
+    --color-pjp-gold-bright: #f9b233;
+    --color-pjp-torch: #c4956a;
+
+    /* Green scale (UI backgrounds & borders) */
+    --color-pjp-green-50: #e8f5e9;
+    --color-pjp-green-100: #c8e6c9;
+    --color-pjp-green-200: #a5d6a7;
+    --color-pjp-green-300: #81c784;
+    --color-pjp-green-400: #66bb6a;
+    --color-pjp-green-500: #4caf50;
+    --color-pjp-green-600: #43a047;
+    --color-pjp-green-700: #388e3c;
+    --color-pjp-green-800: #2e7d32;
+    --color-pjp-green-900: #1b5e20;
+    --color-pjp-green-950: #0d2818;
+    --color-pjp-green-975: #050d08;
+
+    /* Gold scale (accents, ribbons) */
+    --color-pjp-gold-50: #fffbeb;
+    --color-pjp-gold-100: #fef3c7;
+    --color-pjp-gold-200: #fde68a;
+    --color-pjp-gold-300: #fcd34d;
+    --color-pjp-gold-400: #f9b233;
+    --color-pjp-gold-500: #e6a000;
+    --color-pjp-gold-600: #c48a00;
+    --color-pjp-gold-700: #a66f00;
+    --color-pjp-gold-800: #855400;
+    --color-pjp-gold-900: #6b4200;
+
+    /* Legacy alias: educave-* → PJP green scale (guest blades). Keep 50–900 as one ramp; use text-pjp-ink for crest black. */
+    --color-educave-50: var(--color-pjp-green-50);
+    --color-educave-100: var(--color-pjp-green-100);
+    --color-educave-200: var(--color-pjp-green-200);
+    --color-educave-300: var(--color-pjp-green-300);
+    --color-educave-400: var(--color-pjp-green-400);
+    --color-educave-500: var(--color-pjp-green-500);
+    --color-educave-600: var(--color-pjp-green-600);
+    --color-educave-700: var(--color-pjp-green-700);
+    --color-educave-800: var(--color-pjp-green-800);
+    --color-educave-900: var(--color-pjp-green-900);
+    --color-educave-950: var(--color-pjp-green-950);
+    --color-educave-975: var(--color-pjp-green-975);
+
+    /*
+     * Neutral mid-tones: default Tailwind neutral-400/500 are too light for long body copy on white / cream.
+     * Shift 400–600 darker (~one step) for WCAG-friendly supporting text.
+     */
+    --color-neutral-400: #737373;
+    --color-neutral-500: #525252;
+    --color-neutral-600: #404040;
 }
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+
+/*
+| Guest crest accents — use sparingly on public pages (gold ribbon, flag yellow, torch metal).
+| Pair with Tailwind pjp-* utilities; these cover patterns that need one class name.
+*/
+.guest-crest-divider {
+    display: block;
+    height: 1px;
+    border: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in srgb, var(--color-pjp-torch) 70%, transparent) 45%,
+        color-mix(in srgb, var(--color-pjp-gold-500) 45%, transparent) 55%,
+        transparent
+    );
+}
+
+.guest-crest-divider--short {
+    width: 100%;
+    max-width: 11rem;
+    margin-inline: auto;
+}
+
+.guest-crest-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 9999px;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background-color: var(--color-pjp-yellow);
+    color: var(--color-pjp-ink);
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+}
+
+.guest-crest-underline {
+    text-decoration: underline;
+    text-decoration-color: var(--color-pjp-gold-500);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.22em;
+}
 
 * {
     -webkit-font-smoothing: antialiased;
@@ -61,27 +175,45 @@ header,
     }
 }
 
-/* Material Design 3 – system tokens (light) */
+/*
+ * Material Design 3 – light. Strategy: green = primary CTAs / structure; gold = ribbons & secondary accents;
+ * warm neutrals = surfaces (crest has yellow, white, green, gold, flame, torch — not green-only).
+ */
 :root {
-    /* Primary */
-    --primary: #1976d2;
+    /* Crest reference (hex) — also in @theme as --color-pjp-* */
+    --pjp-crest-gold: #e6a000;
+    --pjp-crest-gold-bright: #f9b233;
+    --pjp-crest-yellow: #f2e631;
+    --pjp-crest-torch: #c4956a;
+    --pjp-crest-flame: #c62828;
+
+    /* Primary — PJP green (buttons, active nav, success thread) */
+    --primary: #2e7d32;
     --on-primary: #ffffff;
-    --primary-container: #bbdefb;
-    --on-primary-container: #0d47a1;
-    --primary-rgb: 25, 118, 210;
-    --primary-hover: #1565c0;
-    --primary-dark: #1565c0;
-    /* Surface (M3 hierarchy) */
-    --surface: #fafafa;
+    --primary-container: #c8e6c9;
+    --on-primary-container: #1b5e20;
+    --primary-rgb: 46, 125, 50;
+    --primary-hover: #388e3c;
+    --primary-dark: #1b5e20;
+
+    /* Secondary accent — gold ribbon (highlights, hero chips, icon wells, borders) */
+    --accent: var(--pjp-crest-gold);
+    --on-accent: #2a2100;
+    --accent-rgb: 230, 160, 0;
+    --accent-container: #fff8e6;
+    --on-accent-container: #6b4a00;
+
+    /* Surfaces — warm paper/stone (torch-neutral), not green-washed */
+    --surface: #faf9f7;
     --on-surface: #1c1b1f;
     --on-surface-variant: #49454f;
-    --outline: #79747e;
-    --outline-variant: #cac4d0;
+    --outline: #78716c;
+    --outline-variant: #d6d1c8;
     --surface-container-lowest: #ffffff;
-    --surface-container-low: #f5f5f5;
-    --surface-container: #eeeeee;
-    --surface-container-high: #e0e0e0;
-    --surface-container-highest: #bdbdbd;
+    --surface-container-low: #f3f1ec;
+    --surface-container: #e9e6df;
+    --surface-container-high: #ddd8cf;
+    --surface-container-highest: #c9c2b6;
     /* Legacy mapping for existing classes */
     --bg-primary: var(--surface);
     --bg-secondary: var(--surface-container-low);
@@ -122,24 +254,32 @@ header,
 }
 
 [data-theme="dark"] {
-    --primary: #90caf9;
-    --on-primary: #003258;
-    --primary-container: #004a77;
-    --on-primary-container: #bbdefb;
-    --primary-rgb: 144, 202, 249;
-    --primary-hover: #bbdefb;
-    --primary-dark: #bbdefb;
-    /* Deeper dark surfaces (rich black / charcoal) */
-    --surface: #0c0b0e;
+    /* Primary — light green on dark (CTAs / structure) */
+    --primary: #a5d6a7;
+    --on-primary: #0d2818;
+    --primary-container: #1b3d1e;
+    --on-primary-container: #c8e6c9;
+    --primary-rgb: 165, 214, 167;
+    --primary-hover: #c5e1a5;
+    --primary-dark: #81c784;
+
+    --accent: #f9b233;
+    --on-accent: #1a1404;
+    --accent-rgb: 249, 178, 51;
+    --accent-container: #3d2f0a;
+    --on-accent-container: #ffe7b3;
+
+    /* Dark surfaces — warm charcoal (torch), not green-gray */
+    --surface: #100f0d;
     --on-surface: #ece8ee;
     --on-surface-variant: #b0aab4;
-    --outline: #7c7782;
-    --outline-variant: #3d3a42;
-    --surface-container-lowest: #0c0b0e;
-    --surface-container-low: #141318;
-    --surface-container: #1b1a1f;
-    --surface-container-high: #232228;
-    --surface-container-highest: #2c2a31;
+    --outline: #8a8278;
+    --outline-variant: #3d3830;
+    --surface-container-lowest: #100f0d;
+    --surface-container-low: #1a1816;
+    --surface-container: #23211e;
+    --surface-container-high: #2d2a26;
+    --surface-container-highest: #3d3830;
     --bg-primary: var(--surface);
     --bg-secondary: var(--surface-container-low);
     --bg-tertiary: var(--surface-container);
@@ -916,9 +1056,9 @@ h6 {
     overflow: hidden;
     border-radius: 1.25rem;
     margin-bottom: 1.5rem;
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+    color: var(--on-surface);
+    border: 1px solid var(--outline-variant);
+    box-shadow: var(--elevation-1);
 }
 
 @media (min-width: 1024px) {
@@ -932,15 +1072,22 @@ h6 {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(180deg, #1f2535 0%, #1a1f2e 40%, #161b28 100%);
+    /* Gold wash → neutral → faint green stop (flag colours, not green-only) */
+    background: linear-gradient(
+        165deg,
+        color-mix(in srgb, var(--accent) 10%, var(--surface)) 0%,
+        var(--surface) 38%,
+        color-mix(in srgb, var(--primary) 6%, var(--surface-container-low)) 100%
+    );
 }
 
 .admin-dashboard-hero__bg::before {
     content: "";
     position: absolute;
     inset: 0;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.034) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.034) 1px, transparent 1px);
+    /* Grid: gold lines one axis, green-tinted the other — subtle crest mix */
+    background-image: linear-gradient(color-mix(in srgb, var(--accent) 12%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--primary) 9%, transparent) 1px, transparent 1px);
     background-size: 28px 28px;
     background-repeat: repeat;
     pointer-events: none;
@@ -969,9 +1116,17 @@ h6 {
     margin-bottom: 0.5rem;
 }
 
-/* Stronger chip outline than Tailwind border-white/15 — still soft for readability */
+/* Pill: gold ribbon (accent), not another green chip */
 .admin-dashboard-hero__intro > span.admin-dashboard-hero__brand {
-    border-color: rgba(255, 255, 255, 0.22) !important;
+    border-color: color-mix(in srgb, var(--accent) 38%, var(--outline-variant)) !important;
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface-container-lowest)) !important;
+    color: var(--on-accent-container) !important;
+}
+
+[data-theme="dark"] .admin-dashboard-hero__intro > span.admin-dashboard-hero__brand {
+    border-color: color-mix(in srgb, var(--accent) 42%, transparent) !important;
+    background: color-mix(in srgb, var(--accent) 14%, var(--surface-container-low)) !important;
+    color: var(--on-accent-container) !important;
 }
 
 .admin-dashboard-hero__intro .auth-banner-eyebrow {
@@ -991,7 +1146,7 @@ h6 {
     font-size: 1.0625rem;
     letter-spacing: -0.02em;
     font-family: var(--font-serif), serif;
-    color: #fff;
+    color: var(--on-surface);
 }
 
 .admin-dashboard-hero__pill {
@@ -1034,8 +1189,8 @@ h6 {
 }
 
 .admin-dashboard-hero__avatar {
-    border-color: rgba(255, 255, 255, 0.2) !important;
-    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: var(--outline-variant) !important;
+    background: var(--surface-container-low) !important;
 }
 
 .admin-dashboard-hero__eyebrow {
@@ -1043,16 +1198,16 @@ h6 {
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45);
+    color: var(--on-surface-variant);
 }
 
 .admin-dashboard-hero__name {
     font-family: var(--font-serif), serif;
-    color: #fff !important;
+    color: var(--on-surface) !important;
 }
 
 .admin-dashboard-hero__email {
-    color: rgba(255, 255, 255, 0.65) !important;
+    color: var(--on-surface-variant) !important;
 }
 
 .admin-dashboard-hero__actions {
@@ -1070,16 +1225,17 @@ h6 {
     font-size: 0.875rem;
     font-weight: 500;
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.92);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--on-surface);
+    background: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.admin-dashboard-hero__btn:hover {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.28);
-    color: #fff;
+/* Secondary only — do not override --primary background (was causing white-on-gold = unreadable) */
+.admin-dashboard-hero__btn:hover:not(.admin-dashboard-hero__btn--primary) {
+    background: color-mix(in srgb, var(--accent) 14%, var(--surface-container-low));
+    border-color: color-mix(in srgb, var(--accent) 28%, var(--outline-variant));
+    color: var(--on-surface);
 }
 
 .admin-dashboard-hero__quick-nav {
@@ -1110,14 +1266,14 @@ h6 {
     border-radius: 0.75rem;
     text-decoration: none;
     text-align: center;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.13);
+    background: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
     transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .admin-dashboard-hero__tile:hover {
-    background: rgba(255, 255, 255, 0.09);
-    border-color: rgba(255, 255, 255, 0.22);
+    background: color-mix(in srgb, var(--primary) 6%, var(--surface-container-lowest));
+    border-color: color-mix(in srgb, var(--primary) 22%, var(--outline-variant));
     transform: translateY(-1px);
 }
 
@@ -1128,25 +1284,101 @@ h6 {
     align-items: center;
     justify-content: center;
     border-radius: 0.75rem;
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
+    background: color-mix(in srgb, var(--accent) 14%, var(--surface-container-low));
+    color: color-mix(in srgb, var(--accent) 55%, var(--on-surface));
     font-size: 1.125rem;
 }
 
 .admin-dashboard-hero__tile-label {
     font-size: 0.875rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--on-surface);
     line-height: 1.25;
 }
 
 [data-theme="dark"] .admin-dashboard-hero {
+    color: #fff;
     border-color: rgba(255, 255, 255, 0.11);
     box-shadow: 0 4px 32px rgba(0, 0, 0, 0.55);
 }
 
 [data-theme="dark"] .admin-dashboard-hero__bg {
-    background: linear-gradient(180deg, #12151f 0%, #0d1018 45%, #080a10 100%);
+    background: linear-gradient(
+        165deg,
+        color-mix(in srgb, var(--accent) 12%, #141210) 0%,
+        #12100e 40%,
+        color-mix(in srgb, var(--primary) 10%, #0e0c0a) 100%
+    );
+}
+
+[data-theme="dark"] .admin-dashboard-hero__bg::before {
+    background-image: linear-gradient(color-mix(in srgb, var(--accent) 14%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--primary) 10%, transparent) 1px, transparent 1px);
+}
+
+[data-theme="dark"] .admin-dashboard-hero__logo-text {
+    color: #fff;
+}
+
+[data-theme="dark"] .admin-dashboard-hero__eyebrow {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme="dark"] .admin-dashboard-hero__name {
+    color: #fff !important;
+}
+
+[data-theme="dark"] .admin-dashboard-hero__email {
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+
+[data-theme="dark"] .admin-dashboard-hero__avatar {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-theme="dark"] .admin-dashboard-hero__btn:not(.admin-dashboard-hero__btn--primary) {
+    color: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="dark"] .admin-dashboard-hero__btn:hover:not(.admin-dashboard-hero__btn--primary) {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
+    color: #fff;
+}
+
+[data-theme="dark"] .admin-dashboard-hero__btn--primary {
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: transparent;
+}
+
+[data-theme="dark"] .admin-dashboard-hero__btn--primary:hover {
+    background: var(--primary-hover);
+    color: var(--on-primary);
+    border-color: transparent;
+    filter: none;
+}
+
+[data-theme="dark"] .admin-dashboard-hero__tile {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+[data-theme="dark"] .admin-dashboard-hero__tile:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+[data-theme="dark"] .admin-dashboard-hero__tile-icon {
+    background: color-mix(in srgb, var(--accent) 18%, rgba(255, 255, 255, 0.06));
+    color: var(--accent);
+}
+
+[data-theme="dark"] .admin-dashboard-hero__tile-label {
+    color: rgba(255, 255, 255, 0.92);
 }
 
 /* --------------------------------------------------------------------------
@@ -1639,14 +1871,14 @@ h6 {
     box-sizing: border-box;
 }
 
-/* Reusable admin page hero (title + actions inside banner) */
-.admin-page-hero__title {
-    color: #fff;
+/* Reusable admin page hero (title + actions inside banner) — only inside .admin-dashboard-hero */
+.admin-dashboard-hero .admin-page-hero__title {
+    color: var(--on-surface);
     letter-spacing: -0.02em;
 }
 
-.admin-page-hero__description {
-    color: rgba(255, 255, 255, 0.68);
+.admin-dashboard-hero .admin-page-hero__description {
+    color: var(--on-surface-variant);
     max-width: 42rem;
 }
 
@@ -1654,25 +1886,45 @@ h6 {
     margin-bottom: 0.25rem;
 }
 
-.admin-page-hero__back {
+.admin-dashboard-hero .admin-page-hero__back {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--on-surface-variant);
     text-decoration: none;
     transition: color 0.2s ease, opacity 0.2s ease;
 }
 
-.admin-page-hero__back:hover {
+.admin-dashboard-hero .admin-page-hero__back:hover {
+    color: var(--on-surface);
+}
+
+.admin-dashboard-hero .admin-page-hero__below {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--outline-variant);
+}
+
+[data-theme="dark"] .admin-dashboard-hero .admin-page-hero__title {
+    color: #fff;
+}
+
+[data-theme="dark"] .admin-dashboard-hero .admin-page-hero__description {
+    color: rgba(255, 255, 255, 0.68);
+}
+
+[data-theme="dark"] .admin-dashboard-hero .admin-page-hero__back {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+[data-theme="dark"] .admin-dashboard-hero .admin-page-hero__back:hover {
     color: rgba(255, 255, 255, 0.95);
 }
 
-.admin-page-hero__below {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.14);
+[data-theme="dark"] .admin-dashboard-hero .admin-page-hero__below {
+    border-top-color: rgba(255, 255, 255, 0.14);
 }
 
 .admin-dashboard-hero__btn--primary {
@@ -1682,9 +1934,10 @@ h6 {
 }
 
 .admin-dashboard-hero__btn--primary:hover {
-    filter: brightness(1.06);
+    background: var(--primary-hover);
     border-color: transparent;
     color: var(--on-primary);
+    filter: none;
 }
 
 .admin-page-hero__segments {
@@ -1694,7 +1947,7 @@ h6 {
     gap: 0.5rem;
 }
 
-.admin-page-hero__segment {
+.admin-dashboard-hero .admin-page-hero__segment {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1704,27 +1957,39 @@ h6 {
     font-size: 0.875rem;
     font-weight: 500;
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.88);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--on-surface);
+    background: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.admin-page-hero__segment:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.24);
-    color: #fff;
+.admin-dashboard-hero .admin-page-hero__segment:hover {
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface-container-low));
+    border-color: color-mix(in srgb, var(--accent) 28%, var(--outline-variant));
+    color: var(--on-surface);
 }
 
-.admin-page-hero__segment--active {
+.admin-dashboard-hero .admin-page-hero__segment--active {
     background: var(--primary);
     color: var(--on-primary);
     border-color: transparent;
 }
 
-.admin-page-hero__segment--active:hover {
+.admin-dashboard-hero .admin-page-hero__segment--active:hover {
     filter: brightness(1.05);
     color: var(--on-primary);
+}
+
+[data-theme="dark"] .admin-dashboard-hero .admin-page-hero__segment {
+    color: rgba(255, 255, 255, 0.88);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="dark"] .admin-dashboard-hero .admin-page-hero__segment:hover {
+    background: color-mix(in srgb, var(--accent) 14%, rgba(255, 255, 255, 0.08));
+    border-color: color-mix(in srgb, var(--accent) 32%, rgba(255, 255, 255, 0.18));
+    color: #fff;
 }
 
 /* Tailwind-friendly split card (auth / result check) — tokens match app theme */
@@ -2896,48 +3161,145 @@ main.overflow-y-auto {
 }
 
 
-[data-theme="dark"] nav {
+/* Portal shell only — guest public site uses its own header / mobile overlay tokens */
+[data-theme="dark"] body.app-portal nav {
     background: var(--nav-bg) !important;
     border-color: var(--border) !important;
 }
 
-[data-theme="dark"] nav.sticky {
+[data-theme="dark"] body.app-portal nav.sticky {
     background: var(--nav-bg) !important;
     box-shadow: var(--shadow-sm) !important;
 }
 
-[data-theme="dark"] .mobile-menu-header {
+[data-theme="dark"] body.app-portal .mobile-menu-header {
     background: var(--bg-secondary);
     border-color: var(--border);
 }
 
-[data-theme="dark"] .mobile-menu-footer {
+[data-theme="dark"] body.app-portal .mobile-menu-footer {
     background: var(--bg-primary);
     border-color: var(--border);
 }
 
-[data-theme="dark"] .mobile-menu-item {
+[data-theme="dark"] body.app-portal .mobile-menu-item {
     color: var(--text-primary);
 }
 
-[data-theme="dark"] .mobile-menu-item:hover {
+[data-theme="dark"] body.app-portal .mobile-menu-item:hover {
     background: var(--surface-container);
 }
 
-[data-theme="dark"] .mobile-menu-item.active {
+[data-theme="dark"] body.app-portal .mobile-menu-item.active {
     background: var(--surface-container-high);
 }
 
-[data-theme="dark"] .mobile-menu-item-title {
+[data-theme="dark"] body.app-portal .mobile-menu-item-title {
     color: var(--text-primary);
 }
 
-[data-theme="dark"] .mobile-menu-item-subtitle {
+[data-theme="dark"] body.app-portal .mobile-menu-item-subtitle {
     color: var(--text-secondary);
 }
 
-[data-theme="dark"] .mobile-menu-item-arrow {
+[data-theme="dark"] body.app-portal .mobile-menu-item-arrow {
     color: var(--text-secondary);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Guest public site (body.guest-site) — dark mode surfaces + readable copy    */
+/* -------------------------------------------------------------------------- */
+[data-theme="dark"] body.guest-site .min-h-screen.bg-white.text-gray-800 {
+    color: var(--on-surface) !important;
+}
+
+[data-theme="dark"] body.guest-site .text-gray-900,
+[data-theme="dark"] body.guest-site .text-gray-800,
+[data-theme="dark"] body.guest-site .text-gray-700 {
+    color: var(--on-surface) !important;
+}
+
+[data-theme="dark"] body.guest-site .text-gray-600,
+[data-theme="dark"] body.guest-site .text-gray-500 {
+    color: var(--on-surface-variant) !important;
+}
+
+[data-theme="dark"] body.guest-site .text-gray-400,
+[data-theme="dark"] body.guest-site .text-gray-300 {
+    color: color-mix(in srgb, var(--on-surface-variant) 92%, transparent) !important;
+}
+
+[data-theme="dark"] body.guest-site .text-gray-200,
+[data-theme="dark"] body.guest-site .text-gray-100,
+[data-theme="dark"] body.guest-site .text-gray-50 {
+    color: color-mix(in srgb, var(--on-surface) 78%, transparent) !important;
+}
+
+[data-theme="dark"] body.guest-site .text-neutral-900,
+[data-theme="dark"] body.guest-site .text-neutral-800,
+[data-theme="dark"] body.guest-site .text-neutral-700 {
+    color: var(--on-surface) !important;
+}
+
+[data-theme="dark"] body.guest-site .text-neutral-600,
+[data-theme="dark"] body.guest-site .text-neutral-500 {
+    color: var(--on-surface-variant) !important;
+}
+
+[data-theme="dark"] body.guest-site .text-neutral-400,
+[data-theme="dark"] body.guest-site .text-neutral-300 {
+    color: color-mix(in srgb, var(--on-surface-variant) 90%, transparent) !important;
+}
+
+[data-theme="dark"] body.guest-site .text-educave-900,
+[data-theme="dark"] body.guest-site .text-educave-800,
+[data-theme="dark"] body.guest-site .text-educave-700 {
+    color: var(--primary) !important;
+}
+
+[data-theme="dark"] body.guest-site .text-educave-600,
+[data-theme="dark"] body.guest-site .text-educave-500 {
+    color: color-mix(in srgb, var(--primary) 88%, white) !important;
+}
+
+[data-theme="dark"] body.guest-site header .border-b.border-gray-100 {
+    border-color: var(--border) !important;
+}
+
+[data-theme="dark"] body.guest-site .guest-nav-dd {
+    background-color: var(--surface-container-low) !important;
+    border-color: var(--border) !important;
+    border-top-color: var(--primary) !important;
+    color: var(--on-surface) !important;
+}
+
+[data-theme="dark"] body.guest-site .guest-nav-dd a {
+    color: var(--on-surface-variant) !important;
+}
+
+[data-theme="dark"] body.guest-site .guest-nav-dd a:hover,
+[data-theme="dark"] body.guest-site .guest-nav-dd a.hover\:bg-educave-50:hover {
+    background-color: var(--surface-container-high) !important;
+    color: var(--on-surface) !important;
+}
+
+[data-theme="dark"] body.guest-site .hover\:text-educave-800:hover {
+    color: var(--primary) !important;
+}
+
+[data-theme="dark"] body.guest-site .hover\:bg-gray-100:hover {
+    background-color: var(--surface-container-high) !important;
+}
+
+[data-theme="dark"] body.guest-site .border-gray-100,
+[data-theme="dark"] body.guest-site .border-gray-200,
+[data-theme="dark"] body.guest-site .border-gray-300 {
+    border-color: var(--outline-variant) !important;
+}
+
+[data-theme="dark"] body.guest-site .bg-educave-50,
+[data-theme="dark"] body.guest-site .hover\:bg-educave-50:hover {
+    background-color: var(--surface-container-high) !important;
 }
 
 [data-theme="dark"] .modal-backdrop {
@@ -2968,6 +3330,22 @@ main.overflow-y-auto {
 [data-theme="dark"] .bg-primary-600 .text-white,
 [data-theme="dark"] .bg-primary-700 .text-white {
     color: white !important;
+}
+
+/* Guest: global .text-white remap is wrong on brand-green + footer — restore contrast */
+[data-theme="dark"] body.guest-site header > .bg-educave-900 .text-white,
+[data-theme="dark"] body.guest-site header > .bg-educave-900 .font-semibold.text-white,
+[data-theme="dark"] body.guest-site .bg-educave-900.text-white,
+[data-theme="dark"] body.guest-site .bg-educave-950.text-white,
+[data-theme="dark"] body.guest-site footer.text-white,
+[data-theme="dark"] body.guest-site footer .text-white,
+[data-theme="dark"] body.guest-site footer h2.text-white,
+[data-theme="dark"] body.guest-site footer h4.text-white {
+    color: #fff !important;
+}
+
+[data-theme="dark"] body.guest-site header > .bg-educave-900 .text-gray-300 {
+    color: color-mix(in srgb, white 78%, transparent) !important;
 }
 
 [data-theme="dark"] .border-white\/5 {
@@ -3069,8 +3447,8 @@ main.overflow-y-auto {
     color: var(--text-secondary) !important;
 }
 
-/* Bottom Navigation */
-[data-theme="dark"] nav.lg\:hidden {
+/* Bottom Navigation (portal mobile bar only) */
+[data-theme="dark"] body.app-portal nav.lg\:hidden {
     background: var(--mobile-nav-bg) !important;
     border-color: var(--border) !important;
 }
@@ -3668,8 +4046,10 @@ span[style*="box-shadow: var(--elevation-1)"] {
     }
 }
 
+/* Document scroll: only the admin/teacher shell uses a fixed viewport with scroll on <main>.
+ * A global html { overflow: hidden } at lg+ broke guest pages and any layout that scrolls the window. */
 @media (min-width: 1024px) {
-    html {
+    html:has(body.app-portal > .flex.h-screen.overflow-hidden) {
         overflow: hidden;
         height: 100%;
     }

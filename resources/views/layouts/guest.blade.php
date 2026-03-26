@@ -34,8 +34,11 @@
 
         @include('layouts.partials.font-system')
 
+        @unless(app()->runningUnitTests())
+            @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @endunless
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" crossorigin="" href="{{ asset('assets/css/index-BYEfoYjf.css') }}" />
         <link rel="stylesheet" href="{{ asset('assets/css/guest-header-nav.css') }}" />
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/iziToast.min.css') }}">
 
@@ -45,12 +48,12 @@
                 --font-heading: 'Poppins', sans-serif;
             }
             html, body {
-                font-family: var(--font-primary);
+                font-family: var(--font-primary), serif;
             }
             h1, h2, h3, h4, h5, h6,
             .font-heading,
             .font-serif {
-                font-family: var(--font-heading) !important;
+                font-family: var(--font-heading), serif !important;
             }
             .form-error {
                 font-size: 0.8125rem;
@@ -63,7 +66,7 @@
         @stack('styles')
     </head>
 
-    <body class="font-sans">
+    <body class="guest-site font-sans">
         <div class="w-full min-h-screen bg-white text-gray-800 font-sans selection:bg-educave-800 selection:text-white">
             @include('layouts.partials.page-header')
 

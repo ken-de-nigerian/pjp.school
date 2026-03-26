@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "20b593d2458fe9fe8181150e54d17ecf",
+    "content-hash": "fe94730b8affa6fac408fdce5d08bd83",
     "packages": [
         {
             "name": "brick/math",
@@ -1052,6 +1052,93 @@
                 }
             ],
             "time": "2025-08-22T14:27:06+00:00"
+        },
+        {
+            "name": "kendenigerian/payzephyr",
+            "version": "v1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ken-de-nigerian/payzephyr.git",
+                "reference": "1f94a6f3585d736379a4ce8bbf45feae12daacbc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ken-de-nigerian/payzephyr/zipball/1f94a6f3585d736379a4ce8bbf45feae12daacbc",
+                "reference": "1f94a6f3585d736379a4ce8bbf45feae12daacbc",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.8",
+                "illuminate/database": "^10.0|^11.0|^12.0",
+                "illuminate/http": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "php": "^8.2",
+                "stripe/stripe-php": "^13.0"
+            },
+            "require-dev": {
+                "ext-pdo": "*",
+                "laravel/pint": "^1.13",
+                "mockery/mockery": "^1.6",
+                "orchestra/testbench": "^8.0|^9.0|^10.0",
+                "pestphp/pest": "^2.34|^3.0",
+                "pestphp/pest-plugin-laravel": "^2.3|^3.0",
+                "phpstan/phpstan": "^1.10"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Payment": "KenDeNigerian\\PayZephyr\\Facades\\Payment"
+                    },
+                    "providers": [
+                        "KenDeNigerian\\PayZephyr\\PaymentServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "KenDeNigerian\\PayZephyr\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nwaneri Chukwunyere Kenneth",
+                    "email": "ken.de.nigerian@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A unified payment abstraction layer for Laravel supporting multiple providers (Paystack, Flutterwave, Monnify, Stripe, PayPal, Square, OPay, Mollie, NOWPayments) with automatic fallback and webhooks.",
+            "homepage": "https://github.com/ken-de-nigerian/payzephyr",
+            "keywords": [
+                "fintech",
+                "flutterwave",
+                "laravel",
+                "laravel-package",
+                "mollie",
+                "monnify",
+                "nowpayments",
+                "opay",
+                "payment",
+                "payment-gateway",
+                "payments",
+                "paypal",
+                "paystack",
+                "square",
+                "stripe",
+                "webhook"
+            ],
+            "support": {
+                "issues": "https://github.com/ken-de-nigerian/payzephyr/issues",
+                "source": "https://github.com/ken-de-nigerian/payzephyr"
+            },
+            "time": "2025-12-27T21:15:40+00:00"
         },
         {
             "name": "laravel/framework",
@@ -3294,6 +3381,65 @@
                 "source": "https://github.com/ramsey/uuid/tree/4.9.2"
             },
             "time": "2025-12-14T04:43:48+00:00"
+        },
+        {
+            "name": "stripe/stripe-php",
+            "version": "v13.18.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stripe/stripe-php.git",
+                "reference": "02abb043b103766f4ed920642ae56ffdc58c7467"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/02abb043b103766f4ed920642ae56ffdc58c7467",
+                "reference": "02abb043b103766f4ed920642ae56ffdc58c7467",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "3.5.0",
+                "phpstan/phpstan": "^1.2",
+                "phpunit/phpunit": "^5.7 || ^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Stripe\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stripe and contributors",
+                    "homepage": "https://github.com/stripe/stripe-php/contributors"
+                }
+            ],
+            "description": "Stripe PHP Library",
+            "homepage": "https://stripe.com/",
+            "keywords": [
+                "api",
+                "payment processing",
+                "stripe"
+            ],
+            "support": {
+                "issues": "https://github.com/stripe/stripe-php/issues",
+                "source": "https://github.com/stripe/stripe-php/tree/v13.18.0"
+            },
+            "time": "2024-04-09T21:08:04+00:00"
         },
         {
             "name": "symfony/clock",

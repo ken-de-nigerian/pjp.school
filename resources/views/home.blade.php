@@ -9,9 +9,9 @@
                 <div class="absolute top-0 left-0 w-full h-1/2 bg-educave-100/50 -skew-y-3 origin-top-left z-0"></div>
                 <div class="container mx-auto px-4 relative z-10 text-center">
                     <div class="inline-flex items-center gap-2 mb-6 scroll-fade-up visible">
-                        <span class="w-8 h-px bg-educave-800"></span>
+                        <span class="w-8 h-px bg-pjp-gold-500" aria-hidden="true"></span>
                         <span class="text-xs font-bold uppercase tracking-[0.2em] text-educave-800">Est. 2006 • Imo State</span>
-                        <span class="w-8 h-px bg-educave-800"></span>
+                        <span class="w-8 h-px bg-pjp-torch/90" aria-hidden="true"></span>
                     </div>
 
                     <h1 class="text-6xl md:text-8xl lg:text-9xl font-serif font-bold text-educave-900 tracking-tight leading-[0.9] mb-8 scroll-fade-up delay-100 visible">
@@ -32,18 +32,22 @@
                 </div>
             </section>
 
+            <div class="bg-white py-3" aria-hidden="true">
+                <div class="guest-crest-divider guest-crest-divider--short max-w-md opacity-90"></div>
+            </div>
+
             <section class="bg-educave-900 text-white py-24 lg:py-32 relative overflow-hidden">
                 <div
                     class="absolute inset-0 opacity-5 bg-[image:radial-gradient(theme(colors.white)_1px,transparent_1px)] [background-size:30px_30px]"></div>
                 <div class="container mx-auto px-4 md:px-8 lg:px-16 relative z-10">
                     <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                         <div class="w-full lg:w-1/2 order-2 lg:order-1 scroll-fade-up visible">
-                            <span class="text-educave-400 font-bold tracking-widest text-xs uppercase mb-4 block">The Visionary</span>
+                            <div class="mb-4"><span class="guest-crest-badge">The Visionary</span></div>
                             <h2 class="text-4xl md:text-5xl font-serif font-bold mb-8 leading-tight">
                                 "Train up a child <br/>
                                 in the way he <span class="text-educave-400 italic">should go.</span>"
                             </h2>
-                            <p class="text-neutral-400 leading-relaxed mb-8 text-lg">
+                            <p class="text-white/75 leading-relaxed mb-8 text-lg">
                                 We are a co-educational Catholic school rooted in faith, discipline, and a deep
                                 commitment to raising children of excellence.
                                 Here, we do not just teach — we form. We shape minds, build character, and send forth
@@ -60,7 +64,7 @@
                                 />
                                 <div>
                                     <h4 class="text-xl font-serif font-bold text-white">Fr. Ephraim U. Ibekwe</h4>
-                                    <p class="text-xs text-neutral-500 uppercase tracking-widest">School Principal</p>
+                                    <p class="text-xs text-white/60 uppercase tracking-widest">School Principal</p>
                                 </div>
                                 <div class="ml-auto">
                                     <svg width="100" height="40" viewBox="0 0 120 40"
@@ -95,24 +99,24 @@
                         <div class="w-full lg:w-1/2 relative z-20">
                             <div class="inline-flex items-center gap-3 mb-8 scroll-fade-up visible">
                                 <div
-                                    class="px-3 py-1 border border-white/20 rounded-full bg-white/5 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest text-educave-400 flex items-center gap-2">
-                                    <span class="w-2 h-2 bg-educave-500 rounded-full animate-pulse"></span>Our Standard
+                                    class="px-3 py-1 border border-white/20 rounded-full bg-white/5 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest text-pjp-gold-bright flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-pjp-yellow rounded-full animate-pulse shadow-[0_0_0_3px_rgba(242,230,49,0.25)]"></span>Our Standard
                                 </div>
                             </div>
 
                             <h2 class="text-5xl md:text-7xl font-serif font-bold leading-tight mb-8 scroll-fade-up delay-100">
                                 Raising <br/>
                                 <span
-                                    class="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-white to-neutral-500 italic pr-4">Champions
-                                    <svg class="absolute bottom-2 left-0 w-full h-3 text-educave-500 -z-10"
+                                    class="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-white via-white/95 to-zinc-200 italic pr-4">Champions
+                                    <svg class="absolute bottom-2 left-0 w-full h-3 text-pjp-gold-500 -z-10"
                                          viewBox="0 0 100 10" preserveAspectRatio="none">
                                         <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="3" fill="none"
-                                              class="opacity-50"/>
+                                              class="opacity-60"/>
                                     </svg>
                                 </span>
                             </h2>
 
-                            <p class="text-lg text-neutral-400 leading-relaxed max-w-lg mb-12 font-sans scroll-fade-up delay-200 border-l-4 border-educave-900 pl-6">
+                            <p class="text-lg text-white/80 leading-relaxed max-w-lg mb-12 font-sans scroll-fade-up delay-200 border-l-4 border-pjp-torch/70 pl-6">
                                 We do not just pass children through classrooms — we pour into them. Every lesson, every
                                 value, every correction is building something that will last.
                             </p>
@@ -120,26 +124,26 @@
                             <div class="grid grid-cols-2 gap-8 scroll-fade-up delay-300">
                                 <div>
                                     <div class="text-4xl font-serif font-bold text-white mb-1">Est. 2006</div>
-                                    <div class="text-xs text-gray-500 uppercase tracking-widest">Years of Excellence
+                                    <div class="text-xs text-white/60 uppercase tracking-widest">Years of Excellence
                                     </div>
                                 </div>
 
                                 <div>
                                     <div class="text-4xl font-serif font-bold text-white mb-1">100%</div>
-                                    <div class="text-xs text-gray-500 uppercase tracking-widest">Commitment to Every
+                                    <div class="text-xs text-white/60 uppercase tracking-widest">Commitment to Every
                                         Child
                                     </div>
                                 </div>
 
                                 <div>
                                     <div class="text-4xl font-serif font-bold text-white mb-1">Faith</div>
-                                    <div class="text-xs text-gray-500 uppercase tracking-widest">Catholic Foundation
+                                    <div class="text-xs text-white/60 uppercase tracking-widest">Catholic Foundation
                                     </div>
                                 </div>
 
                                 <div>
                                     <div class="text-4xl font-serif font-bold text-white mb-1">Heart</div>
-                                    <div class="text-xs text-gray-500 uppercase tracking-widest">Behind Every Graduate
+                                    <div class="text-xs text-white/60 uppercase tracking-widest">Behind Every Graduate
                                     </div>
                                 </div>
                             </div>
@@ -213,7 +217,7 @@
                 <div class="container mx-auto px-4 relative z-10">
                     <div class="flex flex-col items-center text-center mb-24 scroll-fade-up">
                         <span
-                            class="text-educave-500 font-bold tracking-widest text-xs uppercase mb-4">Our Facilities</span>
+                            class="guest-crest-underline text-educave-800 font-bold tracking-widest text-xs uppercase mb-4">Our Facilities</span>
                         <h2 class="text-6xl md:text-8xl font-serif font-bold tracking-tight mb-6">
                             Built to <span class="italic text-neutral-400">Inspire</span>
                         </h2>
@@ -269,7 +273,7 @@
                             <div class="group flex flex-col gap-6 mt-0 {{ $f['mt'] }} scroll-fade-up delay-100">
                                 @if ($f['order'] === 'reverse')
                                     <div
-                                        class="order-2 md:order-1 border-l-2 border-neutral-100 pl-6 group-hover:border-educave-500 transition-colors duration-500 mb-6 md:mb-0">
+                                        class="order-2 md:order-1 border-l-2 border-neutral-100 pl-6 group-hover:border-pjp-gold-500 transition-colors duration-500 mb-6 md:mb-0">
                                         <h3 class="text-3xl font-serif font-bold mb-1">{{ $f['name'] }}</h3>
                                         <p class="text-xs font-bold text-educave-500 uppercase tracking-widest mb-3">{{ $f['role'] }}</p>
                                         <p class="text-sm text-gray-500 leading-relaxed mb-4">{{ $f['desc'] }}</p>
@@ -303,7 +307,7 @@
                                             class="absolute {{ $f['tagPos'] }} bg-white/90 backdrop-blur-sm px-4 py-2 text-xs font-bold uppercase tracking-widest">{{ $f['tag'] }}</div>
                                     </div>
                                     <div
-                                        class="border-l-2 border-neutral-100 pl-6 group-hover:border-educave-500 transition-colors duration-500">
+                                        class="border-l-2 border-neutral-100 pl-6 group-hover:border-pjp-gold-500 transition-colors duration-500">
                                         <h3 class="text-3xl font-serif font-bold mb-1">{{ $f['name'] }}</h3>
                                         <p class="text-xs font-bold text-educave-500 uppercase tracking-widest mb-3">{{ $f['role'] }}</p>
                                         <p class="text-sm text-gray-500 leading-relaxed mb-4">{{ $f['desc'] }}</p>
@@ -370,7 +374,7 @@
                         <div class="max-w-2xl">
                             <span class="text-xs font-bold tracking-widest text-educave-800 uppercase mb-2 block">Academics</span>
                             <h2 class="text-4xl md:text-5xl font-serif font-bold text-neutral-900">
-                                Our Arms of <span class="text-educave-800 border-b-4 border-educave-800">Study</span>
+                                Our Arms of <span class="text-educave-800 border-b-4 border-pjp-gold-500">Study</span>
                             </h2>
                         </div>
                         <p class="hidden md:block text-gray-500 max-w-xs text-right text-sm">A holistic education that
@@ -475,7 +479,7 @@
                 <div class="container mx-auto px-4 md:px-8 lg:px-16">
                     <div class="text-center mb-16 scroll-fade-up">
                         <span
-                            class="text-xs font-bold tracking-widest text-educave-800 uppercase border-b border-educave-800 pb-1">Latest News</span>
+                            class="text-xs font-bold tracking-widest text-educave-800 uppercase border-b border-pjp-gold-500 pb-1">Latest News</span>
                         <h2 class="text-4xl md:text-5xl font-serif font-bold text-educave-900 mt-4">
                             School <span class="italic text-gray-400">Chronicles</span>
                         </h2>
@@ -600,22 +604,16 @@
                             <div
                                 class="bg-white/5 backdrop-blur-md p-6 rounded-xl border border-white/10 flex flex-col gap-4">
                                 <p class="text-white font-serif text-lg font-bold">Ready to apply?</p>
-                                <p class="text-gray-400 text-xs leading-relaxed">Visit our admissions page to check
-                                    requirements, download the form, or apply directly through our online entrance exam
-                                    portal.</p>
-                                <a href="https://entrance-exam.pjp.school" target="_blank" rel="noopener noreferrer"
-                                   class="bg-white text-educave-900 px-6 py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-educave-100 transition-colors flex items-center justify-center gap-2 shadow-lg">
+                                <p class="text-gray-400 text-xs leading-relaxed">Visit our admissions page to check requirements, download the form, or apply directly through our online entrance exam portal.</p>
+                                <a href="{{ route('apply_online') }}" class="bg-white text-educave-900 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-educave-100 transition-colors flex items-center justify-center gap-2 shadow-lg">
                                     Apply Online
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                         stroke-linejoin="round" class="lucide lucide-arrow-up-right"
-                                         aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right" aria-hidden="true">
                                         <path d="M7 7h10v10"/>
                                         <path d="M7 17 17 7"/>
                                     </svg>
                                 </a>
 
-                                <a href="#"
+                                <a href="{{ route('admin_process') }}"
                                    class="text-center text-educave-300 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors">
                                     View Admission Requirements
                                 </a>

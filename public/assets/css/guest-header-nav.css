@@ -1,7 +1,3 @@
-/**
- * Guest header desktop dropdowns — supplements index-BYEfoYjf.css (prebuilt bundle
- * without full Tailwind group-hover utilities). Loaded after the main stylesheet.
- */
 @media (min-width: 1024px) {
     nav[aria-label="Main navigation"] .relative.group .guest-nav-dd {
         opacity: 0;
@@ -328,4 +324,91 @@
     .guest-mm-overlay.is-open {
         display: none !important;
     }
+}
+
+/* Dark mode — uses M3 tokens from resources/css/app.css (same as portal) */
+html[data-theme="dark"] #guest-mobile-menu-overlay .guest-mm-panel {
+    background: var(--surface-container-lowest) !important;
+    border-color: var(--outline-variant) !important;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .guest-mm-backdrop {
+    background: rgba(0, 0, 0, 0.65);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .guest-mm-nav-icon-btn {
+    color: var(--on-surface-variant);
+    background: var(--surface-container-high);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .guest-mm-nav-icon-btn:hover {
+    background: var(--surface-container);
+    color: var(--primary);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-header {
+    background: var(--surface-container-low);
+    border-bottom-color: var(--outline-variant);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-item:hover {
+    background: var(--surface-container-high);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-item:active {
+    background: var(--surface-container);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-item-icon {
+    background: var(--surface-container-high);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-item-icon i {
+    color: var(--on-surface-variant);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-item-title {
+    color: var(--on-surface);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-item-subtitle {
+    color: var(--on-surface-variant);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-item-arrow {
+    color: var(--on-surface-variant);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-divider {
+    background: var(--outline-variant);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-subitem {
+    color: var(--on-surface);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-subitem:hover {
+    background: var(--surface-container-high);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-subitem:active {
+    background: var(--surface-container);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-subitem i {
+    color: var(--primary);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .mobile-menu-footer {
+    background: var(--surface-container-low);
+    border-top-color: var(--outline-variant);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .guest-mm-footer-title {
+    color: var(--on-surface);
+}
+
+html[data-theme="dark"] #guest-mobile-menu-overlay .guest-mm-footer-sub {
+    color: var(--on-surface-variant);
 }

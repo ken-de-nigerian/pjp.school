@@ -2,21 +2,25 @@
 
 @section('content')
     <main id="main-content">
-        <div class="font-sans selection:bg-educave-500 selection:text-white bg-educave-950 text-white overflow-hidden">
-            <section class="relative h-[45vh] min-h-[400px] bg-educave-900 text-white overflow-hidden">
-                <div class="absolute inset-0">
-                    <img alt="PJP School" class="w-full h-full object-cover grayscale scroll-scale-in visible" src="{{ asset('assets/img/right_1.jpeg') }}" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-educave-950 via-educave-950/80 to-transparent"></div>
-                    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div class="transition-opacity duration-1000 opacity-100 font-sans text-educave-975 bg-educave-50 selection:bg-educave-200">
+            <section class="relative pt-32 pb-24 overflow-hidden bg-educave-900">
+                <div class="absolute inset-0 z-0">
+                    <img alt="PJP School" class="w-full h-full object-cover opacity-10 scale-105" src="{{ asset('assets/img/right_1.jpeg') }}"/>
+                    <div class="absolute inset-0 bg-gradient-to-b from-educave-900/80 via-educave-900/60 to-educave-900"></div>
                 </div>
-
-                <div class="relative z-10 container mx-auto px-4 md:px-8 lg:px-16 h-full flex flex-col justify-center">
-                    <div class="flex items-center gap-3 mb-6 scroll-fade-up visible">
-                        <span class="w-12 h-0.5 bg-educave-100"></span>
-                        <span class="text-xs font-bold tracking-[0.2em] uppercase">Est. 2006 • Ihitte, Imo State</span>
+                <div class="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
+                    <div class="max-w-4xl">
+                        <div class="inline-flex items-center gap-3 mb-8 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md animate-in slide-in-from-top duration-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-educave-400" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                            <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-white/70">Est. 2006 • Ihitte, Imo State</span>
+                        </div>
+                        <h1 class="text-6xl md:text-8xl font-serif font-bold text-white mb-8 leading-[0.9] tracking-tighter animate-in fade-in slide-in-from-bottom duration-1000">
+                            Our <br/><span class="text-educave-400 italic">Story</span>
+                        </h1>
+                        <p class="text-xl md:text-2xl text-white/60 font-light leading-relaxed max-w-2xl animate-in fade-in slide-in-from-bottom duration-1000 delay-200">
+                            {{ site_settings()->name }} was born from a bishop's prayer and a community's resolve that quality education must reach every child, regardless of background. Since 2006, that resolve has not wavered.
+                        </p>
                     </div>
-                    <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 scroll-fade-up delay-100 visible">Our <span class="text-educave-300 italic">Story</span></h1>
-                    <p class="max-w-xl text-lg text-gray-300 leading-relaxed scroll-fade-up delay-200 visible">Pope John Paul II Model Secondary School was born from a bishop's prayer and a community's resolve that quality education must reach every child, regardless of background. Since 2006, that resolve has not wavered.</p>
                 </div>
             </section>
 
@@ -27,13 +31,13 @@
                 <div class="container mx-auto px-4 md:px-8 lg:px-16 relative z-10 pt-20">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
                         <div class="lg:col-span-4">
-                            <span class="w-12 h-12 bg-educave-950 text-white flex items-center justify-center text-xl font-bold mb-6 block">01</span>
+                            <span class="w-12 h-12 bg-educave-950 text-white flex items-center justify-center text-xl font-bold mb-6">01</span>
                             <h3 class="text-4xl font-serif font-bold leading-tight">We are not just <span class="italic">teaching</span> children we are forming them.</h3>
                         </div>
                         <div class="lg:col-span-8 columns-1 md:columns-2 gap-12 space-y-6">
-                            <p class="text-lg leading-relaxed text-gray-800"><span class="text-5xl float-left mr-4 mt-[-10px] font-serif font-bold">T</span>he founding of Pope John Paul II Model Secondary School was an act of God answering the prayerful longing of Bishop Chikwe to provide education to post-primary school children of middle and low income earners. Through the coordination of Rev. Fr. Sylvester Ihuoma, the school building was sponsored by Germans under the auspices of Ecumenical One World – Saint Nikolaus Wolback, under the care of Mrs. Ingrid Sieverding of Münster, Germany.</p>
+                            <p class="text-lg leading-relaxed text-gray-800"><span class="text-5xl float-left mr-4 mt-[-10px] font-serif font-bold">T</span>he founding of {{ site_settings()->name }} was an act of God answering the prayerful longing of Bishop Chikwe to provide education to post-primary school children of middle and low income earners. Through the coordination of Rev. Fr. Sylvester Ihuoma, the school building was sponsored by Germans under the auspices of Ecumenical One World – Saint Nikolaus Wolback, under the care of Mrs. Ingrid Sieverding of Münster, Germany.</p>
                             <p class="text-lg leading-relaxed text-gray-600">Local support came through the Mbaise Educational Development Forum a voluntary organisation in the diocese charged with executing the project. On <strong>24th November 2006</strong>, the school opened her doors for the 2006/2007 academic year with Very Rev. Msgr. Paul Amakiri as her first principal. On that first day, 45 students were received 30 males and 15 females. The school closed that year with 72 students and 8 members of staff.</p>
-                            <p class="text-lg leading-relaxed text-gray-600">Originally named <strong>Mater Ecclesiae Secondary School</strong>, the school was renamed Pope John Paul II Model Secondary School in 2007 in honour of the beloved saint, whose vision of integral human formation became the school's guiding light. Today, her alumni are doing her proud all over the world.</p>
+                            <p class="text-lg leading-relaxed text-gray-600">Originally named <strong>Mater Ecclesiae Secondary School</strong>, the school was renamed {{ site_settings()->name }} in 2007 in honour of the beloved saint, whose vision of integral human formation became the school's guiding light. Today, her alumni are doing her proud all over the world.</p>
                         </div>
                     </div>
                 </div>
@@ -138,7 +142,7 @@
                             @php
                                 $timeline = [
                                     ['year' => '2006', 'title' => 'The Foundation',        'desc' => 'School approval granted in April 2006. On 24th November 2006, PJP opened her doors with Very Rev. Msgr. Paul Amakiri as first principal, 45 students and 8 members of staff, through the vision of Bishop Chikwe and with support from German donors and the Mbaise Educational Development Forum.'],
-                                    ['year' => '2007', 'title' => 'The Renaming',          'desc' => 'The school receives full approval and is renamed Pope John Paul II Model Secondary School. Rev. Fr. Francis Amaliri serves as second principal. The school receives its second set of students in September 2007.'],
+                                    ['year' => '2007', 'title' => 'The Renaming',          'desc' => 'The school receives full approval and is renamed {{ site_settings()->name }}. Rev. Fr. Francis Amaliri serves as second principal. The school receives its second set of students in September 2007.'],
                                     ['year' => '2008', 'title' => 'JSSCE Approval',        'desc' => 'The school receives approval for the Junior Secondary School Certificate Examination (JSSCE) in November 2008. Rev. Fr. Dr. Innocent Olekamma forms the first Parents Teachers Association.'],
                                     ['year' => '2011', 'title' => 'Senior Status & WAEC',  'desc' => 'Approved to upgrade to Senior Secondary status in March 2011. WAEC approval follows in June, NECO in October, marking PJP as a fully accredited examination centre.'],
                                     ['year' => '2019', 'title' => 'New Leadership',        'desc' => 'Rev. Fr. Augustine C. Onuoha takes over as principal, succeeding the longest-serving principal Rev. Fr. Timothy Okeahialam (2008-2019), under whose tenure the school witnessed phenomenal growth. Fr. Onuoha served until August 2025.'],
@@ -228,7 +232,7 @@
                 <div class="container mx-auto px-4 relative z-10 text-center">
                     <p class="text-sm font-bold uppercase tracking-[0.3em] mb-6 text-educave-900">Admissions Open</p>
                     <h2 class="text-7xl md:text-9xl font-black tracking-tighter mb-10 leading-none hover:scale-105 transition-transform duration-700 cursor-default">GIVE YOUR <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-educave-900 to-black">CHILD THE BEST</span></h2>
-                    <a href="{{ route('admin_process') }}" class="group relative inline-block px-12 py-6 bg-educave-950 text-white font-bold uppercase tracking-widest overflow-hidden">
+                    <a href="{{ route('admin_process') }}" class="group relative inline-block rounded-xl px-12 py-6 bg-educave-950 text-white font-bold uppercase tracking-widest overflow-hidden">
                         <span class="relative z-10 group-hover:text-educave-900 transition-colors duration-300">Apply Now</span>
                         <div class="absolute inset-0 bg-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
                     </a>

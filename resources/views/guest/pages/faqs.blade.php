@@ -13,14 +13,15 @@
                 <div class="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
                     <div class="max-w-4xl">
                         <div class="inline-flex items-center gap-3 mb-8 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md animate-in slide-in-from-top duration-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-educave-400" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                            <span class="h-2 w-2 shrink-0 rounded-full bg-pjp-yellow shadow-[0_0_0_3px_rgba(242,230,49,0.2)]" aria-hidden="true"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-pjp-gold-bright" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
                             <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-white/70">Frequently Asked Questions</span>
                         </div>
                         <h1 class="text-6xl md:text-8xl font-serif font-bold text-white mb-8 leading-[0.9] tracking-tighter animate-in fade-in slide-in-from-bottom duration-1000">
                             Got <br/><span class="text-educave-400 italic">Questions?</span>
                         </h1>
                         <p class="text-xl md:text-2xl text-white/60 font-light leading-relaxed max-w-2xl animate-in fade-in slide-in-from-bottom duration-1000 delay-200">
-                            Everything parents and prospective students need to know about life at Pope John Paul II Model Secondary School — answered honestly.
+                            Everything parents and prospective students need to know about life at {{ site_settings()->name }} answered honestly.
                         </p>
                     </div>
                 </div>
@@ -28,6 +29,7 @@
 
             {{-- FAQ Body --}}
             <section class="py-24">
+                <div class="guest-crest-divider guest-crest-divider--short max-w-lg mx-auto mb-16 opacity-70" aria-hidden="true"></div>
                 <div class="container mx-auto px-6 md:px-12 lg:px-24">
                     <div id="faqs-page" class="flex flex-col lg:flex-row gap-20">
 
@@ -35,8 +37,8 @@
                         <div class="w-full lg:w-1/3">
                             <div class="sticky top-12">
                                 <div class="inline-flex items-center gap-2 mb-8">
-                                    <div class="h-px w-8 bg-educave-600"></div>
-                                    <span class="text-[10px] font-black uppercase tracking-[0.4em] text-educave-600">Browse Topics</span>
+                                    <div class="h-px w-8 bg-pjp-gold-500"></div>
+                                    <span class="text-[10px] font-black uppercase tracking-[0.4em] text-educave-800">Browse Topics</span>
                                 </div>
                                 <div class="space-y-3" role="tablist" aria-label="FAQ topics">
                                     @foreach($faqTopics as $key => $topic)
@@ -45,7 +47,7 @@
                                                 data-faq-topic="{{ $key }}" data-faq-label="{{ $topic['label'] }}"
                                                 aria-selected="{{ $loop->first ? 'true' : 'false' }}">
                                             <div class="flex items-center gap-4">
-                                                <div class="faq-topic-dot w-2 h-2 rounded-full transition-all duration-500 {{ $loop->first ? 'bg-educave-400' : 'bg-educave-900/10 group-hover:bg-educave-800/30' }}"></div>
+                                                <div class="faq-topic-dot w-2 h-2 rounded-full transition-all duration-500 {{ $loop->first ? 'bg-pjp-yellow shadow-[0_0_0_2px_rgba(242,230,49,0.35)]' : 'bg-educave-900/10 group-hover:bg-educave-800/30' }}"></div>
                                                 <span class="text-sm font-bold uppercase tracking-widest">{{ $topic['sidebar'] }}</span>
                                             </div>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-topic-chevron lucide lucide-chevron-right transition-transform duration-500 {{ $loop->first ? 'translate-x-1 opacity-100' : 'opacity-0' }}" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
@@ -68,9 +70,9 @@
                         {{-- Panels --}}
                         <div class="w-full lg:w-2/3">
                             <div class="mb-12">
-                                <span class="text-[10px] font-black uppercase tracking-[0.4em] text-educave-600 mb-4 block">Active Category</span>
+                                <span class="text-[10px] font-black uppercase tracking-[0.4em] text-educave-800 mb-4 block">Active Category</span>
                                 <h2 id="faq-active-title" class="text-5xl font-serif font-bold text-educave-900 mb-6">{{ $faqTopics[array_key_first($faqTopics)]['label'] }}</h2>
-                                <div class="h-1 w-20 bg-educave-800 rounded-full"></div>
+                                <div class="h-1 w-24 rounded-full bg-gradient-to-r from-pjp-gold-500 to-pjp-gold-600"></div>
                             </div>
 
                             @foreach($faqTopics as $key => $topic)
@@ -93,7 +95,7 @@
                                                 </button>
                                                 <div @class(['faq-accordion-panel transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]', 'max-h-[500px] opacity-100' => $isOpen, 'max-h-0 opacity-0 overflow-hidden' => !$isOpen])>
                                                     <div class="px-8 md:px-24 pb-12">
-                                                        <div class="h-px w-12 bg-educave-400 mb-8"></div>
+                                                        <div class="h-px w-12 bg-pjp-torch/75 mb-8"></div>
                                                         <p class="text-educave-900/60 text-lg font-light leading-relaxed">{{ $item['a'] }}</p>
                                                     </div>
                                                 </div>
@@ -179,7 +181,7 @@
             const PANEL_CLOSED     = 'faq-accordion-panel transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] max-h-0 opacity-0 overflow-hidden';
             const TOPIC_ACTIVE     = 'faq-topic-btn w-full group text-left p-6 rounded-[24px] border transition-all duration-500 flex items-center justify-between bg-educave-800 border-educave-800 text-white shadow-2xl shadow-educave-900/20';
             const TOPIC_INACTIVE   = 'faq-topic-btn w-full group text-left p-6 rounded-[24px] border transition-all duration-500 flex items-center justify-between bg-white border-educave-900/5 text-educave-900 hover:border-educave-800/30';
-            const DOT_ACTIVE       = 'faq-topic-dot w-2 h-2 rounded-full transition-all duration-500 bg-educave-400';
+            const DOT_ACTIVE       = 'faq-topic-dot w-2 h-2 rounded-full transition-all duration-500 bg-pjp-yellow shadow-[0_0_0_2px_rgba(242,230,49,0.35)]';
             const DOT_INACTIVE     = 'faq-topic-dot w-2 h-2 rounded-full transition-all duration-500 bg-educave-900/10 group-hover:bg-educave-800/30';
             const CHEV_ACTIVE      = 'faq-topic-chevron lucide lucide-chevron-right transition-transform duration-500 translate-x-1 opacity-100';
             const CHEV_INACTIVE    = 'faq-topic-chevron lucide lucide-chevron-right transition-transform duration-500 opacity-0';

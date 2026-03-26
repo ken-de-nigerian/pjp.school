@@ -15,8 +15,8 @@
                 </div>
                 <div class="w-full lg:w-auto flex-shrink-0">
                     <form class="flex flex-col sm:flex-row gap-3 w-full lg:min-w-[450px]">
-                        <input placeholder="Email Address" class="w-full flex-grow bg-white/5 border border-white/10 px-5 py-4 outline-none focus:border-educave-800 text-white placeholder-gray-500 text-sm transition-all" type="email"/>
-                        <button class="bg-white text-black px-8 py-4 font-bold uppercase tracking-widest text-xs hover:bg-educave-800 hover:text-white transition-all flex items-center justify-center gap-2 group whitespace-nowrap">
+                        <input placeholder="Email Address" class="w-full flex-grow rounded-xl bg-white/5 border border-white/10 px-5 py-4 outline-none focus:border-educave-800 text-white placeholder-gray-500 text-sm transition-all" type="email"/>
+                        <button class="rounded-xl bg-white text-black px-8 py-4 font-bold uppercase tracking-widest text-xs hover:bg-educave-800 hover:text-white transition-all flex items-center justify-center gap-2 group whitespace-nowrap">
                             Subscribe
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right group-hover:translate-x-1 transition-transform" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </button>
@@ -61,7 +61,7 @@
                 <ul class="space-y-3 text-sm text-gray-400">
                     @foreach ([
                         ['route' => 'academic_overview', 'label' => 'Academic overview'],
-                        ['route' => 'academic_curriculum', 'label' => 'Academic curriculum'],
+                        ['route' => 'academic_overview', 'label' => 'Academic curriculum'],
                         ['route' => 'news', 'label' => 'News'],
                         ['route' => 'faqs', 'label' => 'FAQs'],
                     ] as $item)
@@ -77,7 +77,7 @@
                 <ul class="space-y-3 text-sm text-gray-400">
                     @foreach ([
                         ['route' => 'about_us', 'label' => 'About us'],
-                        ['route' => 'vision_mission', 'label' => 'Vision & mission'],
+                        ['route' => 'about_us', 'label' => 'Vision & mission'],
                         ['route' => 'admin_process', 'label' => 'Admission process'],
                         ['route' => 'apply_online', 'label' => 'Apply online'],
                     ] as $item)
@@ -97,7 +97,7 @@
                         </svg>
                         <div>
                             <p class="text-gray-300 text-sm font-medium">Umunagbor Amagbor Ihitte</p>
-                            <p class="text-gray-500 text-sm">Ezinihitte Mbaise, Imo State, Nigeria</p>
+                            <p class="text-white/55 text-sm">Ezinihitte Mbaise, Imo State, Nigeria</p>
                         </div>
                     </div>
 

@@ -73,23 +73,9 @@
                 </div>
 
                 {{-- PROGRAMS dropdown --}}
-                <div class="relative group">
-                    <button class="flex items-center gap-1 hover:text-educave-800 transition-colors relative" aria-expanded="false" aria-haspopup="true" aria-label="Programs dropdown menu">
-                        PROGRAMS.
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-                        <span class="absolute -bottom-1 left-0 h-0.5 bg-educave-800 transition-all duration-300 w-0 group-hover:w-full"></span>
-                    </button>
-
-                    <div class="guest-nav-dd absolute top-full left-0 w-64 bg-white shadow-xl border-t-2 border-educave-800 py-2 transform transition-all duration-200 origin-top-left z-[100]" role="menu" aria-label="Program pages">
-                        @foreach ([
-                            ['route' => 'academic_overview', 'label' => 'Academic overview'],
-                            ['route' => 'academic_curriculum', 'label' => 'Academic curriculum'],
-                            ['route' => 'news', 'label' => 'News'],
-                        ] as $item)
-                            <a href="{{ route($item['route']) }}" class="block w-full text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-600 hover:bg-educave-50 hover:text-educave-800 transition-colors" role="menuitem">{{ $item['label'] }}</a>
-                        @endforeach
-                    </div>
-                </div>
+                <a href="{{ route('academic_overview') }}" class="hover:text-educave-800 transition-colors relative group inline-block" aria-label="View news page">
+                    ACADEMICS.<span class="absolute -bottom-1 left-0 h-0.5 bg-educave-800 transition-all duration-300 w-0 group-hover:w-full"></span>
+                </a>
 
                 <a href="{{ route('news') }}" class="hover:text-educave-800 transition-colors relative group inline-block" aria-label="View news page">
                     NEWS.<span class="absolute -bottom-1 left-0 h-0.5 bg-educave-800 transition-all duration-300 w-0 group-hover:w-full"></span>
@@ -119,14 +105,14 @@
                     @endif
                 </div>
 
-                <a href="{{ route('result.check') }}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 min-h-[44px] border border-gray-300 text-xs font-bold tracking-wider hover:bg-educave-800 hover:text-white hover:border-educave-800 transition-all duration-300 group whitespace-nowrap" aria-label="{{ __('Result portal') }}">
+                <a href="{{ route('result.check') }}" class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 min-h-[44px] border border-gray-300 text-xs font-bold tracking-wider hover:bg-educave-800 hover:text-white hover:border-educave-800 transition-all duration-300 group whitespace-nowrap" aria-label="{{ __('Result portal') }}">
                     {{ __('RESULT PORTAL') }}
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
                 </a>
             </div>
 
             <div class="flex items-center gap-2 lg:hidden shrink-0">
-                <a href="{{ route('result.check') }}" class="flex items-center gap-1.5 px-3 py-2.5 border border-gray-300 text-[10px] font-bold tracking-wider hover:bg-educave-800 hover:text-white hover:border-educave-800 transition-all duration-300 group" aria-label="{{ __('Result portal') }}">
+                <a href="{{ route('result.check') }}" class="flex items-center gap-1.5 rounded-xl px-3 py-2.5 border border-gray-300 text-[10px] font-bold tracking-wider hover:bg-educave-800 hover:text-white hover:border-educave-800 transition-all duration-300 group" aria-label="{{ __('Result portal') }}">
                     <span class="truncate max-w-[7rem] sm:max-w-none">{{ __('Result portal') }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0 sm:w-4 sm:h-4" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
                 </a>
@@ -203,27 +189,20 @@
                 </div>
                 <div id="guest-campus-mobile-dropdown" class="mobile-menu-dropdown-content hidden">
                     <a href="{{ route('about_us') }}" class="mobile-menu-subitem" onclick="window.closeGuestMobileMenu && window.closeGuestMobileMenu()"><i class="fas fa-school" aria-hidden="true"></i><span>{{ __('About us') }}</span></a>
-                    <a href="{{ route('vision_mission') }}" class="mobile-menu-subitem" onclick="window.closeGuestMobileMenu && window.closeGuestMobileMenu()"><i class="fas fa-compass" aria-hidden="true"></i><span>{{ __('Vision & mission') }}</span></a>
+                    <a href="{{ route('about_us') }}" class="mobile-menu-subitem" onclick="window.closeGuestMobileMenu && window.closeGuestMobileMenu()"><i class="fas fa-compass" aria-hidden="true"></i><span>{{ __('Vision & mission') }}</span></a>
                     <a href="{{ route('faqs') }}" class="mobile-menu-subitem" onclick="window.closeGuestMobileMenu && window.closeGuestMobileMenu()"><i class="fas fa-circle-question" aria-hidden="true"></i><span>{{ __('FAQs') }}</span></a>
                     <a href="{{ route('admin_process') }}" class="mobile-menu-subitem" onclick="window.closeGuestMobileMenu && window.closeGuestMobileMenu()"><i class="fas fa-route" aria-hidden="true"></i><span>{{ __('Admission process') }}</span></a>
                 </div>
             </div>
 
-            <div class="mobile-menu-dropdown">
-                <div class="mobile-menu-item" role="button" tabindex="0" onclick="toggleMobileDropdown('guest-programs-mobile-dropdown')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleMobileDropdown('guest-programs-mobile-dropdown');}">
-                    <div class="mobile-menu-item-icon"><i class="fas fa-book-open" aria-hidden="true"></i></div>
-                    <div class="mobile-menu-item-content">
-                        <div class="mobile-menu-item-title">{{ __('Programs') }}</div>
-                        <div class="mobile-menu-item-subtitle">{{ __('Academics & news') }}</div>
-                    </div>
-                    <i class="fas fa-chevron-down mobile-menu-item-arrow mobile-dropdown-arrow" id="guest-programs-mobile-arrow" aria-hidden="true"></i>
+            <a href="{{ route('academic_overview') }}" class="mobile-menu-item" onclick="window.closeGuestMobileMenu && window.closeGuestMobileMenu()">
+                <div class="mobile-menu-item-icon"><i class="fas fa-book-open" aria-hidden="true"></i></div>
+                <div class="mobile-menu-item-content">
+                    <div class="mobile-menu-item-title">{{ __('Academics') }}</div>
+                    <div class="mobile-menu-item-subtitle">{{ __('Academic Overview') }}</div>
                 </div>
-                <div id="guest-programs-mobile-dropdown" class="mobile-menu-dropdown-content hidden">
-                    <a href="{{ route('academic_overview') }}" class="mobile-menu-subitem" onclick="window.closeGuestMobileMenu && window.closeGuestMobileMenu()"><i class="fas fa-clipboard-list" aria-hidden="true"></i><span>{{ __('Academic overview') }}</span></a>
-                    <a href="{{ route('academic_curriculum') }}" class="mobile-menu-subitem" onclick="window.closeGuestMobileMenu && window.closeGuestMobileMenu()"><i class="fas fa-book" aria-hidden="true"></i><span>{{ __('Academic curriculum') }}</span></a>
-                    <a href="{{ route('news') }}" class="mobile-menu-subitem" onclick="window.closeGuestMobileMenu && window.closeGuestMobileMenu()"><i class="fas fa-newspaper" aria-hidden="true"></i><span>{{ __('News') }}</span></a>
-                </div>
-            </div>
+                <i class="fas fa-chevron-right mobile-menu-item-arrow" aria-hidden="true"></i>
+            </a>
 
             <a href="{{ route('news') }}" class="mobile-menu-item" onclick="window.closeGuestMobileMenu && window.closeGuestMobileMenu()">
                 <div class="mobile-menu-item-icon"><i class="fas fa-bullhorn" aria-hidden="true"></i></div>

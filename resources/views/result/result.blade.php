@@ -37,14 +37,6 @@
 
     @push('styles')
         <style>
-            @media (min-width: 1024px) {
-                html {
-                    overflow: auto;
-                    height: auto;
-                    min-height: 100%;
-                }
-            }
-
             .result-watermark-layer {
                 position: absolute;
                 inset: 0;
@@ -410,9 +402,9 @@
                                     <img src="{{ $avatarSrc }}" width="88" height="96" alt="" class="h-[88px] w-[80px] rounded-xl object-cover shadow-lg sm:w-[88px]">
                                 </div>
                                 <div class="min-w-0 flex-[2] basis-full text-center sm:basis-0">
-                                    <p class="text-[0.65rem] font-semibold uppercase tracking-wider text-white/55">Student</p>
-                                    <p class="mt-1 text-base font-semibold leading-snug text-white sm:text-lg">{{ $fullName }}</p>
-                                    <p class="mt-1 text-sm text-white/75">{{ $class }} · ID {{ $student->reg_number }} · {{ $student->gender }}</p>
+                                    <p class="text-[0.65rem] font-semibold uppercase tracking-wider">Student</p>
+                                    <p class="mt-1 text-base font-semibold leading-snug sm:text-lg">{{ $fullName }}</p>
+                                    <p class="mt-1 text-sm">{{ $class }} · ID {{ $student->reg_number }} · {{ $student->gender }}</p>
                                 </div>
                                 <div class="flex min-w-0 flex-1 basis-[72px] justify-center sm:basis-[88px] sm:justify-end">
                                     <x-site-logo-mark width="88" height="96" alt="" class="h-[88px] w-[80px] rounded-xl object-contain shadow-lg sm:w-[88px]"/>

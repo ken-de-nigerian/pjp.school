@@ -75,6 +75,14 @@
                                         @endif
                                     </td>
                                 </tr>
+                                @if(isset($a->applying_for) && trim((string) $a->applying_for) !== '')
+                                <tr style="background: var(--surface-container-lowest);">
+                                    <td class="py-3.5 pl-6 sm:pl-8 pr-4 align-top text-sm font-medium" style="color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);">Applying for</td>
+                                    <td class="py-3.5 pl-4 pr-6 sm:pr-8 text-sm break-words" style="color: var(--on-surface); border-bottom: 1px solid var(--outline-variant);">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium" style="background: var(--primary-container); color: var(--on-primary-container);">{{ e($a->applying_for) }}</span>
+                                    </td>
+                                </tr>
+                                @endif
                                 <tr style="background: var(--surface-container-lowest);">
                                     <td class="py-3.5 pl-6 sm:pl-8 pr-4 align-top text-sm font-medium" style="color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);">Nationality</td>
                                     <td class="py-3.5 pl-4 pr-6 sm:pr-8 text-sm break-words" style="color: var(--on-surface); border-bottom: 1px solid var(--outline-variant);">
@@ -101,6 +109,12 @@
                                     <td class="py-3.5 pl-6 sm:pl-8 pr-4 align-top text-sm font-medium" style="color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);">Father's address</td>
                                     <td class="py-3.5 pl-4 pr-6 sm:pr-8 text-sm break-words" style="color: var(--on-surface); border-bottom: 1px solid var(--outline-variant);">{{ e($a->fathers_address ?? '—') }}</td>
                                 </tr>
+                                @if(isset($a->fathers_phone) && trim((string) $a->fathers_phone) !== '')
+                                <tr style="background: var(--surface-container-low);">
+                                    <td class="py-3.5 pl-6 sm:pl-8 pr-4 align-top text-sm font-medium" style="color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);">Father's phone</td>
+                                    <td class="py-3.5 pl-4 pr-6 sm:pr-8 text-sm break-words" style="color: var(--on-surface); border-bottom: 1px solid var(--outline-variant);">{{ e($a->fathers_phone) }}</td>
+                                </tr>
+                                @endif
                                 <tr style="background: var(--surface-container-low);">
                                     <td class="py-3.5 pl-6 sm:pl-8 pr-4 align-top text-sm font-medium" style="color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);">Mother's name</td>
                                     <td class="py-3.5 pl-4 pr-6 sm:pr-8 text-sm break-words" style="color: var(--on-surface); border-bottom: 1px solid var(--outline-variant);">{{ $motherName ?: '—' }}</td>
@@ -113,7 +127,13 @@
                                     <td class="py-3.5 pl-6 sm:pl-8 pr-4 align-top text-sm font-medium" style="color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);">Mother's address</td>
                                     <td class="py-3.5 pl-4 pr-6 sm:pr-8 text-sm break-words" style="color: var(--on-surface); border-bottom: 1px solid var(--outline-variant);">{{ e($a->mothers_address ?? '—') }}</td>
                                 </tr>
-                                @if($guardianName || trim((string)($a->guardians_occupation ?? '')) !== '' || trim((string)($a->guardians_address ?? '')) !== '')
+                                @if(isset($a->mothers_phone) && trim((string) $a->mothers_phone) !== '')
+                                <tr style="background: var(--surface-container-lowest);">
+                                    <td class="py-3.5 pl-6 sm:pl-8 pr-4 align-top text-sm font-medium" style="color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);">Mother's phone</td>
+                                    <td class="py-3.5 pl-4 pr-6 sm:pr-8 text-sm break-words" style="color: var(--on-surface); border-bottom: 1px solid var(--outline-variant);">{{ e($a->mothers_phone) }}</td>
+                                </tr>
+                                @endif
+                                @if($guardianName || trim((string)($a->guardians_occupation ?? '')) !== '' || trim((string)($a->guardians_address ?? '')) !== '' || (isset($a->guardians_phone) && trim((string) $a->guardians_phone) !== ''))
                                 <tr style="background: var(--surface-container-lowest);">
                                     <td class="py-3.5 pl-6 sm:pl-8 pr-4 align-top text-sm font-medium" style="color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);">Guardian's name</td>
                                     <td class="py-3.5 pl-4 pr-6 sm:pr-8 text-sm break-words" style="color: var(--on-surface); border-bottom: 1px solid var(--outline-variant);">{{ $guardianName ?: '—' }}</td>
@@ -126,6 +146,12 @@
                                     <td class="py-3.5 pl-6 sm:pl-8 pr-4 align-top text-sm font-medium" style="color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);">Guardian's address</td>
                                     <td class="py-3.5 pl-4 pr-6 sm:pr-8 text-sm break-words" style="color: var(--on-surface); border-bottom: 1px solid var(--outline-variant);">{{ e($a->guardians_address ?? '—') }}</td>
                                 </tr>
+                                @if(isset($a->guardians_phone) && trim((string) $a->guardians_phone) !== '')
+                                <tr style="background: var(--surface-container-low);">
+                                    <td class="py-3.5 pl-6 sm:pl-8 pr-4 align-top text-sm font-medium" style="color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);">Guardian's phone</td>
+                                    <td class="py-3.5 pl-4 pr-6 sm:pr-8 text-sm break-words" style="color: var(--on-surface); border-bottom: 1px solid var(--outline-variant);">{{ e($a->guardians_phone) }}</td>
+                                </tr>
+                                @endif
                                 @endif
                                 <tr style="background: var(--surface-container-low);">
                                     <td class="py-3.5 pl-6 sm:pl-8 pr-4 align-top text-sm font-medium" style="color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);">Blood group</td>

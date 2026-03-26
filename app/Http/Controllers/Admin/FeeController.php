@@ -53,11 +53,12 @@ final class FeeController extends Controller
         }
 
         $fee = Fee::query()->create($data);
+        $fee->refresh();
 
         return response()->json([
             'status' => 'success',
             'message' => __('Fee saved.'),
-            'fee' => $this->feeToArray($fee->fresh()),
+            'fee' => $this->feeToArray($fee),
         ]);
     }
 
@@ -66,11 +67,12 @@ final class FeeController extends Controller
         Gate::authorize('update', $fee);
 
         $fee->update($request->validated());
+        $fee->refresh();
 
         return response()->json([
             'status' => 'success',
             'message' => __('Fee updated.'),
-            'fee' => $this->feeToArray($fee->fresh()),
+            'fee' => $this->feeToArray($fee),
         ]);
     }
 
@@ -95,7 +97,7 @@ final class FeeController extends Controller
             'id' => $fee->id,
             'title' => $fee->title,
             'description' => $fee->description,
-            'amount' => (string) $fee->amount,
+            'amount' => $fee->amount,
             'category' => $fee->category->value,
             'term' => $fee->term,
             'session' => $fee->session,

@@ -67,7 +67,7 @@ class DashboardDataTest extends TestCase
             'password' => Hash::make('p'),
         ]);
 
-        $admin = Admin::first();
+        $admin = Admin::query()->firstOrFail();
         $response = $this->actingAs($admin, 'admin')->get(route('admin.dashboard'));
 
         $response->assertStatus(200);
@@ -89,7 +89,7 @@ class DashboardDataTest extends TestCase
             'author' => 'Admin',
             'imagelocation' => 'default.png',
         ]);
-        $admin = Admin::first();
+        $admin = Admin::query()->firstOrFail();
 
         $response = $this->actingAs($admin, 'admin')->get(route('admin.dashboard'));
 

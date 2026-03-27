@@ -7,7 +7,7 @@ namespace App\Policies;
 use App\Models\Admin;
 use App\Models\Teacher;
 
-class ResultPolicy
+final class ResultPolicy
 {
     public function publish(Admin|Teacher $user): bool
     {

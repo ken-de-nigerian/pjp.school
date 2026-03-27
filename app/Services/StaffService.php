@@ -13,6 +13,7 @@ use Random\RandomException;
 
 final class StaffService
 {
+    /** @return LengthAwarePaginator<int, Admin> */
     public function list(int $perPage = 15): LengthAwarePaginator
     {
         return Admin::query()
@@ -21,6 +22,7 @@ final class StaffService
             ->paginate($perPage);
     }
 
+    /** @return Collection<int, Role> */
     public function getAllRoles(): Collection
     {
         return Role::query()->orderBy('name')->get();
@@ -36,7 +38,7 @@ final class StaffService
         return $q->exists();
     }
 
-    /**
+    /** @param array<string, mixed> $data
      * @throws RandomException
      */
     public function create(array $data): Admin
@@ -56,6 +58,7 @@ final class StaffService
         ]);
     }
 
+    /** @param array<string, mixed> $data */
     public function update(string $adminId, array $data): int
     {
         return Admin::query()->where('adminId', $adminId)->update([
@@ -74,6 +77,7 @@ final class StaffService
         ]);
     }
 
+    /** @return Collection<int, Admin> */
     public function search(Request $request): Collection
     {
         $validated = $request->validate([

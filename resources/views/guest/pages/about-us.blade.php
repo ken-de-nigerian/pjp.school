@@ -18,7 +18,7 @@
                             Our <br/><span class="text-educave-400 italic">Story</span>
                         </h1>
                         <p class="text-xl md:text-2xl text-white/60 font-light leading-relaxed max-w-2xl animate-in fade-in slide-in-from-bottom duration-1000 delay-200">
-                            {{ site_settings()->name }} was born from a bishop's prayer and a community's resolve that quality education must reach every child, regardless of background. Since 2006, that resolve has not wavered.
+                            {{ site_settings()->name }} was born from a bishop's prayer and a community's resolve that quality education must reach every child, regardless of background.
                         </p>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                 </div>
             </section>
 
-            <section class="bg-educave-950 py-32 relative">
+            <section class="bg-educave-950 padding-custom relative">
                 <div class="container mx-auto px-4 md:px-8 lg:px-16">
                     <div class="flex justify-between items-end mb-16">
                         <h2 class="text-6xl md:text-8xl font-serif font-bold text-white">Our <span class="text-gray-600 italic">Code.</span></h2>
@@ -62,7 +62,7 @@
                         <div class="bg-educave-900 p-8 flex flex-col justify-between group hover:bg-educave-800 transition-colors rounded-sm border border-white/10">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-target text-white mb-4" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                             <div>
-                                <h3 class="text-2xl font-bold mb-4">Excellence</h3>
+                                <h3 class="text-2xl font-bold text-white mb-4">Excellence</h3>
                                 <p class="text-white/70 text-sm leading-relaxed">Any student wishing to stand out must be ready to go the extra mile. All subjects are handled by qualified hands, and we hold every child to that standard.</p>
                             </div>
                         </div>
@@ -77,14 +77,14 @@
 
                         <div class="md:col-span-2 lg:col-span-2 border border-white/20 p-12 flex flex-col justify-center items-center text-center group hover:border-white transition-colors rounded-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield text-white mb-6 group-hover:scale-110 transition-transform duration-500" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-                            <h3 class="text-4xl font-serif font-bold mb-6">Integrity</h3>
+                            <h3 class="text-4xl font-serif font-bold text-white mb-6">Integrity</h3>
                             <p class="text-gray-400 max-w-lg text-lg leading-relaxed">"You must be different to make the difference." Our students can stand shoulder to shoulder among peers trained in Catholic seminaries and convents.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="bg-white text-educave-900 py-32 border-t border-black">
+            <section class="bg-white text-educave-900 padding-custom border-t border-black">
                 <div class="container mx-auto px-4 md:px-8 lg:px-16">
                     <div class="max-w-4xl mx-auto">
                         <div class="flex items-center gap-4 mb-12">
@@ -102,7 +102,7 @@
                 </div>
             </section>
 
-            <section class="bg-educave-950 py-32 relative">
+            <section class="bg-educave-950 padding-custom relative">
                 <div class="container mx-auto px-4 md:px-8 lg:px-16">
                     <div class="flex items-center gap-4 mb-16">
                         <span class="w-12 h-px bg-educave-700"></span>
@@ -131,7 +131,7 @@
                 </div>
             </section>
 
-            <section class="bg-white text-educave-900 py-32 overflow-hidden">
+            <section class="bg-white text-educave-900 padding-custom overflow-hidden">
                 <div class="container mx-auto px-4 md:px-8 lg:px-16">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
                         <div class="lg:col-span-4 sticky top-32 h-fit">
@@ -142,11 +142,11 @@
                             @php
                                 $timeline = [
                                     ['year' => '2006', 'title' => 'The Foundation',        'desc' => 'School approval granted in April 2006. On 24th November 2006, PJP opened her doors with Very Rev. Msgr. Paul Amakiri as first principal, 45 students and 8 members of staff, through the vision of Bishop Chikwe and with support from German donors and the Mbaise Educational Development Forum.'],
-                                    ['year' => '2007', 'title' => 'The Renaming',          'desc' => 'The school receives full approval and is renamed {{ site_settings()->name }}. Rev. Fr. Francis Amaliri serves as second principal. The school receives its second set of students in September 2007.'],
+                                    ['year' => '2007', 'title' => 'The Renaming',          'desc' => 'The school receives full approval and is renamed ' . site_settings()->name . ', Rev. Fr. Francis Amaliri serves as second principal. The school receives its second set of students in September 2007.'],
                                     ['year' => '2008', 'title' => 'JSSCE Approval',        'desc' => 'The school receives approval for the Junior Secondary School Certificate Examination (JSSCE) in November 2008. Rev. Fr. Dr. Innocent Olekamma forms the first Parents Teachers Association.'],
                                     ['year' => '2011', 'title' => 'Senior Status & WAEC',  'desc' => 'Approved to upgrade to Senior Secondary status in March 2011. WAEC approval follows in June, NECO in October, marking PJP as a fully accredited examination centre.'],
                                     ['year' => '2019', 'title' => 'New Leadership',        'desc' => 'Rev. Fr. Augustine C. Onuoha takes over as principal, succeeding the longest-serving principal Rev. Fr. Timothy Okeahialam (2008-2019), under whose tenure the school witnessed phenomenal growth. Fr. Onuoha served until August 2025.'],
-                                    ['year' => '2024', 'title' => 'Into the Digital Age',  'desc' => 'PJP launches its digital portal, bringing result checking, admissions and school news online. The computer laboratory becomes an accredited JAMB CBT centre, taking the mission of accessible education further than ever before.'],
+                                    ['year' => '2023', 'title' => 'Into the Digital Age',  'desc' => 'PJP launches its digital portal, bringing result checking, admissions and school news online. The computer laboratory becomes an accredited JAMB CBT centre, taking the mission of accessible education further than ever before.'],
                                 ]
                             @endphp
                             @foreach ($timeline as $item)
@@ -165,7 +165,7 @@
                 </div>
             </section>
 
-            <section class="bg-educave-950 py-32 border-t border-white/10">
+            <section class="bg-educave-950 padding-custom border-t border-white/10">
                 <div class="container mx-auto px-4 md:px-8 lg:px-16">
                     <div class="text-center mb-20">
                         <h2 class="text-5xl md:text-7xl font-serif font-bold text-white mb-6">Our Leadership</h2>
@@ -225,7 +225,7 @@
                 </div>
             </section>
 
-            <section class="relative py-40 flex items-center justify-center overflow-hidden bg-white text-educave-900">
+            <section class="relative padding-custom flex items-center justify-center overflow-hidden bg-white text-educave-900">
                 <div class="absolute inset-0 opacity-10 pointer-events-none">
                     <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-400 to-transparent"></div>
                 </div>

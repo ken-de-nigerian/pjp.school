@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Admin;
+namespace App\Traits;
 
 use Illuminate\Support\Facades\Auth;
 

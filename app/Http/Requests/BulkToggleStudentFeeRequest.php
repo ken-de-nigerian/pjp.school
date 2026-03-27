@@ -7,13 +7,14 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
-class BulkToggleStudentFeeRequest extends FormRequest
+final class BulkToggleStudentFeeRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return $this->user('admin') !== null;
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

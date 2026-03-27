@@ -29,8 +29,7 @@ class AdminLogoutTest extends TestCase
 
     public function test_authenticated_admin_can_logout(): void
     {
-        $admin = Admin::first();
-        $this->assertNotNull($admin);
+        $admin = Admin::query()->firstOrFail();
 
         $response = $this->actingAs($admin, 'admin')
             ->post(route('admin.logout'), ['_token' => csrf_token()]);

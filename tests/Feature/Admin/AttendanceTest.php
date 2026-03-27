@@ -33,12 +33,12 @@ class AttendanceTest extends TestCase
             'attendance' => [],
         ]);
 
-        $response->assertUnauthorized();
+        $response->assertRedirect(route('admin.login'));
     }
 
     public function test_admin_attendance_save_validates_attendance_array(): void
     {
-        $admin = Admin::first();
+        $admin = Admin::query()->firstOrFail();
 
         $response = $this->actingAs($admin, 'admin')
             ->post(route('admin.attendance.save'), [
@@ -53,7 +53,7 @@ class AttendanceTest extends TestCase
 
     public function test_admin_can_edit_attendance_record(): void
     {
-        $admin = Admin::first();
+        $admin = Admin::query()->firstOrFail();
         \App\Models\AttendanceRecord::query()->insert([
             'class' => 'SS1',
             'term' => '1',
@@ -84,7 +84,7 @@ class AttendanceTest extends TestCase
 
     public function test_admin_can_delete_attendance_record(): void
     {
-        $admin = Admin::first();
+        $admin = Admin::query()->firstOrFail();
         \App\Models\AttendanceRecord::query()->insert([
             'class' => 'JSS1',
             'term' => '1',

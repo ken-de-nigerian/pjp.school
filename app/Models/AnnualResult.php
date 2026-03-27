@@ -39,13 +39,14 @@ class AnnualResult extends Model
     }
 
     /**
-     * Return null when a segment is the placeholder so the UI never displays "No Segment".
+     * Return null when a segment is the placeholder, so the UI never displays "No Segment".
      */
     public function getSegmentAttribute(): null
     {
         return null;
     }
 
+    /** @param Builder<AnnualResult> $query */
     public function scopeForClassTermSession(Builder $query, string $class, string $term, string $session): void
     {
         $query->where('class_arm', $class)
@@ -56,21 +57,27 @@ class AnnualResult extends Model
     /**
      * @deprecated Segment is no longer used; do not filter by segment in new code.
      */
+    /** @param Builder<AnnualResult> $query */
     public function scopeBySegment(Builder $query, string $segment): void
     {
         $query->where('segment', $segment);
     }
 
+    /** @param Builder<AnnualResult> $query */
     public function scopeApproved(Builder $query): void
     {
         $query->where('status', 1);
     }
 
+    /** @return BelongsTo<Student, $this> */
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class, 'studentId', 'id');
     }
 
+    /**
+     * @return Attribute<string, never>
+     */
     protected function gradeLetter(): Attribute
     {
         return Attribute::make(
@@ -89,6 +96,9 @@ class AnnualResult extends Model
         );
     }
 
+    /**
+     * @return Attribute<string, never>
+     */
     protected function resultRemarks(): Attribute
     {
         return Attribute::make(

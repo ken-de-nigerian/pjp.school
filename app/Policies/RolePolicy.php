@@ -7,14 +7,14 @@ namespace App\Policies;
 use App\Models\Admin;
 use App\Models\Role;
 
-class RolePolicy
+final class RolePolicy
 {
     public function viewAny(Admin $user): bool
     {
         return $user->hasPermission('general_settings');
     }
 
-    public function view(Admin $user, Role $role): bool
+    public function view(Admin $user, Role $_role): bool
     {
         return $user->hasPermission('general_settings');
     }
@@ -29,7 +29,7 @@ class RolePolicy
         return $user->hasPermission('general_settings');
     }
 
-    public function delete(Admin $user, Role $role): bool
+    public function delete(Admin $user, Role $_role): bool
     {
         return $user->hasPermission('general_settings');
     }

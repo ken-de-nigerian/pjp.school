@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /** @property string $uniqueID
@@ -57,9 +58,14 @@ class Entrance extends Model
         'payment_status',
     ];
 
-    /** Order by surname for a list. */
-    public function scopeOrdered($query)
+    /**
+     * Order by surname for a list.
+     *
+     * @param  Builder<Entrance>  $query
+     * @return Builder<Entrance>
+     */
+    public function scopeOrdered(Builder $query): Builder
     {
-        return $query->orderBy('candidates_surname', 'asc');
+        return $query->orderBy('candidates_surname');
     }
 }

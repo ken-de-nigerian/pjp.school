@@ -7,14 +7,14 @@ namespace App\Policies;
 use App\Models\Admin;
 use App\Models\Entrance;
 
-class EntrancePolicy
+final class EntrancePolicy
 {
     public function viewAny(Admin $user): bool
     {
         return $user->hasPermission('online_entrance');
     }
 
-    public function view(Admin $user, Entrance $entrance): bool
+    public function view(Admin $user, Entrance $_entrance): bool
     {
         return $user->hasPermission('online_entrance');
     }

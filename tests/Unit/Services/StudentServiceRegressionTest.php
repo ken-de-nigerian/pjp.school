@@ -40,7 +40,6 @@ class StudentServiceRegressionTest extends TestCase
 
         $result = $this->service->getClassesWithCounts();
 
-        $this->assertIsArray($result);
         $this->assertCount(2, $result);
         $this->assertArrayHasKey('class_name', $result[0]);
         $this->assertArrayHasKey('user_count', $result[0]);
@@ -64,7 +63,6 @@ class StudentServiceRegressionTest extends TestCase
 
         $result = $this->service->getHouseCounts();
 
-        $this->assertIsArray($result);
         $this->assertCount(2, $result);
         $this->assertSame('HouseA', $result[0]['house']);
         $this->assertSame(1, $result[0]['user_count']);

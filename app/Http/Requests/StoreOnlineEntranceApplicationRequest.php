@@ -21,6 +21,9 @@ final class StoreOnlineEntranceApplicationRequest extends FormRequest
         return true;
     }
 
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     public function rules(): array
     {
         $phone = ['nullable', 'string', 'max:30', 'regex:/^[0-9+\s\-()]{7,20}$/'];

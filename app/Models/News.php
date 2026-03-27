@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property mixed $id
  * @property mixed $title
+ * @property mixed $category
  */
 class News extends Model
 {

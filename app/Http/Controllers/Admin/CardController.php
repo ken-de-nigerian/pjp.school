@@ -9,13 +9,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GeneratePinsRequest;
 use App\Models\Setting;
 use App\Services\PinService;
+use App\Traits\AuthorizesAdminPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Random\RandomException;
 use Throwable;
 
-class CardController extends Controller
+final class CardController extends Controller
 {
     use AuthorizesAdminPermission;
 

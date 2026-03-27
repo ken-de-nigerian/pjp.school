@@ -14,12 +14,13 @@ use App\Models\Setting;
 use App\Models\Student;
 use App\Services\AttendanceService;
 use App\Services\StudentService;
+use App\Traits\AuthorizesAdminPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Throwable;
 
-class AttendanceController extends Controller
+final class AttendanceController extends Controller
 {
     use AuthorizesAdminPermission;
 
@@ -113,8 +114,7 @@ class AttendanceController extends Controller
             $class = $validated['class'];
             $term = $validated['term'];
             $session = $validated['session'];
-            $segment = config('school.no_segment', 'No Segment');
-            $records = $this->attendanceService->getRecord($date, $class, $term, $session, $segment);
+            $records = $this->attendanceService->getRecord($date, $class, $term, $session);
             $regNumbers = $records->pluck('reg_number')->unique()->filter()->values();
             $studentsByReg = $regNumbers->isNotEmpty()
                 ? Student::query()->whereIn('reg_number', $regNumbers->all())->get()->keyBy('reg_number')
@@ -147,13 +147,11 @@ class AttendanceController extends Controller
             'session' => 'required|string|max:50',
         ]);
 
-        $segment = config('school.no_segment', 'No Segment');
         $records = $this->attendanceService->getRecord(
             $validated['date'],
             $validated['class'],
             $validated['term'],
-            $validated['session'],
-            $segment
+            $validated['session']
         );
 
         if ($request->expectsJson()) {
@@ -184,13 +182,11 @@ class AttendanceController extends Controller
     {
         $this->authorizePermission('view_uploaded_attendance');
         $v = $request->validated();
-        $segment = config('school.no_segment', 'No Segment');
 
         $updated = $this->attendanceService->editRecord(
             $v['class'],
             $v['term'],
             $v['session'],
-            $segment,
             $v['date'],
             $v['updates']
         );
@@ -218,7 +214,6 @@ class AttendanceController extends Controller
         $this->authorizePermission('view_uploaded_attendance');
         $v = $request->validated();
         $regNumber = $v['reg_number'] ?? null;
-        $segment = config('school.no_segment', 'No Segment');
 
         if ($regNumber !== null && $regNumber !== '') {
             $deleted = $this->attendanceService->deleteOneRecord(
@@ -226,7 +221,6 @@ class AttendanceController extends Controller
                 $v['class'],
                 $v['term'],
                 $v['session'],
-                $segment,
                 $v['date']
             );
             $message = $deleted > 0
@@ -237,7 +231,6 @@ class AttendanceController extends Controller
                 $v['class'],
                 $v['term'],
                 $v['session'],
-                $segment,
                 $v['date']
             );
             if ($deleted > 0) {

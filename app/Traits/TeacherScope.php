@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Teacher\Concerns;
+namespace App\Traits;
 
 use App\Models\Teacher;
 use Illuminate\Auth\Access\AuthorizationException;

@@ -6,12 +6,12 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Contracts\NotificationServiceContract;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Teacher\Concerns\TeacherScope;
 use App\Http\Requests\EditBehavioralRequest;
 use App\Models\Setting;
 use App\Models\Student;
 use App\Services\BehavioralService;
 use App\Services\StudentService;
+use App\Traits\TeacherScope;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -97,11 +97,10 @@ final class BehavioralController extends Controller
         $class = (string) ($first['class'] ?? '');
         $term = (string) ($first['term'] ?? '');
         $session = (string) ($first['session'] ?? '');
-        $segment = config('school.no_segment', 'No Segment');
 
         $this->ensureTeacherCanAccessClass($class);
 
-        if ($this->behavioralService->hasBehavioralAnalysis($class, $term, $session, $segment)) {
+        if ($this->behavioralService->hasBehavioralAnalysis($class, $term, $session)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Behavioral analysis for '.$class.' in term '.$term.' and session '.$session.' already exists',
@@ -236,8 +235,7 @@ final class BehavioralController extends Controller
 
             $this->ensureTeacherCanAccessClass($class);
 
-            $segment = config('school.no_segment', 'No Segment');
-            $records = $this->behavioralService->getRecord($class, $term, $session, $segment);
+            $records = $this->behavioralService->getRecord($class, $term, $session);
             $regNumbers = $records->pluck('reg_number')->unique()->filter()->values();
             $studentsByReg = $regNumbers->isNotEmpty()
                 ? Student::query()->whereIn('reg_number', $regNumbers->all())->get()->keyBy('reg_number')

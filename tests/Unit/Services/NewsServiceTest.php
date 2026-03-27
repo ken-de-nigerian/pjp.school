@@ -47,7 +47,8 @@ class NewsServiceTest extends TestCase
 
         $list = $this->service->list(5);
         $this->assertSame(2, $list->total());
-        $this->assertSame('Second', $list->first()->title);
+        $items = $list->items();
+        $this->assertSame('Second', $items[0]->title);
     }
 
     public function test_get_by_id_returns_null_for_missing(): void

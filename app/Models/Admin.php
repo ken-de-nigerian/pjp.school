@@ -51,6 +51,7 @@ class Admin extends Authenticatable
         ];
     }
 
+    /** @return BelongsTo<Role, $this> */
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class, 'user_type', 'id');
@@ -69,7 +70,7 @@ class Admin extends Authenticatable
     /**
      * Check if this admin has a role permission.
      * Super admin (user_type === 1) has all permissions.
-     * Otherwise the role's permission column must equal 1.
+     * Otherwise, the role's permission column must equal 1.
      */
     public function hasPermission(string $key): bool
     {

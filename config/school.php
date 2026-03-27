@@ -35,5 +35,5 @@ return [
     ],
 
     'school_email' => 'support@pjp.school',
-    'school_phone' => '+234 (806) 983-0352'
+    'school_phone' => '+234 (806) 983-0352',
 ];

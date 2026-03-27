@@ -39,20 +39,20 @@ class RouteAccessControlTest extends TestCase
 
     public function test_guest_cannot_access_admin_routes(): void
     {
-        $this->get(route('admin.dashboard'))->assertUnauthorized();
-        $this->get(route('admin.classes'))->assertUnauthorized();
-        $this->get(route('admin.staff.index'))->assertUnauthorized();
+        $this->get(route('admin.dashboard'))->assertRedirect(route('admin.login'));
+        $this->get(route('admin.classes'))->assertRedirect(route('admin.login'));
+        $this->get(route('admin.staff.index'))->assertRedirect(route('admin.login'));
     }
 
     public function test_guest_cannot_access_teacher_routes(): void
     {
-        $this->get(route('teacher.dashboard'))->assertUnauthorized();
-        $this->get(route('teacher.behavioral.index'))->assertUnauthorized();
+        $this->get(route('teacher.dashboard'))->assertRedirect(route('teacher.login'));
+        $this->get(route('teacher.behavioral.index'))->assertRedirect(route('teacher.login'));
     }
 
     public function test_admin_can_access_admin_dashboard(): void
     {
-        $admin = Admin::first();
+        $admin = Admin::query()->firstOrFail();
         $this->actingAs($admin, 'admin')
             ->get(route('admin.dashboard'))
             ->assertOk();
@@ -60,7 +60,7 @@ class RouteAccessControlTest extends TestCase
 
     public function test_teacher_can_access_teacher_dashboard(): void
     {
-        $teacher = Teacher::first();
+        $teacher = Teacher::query()->firstOrFail();
         $this->actingAs($teacher, 'teacher')
             ->get(route('teacher.dashboard'))
             ->assertOk();

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Teacher\Concerns\TeacherScope;
 use App\Services\DashboardService;
+use App\Traits\TeacherScope;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class DashboardController extends Controller
+final class DashboardController extends Controller
 {
     use TeacherScope;
 

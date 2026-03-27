@@ -11,16 +11,17 @@ use Throwable;
 
 final class AttendanceService
 {
-    public function getRecord(string $date, string $class, string $term, string $session, string $segment): Collection
+    /** @return Collection<int, AttendanceRecord> */
+    public function getRecord(string $date, string $class, string $term, string $session): Collection
     {
         return AttendanceRecord::query()
-            ->forClassTermSessionSegment($class, $term, $session, $segment)
+            ->forClassTermSessionSegment($class, $term, $session)
             ->where('date_added', 'like', $date.'%')
             ->orderBy('name')
             ->get();
     }
 
-    /**
+    /** @param array<int, array<string, mixed>> $attendance
      * @throws Throwable
      */
     public function saveRecord(array $attendance): int
@@ -71,14 +72,17 @@ final class AttendanceService
         });
     }
 
+    /**
+     * @param array<int, array{reg_number: string, class_roll_call?: string}> $updates
+     */
     public function editRecord(
         string $class,
         string $term,
         string $session,
-        string $segment,
         string $date,
         array $updates
     ): int {
+        /** @var array<int, array{reg_number: string, class_roll_call?: string}> $updates */
         if (empty($updates)) {
             return 0;
         }
@@ -100,7 +104,7 @@ final class AttendanceService
 
         if (! empty($presentRegs)) {
             $updated += AttendanceRecord::query()
-                ->forClassTermSessionSegment($class, $term, $session, $segment)
+                ->forClassTermSessionSegment($class, $term, $session)
                 ->where('date_added', 'like', $date.'%')
                 ->whereIn('reg_number', $presentRegs)
                 ->update(['class_roll_call' => 1]);
@@ -108,7 +112,7 @@ final class AttendanceService
 
         if (! empty($absentRegs)) {
             $updated += AttendanceRecord::query()
-                ->forClassTermSessionSegment($class, $term, $session, $segment)
+                ->forClassTermSessionSegment($class, $term, $session)
                 ->where('date_added', 'like', $date.'%')
                 ->whereIn('reg_number', $absentRegs)
                 ->update(['class_roll_call' => 2]);
@@ -121,11 +125,10 @@ final class AttendanceService
         string $class,
         string $term,
         string $session,
-        string $segment,
         string $date
     ): int {
         return (int) AttendanceRecord::query()
-            ->forClassTermSessionSegment($class, $term, $session, $segment)
+            ->forClassTermSessionSegment($class, $term, $session)
             ->where('date_added', 'like', $date.'%')
             ->delete();
     }
@@ -135,11 +138,10 @@ final class AttendanceService
         string $class,
         string $term,
         string $session,
-        string $segment,
         string $date
     ): int {
         return (int) AttendanceRecord::query()
-            ->forClassTermSessionSegment($class, $term, $session, $segment)
+            ->forClassTermSessionSegment($class, $term, $session)
             ->where('reg_number', $regNumber)
             ->where('date_added', 'like', $date.'%')
             ->delete();

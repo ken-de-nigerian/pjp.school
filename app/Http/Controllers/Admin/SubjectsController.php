@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
-class SubjectsController extends Controller
+final class SubjectsController extends Controller
 {
     public function __construct(
         private readonly StudentService $studentService
@@ -173,7 +173,7 @@ class SubjectsController extends Controller
         return redirect()->to($redirectUrl)->with('success', $message);
     }
 
-    public function fetchClasses(Request $request): View|RedirectResponse
+    public function fetchClasses(Request $request): View
     {
         Gate::authorize('viewAny', Subject::class);
         $getClasses = $this->studentService->getClassesArray();
@@ -240,7 +240,7 @@ class SubjectsController extends Controller
         ]);
     }
 
-    public function registered(Request $request): View|RedirectResponse
+    public function registered(Request $request): View
     {
         Gate::authorize('viewAny', Subject::class);
 

@@ -25,6 +25,7 @@ return new class extends Migration
         $this->safeIndex('used_pins', 'used_pins_pins_idx', ['pins']);
     }
 
+    /** @param list<string> $columns */
     private function safeIndex(string $table, string $indexName, array $columns): void
     {
         if (! Schema::hasTable($table)) {

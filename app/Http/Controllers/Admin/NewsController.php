@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Throwable;
 
-class NewsController extends Controller
+final class NewsController extends Controller
 {
     private const COVER_WIDTH = 556;
 
@@ -193,12 +193,10 @@ class NewsController extends Controller
             return null;
         }
 
-        $image = match ($ext) {
-            'jpg', 'jpeg' => @imagecreatefromjpeg($file->getRealPath()),
-            'png' => @imagecreatefrompng($file->getRealPath()),
-            default => null,
-        };
-        if ($image === false || $image === null) {
+        $image = $ext === 'png'
+            ? @imagecreatefrompng($file->getRealPath())
+            : @imagecreatefromjpeg($file->getRealPath());
+        if ($image === false) {
             return null;
         }
 

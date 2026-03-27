@@ -10,6 +10,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (! Schema::hasTable('entrance')) {
+            return;
+        }
+
         Schema::table('entrance', function (Blueprint $table) {
             if (! Schema::hasColumn('entrance', 'applying_for')) {
                 $table->string('applying_for', 50)->nullable()->after('candidates_current_class');
@@ -28,6 +32,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (! Schema::hasTable('entrance')) {
+            return;
+        }
+
         Schema::table('entrance', function (Blueprint $table) {
             $table->dropColumn(['applying_for', 'fathers_phone', 'mothers_phone', 'guardians_phone']);
         });

@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $session
  * @property bool $is_active
  */
-final class Fee extends Model
+class Fee extends Model
 {
     protected $fillable = [
         'title',

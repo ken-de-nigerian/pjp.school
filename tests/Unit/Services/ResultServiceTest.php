@@ -69,7 +69,7 @@ class ResultServiceTest extends TestCase
 
         $count = $this->service->bulkInsert($results);
         $this->assertSame(1, $count);
-        $row = AnnualResult::query()->where('reg_number', '1001')->first();
+        $row = AnnualResult::query()->where('reg_number', '1001')->firstOrFail();
         $this->assertSame(40.0, (float) $row->total);
         $this->assertSame(ResultStatus::APPROVED->value, (int) $row->status);
     }
@@ -93,7 +93,7 @@ class ResultServiceTest extends TestCase
 
         $count = $this->service->bulkInsert($results, ResultStatus::PENDING->value);
         $this->assertSame(1, $count);
-        $row = AnnualResult::query()->where('reg_number', '1001')->first();
+        $row = AnnualResult::query()->where('reg_number', '1001')->firstOrFail();
         $this->assertSame(ResultStatus::PENDING->value, (int) $row->status);
     }
 
@@ -152,7 +152,7 @@ class ResultServiceTest extends TestCase
 
         $updated = $this->service->editUploadedResult('1', 'JSS 1', '1', '2024/2025', 'Math', '1001', 10, 10, 20);
         $this->assertSame(1, $updated);
-        $row = AnnualResult::query()->where('reg_number', '1001')->first();
+        $row = AnnualResult::query()->where('reg_number', '1001')->firstOrFail();
         $this->assertSame(40.0, (float) $row->total);
     }
 

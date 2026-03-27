@@ -42,7 +42,7 @@ class CardControllerTest extends TestCase
     public function test_guest_cannot_access_card_index(): void
     {
         $response = $this->get(route('admin.card.index'));
-        $response->assertUnauthorized();
+        $response->assertRedirect(route('admin.login'));
     }
 
     public function test_admin_can_see_card_index(): void

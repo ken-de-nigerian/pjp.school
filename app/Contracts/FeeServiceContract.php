@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 interface FeeServiceContract
 {
     /**
-     * Active fee rows for a report card (term + session).
+     * Active fee rows for a report card (term and session).
      *
      * @return Collection<int, Fee>
      */

@@ -41,7 +41,7 @@ class Setting extends Model
     }
 
     /**
-     * Return null when a segment is the placeholder so the UI never displays "No Segment".
+     * Return null when a segment is the placeholder, so the UI never displays "No Segment".
      */
     public function getSegmentAttribute(): null
     {
@@ -55,6 +55,7 @@ class Setting extends Model
     /**
      * Get site settings (cached).
      */
+    /** @return array<string, mixed> */
     public static function getCached(): array
     {
         return Cache::remember(self::CACHE_KEY, self::CACHE_TTL_SECONDS, function () {
@@ -71,8 +72,6 @@ class Setting extends Model
 
     /**
      * Get the latest Site settings.
-     *
-     * @return Setting|null
      */
     public static function getLatest(): ?Setting
     {

@@ -24,6 +24,7 @@ final class ResultCheckService
         private readonly ResultServiceContract $resultService
     ) {}
 
+    /** @return array<string, mixed> */
     public function getSettings(): array
     {
         return Setting::getCached();
@@ -107,6 +108,7 @@ final class ResultCheckService
             ->first();
     }
 
+    /** @return Collection<int, Behavioral> */
     public function getBehavioral(string $regNumber, string $term, string $session): Collection
     {
         return Behavioral::query()
@@ -117,6 +119,7 @@ final class ResultCheckService
             ->get();
     }
 
+    /** @return Collection<int, mixed> */
     public function getSegment(string $regNumber, string $class, string $term, string $session): Collection
     {
         $base = AnnualResult::query()

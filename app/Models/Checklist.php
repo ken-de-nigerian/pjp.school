@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $is_active
  * @property int $position
  */
-final class Checklist extends Model
+class Checklist extends Model
 {
     protected $fillable = [
         'title',

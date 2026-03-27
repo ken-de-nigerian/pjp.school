@@ -6,13 +6,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTeacherRequest extends FormRequest
+final class StoreTeacherRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return (bool) $this->user('admin');
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

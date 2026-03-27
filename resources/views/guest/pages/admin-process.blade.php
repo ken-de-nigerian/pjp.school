@@ -1,11 +1,13 @@
+@php use Carbon\Carbon; @endphp
 @extends('layouts.guest', ['title' => $title])
 
 @section('content')
+    @php
+        $examDate = Carbon::parse('third saturday of march ' . now()->year);
+    @endphp
     <main id="main-content">
         <div class="animate-in fade-in duration-700 font-sans bg-educave-50 selection:bg-educave-900 selection:text-white">
-
-            {{-- Hero --}}
-            <section class="relative pt-20 border-b border-gray-200 bg-white">
+            <section class="relative border-b border-gray-200 bg-white">
                 <div class="container mx-auto px-4 md:px-8 lg:px-16">
                     <div class="flex flex-col lg:flex-row min-h-[80vh]">
                         <div class="w-full lg:w-1/2 py-16 lg:py-24 pr-0 lg:pr-16 flex flex-col justify-center">
@@ -24,6 +26,7 @@
                                     Start Application
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right group-hover:translate-x-1 transition-transform" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                                 </a>
+
                                 <a href="mailto:{{ config('school.school_email') }}"
                                    class="rounded-xl border border-gray-300 text-educave-900 px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-educave-50 transition-colors flex items-center justify-center gap-2">
                                     Contact Admissions
@@ -41,15 +44,23 @@
                                         <p class="text-3xl font-serif font-bold text-educave-900">Est. 2006</p>
                                         <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Founded</p>
                                     </div>
+
                                     <div class="h-8 w-px bg-gray-300"></div>
+
                                     <div>
                                         <p class="text-3xl font-serif font-bold text-educave-900">60%</p>
                                         <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Pass Target</p>
                                     </div>
+
                                     <div class="h-8 w-px bg-gray-300"></div>
+
                                     <div>
-                                        <p class="text-3xl font-serif font-bold text-educave-900">14th Sat</p>
-                                        <p class="text-xs font-bold uppercase tracking-widest text-educave-800">March Exam</p>
+                                        <p class="text-3xl font-serif font-bold text-educave-900">
+                                            {{ $examDate->format('jS D') }}
+                                        </p>
+                                        <p class="text-xs font-bold uppercase tracking-widest text-educave-800">
+                                            {{ $examDate->format('F') }} Exam
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -58,8 +69,7 @@
                 </div>
             </section>
 
-            {{-- Process Steps --}}
-            <section class="py-24 bg-educave-50">
+            <section class="padding-custom bg-educave-50">
                 <div class="container mx-auto px-4 md:px-8 lg:px-16">
                     <div class="mb-16">
                         <span class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 block">The Roadmap</span>
@@ -87,8 +97,7 @@
                 </div>
             </section>
 
-            {{-- Exam Centres --}}
-            <section class="py-24 bg-white border-t border-gray-200">
+            <section class="padding-custom bg-white border-t border-gray-200">
                 <div class="container mx-auto px-4 md:px-8 lg:px-16">
                     <div class="flex flex-col lg:flex-row gap-20">
                         <div class="w-full lg:w-1/2">
@@ -159,7 +168,6 @@
                 </div>
             </section>
 
-            {{-- Requirements Checklist --}}
             <section class="bg-educave-900 text-white overflow-hidden">
                 <div class="flex flex-col lg:flex-row">
                     <div class="w-full lg:w-1/2 relative min-h-[500px]">
@@ -200,19 +208,15 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Next Exam Date</p>
-                                    <p class="text-2xl font-serif font-bold text-white">14th Saturday, March</p>
+                                    <p class="text-2xl font-serif font-bold text-white">{{ $examDate->format('jS l') }}, {{ $examDate->format('F') }} {{ date('Y') }}</p>
                                 </div>
-                                <a href="{{ route('apply_online') }}" class="rounded-xl bg-white text-educave-900 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-educave-800 hover:text-white transition-colors">
-                                    Apply Now
-                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {{-- Contact Strip --}}
-            <section class="py-20 bg-educave-50 border-t border-gray-200">
+            <section class="padding-custom bg-educave-50 border-t border-gray-200">
                 <div class="container mx-auto px-4 md:px-8 lg:px-16">
                     <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
                         <div>

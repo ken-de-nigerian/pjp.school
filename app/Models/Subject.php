@@ -18,11 +18,13 @@ class Subject extends Model
 
     protected $fillable = ['subject_name', 'grade'];
 
+    /** @param Builder<Subject> $query */
     public function scopeJunior(Builder $query): void
     {
         $query->where('grade', 'Junior');
     }
 
+    /** @param Builder<Subject> $query */
     public function scopeSenior(Builder $query): void
     {
         $query->where('grade', 'Senior');

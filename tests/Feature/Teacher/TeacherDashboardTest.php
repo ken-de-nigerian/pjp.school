@@ -34,7 +34,7 @@ class TeacherDashboardTest extends TestCase
 
     public function test_teacher_dashboard_renders_with_user(): void
     {
-        $teacher = Teacher::first();
+        $teacher = Teacher::query()->firstOrFail();
         $response = $this->actingAs($teacher, 'teacher')->get(route('teacher.dashboard'));
 
         $response->assertStatus(200);
@@ -54,7 +54,7 @@ class TeacherDashboardTest extends TestCase
             'author' => 'Admin',
             'imagelocation' => 'default.png',
         ]);
-        $teacher = Teacher::first();
+        $teacher = Teacher::query()->firstOrFail();
 
         $response = $this->actingAs($teacher, 'teacher')->get(route('teacher.dashboard'));
 

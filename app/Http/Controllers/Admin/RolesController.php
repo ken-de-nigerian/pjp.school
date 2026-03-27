@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
-class RolesController extends Controller
+final class RolesController extends Controller
 {
     private const PERMISSION_DEFAULTS = [
         'attendance' => 0,
@@ -73,7 +73,8 @@ class RolesController extends Controller
         $data['name'] = $name;
 
         $role = Role::query()->create($data);
-        $enabledCount = count($role->fresh()->enabledPermissionLabels());
+        $role->refresh();
+        $enabledCount = count($role->enabledPermissionLabels());
 
         $admin = $request->user('admin');
         if ($admin) {
@@ -101,7 +102,7 @@ class RolesController extends Controller
             ->with('success', __('Role and Permission has been added successfully.'));
     }
 
-    public function edit(Role $role): View|RedirectResponse
+    public function edit(Role $role): View
     {
         Gate::authorize('update', $role);
 

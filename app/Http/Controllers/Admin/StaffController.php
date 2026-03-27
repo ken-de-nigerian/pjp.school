@@ -20,7 +20,7 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Random\RandomException;
 
-class StaffController extends Controller
+final class StaffController extends Controller
 {
     public function __construct(
         private readonly StaffService $staffService
@@ -182,7 +182,8 @@ class StaffController extends Controller
     {
         Gate::authorize('delete', $admin);
 
-        if ($admin->adminId === request()->user('admin')->adminId) {
+        $currentAdmin = request()->user('admin');
+        if ($currentAdmin && $admin->adminId === $currentAdmin->adminId) {
             if (request()->wantsJson()) {
                 return response()->json([
                     'status' => 'error',

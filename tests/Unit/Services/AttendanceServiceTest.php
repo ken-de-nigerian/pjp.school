@@ -24,7 +24,7 @@ class AttendanceServiceTest extends TestCase
 
     public function test_get_record_returns_empty_collection_for_invalid_date(): void
     {
-        $result = $this->service->getRecord('invalid', 'SS1', '1', '2024', 'AM');
+        $result = $this->service->getRecord('invalid', 'SS1', '1', '2024');
 
         $this->assertInstanceOf(Collection::class, $result);
         $this->assertCount(0, $result);
@@ -32,7 +32,7 @@ class AttendanceServiceTest extends TestCase
 
     public function test_get_record_returns_empty_collection_for_valid_date_with_no_data(): void
     {
-        $result = $this->service->getRecord('01 Jan 2025', 'SS1', '1', '2024/2025', 'AM');
+        $result = $this->service->getRecord('01 Jan 2025', 'SS1', '1', '2024/2025');
 
         $this->assertInstanceOf(Collection::class, $result);
     }
@@ -70,7 +70,7 @@ class AttendanceServiceTest extends TestCase
             'date_added' => $dateAdded,
         ]);
 
-        $count = $this->service->editRecord('SS1', '1', '2024/2025', 'AM', '2025-01-01', [
+        $count = $this->service->editRecord('SS1', '1', '2024/2025', '2025-01-01', [
             ['reg_number' => 'R001', 'class_roll_call' => 'absent'],
         ]);
 
@@ -93,7 +93,7 @@ class AttendanceServiceTest extends TestCase
         ]);
 
         $deleted = $this->service->deleteByClassTermSessionSegmentDate(
-            'SS1', '1', '2024', 'AM',
+            'SS1', '1', '2024',
             now()->format('Y-m-d')
         );
 

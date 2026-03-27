@@ -6,14 +6,16 @@ namespace App\Http\Requests;
 
 use App\Models\Subject;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
-class UpdateSubjectRequest extends FormRequest
+final class UpdateSubjectRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return (bool) $this->user('admin');
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [
@@ -22,9 +24,9 @@ class UpdateSubjectRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
-        $validator->after(function ($validator) {
+        $validator->after(function (Validator $validator): void {
             $id = (int) $this->route('id');
             $exists = Subject::query()
                 ->where('subject_name', $this->input('subject_name'))

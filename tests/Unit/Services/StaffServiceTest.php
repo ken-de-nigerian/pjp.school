@@ -102,7 +102,7 @@ class StaffServiceTest extends TestCase
         ]);
 
         $this->assertSame(1, $count);
-        $admin = Admin::query()->where('adminId', 'u1')->first();
+        $admin = Admin::query()->where('adminId', 'u1')->firstOrFail();
         $this->assertSame('New Name', $admin->name);
         $this->assertSame(2, (int) $admin->user_type);
     }

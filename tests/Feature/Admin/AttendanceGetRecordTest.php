@@ -42,7 +42,7 @@ class AttendanceGetRecordTest extends TestCase
 
     public function test_admin_can_get_attendance_record_returns_json_array(): void
     {
-        $admin = Admin::first();
+        $admin = Admin::query()->firstOrFail();
 
         $response = $this->actingAs($admin, 'admin')
             ->getJson(route('admin.attendance.record', [

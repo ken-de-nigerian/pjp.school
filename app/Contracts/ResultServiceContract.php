@@ -13,8 +13,10 @@ interface ResultServiceContract
     /** @return array{uploaded: bool, status: int|null} */
     public function getUploadAndApprovalStatus(string $class, string $term, string $session, string $subject): array;
 
+    /** @return Collection<int, mixed> */
     public function getUploadedResults(string $class, string $term, string $session, string $subjects): Collection;
 
+    /** @return Collection<int, mixed> */
     public function getResultsByClass(string $class, string $term, string $session): Collection;
 
     /**
@@ -41,18 +43,24 @@ interface ResultServiceContract
     /** @param array<int> $ids */
     public function rejectByIds(array $ids): int;
 
+    /** @return Collection<int, mixed> */
     public function searchResults(string $param, ?string $class = null): Collection;
 
+    /** @return Collection<int, mixed> */
     public function getDistinctSessionsFromResults(): Collection;
 
+    /** @return Collection<int, mixed> */
     public function getDistinctSegmentsFromResults(): Collection;
 
     public function hasPublishedResults(string $class, string $term, string $session): bool;
 
+    /** @return Collection<int, mixed> */
     public function getPublishedResults(string $class, string $term, string $session): Collection;
 
+    /** @return Collection<int, mixed> */
     public function getSegmentsForPublished(string $class, string $term, string $session): Collection;
 
+    /** @return Collection<int, mixed> */
     public function getSubjectBreakdownForPublished(string $class, string $term, string $session): Collection;
 
     public function setPublishedLiveStatus(string $class, string $term, string $session, string $regNumber, int $live): int;

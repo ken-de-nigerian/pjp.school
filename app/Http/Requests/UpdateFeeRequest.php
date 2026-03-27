@@ -9,13 +9,16 @@ use App\Enums\Term;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateFeeRequest extends FormRequest
+final class UpdateFeeRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return $this->user('admin') !== null;
     }
 
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     public function rules(): array
     {
         return [

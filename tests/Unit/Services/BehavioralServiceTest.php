@@ -23,7 +23,7 @@ class BehavioralServiceTest extends TestCase
 
     public function test_has_behavioral_analysis_false_when_empty(): void
     {
-        $this->assertFalse($this->service->hasBehavioralAnalysis('JSS 1', '1', '2024/2025', 'First'));
+        $this->assertFalse($this->service->hasBehavioralAnalysis('JSS 1', '1', '2024/2025'));
     }
 
     public function test_has_behavioral_analysis_true_when_exists(): void
@@ -45,7 +45,7 @@ class BehavioralServiceTest extends TestCase
             'date_added' => now(),
         ]);
 
-        $this->assertTrue($this->service->hasBehavioralAnalysis('JSS 1', '1', '2024/2025', 'First'));
+        $this->assertTrue($this->service->hasBehavioralAnalysis('JSS 1', '1', '2024/2025'));
     }
 
     public function test_bulk_insert_creates_records(): void
@@ -86,9 +86,13 @@ class BehavioralServiceTest extends TestCase
             'attentiveness' => '1', 'punctuality' => '1', 'health' => '1', 'politeness' => '1', 'date_added' => now(),
         ]);
 
-        $records = $this->service->getRecord('JSS 1', '1', '2024/2025', 'First');
-        $this->assertSame('Alice', $records->first()->name);
-        $this->assertSame('Zara', $records->last()->name);
+        $records = $this->service->getRecord('JSS 1', '1', '2024/2025');
+        $first = $records->first();
+        $last = $records->last();
+        $this->assertNotNull($first);
+        $this->assertNotNull($last);
+        $this->assertSame('Alice', $first->name);
+        $this->assertSame('Zara', $last->name);
     }
 
     public function test_edit_record_updates_one_row(): void
@@ -101,7 +105,7 @@ class BehavioralServiceTest extends TestCase
 
         $updated = $this->service->editRecord('1001', 'JSS 1', '1', '2024/2025', 'B', 'B', 'B', 'B', 'B', 'B', 'B');
         $this->assertSame(1, $updated);
-        $row = Behavioral::query()->where('reg_number', '1001')->first();
+        $row = Behavioral::query()->where('reg_number', '1001')->firstOrFail();
         $this->assertSame('B', $row->neatness);
         $this->assertSame('B', $row->politeness);
     }

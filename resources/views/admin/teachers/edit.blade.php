@@ -2,7 +2,7 @@
 @extends('layouts.app', ['title' => trim(($teacher->firstname ?? '') . ' ' . ($teacher->lastname ?? '')) ?: 'Edit teacher'])
 
 @section('content')
-    <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
+    <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
             <x-admin.hero-page
                 aria-label="Edit teacher"
@@ -149,7 +149,7 @@
                         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                             <div class="min-w-0">
                                 <h3 class="text-sm sm:text-base font-semibold mb-1" style="color: var(--on-surface);">Modify Results</h3>
-                                <p class="text-sm mb-0" style="color: var(--on-surface-variant);">Toggle the modified results feature on or off.</p>
+                                <p class="text-sm mb-0" style="color: var(--on-surface-variant);">When enabled, this teacher can edit uploaded results in the teacher portal. Uploading new results is unchanged.</p>
                             </div>
                             <label class="settings-switch flex-shrink-0 self-start md:self-center">
                                 <input type="checkbox" id="modify-results-toggle" class="settings-switch-input"{{ (int)($teacher->modify_results ?? 0) === 1 ? 'checked' : '' }}>
@@ -162,7 +162,7 @@
                         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                             <div class="min-w-0">
                                 <h3 class="text-sm sm:text-base font-semibold mb-1" style="color: var(--on-surface);">Form Teacher Status</h3>
-                                <p class="text-sm mb-0" style="color: var(--on-surface-variant);">Enable form teacher status to activate specific tools and responsibilities to support students and manage the classroom effectively.</p>
+                                <p class="text-sm mb-0" style="color: var(--on-surface-variant);">When enabled, this teacher can add and edit attendance and behavioural records for assigned classes. It does not control result editing.</p>
                             </div>
                             <label class="settings-switch flex-shrink-0 self-start md:self-center">
                                 <input type="checkbox" id="form-teacher-toggle" class="settings-switch-input"{{ (int)($teacher->{'form-teacher'} ?? 2) === 1 ? 'checked' : '' }}>

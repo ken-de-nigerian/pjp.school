@@ -13,7 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class ProfileController extends Controller
+final class ProfileController extends Controller
 {
     public function show(): RedirectResponse
     {

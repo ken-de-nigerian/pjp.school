@@ -6,7 +6,7 @@ namespace App\Policies;
 
 use App\Models\Admin;
 
-class NotificationPolicy
+final class NotificationPolicy
 {
     public function viewAny(Admin $user): bool
     {

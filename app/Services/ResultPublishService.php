@@ -13,13 +13,13 @@ use App\Support\AnnualResultAggregation;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-final class ResultPublishService
+final readonly class ResultPublishService
 {
     public function __construct(
-        private readonly SendNotificationAction $sendNotificationAction
+        private SendNotificationAction $sendNotificationAction
     ) {}
 
-    /**
+    /** @return array<string, mixed>
      * @throws Throwable
      */
     public function publish(string $class, string $term, string $session, string $adminName): array

@@ -6,13 +6,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAttendanceRequest extends FormRequest
+final class StoreAttendanceRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return $this->user('admin') !== null || $this->user('teacher') !== null;
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

@@ -7,14 +7,14 @@ namespace App\Policies;
 use App\Models\Admin;
 use App\Models\Subject;
 
-class SubjectPolicy
+final class SubjectPolicy
 {
     public function viewAny(Admin $user): bool
     {
         return $user->hasPermission('manage_subjects');
     }
 
-    public function view(Admin $user, Subject $subject): bool
+    public function view(Admin $user, Subject $_subject): bool
     {
         return $user->hasPermission('manage_subjects');
     }
@@ -24,12 +24,12 @@ class SubjectPolicy
         return $user->hasPermission('manage_subjects');
     }
 
-    public function update(Admin $user, Subject $subject): bool
+    public function update(Admin $user, Subject $_subject): bool
     {
         return $user->hasPermission('manage_subjects');
     }
 
-    public function delete(Admin $user, Subject $subject): bool
+    public function delete(Admin $user, Subject $_subject): bool
     {
         return $user->hasPermission('manage_subjects');
     }

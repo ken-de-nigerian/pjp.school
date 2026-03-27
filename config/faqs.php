@@ -5,9 +5,9 @@ declare(strict_types=1);
 return [
     'topics' => [
         'general' => [
-            'label'   => 'General Information',
+            'label' => 'General Information',
             'sidebar' => 'General',
-            'items'   => [
+            'items' => [
                 ['q' => 'When was the school established?',
                     'a' => 'Pope John Paul II Model Secondary School was established in 2006, originally as Mater Ecclesiae Secondary School, and renamed to its present name in 2007.'],
                 ['q' => 'Where is the school located?',
@@ -32,9 +32,9 @@ return [
         ],
 
         'academics' => [
-            'label'   => 'Academics',
+            'label' => 'Academics',
             'sidebar' => 'Academics',
-            'items'   => [
+            'items' => [
                 ['q' => 'What curriculum does the school operate?',
                     'a' => 'PJP is faithful to the National Education Policy, running both the Junior Secondary (JSS1–JSS3) and Senior Secondary (SSS1–SSS3) curricula, exposing students to a wide range of subjects across Science, Arts and Commercial arms.'],
                 ['q' => 'How many arms of classes does the school have?',
@@ -59,9 +59,9 @@ return [
         ],
 
         'facilities' => [
-            'label'   => 'Facilities',
+            'label' => 'Facilities',
             'sidebar' => 'Facilities',
-            'items'   => [
+            'items' => [
                 ['q' => 'What facilities does the school have?',
                     'a' => 'The school has interactive boards in all classrooms, an ICT and Microsoft suite, a well-equipped library, science laboratories, and a school health centre — among other structures necessary for sound moral and academic training.'],
                 ['q' => 'How is the hostel accommodation?',
@@ -80,9 +80,9 @@ return [
         ],
 
         'boarding' => [
-            'label'   => 'Boarding Life',
+            'label' => 'Boarding Life',
             'sidebar' => 'Boarding',
-            'items'   => [
+            'items' => [
                 ['q' => 'How do students do their laundry?',
                     'a' => 'Students do their laundry themselves. They are taught how to do so properly during orientation periods at the beginning of each school year. This is part of the school\'s commitment to building independence and responsibility in every student.'],
                 ['q' => 'What level of medical care is available?',
@@ -103,9 +103,9 @@ return [
         ],
 
         'sports' => [
-            'label'   => 'Sports & Co-curricular',
+            'label' => 'Sports & Co-curricular',
             'sidebar' => 'Sports',
-            'items'   => [
+            'items' => [
                 ['q' => 'What sporting activities does the school offer?',
                     'a' => 'The school offers a variety of sporting activities including football (soccer), volleyball, table tennis, badminton, indoor games, and field and track events. We believe in developing the whole child — body, mind and spirit.'],
                 ['q' => 'Does the school participate in inter-school competitions?',
@@ -120,9 +120,9 @@ return [
         ],
 
         'admissions' => [
-            'label'   => 'Admissions',
+            'label' => 'Admissions',
             'sidebar' => 'Admissions',
-            'items'   => [
+            'items' => [
                 ['q' => 'How do I apply for admission into PJP?',
                     'a' => 'Admission into PJP is through an entrance examination. Applications can be submitted online through the school\'s entrance exam portal at entrance-exam.pjp.school. You can also visit the school office in person for more information.'],
                 ['q' => 'What class levels can I apply for?',

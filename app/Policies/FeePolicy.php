@@ -19,12 +19,12 @@ final class FeePolicy
         return $user->hasPermission('general_settings');
     }
 
-    public function update(Admin $user, Fee $fee): bool
+    public function update(Admin $user, Fee $_fee): bool
     {
         return $user->hasPermission('general_settings');
     }
 
-    public function delete(Admin $user, Fee $fee): bool
+    public function delete(Admin $user, Fee $_fee): bool
     {
         return $user->hasPermission('general_settings');
     }

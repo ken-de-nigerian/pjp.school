@@ -6,11 +6,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Entrance;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
-class OnlineEntranceController extends Controller
+final class OnlineEntranceController extends Controller
 {
     public function index(): View
     {
@@ -34,7 +33,7 @@ class OnlineEntranceController extends Controller
         ]);
     }
 
-    public function show(Entrance $entrance): View|RedirectResponse
+    public function show(Entrance $entrance): View
     {
         Gate::authorize('viewAny', Entrance::class);
 

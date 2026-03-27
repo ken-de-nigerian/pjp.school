@@ -6,13 +6,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ChangeTeacherPasswordRequest extends FormRequest
+final class ChangeTeacherPasswordRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return $this->user('teacher') !== null;
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

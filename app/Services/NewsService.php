@@ -12,6 +12,41 @@ use Schema;
 
 final class NewsService
 {
+    /**
+     * News index: featured article separated from paginated list items.
+     *
+     * @return array{featured: News|null, paginated: LengthAwarePaginator<int, News>}
+     */
+    public function forNewsIndex(int $perPage = 9): array
+    {
+        $featuredQuery = News::query();
+
+        if (Schema::hasColumn('news', 'created_at')) {
+            $featuredQuery->orderByDesc('created_at');
+        } else {
+            $featuredQuery->orderByDesc('date_added');
+        }
+
+        $featured = $featuredQuery->first();
+
+        $listQuery = News::query();
+        if ($featured) {
+            $listQuery->whereKeyNot($featured->getKey());
+        }
+
+        if (Schema::hasColumn('news', 'created_at')) {
+            $listQuery->orderByDesc('created_at');
+        } else {
+            $listQuery->orderByDesc('date_added');
+        }
+
+        return [
+            'featured' => $featured,
+            'paginated' => $listQuery->paginate($perPage),
+        ];
+    }
+
+    /** @return LengthAwarePaginator<int, News> */
     public function list(int $perPage = 6): LengthAwarePaginator
     {
         $query = News::query();
@@ -59,6 +94,7 @@ final class NewsService
         return News::query()->where('id', $id)->exists();
     }
 
+    /** @param array<string, mixed> $data */
     public function createWithImage(array $data, string $author, string $imageFileName): News
     {
         $slug = Str::slug($data['title'] ?? '');
@@ -74,6 +110,7 @@ final class NewsService
         ]);
     }
 
+    /** @param array<string, mixed> $data */
     public function createNoImage(array $data, string $author): News
     {
         $slug = Str::slug($data['title'] ?? '');
@@ -89,6 +126,7 @@ final class NewsService
         ]);
     }
 
+    /** @param array<string, mixed> $data */
     public function update(int|string $id, array $data, string $author): int
     {
         $slug = Str::slug($data['title'] ?? '');

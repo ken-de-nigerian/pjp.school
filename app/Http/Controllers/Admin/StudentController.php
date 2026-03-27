@@ -28,7 +28,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
-class StudentController extends Controller
+final class StudentController extends Controller
 {
     public function __construct(
         private readonly StudentService $studentService,
@@ -91,9 +91,16 @@ class StudentController extends Controller
 
         $validated = $request->validated();
         unset($validated['image']);
-        $imagelocation = $request->hasFile('image')
-            ? $request->file('image')->store('students', 'public')
-            : null;
+        $imagelocation = null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            if ($file) {
+                $stored = $file->store('students', 'public');
+                if (is_string($stored) && $stored !== '') {
+                    $imagelocation = $stored;
+                }
+            }
+        }
 
         $student = $this->studentService->create($validated, $imagelocation);
 
@@ -116,14 +123,14 @@ class StudentController extends Controller
             ->with('success', __('Student registered successfully.'));
     }
 
-    public function show(Student $student): View|RedirectResponse
+    public function show(Student $student): View
     {
         Gate::authorize('view', $student);
 
         return view('admin.students.show', ['student' => $student]);
     }
 
-    public function edit(Student $student): View|RedirectResponse
+    public function edit(Student $student): View
     {
         Gate::authorize('update', $student);
 
@@ -315,7 +322,16 @@ class StudentController extends Controller
         }
         Gate::authorize('update', $student);
 
-        $path = $request->file('photoimg')->store('students', 'public');
+        $file = $request->file('photoimg');
+        if (! $file) {
+            return response()->json(['status' => 'error', 'message' => 'No file uploaded.'], 422);
+        }
+
+        $path = $file->store('students', 'public');
+        if (! is_string($path) || $path === '') {
+            return response()->json(['status' => 'error', 'message' => 'Upload failed. Please try again.'], 500);
+        }
+
         $updated = $this->studentService->updateProfilePicture($studentId, $path);
         if ($updated) {
             $adminName = $request->user('admin')->name ?? 'Admin';
@@ -393,9 +409,9 @@ class StudentController extends Controller
 
         if ($request->boolean('entire_class') && $request->filled('class')) {
             $students = $this->studentService->getStudentsByClassAll($request->input('class'));
-            $ids = $students->pluck('id')->all();
+            $ids = $students->pluck('id')->map(static fn ($v) => (int) $v)->values()->all();
         } else {
-            $ids = array_values(array_filter((array) $request->input('ids', []), 'is_numeric'));
+            $ids = array_values(array_map('intval', array_filter((array) $request->input('ids', []), 'is_numeric')));
         }
 
         $updated = $this->studentService->updateFeeStatusBulk($ids, $feeStatus);
@@ -451,25 +467,12 @@ class StudentController extends Controller
 
     public function promote(PromoteStudentsRequest $request): RedirectResponse|JsonResponse
     {
-        $fromClass = (string) $request->input('from_class');
-        $toClass = (string) $request->input('to_class');
+        $validated = $request->validated();
+        $fromClass = (string) $validated['from_class'];
+        $toClass = (string) $validated['to_class'];
+        $studentIds = array_values(array_map('intval', (array) $validated['student_ids']));
 
-        $count = Student::query()->where('class', $fromClass)->count();
-        if ($count === 0) {
-            $errors = ['from_class' => [__('There are no students in this class to promote.')]];
-
-            if ($request->expectsJson() || $request->ajax()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => __('There are no students in this class to promote.'),
-                    'errors' => $errors,
-                ], 422);
-            }
-
-            return back()->withErrors($errors)->withInput();
-        }
-
-        $this->studentService->promote($fromClass, $toClass);
+        $this->studentService->promote($fromClass, $toClass, $studentIds);
 
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add(
@@ -521,7 +524,7 @@ class StudentController extends Controller
         return view('admin.students.houses', ['getHouses' => $getHouses]);
     }
 
-    public function viewHouse(Request $request): View|RedirectResponse
+    public function viewHouse(Request $request): View
     {
         Gate::authorize('viewAny', Student::class);
 
@@ -546,7 +549,7 @@ class StudentController extends Controller
         ]);
     }
 
-    public function graduated(): View|RedirectResponse
+    public function graduated(): View
     {
         Gate::authorize('viewAny', Student::class);
         $graduationYearsWithCounts = $this->studentService->getGraduationYearsWithCounts();
@@ -554,7 +557,7 @@ class StudentController extends Controller
         return view('admin.students.graduated', ['graduationYearsWithCounts' => $graduationYearsWithCounts]);
     }
 
-    public function viewGraduated(Request $request): View|RedirectResponse
+    public function viewGraduated(Request $request): View
     {
         Gate::authorize('viewAny', Student::class);
 
@@ -601,7 +604,7 @@ class StudentController extends Controller
         return view('admin.students.left-school', ['leftSchoolYearsWithCounts' => $leftSchoolYearsWithCounts]);
     }
 
-    public function viewLeftSchool(Request $request): View|RedirectResponse
+    public function viewLeftSchool(Request $request): View
     {
         Gate::authorize('viewAny', Student::class);
 

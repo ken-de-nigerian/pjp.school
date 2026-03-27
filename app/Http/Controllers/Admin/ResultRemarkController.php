@@ -8,10 +8,11 @@ use App\Contracts\ResultRemarkServiceContract;
 use App\DTO\StoreResultRemarkDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreResultRemarkRequest;
+use App\Traits\AuthorizesAdminPermission;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 
-class ResultRemarkController extends Controller
+final class ResultRemarkController extends Controller
 {
     use AuthorizesAdminPermission;
 

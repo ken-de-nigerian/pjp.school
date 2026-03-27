@@ -31,12 +31,12 @@ class DashboardAccessTest extends TestCase
     {
         $response = $this->get(route('admin.dashboard'));
 
-        $response->assertUnauthorized();
+        $response->assertRedirect(route('admin.login'));
     }
 
     public function test_authenticated_admin_can_access_dashboard(): void
     {
-        $admin = Admin::first();
+        $admin = Admin::query()->firstOrFail();
 
         $response = $this->actingAs($admin, 'admin')->get(route('admin.dashboard'));
 

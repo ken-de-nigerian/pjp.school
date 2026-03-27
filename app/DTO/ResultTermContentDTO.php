@@ -9,7 +9,7 @@ use App\Models\Fee;
 use Illuminate\Support\Collection;
 
 /**
- * Active fees and checklist lines for a published report (term + session).
+ * Active fees and checklist lines for a published report (term and session).
  *
  * @phpstan-type FeeCollection Collection<int, Fee>
  * @phpstan-type ChecklistCollection Collection<int, Checklist>

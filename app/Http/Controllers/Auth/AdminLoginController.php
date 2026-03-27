@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
-class AdminLoginController extends Controller
+final class AdminLoginController extends Controller
 {
     public function showLoginForm(): View
     {

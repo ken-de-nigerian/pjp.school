@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Teacher\Concerns\TeacherScope;
 use App\Services\StudentService;
+use App\Traits\TeacherScope;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class ClassController extends Controller
+final class ClassController extends Controller
 {
     use TeacherScope;
 
@@ -34,9 +34,7 @@ class ClassController extends Controller
                 ? $this->studentService->getStudentsByClassWithSearch($class, $search)
                 : $this->studentService->getStudentsByClass($class);
 
-            if (method_exists($students, 'withQueryString')) {
-                $students->withQueryString();
-            }
+            $students->withQueryString();
 
             return view('teacher.class.index', [
                 'students' => $students,

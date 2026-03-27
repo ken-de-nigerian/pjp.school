@@ -18,13 +18,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
-class ClassController extends Controller
+final class ClassController extends Controller
 {
     public function __construct(
         private readonly StudentService $studentService
     ) {}
 
-    public function index(Request $request): View|RedirectResponse
+    public function index(Request $request): View
     {
         Gate::authorize('viewAny', Student::class);
         $classesWithCounts = $this->studentService->getClassesWithCounts();
@@ -39,9 +39,7 @@ class ClassController extends Controller
                 ? $this->studentService->getStudentsByClassWithSearch($class, $search)
                 : $this->studentService->getStudentsByClass($class);
 
-            if (method_exists($students, 'withQueryString')) {
-                $students->withQueryString();
-            }
+            $students->withQueryString();
 
             return view('admin.classes.index', [
                 'students' => $students,

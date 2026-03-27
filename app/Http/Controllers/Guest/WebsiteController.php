@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Random\RandomException;
+use Schema;
 use Throwable;
 
 final class WebsiteController extends Controller
@@ -39,6 +40,7 @@ final class WebsiteController extends Controller
     public function applyOnline(): View
     {
         $settings = Setting::getCached();
+
         return view('guest.pages.apply-online', ['title' => 'Apply Online', 'settings' => $settings]);
     }
 
@@ -107,17 +109,34 @@ final class WebsiteController extends Controller
 
     public function newsIndex(NewsService $newsService): View
     {
+        $newsData = $newsService->forNewsIndex();
+
         return view('guest.pages.news-index', [
             'title' => 'News',
-            'news' => $newsService->list(9),
+            'featured' => $newsData['featured'],
+            'news' => $newsData['paginated'],
         ]);
     }
 
     public function newsShow(News $news): View
     {
+        $relatedQuery = News::query()
+            ->whereKeyNot($news->getKey());
+
+        if (filled($news->category)) {
+            $relatedQuery->where('category', $news->category);
+        }
+
+        if (Schema::hasColumn('news', 'created_at')) {
+            $relatedQuery->orderByDesc('created_at');
+        } else {
+            $relatedQuery->orderByDesc('date_added');
+        }
+
         return view('guest.pages.news-show', [
             'title' => $news->title,
             'news' => $news,
+            'relatedNews' => $relatedQuery->limit(6)->get(),
         ]);
     }
 

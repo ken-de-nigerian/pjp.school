@@ -35,7 +35,7 @@ class StudentControllerTest extends TestCase
     {
         $response = $this->get(route('admin.classes'));
 
-        $response->assertUnauthorized();
+        $response->assertRedirect(route('admin.login'));
     }
 
     public function test_admin_students_index_redirects_to_classes(): void

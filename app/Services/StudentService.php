@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Cache;
 
 final class StudentService
 {
+    /**
+     * @return array<int, array{id: mixed, class_name: mixed, time_added: mixed, user_count: int}>
+     */
     public function getClassesWithCounts(): array
     {
         return Cache::remember('student_class_counts', 300, function () {
@@ -24,9 +27,7 @@ final class StudentService
                 ->get(['class'])
                 ->each(function ($row) use (&$countByClass) {
                     foreach (array_filter(array_map('trim', explode(',', $row->class ?? ''))) as $c) {
-                        if ($c !== '') {
-                            $countByClass[$c] = ($countByClass[$c] ?? 0) + 1;
-                        }
+                        $countByClass[$c] = ($countByClass[$c] ?? 0) + 1;
                     }
                 });
 
@@ -39,10 +40,12 @@ final class StudentService
                     'time_added' => $class->time_added,
                     'user_count' => $countByClass[$class->class_name] ?? 0,
                 ])
-                ->toArray();
+                ->values()
+                ->all();
         });
     }
 
+    /** @return list<array{house: string, user_count: int}> */
     public function getHouseCounts(): array
     {
         $houses = config('school.houses', []);
@@ -70,6 +73,7 @@ final class StudentService
         return $results;
     }
 
+    /** @return LengthAwarePaginator<int, Student> */
     public function getStudentsInHouse(string $house, ?string $search = null, ?string $class = null, int $perPage = 25): LengthAwarePaginator
     {
         $query = Student::query()
@@ -94,6 +98,7 @@ final class StudentService
         return $query->paginate($perPage)->appends(request()->query());
     }
 
+    /** @return LengthAwarePaginator<int, Student> */
     public function getStudentsByClass(string $class, int $perPage = 25): LengthAwarePaginator
     {
         return Student::query()
@@ -104,6 +109,7 @@ final class StudentService
             ->paginate($perPage);
     }
 
+    /** @return Collection<int, Student> */
     public function getStudentsByClassAll(string $class): Collection
     {
         return Student::query()
@@ -114,6 +120,7 @@ final class StudentService
             ->get();
     }
 
+    /** @return Collection<int, Student> */
     public function getStudentsByClassAndSubject(?string $class, ?string $subject): Collection
     {
         $query = Student::query()->active()->orderBy('firstname')->orderBy('lastname');
@@ -146,6 +153,7 @@ final class StudentService
             ->update(['subjects' => $subjectsList]);
     }
 
+    /** @return list<string> */
     public function getGraduationDates(): array
     {
         $dates = Student::query()
@@ -162,6 +170,7 @@ final class StudentService
         return array_values($dates);
     }
 
+    /** @return list<array{year: string, user_count: int}> */
     public function getGraduationYearsWithCounts(): array
     {
         $years = $this->getGraduationDates();
@@ -176,7 +185,7 @@ final class StudentService
                 ->where('graduation_date', 'like', $year.'%')
                 ->count();
             $results[] = [
-                'year' => (string) $year,
+                'year' => $year,
                 'user_count' => $count,
             ];
         }
@@ -184,6 +193,7 @@ final class StudentService
         return $results;
     }
 
+    /** @return Collection<int, Student> */
     public function getStudentsByGraduationYear(string $year): Collection
     {
         return Student::query()
@@ -194,6 +204,7 @@ final class StudentService
             ->get();
     }
 
+    /** @return list<string> */
     public function getLeftSchoolDates(): array
     {
         $dates = Student::query()
@@ -211,6 +222,7 @@ final class StudentService
         return array_values($dates);
     }
 
+    /** @return list<array{year: string, user_count: int}> */
     public function getLeftSchoolYearsWithCounts(): array
     {
         $years = $this->getLeftSchoolDates();
@@ -226,7 +238,7 @@ final class StudentService
                 ->where('left_school_date', 'like', $year.'%')
                 ->count();
             $results[] = [
-                'year' => (string) $year,
+                'year' => $year,
                 'user_count' => $count,
             ];
         }
@@ -234,6 +246,7 @@ final class StudentService
         return $results;
     }
 
+    /** @return Collection<int, Student> */
     public function getStudentsWhoLeftSchool(string $year): Collection
     {
         return Student::query()
@@ -257,6 +270,7 @@ final class StudentService
         return Student::query()->active()->where('reg_number', $regNumber)->first();
     }
 
+    /** @return LengthAwarePaginator<int, Student> */
     public function getStudentsByClassWithSearch(string $class, string $search, int $perPage = 25): LengthAwarePaginator
     {
         $query = Student::query()
@@ -278,9 +292,10 @@ final class StudentService
         return $query->paginate($perPage);
     }
 
+    /** @return array<int, SchoolClass> */
     public function getClassesArray(): array
     {
-        return SchoolClass::query()->orderBy('class_name')->get()->all();
+        return SchoolClass::query()->orderBy('class_name')->get()->values()->all();
     }
 
     public function getNextRegNumber(): int
@@ -292,6 +307,7 @@ final class StudentService
         return $maxReg + 1;
     }
 
+    /** @return Collection<int, Subject> */
     public function getSubjectsToRegister(string $selectedClass): Collection
     {
         $classArm = substr($selectedClass, 0, 3);
@@ -312,12 +328,12 @@ final class StudentService
 
     public function addClass(string $class_name): int
     {
-        $created = SchoolClass::query()->create([
+        SchoolClass::query()->create([
             'class_name' => $class_name,
             'time_added' => now()->format('Y-m-d H:i:s'),
         ]);
 
-        return $created ? 1 : 0;
+        return 1;
     }
 
     public function updateClass(int $id, string $newName): bool
@@ -346,6 +362,7 @@ final class StudentService
         return (bool) SchoolClass::query()->where('id', $id)->delete();
     }
 
+    /** @param array<string, mixed> $attributes */
     public function create(array $attributes, ?string $imagelocation = null): Student
     {
         $classArm = ClassArm::fromClass($attributes['class'] ?? '');
@@ -361,6 +378,7 @@ final class StudentService
         return Student::query()->create($data);
     }
 
+    /** @param array<string, mixed> $data */
     public function updateAccount(int $id, array $data): int
     {
         return Student::query()->where('id', $id)->update([
@@ -385,6 +403,7 @@ final class StudentService
         ]);
     }
 
+    /** @param array<string, mixed> $data */
     public function updateContactAddress(int $id, array $data): int
     {
         return Student::query()->where('id', $id)->update([
@@ -396,6 +415,7 @@ final class StudentService
         ]);
     }
 
+    /** @param array<string, mixed> $data */
     public function updateParentsInformation(int $id, array $data): int
     {
         return Student::query()->where('id', $id)->update([
@@ -408,6 +428,7 @@ final class StudentService
         ]);
     }
 
+    /** @param array<string, mixed> $data */
     public function updateSponsorsInformation(int $id, array $data): int
     {
         return Student::query()->where('id', $id)->update([
@@ -432,7 +453,7 @@ final class StudentService
         return Student::query()->where('id', $id)->update([
             'status' => $status,
             'class_arm' => $class_arm,
-            'left_school_date' => ($status === 1) ? now()->format('Y-m-d H:i:s') : null,
+            'left_school_date' => $status === 1 ? now()->format('Y-m-d H:i:s') : null,
         ]);
     }
 
@@ -441,6 +462,7 @@ final class StudentService
         return Student::query()->where('id', $id)->update(['fee_status' => $fee_status]);
     }
 
+    /** @param array<int, int> $ids */
     public function updateFeeStatusBulk(array $ids, int $fee_status): int
     {
         if (count($ids) === 0) {
@@ -451,16 +473,25 @@ final class StudentService
         return Student::query()->whereIn('id', $ids)->update(['fee_status' => $fee_status]);
     }
 
-    public function promote(string $fromClass, string $toClass): bool
+    /**
+     * Promote selected students from one class to another.
+     *
+     * @param  list<int>  $studentIds
+     */
+    public function promote(string $fromClass, string $toClass, array $studentIds): bool
     {
         $data = ['class' => $toClass, 'class_arm' => ClassArm::fromClass($toClass)];
         if ($toClass === 'Graduated') {
             $data['graduation_date'] = now()->format('Y-m-d H:i:s');
         }
 
-        return Student::query()->where('class', $fromClass)->update($data) !== 0;
+        return Student::query()
+            ->where('class', $fromClass)
+            ->whereIn('id', array_values(array_unique(array_map('intval', $studentIds))))
+            ->update($data) !== 0;
     }
 
+    /** @param list<int> $studentIds */
     public function demote(string $toClass, array $studentIds): bool
     {
         $data = ['class' => $toClass, 'class_arm' => ClassArm::fromClass($toClass)];

@@ -40,7 +40,7 @@ class NewsControllerTest extends TestCase
     public function test_guest_cannot_see_news_index(): void
     {
         $response = $this->get(route('admin.news.index'));
-        $response->assertUnauthorized();
+        $response->assertRedirect(route('admin.login'));
     }
 
     public function test_admin_can_see_news_index(): void
@@ -82,7 +82,7 @@ class NewsControllerTest extends TestCase
 
         $response->assertRedirect();
         $this->assertDatabaseHas('news', ['title' => 'News With Cover']);
-        $news = News::query()->where('title', 'News With Cover')->first();
+        $news = News::query()->where('title', 'News With Cover')->firstOrFail();
         $this->assertNotNull($news->imagelocation);
         $this->assertNotSame('default.png', $news->imagelocation);
     }

@@ -77,7 +77,7 @@ final class ChecklistController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => __('Checklist item saved.'),
-            'checklist' => $this->checklistToArray($checklist->fresh()),
+            'checklist' => $this->checklistToArray($checklist->fresh() ?? $checklist),
         ]);
     }
 
@@ -95,7 +95,7 @@ final class ChecklistController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => __('Checklist item updated.'),
-            'checklist' => $this->checklistToArray($checklist->fresh()),
+            'checklist' => $this->checklistToArray($checklist->fresh() ?? $checklist),
         ]);
     }
 

@@ -6,12 +6,12 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Contracts\NotificationServiceContract;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Teacher\Concerns\TeacherScope;
 use App\Http\Requests\EditAttendanceRequest;
 use App\Models\Setting;
 use App\Models\Student;
 use App\Services\AttendanceService;
 use App\Services\StudentService;
+use App\Traits\TeacherScope;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -164,12 +164,10 @@ final class AttendanceController extends Controller
             ], 422);
         }
 
-        $segment = config('school.no_segment', 'No Segment');
         $updated = $this->attendanceService->editRecord(
             $v['class'],
             $v['term'],
             $v['session'],
-            $segment,
             $v['date'],
             $filtered
         );
@@ -223,8 +221,7 @@ final class AttendanceController extends Controller
 
             $this->ensureTeacherCanAccessClass($class);
 
-            $segment = config('school.no_segment', 'No Segment');
-            $records = $this->attendanceService->getRecord($date, $class, $term, $session, $segment);
+            $records = $this->attendanceService->getRecord($date, $class, $term, $session);
             $regNumbers = $records->pluck('reg_number')->unique()->filter()->values();
             $studentsByReg = $regNumbers->isNotEmpty()
                 ? Student::query()->whereIn('reg_number', $regNumbers->all())->get()->keyBy('reg_number')

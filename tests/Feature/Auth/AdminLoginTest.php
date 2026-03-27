@@ -60,6 +60,6 @@ class AdminLoginTest extends TestCase
         ]);
 
         $response->assertRedirect(route('admin.dashboard'));
-        $this->assertAuthenticatedAs(Admin::first(), 'admin');
+        $this->assertAuthenticatedAs(Admin::query()->firstOrFail(), 'admin');
     }
 }

@@ -4515,3 +4515,8 @@ body.intl-tel-modal-open {
     color: var(--on-surface-variant, #666);
     font-variant-numeric: tabular-nums;
 }
+
+.padding-custom {
+    padding-top: 70px !important;
+    padding-bottom: 50px !important;
+}

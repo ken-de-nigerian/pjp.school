@@ -49,6 +49,6 @@ class TeacherLoginTest extends TestCase
         ]);
 
         $response->assertRedirect(route('teacher.dashboard'));
-        $this->assertAuthenticatedAs(Teacher::first(), 'teacher');
+        $this->assertAuthenticatedAs(Teacher::query()->firstOrFail(), 'teacher');
     }
 }

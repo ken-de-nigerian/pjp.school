@@ -137,9 +137,9 @@ final readonly class ResultService implements ResultServiceContract
         string $session,
         string $subjects,
         string $reg_number,
-        $ca,
-        $assignment,
-        $exam
+        float|int|string $ca,
+        float|int|string $assignment,
+        float|int|string $exam
     ): int {
         $weight = 1.0;
         $total = $weight * (floatval($ca) + floatval($assignment) + floatval($exam));
@@ -185,6 +185,7 @@ final readonly class ResultService implements ResultServiceContract
             ->update(['status' => ResultStatus::REJECTED->value]);
     }
 
+    /** @return Collection<int, AnnualResult> */
     public function fetchResultsByName(string $name): Collection
     {
         $like = '%'.addcslashes($name, '%_\\').'%';
@@ -382,6 +383,6 @@ final readonly class ResultService implements ResultServiceContract
             ->values()
             ->all();
 
-        return $expanded;
+        return array_values($expanded);
     }
 }

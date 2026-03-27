@@ -48,7 +48,6 @@ Artisan::command('results:collapse-annual-duplicates {--dry-run : Preview only}'
         ->selectRaw('reg_number, subjects, class_arm, term, session, COUNT(*) as cnt')
         ->groupBy('reg_number', 'subjects', 'class_arm', 'term', 'session')
         ->having('cnt', '>', 1)
-        ->get()
         ->count();
 
     $this->info("Would collapse $dupCount duplicate groups (not executed). Use application aggregation or a custom migration after verification.");
@@ -75,6 +74,6 @@ Artisan::command('results:explain-annual-filter {reg_number} {class_arm} {term} 
 
     $this->info('EXPLAIN aggregated annual_result (report-card style filter + GROUP BY):');
     foreach ($plan as $row) {
-        $this->line(json_encode($row, JSON_UNESCAPED_SLASHES));
+        $this->line(json_encode($row, JSON_UNESCAPED_SLASHES) ?: '');
     }
 })->purpose('Run EXPLAIN on the aggregated annual_result query used for student report segments');

@@ -27,6 +27,7 @@ final class OnlineEntrancePaymentController extends Controller
         }
 
         $settings = Setting::getCached();
+
         return view('guest.pages.pay-online', [
             'title' => 'Pay Online',
             'entrance' => $entrance,

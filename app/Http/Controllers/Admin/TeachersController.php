@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
-class TeachersController extends Controller
+final class TeachersController extends Controller
 {
     public function __construct(
         private readonly StudentService $studentService
@@ -43,7 +43,7 @@ class TeachersController extends Controller
         return view('admin.teachers.index', ['teachers' => $teachers]);
     }
 
-    public function edit(string $teacher): View|RedirectResponse
+    public function edit(string $teacher): View
     {
         $teacherModel = Teacher::query()->where('userId', $teacher)->first();
         if (! $teacherModel) {
@@ -97,7 +97,7 @@ class TeachersController extends Controller
         if ($admin) {
             Notification::query()->create([
                 'title' => 'Teacher Account Edited',
-                'message' => $admin->name.' has edited the account information of teacher: '.$teacherModel->firsname.' '.$teacherModel->lastname.'.',
+                'message' => $admin->name.' has edited the account information of teacher: '.$teacherModel->firstname.' '.$teacherModel->lastname.'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }

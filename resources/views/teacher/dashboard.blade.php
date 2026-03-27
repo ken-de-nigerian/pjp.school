@@ -3,7 +3,7 @@
 
 @section('content')
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto pb-24 lg:pb-8 scrollbar-hide" style="background: var(--bg-primary);">
+    <main class="flex-1 overflow-y-auto lg:pb-8 scrollbar-hide" style="background: var(--bg-primary);">
         <div id="page-home" class="page-content max-w-7xl mx-auto px-6 lg:px-8 py-8 lg:py-12">
             <x-admin.hero-shell aria-label="Teacher dashboard overview">
                 <header class="admin-dashboard-hero__header">
@@ -113,7 +113,7 @@
                                                         : ($item->date_added?->format('M j, Y') ?? '') }}
                                                 </p>
 
-                                                <div class="flex flex-wrap justify-between items-center gap-2 mt-3 mt-auto pt-2 border-t" style="border-color: var(--card-border);">
+                                                <div class="flex flex-wrap justify-between items-center gap-2 mt-3 pt-2 border-t" style="border-color: var(--card-border);">
                                                     <div class="flex items-center gap-1.5 text-xs sm:text-sm" style="color: var(--text-secondary);">
                                                         <i class="fas fa-user text-xs" aria-hidden="true"></i>
                                                         <span class="truncate">{{ e($item->author ?? 'Admin') }}</span>

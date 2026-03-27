@@ -56,12 +56,14 @@ class Role extends Model
         return $casts;
     }
 
+    /** @return HasMany<Admin, $this> */
     public function admins(): HasMany
     {
         return $this->hasMany(Admin::class, 'user_type', 'id');
     }
 
     /** Human-readable labels for permissions currently enabled (1) on this role. */
+    /** @return list<string> */
     public function enabledPermissionLabels(): array
     {
         $labels = [];
@@ -75,6 +77,7 @@ class Role extends Model
     }
 
     /** Permission keys for forms (label => column). */
+    /** @return array<string, string> */
     public static function permissionKeys(): array
     {
         $flat = [];

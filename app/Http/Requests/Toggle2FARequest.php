@@ -6,13 +6,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Toggle2FARequest extends FormRequest
+final class Toggle2FARequest extends FormRequest
 {
     public function authorize(): bool
     {
         return $this->user('admin') !== null;
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

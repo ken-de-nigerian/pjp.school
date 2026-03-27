@@ -13,7 +13,7 @@
             ? e($class) . ' · ' . e($subjects) . ' · ' . e($term) . ' · ' . e($session) . ' — CA (15) · Assign (25) · Exam (60)'
             : 'Choose class and subject below, then click "Load result sheet" to enter scores.';
     @endphp
-    <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
+    <main class="flex-1 flex flex-col min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-none lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="page-content flex-1 flex flex-col w-full max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
             <x-admin.hero-page
                 aria-label="Upload results"

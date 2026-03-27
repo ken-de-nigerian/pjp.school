@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\View\View;
 
-class BulkController extends Controller
+final class BulkController extends Controller
 {
     public function index(): View
     {

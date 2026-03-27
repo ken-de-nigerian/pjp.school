@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Throwable;
 
-class SettingsController extends Controller
+final class SettingsController extends Controller
 {
     public function index(): View
     {

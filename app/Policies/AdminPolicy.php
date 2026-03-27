@@ -6,7 +6,7 @@ namespace App\Policies;
 
 use App\Models\Admin;
 
-class AdminPolicy
+final class AdminPolicy
 {
     /**
      * Only admins with user_type 1 (super admin) can delete other admins.
@@ -25,7 +25,7 @@ class AdminPolicy
         return $user->hasPermission('manage_staffs');
     }
 
-    public function view(Admin $user, Admin $target): bool
+    public function view(Admin $user, Admin $_target): bool
     {
         return $user->hasPermission('manage_staffs');
     }
@@ -38,7 +38,7 @@ class AdminPolicy
     /**
      * Super admin (user_type 1) and admins with manage_staffs can edit staff.
      */
-    public function update(Admin $user, Admin $target): bool
+    public function update(Admin $user, Admin $_target): bool
     {
         if ((int) $user->user_type === 1) {
             return true;

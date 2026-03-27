@@ -32,12 +32,12 @@ class SettingsControllerTest extends TestCase
     {
         $response = $this->get(route('admin.settings.index'));
 
-        $response->assertUnauthorized();
+        $response->assertRedirect(route('admin.login'));
     }
 
     public function test_admin_can_access_settings_index(): void
     {
-        $admin = Admin::first();
+        $admin = Admin::query()->firstOrFail();
 
         $response = $this->actingAs($admin, 'admin')->get(route('admin.settings.index'));
 
@@ -51,7 +51,7 @@ class SettingsControllerTest extends TestCase
             ['id' => 1],
             ['name' => 'School', 'term' => '1', 'session' => '2024/2025']
         );
-        $admin = Admin::first();
+        $admin = Admin::query()->firstOrFail();
 
         $response = $this->actingAs($admin, 'admin')->put(route('admin.settings.update'), [
             'name' => 'Updated School',

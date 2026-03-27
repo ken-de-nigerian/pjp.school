@@ -40,7 +40,7 @@ class ResultPublishTest extends TestCase
 
     public function test_admin_publish_requires_class_term_session(): void
     {
-        $admin = Admin::first();
+        $admin = Admin::query()->firstOrFail();
 
         $response = $this->actingAs($admin, 'admin')
             ->postJson(route('admin.results.publish'), [

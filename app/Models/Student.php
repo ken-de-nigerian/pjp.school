@@ -93,46 +93,55 @@ class Student extends Model
         ];
     }
 
+    /** @return HasMany<AnnualResult, $this> */
     public function annualResults(): HasMany
     {
         return $this->hasMany(AnnualResult::class, 'reg_number', 'reg_number');
     }
 
+    /** @return HasMany<Position, $this> */
     public function positions(): HasMany
     {
         return $this->hasMany(Position::class, 'reg_number', 'reg_number');
     }
 
+    /** @return HasMany<Behavioral, $this> */
     public function behavioralRecords(): HasMany
     {
         return $this->hasMany(Behavioral::class, 'reg_number', 'reg_number');
     }
 
+    /** @return HasMany<AttendanceRecord, $this> */
     public function attendanceRecords(): HasMany
     {
         return $this->hasMany(AttendanceRecord::class, 'reg_number', 'reg_number');
     }
 
+    /** @param Builder<Student> $query */
     public function scopeActive(Builder $query): void
     {
         $query->where('status', 2);
     }
 
+    /** @param Builder<Student> $query */
     public function scopeNotLeftOrGraduated(Builder $query): void
     {
         $query->whereNotIn('class', ['Left', 'Graduated']);
     }
 
+    /** @param Builder<Student> $query */
     public function scopeByClass(Builder $query, string $class): void
     {
         $query->where('class', $class);
     }
 
+    /** @param Builder<Student> $query */
     public function scopeByClassArm(Builder $query, string $classArm): void
     {
         $query->where('class_arm', $classArm);
     }
 
+    /** @param Builder<Student> $query */
     public function scopeByHouse(Builder $query, string $house): void
     {
         $query->where('house', $house);

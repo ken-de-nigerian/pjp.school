@@ -9,13 +9,16 @@ use App\Enums\Term;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreFeeRequest extends FormRequest
+final class StoreFeeRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return $this->user('admin') !== null;
     }
 
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     public function rules(): array
     {
         return [

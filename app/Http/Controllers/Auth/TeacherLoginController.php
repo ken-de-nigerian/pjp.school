@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
-class TeacherLoginController extends Controller
+final class TeacherLoginController extends Controller
 {
     public function showLoginForm(): View
     {
@@ -29,7 +29,7 @@ class TeacherLoginController extends Controller
             $request->session()->regenerate();
 
             if ($request->wantsJson()) {
-                return ['status' => 'success', 'redirect' => route('teacher.dashboard')];
+                return response()->json(['status' => 'success', 'redirect' => route('teacher.dashboard')]);
             }
 
             return redirect()->intended(route('teacher.dashboard'));

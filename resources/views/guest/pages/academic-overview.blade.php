@@ -3,40 +3,25 @@
 @section('content')
     <main id="main-content">
         <div class="animate-in fade-in duration-700 bg-stone-50 font-sans selection:bg-educave-200 selection:text-educave-900">
-            <section class="relative min-h-[80vh] bg-educave-900 text-stone-50 flex flex-col justify-between overflow-hidden">
+            <section class="relative pt-32 pb-24 overflow-hidden bg-educave-900">
                 <div class="absolute inset-0 z-0">
-                    <div class="absolute right-0 top-0 w-2/3 h-full opacity-20">
-                        <img class="w-full h-full object-cover mix-blend-overlay grayscale" alt="texture" src="{{ asset('assets/img/right_1.jpeg') }}"/>
-                    </div>
-                    <div class="absolute inset-0 bg-gradient-to-r from-educave-900 via-educave-900/95 to-transparent"></div>
-                    <div class="absolute left-16 top-0 w-px h-full bg-white/5 hidden md:block"></div>
-                    <div class="absolute left-1/3 top-0 w-px h-full bg-white/5 hidden md:block"></div>
-                    <div class="absolute right-16 top-0 w-px h-full bg-white/5 hidden md:block"></div>
+                    <img alt="PJP School" class="w-full h-full object-cover opacity-10 scale-105" src="{{ asset('assets/img/right_1.jpeg') }}"/>
+                    <div class="absolute inset-0 bg-gradient-to-b from-educave-900/80 via-educave-900/60 to-educave-900"></div>
                 </div>
-
-                <div class="relative z-10 container mx-auto px-6 md:px-16 flex-grow flex items-center py-20">
+                <div class="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
                     <div class="max-w-4xl">
-                    <span class="inline-block rounded-xl px-4 py-2 border border-red-500/30 text-educave-300 text-[10px] font-bold uppercase tracking-[0.2em] mb-8 hover:bg-educave-800/10 transition-colors cursor-default">Running since 2006</span>
-                        <h1 class="text-6xl md:text-8xl font-serif font-bold leading-[0.9] tracking-tight mb-8">
-                            <span class="block">Academic</span><span class="block">Overview</span>
-                        </h1>
-                        <p class="text-xl md:text-2xl text-stone-400 font-serif italic max-w-2xl border-l-2 border-red-500 pl-6 my-10">
-                            Junior & Senior Secondary Education (JSS 1 - SS 3)
-                        </p>
-
-                        <div class="flex flex-col md:flex-row gap-6 mt-12">
-                            <a href="{{ route('apply_online') }}" class="rounded-xl bg-white text-educave-900 px-10 py-5 text-sm font-bold uppercase tracking-widest hover:bg-educave-800 hover:text-white transition-all shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] hover:shadow-none translate-x-0 hover:translate-x-1 hover:translate-y-1">
-                                Start Application
-                            </a>
-
-                            <a href="mailto:{{ config('school.school_email') }}" class="rounded-xl px-10 py-5 text-sm font-bold uppercase tracking-widest text-white border border-white/30 hover:bg-white hover:text-educave-900 transition-colors flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right" aria-hidden="true">
-                                    <path d="M7 7h10v10"></path>
-                                    <path d="M7 17 17 7"></path>
-                                </svg>
-                                Contact Admissions
-                            </a>
+                        <div class="inline-flex items-center gap-3 mb-8 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md animate-in slide-in-from-top duration-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-educave-400" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                            <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-white/70">JSS 1 — SS 3 • Catholic Diocese of Ahiara</span>
                         </div>
+
+                        <h1 class="text-6xl md:text-8xl font-serif font-bold text-white mb-8 leading-[0.9] tracking-tighter animate-in fade-in slide-in-from-bottom duration-1000">
+                            Academic <br/><span class="text-educave-400 italic">Overview</span>
+                        </h1>
+
+                        <p class="text-xl md:text-2xl text-white/60 font-light leading-relaxed max-w-2xl animate-in fade-in slide-in-from-bottom duration-1000 delay-200">
+                            From Junior Secondary through to the Senior School Certificate Examination, we hold our students to a standard of excellence that prepares them for life.
+                        </p>
                     </div>
                 </div>
             </section>

@@ -7,6 +7,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string|null $remark
+ * @property float|int|string|null $students_sub_average
+ * @property string|null $reg_number
+ * @property string|null $name
+ * @property string|null $class
+ * @property string|null $term
+ * @property string|null $session
+ */
 class Position extends Model
 {
     public $timestamps = false;
@@ -34,6 +43,7 @@ class Position extends Model
         ];
     }
 
+    /** @param Builder<Position> $query */
     public function scopeForClassTermSession(Builder $query, string $class, string $term, string $session): void
     {
         $query->where('class', $class)
@@ -46,12 +56,12 @@ class Position extends Model
      */
     public function resolvedPrincipalRemark(): string
     {
-        $custom = $this->remark;
+        $custom = $this->getAttribute('remark');
         if (is_string($custom) && trim($custom) !== '') {
             return trim($custom);
         }
 
-        $average = $this->students_sub_average;
+        $average = $this->getAttribute('students_sub_average');
 
         return $this->universalRemarkForAverage(is_numeric($average) ? (float) $average : 0.0);
     }

@@ -25,6 +25,7 @@ final class PinService
         return UsedPin::query()->where('session', $session)->count();
     }
 
+    /** @return Collection<int, UnusedPin> */
     public function getUnused(string $session): Collection
     {
         return UnusedPin::query()
@@ -33,6 +34,7 @@ final class PinService
             ->get();
     }
 
+    /** @return LengthAwarePaginator<int, UnusedPin> */
     public function getUnusedPaginated(string $session, int $perPage = 50, int $page = 1): LengthAwarePaginator
     {
         return UnusedPin::query()
@@ -41,6 +43,7 @@ final class PinService
             ->paginate(perPage: $perPage, page: $page);
     }
 
+    /** @return LengthAwarePaginator<int, UsedPin> */
     public function getUsed(string $session, int $perPage = 200, int $page = 1): LengthAwarePaginator
     {
         return UsedPin::query()
@@ -50,45 +53,41 @@ final class PinService
             ->paginate(perPage: $perPage, page: $page);
     }
 
+    /** @return list<string>
+     * @throws RandomException
+     */
     public function generatePinValues(int $numPins): array
     {
         $time = date('s');
         $pins = [];
         for ($i = 0; $i < $numPins; $i++) {
-            $pins[] = $time.$this->rnd(14, false, false, true);
+            $pins[] = $time.$this->rndNumeric(14);
         }
 
         return $pins;
     }
 
-    private function rnd(int $length, bool $lower, bool $upper, bool $numbers): string
+    /**
+     * @throws RandomException
+     */
+    private function rndNumeric(int $length): string
     {
-        $pool = '';
+        $pool = '0123456789';
         $result = '';
 
-        if ($lower) {
-            $pool .= 'abcdefghijklmnopqrstuvwxyz';
-        }
-
-        if ($upper) {
-            $pool .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        }
-
-        if ($numbers) {
-            $pool .= '01234567890';
-        }
+        $maxIndex = strlen($pool) - 1;
 
         $cc = 0;
         while ($cc < $length) {
-            $result .= $pool[mt_rand(0, strlen($pool) - 1)];
+            $result .= $pool[random_int(0, $maxIndex)];
             $cc++;
         }
 
         return $result;
     }
 
-    /**
-     * @throws RandomException|Throwable
+    /** @param list<string> $pins
+     * @throws Throwable
      */
     public function addPins(array $pins, string $session): int
     {
@@ -97,7 +96,7 @@ final class PinService
         return (int) DB::transaction(function () use ($pins, $session, $now) {
             $inserted = 0;
             foreach ($pins as $pin) {
-                $pin = trim((string) $pin);
+                $pin = trim($pin);
                 if ($pin === '') {
                     continue;
                 }

@@ -1,5 +1,5 @@
 @php use Illuminate\Support\Carbon;use Illuminate\Support\Str; @endphp
-@extends('layouts.guest', ['title' => 'Home'])
+@extends('layouts.guest', ['title' => 'guest.pages.home'])
 
 @section('content')
     <main id="main-content">
@@ -15,28 +15,26 @@
                     </div>
 
                     <h1 class="text-6xl md:text-8xl lg:text-9xl font-serif font-bold text-educave-900 tracking-tight leading-[0.9] mb-8 scroll-fade-up delay-100 visible">
-                        PJP MODEL <span class="text-transparent bg-clip-text bg-gradient-to-r from-educave-800 to-educave-500">SEC SCH.</span>
+                        PJP MODEL <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-educave-800 to-educave-500">SEC SCH.</span>
                     </h1>
 
                     <p class="max-w-2xl mx-auto text-xl text-neutral-500 font-serif italic mb-12 scroll-fade-up delay-200 visible">
                         "From this soil, greatness rises. We are shaping sharp minds, strong character, and world-class
-                        leaders — one child at a time."
+                        leaders one child at a time."
                     </p>
 
                     <div class="relative w-full max-w-5xl mx-auto h-[400px] md:h-[500px] mt-8">
                         <div
                             class="absolute left-1/2 top-0 -translate-x-1/2 w-full md:w-2/3 h-full z-10 shadow-2xl overflow-hidden rounded-t-full border-t-8 border-educave-900">
-                            <img class="w-full h-full object-cover" alt="University Main" loading="lazy" decoding="async" src="{{ asset('assets/img/right_1.jpeg') }}"/>
+                            <img class="w-full h-full object-cover" alt="University Main" loading="lazy"
+                                 decoding="async" src="{{ asset('assets/img/right_1.jpeg') }}"/>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <div class="bg-white py-3" aria-hidden="true">
-                <div class="guest-crest-divider guest-crest-divider--short max-w-md opacity-90"></div>
-            </div>
-
-            <section class="bg-educave-900 text-white py-24 lg:py-32 relative overflow-hidden">
+            <section class="bg-educave-900 text-white padding-custom relative overflow-hidden">
                 <div
                     class="absolute inset-0 opacity-5 bg-[image:radial-gradient(theme(colors.white)_1px,transparent_1px)] [background-size:30px_30px]"></div>
                 <div class="container mx-auto px-4 md:px-8 lg:px-16 relative z-10">
@@ -91,7 +89,7 @@
                 </div>
             </section>
 
-            <section class="py-32 lg:py-48 bg-neutral-950 text-white relative overflow-hidden">
+            <section class="padding-custom bg-neutral-950 text-white relative overflow-hidden">
                 <div
                     class="absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] [background-size:60px_60px]"></div>
                 <div class="container mx-auto px-4 md:px-8 lg:px-16 relative z-10">
@@ -100,7 +98,9 @@
                             <div class="inline-flex items-center gap-3 mb-8 scroll-fade-up visible">
                                 <div
                                     class="px-3 py-1 border border-white/20 rounded-full bg-white/5 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest text-pjp-gold-bright flex items-center gap-2">
-                                    <span class="w-2 h-2 bg-pjp-yellow rounded-full animate-pulse shadow-[0_0_0_3px_rgba(242,230,49,0.25)]"></span>Our Standard
+                                    <span
+                                        class="w-2 h-2 bg-pjp-yellow rounded-full animate-pulse shadow-[0_0_0_3px_rgba(242,230,49,0.25)]"></span>Our
+                                    Standard
                                 </div>
                             </div>
 
@@ -150,70 +150,21 @@
                         </div>
 
                         <div class="w-full lg:w-1/2 relative h-[600px] hidden lg:block">
-                            <div
-                                class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-12 z-30 scroll-fade-up delay-500 visible">
-                                <div class="relative w-32 h-32 animate-spin-slow">
-                                    <svg viewBox="0 0 100 100" class="w-full h-full">
-                                        <path id="circlePathDark"
-                                              d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
-                                              fill="transparent"/>
-                                        <text class="text-[11px] font-bold uppercase tracking-widest fill-white">
-                                            <textPath href="#circlePathDark" startOffset="0%">Faith • Excellence •
-                                                Character •
-                                            </textPath>
-                                        </text>
-                                    </svg>
-                                    <div class="absolute inset-0 flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                             stroke-linecap="round" stroke-linejoin="round"
-                                             class="lucide lucide-award text-educave-500" aria-hidden="true">
-                                            <path
-                                                d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/>
-                                            <circle cx="12" cy="8" r="6"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div
-                                class="absolute top-0 right-8 w-64 h-[550px] rounded-t-full overflow-hidden shadow-2xl z-10 border-[1px] border-white/10 scroll-reveal-image group visible">
-                                <img alt="School Building"
-                                     class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
-                                     src="{{ asset('assets/img/474624756_122217854930224692_4400465607954318102_n.jpg') }}"/>
-                                <div
-                                    class="absolute inset-0 bg-educave-900/40 group-hover:bg-transparent transition-colors duration-500"></div>
-                            </div>
-
-                            <div
-                                class="absolute bottom-0 left-0 w-64 h-[450px] rounded-t-full overflow-hidden shadow-2xl z-20 border-[1px] border-white/10 scroll-reveal-image delay-200 group">
-                                <img alt="Students"
-                                     class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
-                                     src="{{ asset('assets/img/475058573_122217854504224692_5180798872687891970_n.jpg') }}"/>
-                                <div
-                                    class="absolute inset-0 bg-educave-900/40 group-hover:bg-transparent transition-colors duration-500"></div>
-                                <div
-                                    class="absolute bottom-6 right-6 bg-educave-900/90 backdrop-blur-md p-4 rounded-lg shadow-lg border border-white/10 scroll-fade-up delay-500">
-                                    <div class="flex items-center gap-1 text-educave-500 mb-1">
-                                        @for ($i = 0; $i < 5; $i++)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                                 viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
-                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                 class="lucide lucide-star" aria-hidden="true">
-                                                <path
-                                                    d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
-                                            </svg>
-                                        @endfor
-                                    </div>
-                                    <p class="text-[10px] font-bold uppercase tracking-wider text-white">Students</p>
-                                </div>
+                            <img
+                                class="absolute inset-0 w-full h-full object-cover grayscale transition-all duration-1000 scale-105 hover:scale-100"
+                                alt="Vision" loading="lazy" decoding="async"
+                                src="{{ asset('assets/img/474624756_122217854930224692_4400465607954318102_n.jpg') }}"/>
+                            <div class="absolute inset-0 bg-black/10"></div>
+                            <div class="absolute bottom-12 left-12 right-12">
+                                <p class="text-white text-3xl font-serif italic leading-tight">"Where intellect meets
+                                    instinct."</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="py-32 bg-white text-educave-900 relative overflow-hidden">
+            <section class="padding-custom bg-white text-educave-900 relative overflow-hidden">
                 <div class="container mx-auto px-4 relative z-10">
                     <div class="flex flex-col items-center text-center mb-24 scroll-fade-up">
                         <span
@@ -240,7 +191,6 @@
                                     'name'    => 'The Library',
                                     'role'    => 'The Quiet Room',
                                     'desc'    => 'A well-stocked space where students read, research, and discover — building the habit of learning beyond the classroom.',
-                                    'btn'     => 'Explore Library',
                                 ],
                                 [
                                     'tag'     => 'Discovery',
@@ -252,7 +202,6 @@
                                     'name'    => 'The Laboratories',
                                     'role'    => 'The Science Block',
                                     'desc'    => 'Hands-on learning in a fully equipped lab environment — where theory meets practice and young scientists are born.',
-                                    'btn'     => 'Explore Labs',
                                 ],
                                 [
                                     'tag'     => 'Faith',
@@ -264,7 +213,6 @@
                                     'name'    => 'The Chapel',
                                     'role'    => 'The Sacred Space',
                                     'desc'    => 'At the heart of everything we do. A place of prayer, reflection, and worship — grounding our community in faith every day.',
-                                    'btn'     => 'Explore Chapel',
                                 ],
                             ]
                         @endphp
@@ -277,18 +225,8 @@
                                         <h3 class="text-3xl font-serif font-bold mb-1">{{ $f['name'] }}</h3>
                                         <p class="text-xs font-bold text-educave-500 uppercase tracking-widest mb-3">{{ $f['role'] }}</p>
                                         <p class="text-sm text-gray-500 leading-relaxed mb-4">{{ $f['desc'] }}</p>
-                                        <button
-                                            class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-educave-500 hover:text-educave-900 transition-colors">
-                                            {{ $f['btn'] }}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                 class="lucide lucide-arrow-right" aria-hidden="true">
-                                                <path d="M5 12h14"/>
-                                                <path d="m12 5 7 7-7 7"/>
-                                            </svg>
-                                        </button>
                                     </div>
+
                                     <div class="order-1 md:order-2 relative overflow-hidden aspect-[3/4] rounded-sm">
                                         <img
                                             class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0"
@@ -311,17 +249,6 @@
                                         <h3 class="text-3xl font-serif font-bold mb-1">{{ $f['name'] }}</h3>
                                         <p class="text-xs font-bold text-educave-500 uppercase tracking-widest mb-3">{{ $f['role'] }}</p>
                                         <p class="text-sm text-gray-500 leading-relaxed mb-4">{{ $f['desc'] }}</p>
-                                        <button
-                                            class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-educave-500 hover:text-educave-900 transition-colors">
-                                            {{ $f['btn'] }}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                 class="lucide lucide-arrow-right" aria-hidden="true">
-                                                <path d="M5 12h14"/>
-                                                <path d="m12 5 7 7-7 7"/>
-                                            </svg>
-                                        </button>
                                     </div>
                                 @endif
                             </div>
@@ -345,16 +272,18 @@
                     <div
                         class="relative group overflow-hidden bg-educave-800 flex items-center justify-center p-8 text-center scroll-scale-in delay-100 cursor-pointer">
                         <div>
-                            <h3 class="text-white font-serif text-2xl mb-2">Take a Tour</h3>
+                            <h3 class="text-white font-serif text-2xl mb-2">Request a Tour</h3>
                             <p class="text-educave-200 text-sm">See what life looks like here</p>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                 stroke-linejoin="round"
-                                 class="lucide lucide-arrow-right text-white mx-auto mt-4 group-hover:translate-x-2 transition-transform"
-                                 aria-hidden="true">
-                                <path d="M5 12h14"/>
-                                <path d="m12 5 7 7-7 7"/>
-                            </svg>
+                            <a href="mailto:{{ config('school.school_email') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-arrow-right text-white mx-auto mt-4 group-hover:translate-x-2 transition-transform"
+                                     aria-hidden="true">
+                                    <path d="M5 12h14"/>
+                                    <path d="m12 5 7 7-7 7"/>
+                                </svg>
+                            </a>
                         </div>
                     </div>
 
@@ -436,8 +365,8 @@
                                             class="text-4xl font-serif font-bold text-white/20 mb-2 block">{{ $school['num'] }}</span>
                                         <h3 class="text-3xl font-serif font-bold text-white mb-4 leading-none">{{ $school['title'] }}</h3>
                                         <p class="text-neutral-300 mb-6 max-w-sm leading-relaxed text-sm md:text-base hidden md:block">{{ $school['desc'] }}</p>
-                                        <button
-                                            class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-educave-400 hover:text-white transition-colors">
+                                        <a href="{{ route('academic_overview') }}"
+                                           class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-educave-400 hover:text-white transition-colors">
                                             {{ $school['btn'] }}
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -446,7 +375,7 @@
                                                 <path d="M5 12h14"/>
                                                 <path d="m12 5 7 7-7 7"/>
                                             </svg>
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -475,7 +404,7 @@
                 </div>
             </section>
 
-            <section class="py-24 bg-white">
+            <section class="padding-custom bg-white">
                 <div class="container mx-auto px-4 md:px-8 lg:px-16">
                     <div class="text-center mb-16 scroll-fade-up">
                         <span
@@ -510,7 +439,7 @@
                                     <span>{{ $featuredPublished ? Carbon::parse($featuredPublished)->format('M d, Y') : '' }}</span>
                                 </div>
                                 <h3 class="text-3xl font-serif font-bold text-educave-900 mb-3 group-hover:text-educave-800 transition-colors">
-                                    {{ $featuredNews->title }}
+                                    <a href="{{ route('news.show', $featuredNews) }}">{{ $featuredNews->title }}</a>
                                 </h3>
                                 <p class="text-gray-500 leading-relaxed">{{ Str::limit(strip_tags((string) ($featuredNews->content ?? '')), 220) }}</p>
                             @else
@@ -541,7 +470,9 @@
                                     <div>
                                         <span
                                             class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1 block group-hover:text-educave-800">{{ $item->category ?: __('News') }}</span>
-                                        <h4 class="text-xl font-serif font-bold text-educave-900 group-hover:text-educave-800 transition-colors">{{ $item->title }}</h4>
+                                        <h4 class="text-xl font-serif font-bold text-educave-900 group-hover:text-educave-800 transition-colors">
+                                            <a href="{{ route('news.show', $item) }}">{{ $item->title }}</a>
+                                        </h4>
                                     </div>
                                 </div>
                             @empty
@@ -551,73 +482,6 @@
                                     <p class="text-gray-500 text-sm">{{ __('No announcements at the moment.') }}</p>
                                 @endif
                             @endforelse
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-white py-12 md:py-24 px-4 md:px-8 lg:px-16">
-                <div class="container mx-auto">
-                    <div
-                        class="bg-educave-900 rounded-2xl p-8 md:p-12 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl">
-                        <div
-                            class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-                        <div
-                            class="absolute bottom-0 left-0 w-48 h-48 bg-educave-800/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
-
-                        <div class="w-full lg:w-1/2 relative z-10 text-center lg:text-left">
-                            <div class="flex items-center justify-center lg:justify-start gap-2 mb-4">
-                                <span class="w-8 h-0.5 bg-educave-700"></span>
-                                <span class="text-educave-300 text-xs font-bold uppercase tracking-widest">Admissions Open</span>
-                            </div>
-
-                            <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">
-                                Give your child a <span class="italic text-educave-300">great start.</span>
-                            </h2>
-
-                            <p class="text-gray-300 text-sm mb-6 max-w-md mx-auto lg:mx-0">
-                                At {{ site_settings()->name }}, every child is seen, developed and
-                                challenged to become their best. Apply today and take the first step.
-                            </p>
-
-                            <div class="flex items-center justify-center lg:justify-start gap-4">
-                                <div class="flex -space-x-3">
-                                    @foreach (['student1@pjp.school', 'student2@pjp.school', 'student3@pjp.school'] as $email)
-                                        <div class="w-10 h-10 rounded-full border-2 border-educave-900 bg-educave-100 overflow-hidden">
-                                            <img alt="PJP Student" class="w-full h-full object-cover" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim($email))) }}?s=64&d=identicon"/>
-                                        </div>
-                                    @endforeach
-                                    <div
-                                        class="w-10 h-10 rounded-full border-2 border-educave-900 bg-educave-800 text-white text-[10px] flex items-center justify-center font-bold">
-                                        PJP
-                                    </div>
-                                </div>
-
-                                <div class="text-left">
-                                    <p class="text-white font-bold text-sm">Growing Every Year</p>
-                                    <p class="text-[10px] text-gray-400 font-medium uppercase tracking-wide">Since 2006</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="w-full lg:w-5/12 relative z-10">
-                            <div
-                                class="bg-white/5 backdrop-blur-md p-6 rounded-xl border border-white/10 flex flex-col gap-4">
-                                <p class="text-white font-serif text-lg font-bold">Ready to apply?</p>
-                                <p class="text-gray-400 text-xs leading-relaxed">Visit our admissions page to check requirements, download the form, or apply directly through our online entrance exam portal.</p>
-                                <a href="{{ route('apply_online') }}" class="bg-white text-educave-900 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-educave-100 transition-colors flex items-center justify-center gap-2 shadow-lg">
-                                    Apply Online
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right" aria-hidden="true">
-                                        <path d="M7 7h10v10"/>
-                                        <path d="M7 17 17 7"/>
-                                    </svg>
-                                </a>
-
-                                <a href="{{ route('admin_process') }}"
-                                   class="text-center text-educave-300 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors">
-                                    View Admission Requirements
-                                </a>
-                            </div>
                         </div>
                     </div>
                 </div>

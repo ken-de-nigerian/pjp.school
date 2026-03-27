@@ -41,7 +41,7 @@ class StaffControllerTest extends TestCase
     {
         $response = $this->get(route('admin.staff.index'));
 
-        $response->assertUnauthorized();
+        $response->assertRedirect(route('admin.login'));
     }
 
     public function test_admin_can_access_staff_index(): void

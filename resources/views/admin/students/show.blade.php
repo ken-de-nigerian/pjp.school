@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => trim(($student->firstname ?? '') . ' ' . ($student->lastname ?? '') . ($student->othername ? ' ' . $student->othername : '')) ?: 'Student profile'])
 
 @section('content')
-    <main class="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-none pb-24 lg:pb-8 scrollbar-hide" style="background: var(--surface);">
+    <main class="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-none lg:pb-8 scrollbar-hide" style="background: var(--surface);">
         <div class="max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
             @if(session('success'))
                 <div class="mb-4 rounded-xl px-4 py-3 text-sm font-medium" style="background: var(--primary-container); color: var(--on-primary-container);" role="alert">

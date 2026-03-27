@@ -23,6 +23,7 @@ class SchoolClass extends Model
         ];
     }
 
+    /** @return HasMany<Student, $this> */
     public function students(): HasMany
     {
         return $this->hasMany(Student::class, 'class', 'class_name');

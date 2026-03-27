@@ -6,14 +6,16 @@ namespace App\Http\Requests;
 
 use App\Models\Subject;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
-class StoreSubjectRequest extends FormRequest
+final class StoreSubjectRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return (bool) $this->user('admin');
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [
@@ -25,9 +27,9 @@ class StoreSubjectRequest extends FormRequest
     /**
      * Unique subject_name + grade (no duplicate for same grade).
      */
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
-        $validator->after(function ($validator) {
+        $validator->after(function (Validator $validator): void {
             $exists = Subject::query()
                 ->where('subject_name', $this->input('subject_name'))
                 ->where('grade', $this->input('grade'))

@@ -6,7 +6,7 @@ namespace App\DTO;
 
 /**
  * Structured dashboard counts for admin dashboard.
- * Use toArray() when passing to Blade to preserve existing view variable shape.
+ * Use toArray() when passing to Blade to preserve the existing view variable shape.
  */
 final readonly class DashboardCountsDTO
 {
@@ -20,6 +20,8 @@ final readonly class DashboardCountsDTO
 
     /**
      * Array shape expected by admin. Dashboard view (keys with hyphens).
+     *
+     * @return array<string, int>
      */
     public function toArray(): array
     {
@@ -32,6 +34,7 @@ final readonly class DashboardCountsDTO
         ];
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(

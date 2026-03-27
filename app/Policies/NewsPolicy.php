@@ -7,14 +7,14 @@ namespace App\Policies;
 use App\Models\Admin;
 use App\Models\News;
 
-class NewsPolicy
+final class NewsPolicy
 {
     public function viewAny(Admin $user): bool
     {
         return $user->hasPermission('news');
     }
 
-    public function view(Admin $user, News $news): bool
+    public function view(Admin $user, News $_news): bool
     {
         return $user->hasPermission('news');
     }
@@ -24,12 +24,12 @@ class NewsPolicy
         return $user->hasPermission('news');
     }
 
-    public function update(Admin $user, News $news): bool
+    public function update(Admin $user, News $_news): bool
     {
         return $user->hasPermission('news');
     }
 
-    public function delete(Admin $user, News $news): bool
+    public function delete(Admin $user, News $_news): bool
     {
         return $user->hasPermission('news');
     }

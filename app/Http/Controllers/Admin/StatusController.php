@@ -9,10 +9,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Models\Teacher;
 use App\Services\StudentService;
+use App\Traits\AuthorizesAdminPermission;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class StatusController extends Controller
+final class StatusController extends Controller
 {
     use AuthorizesAdminPermission;
 
@@ -62,9 +63,6 @@ class StatusController extends Controller
                 $subjectStatuses = [];
                 foreach ($subjectsList as $subjectName) {
                     $subjectName = (string) $subjectName;
-                    if ($subjectName === '') {
-                        continue;
-                    }
                     $status = $this->resultService->getUploadAndApprovalStatus($class, $term, $session, $subjectName);
                     $subjectStatuses[] = [
                         'name' => $subjectName,

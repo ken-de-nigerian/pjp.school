@@ -6,13 +6,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAdminProfileRequest extends FormRequest
+final class UpdateAdminProfileRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return $this->user('admin') !== null;
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

@@ -12,17 +12,18 @@ use Throwable;
 
 final class BehavioralService
 {
-    public function hasBehavioralAnalysis(string $class, string $term, string $session, string $segment): bool
+    public function hasBehavioralAnalysis(string $class, string $term, string $session): bool
     {
         return Behavioral::query()
-            ->forClassTermSessionSegment($class, $term, $session, $segment)
+            ->forClassTermSessionSegment($class, $term, $session)
             ->exists();
     }
 
-    public function getRecord(string $class, string $term, string $session, string $segment): Collection
+    /** @return Collection<int, Behavioral> */
+    public function getRecord(string $class, string $term, string $session): Collection
     {
         $records = Behavioral::query()
-            ->forClassTermSessionSegment($class, $term, $session, $segment)
+            ->forClassTermSessionSegment($class, $term, $session)
             ->orderBy('name')
             ->get();
 
@@ -46,7 +47,7 @@ final class BehavioralService
         });
     }
 
-    /**
+    /** @param array<int, array<string, mixed>> $behavioral
      * @throws Throwable
      */
     public function bulkInsert(array $behavioral): int
@@ -117,18 +118,18 @@ final class BehavioralService
             ]);
     }
 
-    public function deleteRecord(string $class, string $term, string $session, string $segment): int
+    public function deleteRecord(string $class, string $term, string $session): int
     {
         return Behavioral::query()
-            ->forClassTermSessionSegment($class, $term, $session, $segment)
+            ->forClassTermSessionSegment($class, $term, $session)
             ->delete();
     }
 
-    public function deleteOneRecord(string $reg_number, string $class, string $term, string $session, string $segment): int
+    public function deleteOneRecord(string $reg_number, string $class, string $term, string $session): int
     {
         return Behavioral::query()
             ->where('reg_number', $reg_number)
-            ->forClassTermSessionSegment($class, $term, $session, $segment)
+            ->forClassTermSessionSegment($class, $term, $session)
             ->delete();
     }
 }

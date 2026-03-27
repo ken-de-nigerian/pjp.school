@@ -9,10 +9,11 @@
             <div class="flex flex-col lg:flex-row items-center justify-between gap-10">
                 <div class="max-w-2xl text-center lg:text-left">
                     <h2 class="text-3xl md:text-5xl font-serif font-bold mb-4">
-                        Ready to shape the <span class="text-educave-800 italic">future?</span>
+                        News<span class="text-educave-800 italic">letter</span>
                     </h2>
-                    <p class="text-gray-400 text-lg">Subscribe to our newsletter for the latest research, campus news, and events.</p>
+                    <p class="text-gray-400 text-lg">Subscribe for the latest school updates, spiritual reflections, and highlights.</p>
                 </div>
+
                 <div class="w-full lg:w-auto flex-shrink-0">
                     <form class="flex flex-col sm:flex-row gap-3 w-full lg:min-w-[450px]">
                         <input placeholder="Email Address" class="w-full flex-grow rounded-xl bg-white/5 border border-white/10 px-5 py-4 outline-none focus:border-educave-800 text-white placeholder-gray-500 text-sm transition-all" type="email"/>
@@ -37,7 +38,7 @@
                         :aria-label="__('School home')"
                     />
                 </div>
-                <p class="text-gray-400 leading-relaxed mb-8 max-w-md">A co-educational Catholic secondary school in Imo State — forming students in faith, discipline, and academic excellence from JSS1 to SS3.</p>
+                <p class="text-gray-400 leading-relaxed mb-8 max-w-md">A co-educational Catholic secondary school forming students in faith, discipline, and academic excellence.</p>
                 <div class="flex gap-3">
                     @php
                         $socials = [

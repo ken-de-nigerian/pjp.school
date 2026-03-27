@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Guest;
 
 use App\Contracts\ChecklistServiceContract;
 use App\Contracts\FeeServiceContract;
 use App\DTO\ResultTermContentDTO;
+use App\Http\Controllers\Controller;
 use App\Services\ResultCheckService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Throwable;
 
-class ResultCheckController extends Controller
+final class ResultCheckController extends Controller
 {
     public function __construct(
         private readonly ResultCheckService $resultCheckService,
@@ -50,6 +51,9 @@ class ResultCheckController extends Controller
         return $rules;
     }
 
+    /**
+     * @param  array<string, string>  $messages
+     */
     private function redirectCheckFormWithFieldErrors(array $messages): RedirectResponse
     {
         $bag = new MessageBag;

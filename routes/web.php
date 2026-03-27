@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Guest\OnlineEntrancePaymentController;
+use App\Http\Controllers\Guest\ResultCheckController;
 use App\Http\Controllers\Guest\WebsiteController;
-use App\Http\Controllers\ResultCheckController;
 use App\Services\NewsService;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', function (NewsService $newsService) {
     $homeNews = $newsService->forHomePage();
-    return view('home', [
+
+    return view('guest.pages.home', [
         'featuredNews' => $homeNews['featured'],
         'moreNews' => $homeNews['more'],
     ]);

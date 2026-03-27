@@ -26,7 +26,6 @@ class StudentServiceTest extends TestCase
     {
         $result = $this->service->getClassesWithCounts();
 
-        $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
 
@@ -53,7 +52,6 @@ class StudentServiceTest extends TestCase
         config(['school.houses' => []]);
         $result = $this->service->getHouseCounts();
 
-        $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
 
@@ -103,7 +101,7 @@ class StudentServiceTest extends TestCase
     public function test_promote_updates_class(): void
     {
         SchoolClass::query()->create(['class_name' => 'JSS 2', 'time_added' => now()]);
-        Student::query()->create([
+        $student = Student::query()->create([
             'reg_number' => 'R1',
             'firstname' => 'A',
             'lastname' => 'B',
@@ -111,9 +109,9 @@ class StudentServiceTest extends TestCase
             'status' => 2,
         ]);
 
-        $this->service->promote('JSS 1', 'JSS 2');
+        $this->service->promote('JSS 1', 'JSS 2', [$student->id]);
 
-        $s = Student::where('reg_number', 'R1')->first();
+        $s = Student::where('reg_number', 'R1')->firstOrFail();
         $this->assertSame('JSS 2', $s->class);
     }
 

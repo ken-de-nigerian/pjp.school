@@ -22,7 +22,7 @@ enum Term: string
     }
 
     /**
-     * Default term when none is selected (e.g. in filters).
+     * Default term when none is selected (e.g., in filters).
      */
     public static function default(): self
     {

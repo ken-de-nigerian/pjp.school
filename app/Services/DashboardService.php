@@ -41,6 +41,7 @@ final class DashboardService
         );
     }
 
+    /** @return LengthAwarePaginator<int, News> */
     public function getAdminNewsPaginated(int $page = 1): LengthAwarePaginator
     {
         $query = News::query();
@@ -54,6 +55,7 @@ final class DashboardService
         return $query->paginate(self::NEWS_PER_PAGE_ADMIN, ['*'], 'page', $page);
     }
 
+    /** @return LengthAwarePaginator<int, News> */
     public function getTeacherNewsPaginated(int $page = 1): LengthAwarePaginator
     {
         $query = News::query();
@@ -67,6 +69,7 @@ final class DashboardService
         return $query->paginate(self::NEWS_PER_PAGE_TEACHER, ['*'], 'page', $page);
     }
 
+    /** @return array<string, mixed> */
     public function getCachedSettings(): array
     {
         return Setting::getCached();

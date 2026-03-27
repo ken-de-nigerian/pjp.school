@@ -21,12 +21,12 @@ final class TeacherPolicy
         return $user instanceof Admin;
     }
 
-    public function update(mixed $user, Teacher $teacher): bool
+    public function update(mixed $user, Teacher $_teacher): bool
     {
         return $user instanceof Admin;
     }
 
-    public function delete(mixed $user, Teacher $teacher): bool
+    public function delete(mixed $user, Teacher $_teacher): bool
     {
         return $user instanceof Admin;
     }
@@ -38,14 +38,16 @@ final class TeacherPolicy
     */
 
     /**
-     * Form teacher or modify-results flag unlocks attendance, behavioural, etc.
+     * Form teacher status unlocks attendance and behavioural tools (not result editing).
      */
-    private function teacherHasActiveFeatureFlags(Teacher $teacher): bool
+    private function teacherIsFormTeacher(Teacher $teacher): bool
     {
-        $modifyResults = (int) ($teacher->modify_results ?? 0);
-        $formTeacher = (int) ($teacher->{'form-teacher'} ?? 0);
+        return (int) ($teacher->{'form-teacher'} ?? 0) === 1;
+    }
 
-        return $modifyResults === 1 || $formTeacher === 1;
+    private function teacherMayModifyUploadedResults(Teacher $teacher): bool
+    {
+        return (int) ($teacher->modify_results ?? 0) === 1;
     }
 
     private function ownsTeacherRecord(Teacher $user, Teacher $teacher): bool
@@ -56,49 +58,49 @@ final class TeacherPolicy
     /**
      * Dashboard / general “can use class-operational features”.
      */
-    public function operateActiveTeacherFeatures(Teacher $user, Teacher $teacher): Response|bool
+    public function operateActiveTeacherFeatures(Teacher $user, Teacher $teacher): Response
     {
         if (! $this->ownsTeacherRecord($user, $teacher)) {
             return Response::deny('Unauthorized.');
         }
 
-        return $this->teacherHasActiveFeatureFlags($teacher)
+        return $this->teacherIsFormTeacher($teacher)
             ? Response::allow()
             : Response::deny('You do not have permission to use this feature.');
     }
 
-    public function manageAttendance(Teacher $user, Teacher $teacher): Response|bool
+    public function manageAttendance(Teacher $user, Teacher $teacher): Response
     {
         if (! $this->ownsTeacherRecord($user, $teacher)) {
             return Response::deny('Unauthorized.');
         }
 
-        return $this->teacherHasActiveFeatureFlags($teacher)
+        return $this->teacherIsFormTeacher($teacher)
             ? Response::allow()
             : Response::deny('You are not allowed to add attendance.');
     }
 
-    public function manageBehavioral(Teacher $user, Teacher $teacher): Response|bool
+    public function manageBehavioral(Teacher $user, Teacher $teacher): Response
     {
         if (! $this->ownsTeacherRecord($user, $teacher)) {
             return Response::deny('Unauthorized.');
         }
 
-        return $this->teacherHasActiveFeatureFlags($teacher)
+        return $this->teacherIsFormTeacher($teacher)
             ? Response::allow()
             : Response::deny('You are not allowed to add behavioral analysis.');
     }
 
     /**
-     * Same flags as operational features; separate ability for clearer messaging on results.
+     * Only the "modify results" flag allows editing uploaded results (independent of form teacher).
      */
-    public function modifyResults(Teacher $user, Teacher $teacher): Response|bool
+    public function modifyResults(Teacher $user, Teacher $teacher): Response
     {
         if (! $this->ownsTeacherRecord($user, $teacher)) {
             return Response::deny('Unauthorized.');
         }
 
-        return $this->teacherHasActiveFeatureFlags($teacher)
+        return $this->teacherMayModifyUploadedResults($teacher)
             ? Response::allow()
             : Response::deny('You are not allowed to modify results.');
     }

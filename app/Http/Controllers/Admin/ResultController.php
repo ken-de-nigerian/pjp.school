@@ -22,12 +22,13 @@ use App\Models\Student;
 use App\Models\Subject;
 use App\Services\StudentService;
 use App\Support\DefaultTermSession;
+use App\Traits\AuthorizesAdminPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Throwable;
 
-class ResultController extends Controller
+final class ResultController extends Controller
 {
     use AuthorizesAdminPermission;
 
@@ -99,8 +100,10 @@ class ResultController extends Controller
             ]);
         }
 
-        $admin = $request->user('admin');
-        $adminName = $admin ? $admin->name : 'Admin';
+        $adminName = $request->user('admin')?->name;
+        if (! is_string($adminName) || $adminName === '') {
+            $adminName = 'Admin';
+        }
         $this->sendNotificationAction->execute(
             'Results Uploaded',
             $adminName.' has uploaded '.$subjects.' results for '.$class.' ('.$term.', '.$session.').'
@@ -169,12 +172,14 @@ class ResultController extends Controller
     /**
      * @throws Throwable
      */
-    public function publishResults(PublishResultRequest $request)
+    public function publishResults(PublishResultRequest $request): JsonResponse
     {
         $this->authorizePermission('publish_result');
         $validated = $request->validated();
-        $admin = $request->user('admin');
-        $adminName = $admin ? $admin->name : 'Admin';
+        $adminName = $request->user('admin')?->name;
+        if (! is_string($adminName) || $adminName === '') {
+            $adminName = 'Admin';
+        }
 
         if ($this->resultService->hasPublishedResults($validated['class'], $validated['term'], $validated['session'])) {
             return response()->json([

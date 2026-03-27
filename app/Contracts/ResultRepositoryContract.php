@@ -10,10 +10,13 @@ interface ResultRepositoryContract
 {
     public function hasPublishedResults(string $class, string $term, string $session): bool;
 
+    /** @return Collection<int, mixed> */
     public function getPublishedResults(string $class, string $term, string $session): Collection;
 
+    /** @return Collection<int, mixed> */
     public function getSegmentsForPublished(string $class, string $term, string $session): Collection;
 
+    /** @return Collection<int, mixed> */
     public function getSubjectBreakdownForPublished(string $class, string $term, string $session): Collection;
 
     public function setPublishedLiveStatus(string $class, string $term, string $session, string $regNumber, int $live): int;

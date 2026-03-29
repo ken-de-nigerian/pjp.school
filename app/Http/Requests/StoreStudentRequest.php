@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class StoreStudentRequest extends FormRequest
@@ -46,5 +47,28 @@ final class StoreStudentRequest extends FormRequest
             'relationship' => 'nullable|string|max:100',
             'image' => 'nullable|image|max:2048',
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function attributesForCreate(): array
+    {
+        $v = Coercion::stringKeyedMap($this->validated());
+        unset($v['image']);
+
+        return $v;
+    }
+
+    public function notificationStudentLabel(): string
+    {
+        $v = Coercion::stringKeyedMap($this->validated());
+
+        return Coercion::string($v['firstname'] ?? '').' '.Coercion::string($v['lastname'] ?? '');
+    }
+
+    public function notificationClassLabel(): string
+    {
+        return Coercion::string(Coercion::stringKeyedMap($this->validated())['class'] ?? '');
     }
 }

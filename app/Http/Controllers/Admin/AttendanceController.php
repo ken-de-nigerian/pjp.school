@@ -14,6 +14,7 @@ use App\Models\Setting;
 use App\Models\Student;
 use App\Services\AttendanceService;
 use App\Services\StudentService;
+use App\Support\Coercion;
 use App\Traits\AuthorizesAdminPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -45,20 +46,21 @@ final class AttendanceController extends Controller
     public function takeAttendance(Request $request): View
     {
         $this->authorizePermission('attendance');
-        $validated = $request->validate([
+        $validated = Coercion::stringKeyedMap($request->validate([
             'class' => 'required',
             'term' => 'required',
             'session' => 'required',
-        ]);
+        ]));
+        $cts = Coercion::classTermSessionFromValidated($validated);
 
         $students = SchoolClass::query()->where([
-            'class_name' => $validated['class'],
+            'class_name' => $cts['class'],
         ])->with('students')->get();
 
         return view('admin.attendance.take-attendance', [
-            'class' => $validated['class'],
-            'term' => $validated['term'],
-            'session' => $validated['session'],
+            'class' => $cts['class'],
+            'term' => $cts['term'],
+            'session' => $cts['session'],
             'students' => $students,
         ]);
     }
@@ -69,16 +71,16 @@ final class AttendanceController extends Controller
     public function save(StoreAttendanceRequest $request): JsonResponse
     {
         $this->authorizePermission('attendance');
-        $count = $this->attendanceService
-            ->saveRecord($request->validated('attendance'));
+        $rows = $request->attendanceRows();
+        $count = $this->attendanceService->saveRecord($rows);
 
         if ($count > 0) {
 
             $adminName = $request->user('admin')->name ?? 'Admin';
-            $first = $request->validated('attendance')[0] ?? [];
-            $class = $first['class'] ?? '';
-            $term = $first['term'] ?? '';
-            $session = $first['session'] ?? '';
+            $first = $rows[0] ?? [];
+            $class = Coercion::string($first['class'] ?? '');
+            $term = Coercion::string($first['term'] ?? '');
+            $session = Coercion::string($first['session'] ?? '');
 
             $this->notificationService->add(
                 'Attendance Record Added',
@@ -97,23 +99,24 @@ final class AttendanceController extends Controller
         $this->authorizePermission('view_uploaded_attendance');
         $settings = Setting::getCached();
         $classes = SchoolClass::query()->orderBy('class_name')->get();
-        $date = trim((string) $request->query('date', date('Y-m-d')));
-        $class = trim((string) $request->query('class', ''));
-        $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
-        $session = trim((string) $request->query('session', $settings['session'] ?? ''));
+        $date = trim(Coercion::string($request->query('date', date('Y-m-d'))));
+        $class = trim(Coercion::string($request->query('class', '')));
+        $term = trim(Coercion::string($request->query('term', Coercion::string($settings['term'] ?? 'First Term'))));
+        $session = trim(Coercion::string($request->query('session', Coercion::string($settings['session'] ?? ''))));
         $hasFilters = $date !== '' && $class !== '' && $term !== '' && $session !== '';
 
         if ($hasFilters) {
-            $validated = $request->validate([
+            $validated = Coercion::stringKeyedMap($request->validate([
                 'date' => 'required|string|max:50',
                 'class' => 'required|string|max:100',
                 'term' => 'required|string|max:50',
                 'session' => 'required|string|max:50',
-            ]);
-            $date = $validated['date'];
-            $class = $validated['class'];
-            $term = $validated['term'];
-            $session = $validated['session'];
+            ]));
+            $ctx = Coercion::classTermSessionFromValidated($validated);
+            $date = Coercion::string($validated['date'] ?? '');
+            $class = $ctx['class'];
+            $term = $ctx['term'];
+            $session = $ctx['session'];
             $records = $this->attendanceService->getRecord($date, $class, $term, $session);
             $regNumbers = $records->pluck('reg_number')->unique()->filter()->values();
             $studentsByReg = $regNumbers->isNotEmpty()
@@ -140,18 +143,20 @@ final class AttendanceController extends Controller
     public function getRecord(Request $request): View|JsonResponse
     {
         $this->authorizePermission('view_uploaded_attendance');
-        $validated = $request->validate([
+        $validated = Coercion::stringKeyedMap($request->validate([
             'date' => 'required|string|max:50',
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
             'session' => 'required|string|max:50',
-        ]);
+        ]));
+        $date = Coercion::string($validated['date'] ?? '');
+        $cts = Coercion::classTermSessionFromValidated($validated);
 
         $records = $this->attendanceService->getRecord(
-            $validated['date'],
-            $validated['class'],
-            $validated['term'],
-            $validated['session']
+            $date,
+            $cts['class'],
+            $cts['term'],
+            $cts['session']
         );
 
         if ($request->expectsJson()) {
@@ -171,33 +176,33 @@ final class AttendanceController extends Controller
             'hasFilters' => true,
             'students' => $records,
             'studentsByReg' => $studentsByReg,
-            'date' => $validated['date'],
-            'class' => $validated['class'],
-            'term' => $validated['term'],
-            'session' => $validated['session'],
+            'date' => $date,
+            'class' => $cts['class'],
+            'term' => $cts['term'],
+            'session' => $cts['session'],
         ]);
     }
 
     public function edit(EditAttendanceRequest $request): JsonResponse
     {
         $this->authorizePermission('view_uploaded_attendance');
-        $v = $request->validated();
+        $ctx = $request->attendanceContext();
 
         $updated = $this->attendanceService->editRecord(
-            $v['class'],
-            $v['term'],
-            $v['session'],
-            $v['date'],
-            $v['updates']
+            $ctx['class'],
+            $ctx['term'],
+            $ctx['session'],
+            $ctx['date'],
+            $request->attendanceUpdates()
         );
 
         if ($updated > 0) {
             $adminName = $request->user('admin')->name ?? 'Admin';
             $this->notificationService->add(
                 'Attendance Records Edited',
-                $adminName.' has edited '.$updated.' attendance record(s) for class: '.$v['class']
-                .', term: '.$v['term']
-                .', session: '.$v['session']
+                $adminName.' has edited '.$updated.' attendance record(s) for class: '.$ctx['class']
+                .', term: '.$ctx['term']
+                .', session: '.$ctx['session']
             );
         }
 
@@ -212,33 +217,33 @@ final class AttendanceController extends Controller
     public function destroy(DeleteAttendanceRequest $request): JsonResponse
     {
         $this->authorizePermission('view_uploaded_attendance');
-        $v = $request->validated();
-        $regNumber = $v['reg_number'] ?? null;
+        $ctx = $request->deleteContext();
+        $regNumber = $ctx['reg_number'];
 
         if ($regNumber !== null && $regNumber !== '') {
             $deleted = $this->attendanceService->deleteOneRecord(
                 $regNumber,
-                $v['class'],
-                $v['term'],
-                $v['session'],
-                $v['date']
+                $ctx['class'],
+                $ctx['term'],
+                $ctx['session'],
+                $ctx['date']
             );
             $message = $deleted > 0
                 ? 'Attendance record has been deleted.'
                 : 'Unable to delete the record. Please try again.';
         } else {
             $deleted = $this->attendanceService->deleteByClassTermSessionSegmentDate(
-                $v['class'],
-                $v['term'],
-                $v['session'],
-                $v['date']
+                $ctx['class'],
+                $ctx['term'],
+                $ctx['session'],
+                $ctx['date']
             );
             if ($deleted > 0) {
                 $adminName = $request->user('admin')->name ?? 'Admin';
                 $this->notificationService->add(
                     'Attendance Record Deleted',
-                    $adminName.' has deleted attendance record for class: '.$v['class']
-                        .' , '.$v['term'].' , '.$v['session'].' Session.'
+                    $adminName.' has deleted attendance record for class: '.$ctx['class']
+                        .' , '.$ctx['term'].' , '.$ctx['session'].' Session.'
                 );
             }
             $message = $deleted > 0

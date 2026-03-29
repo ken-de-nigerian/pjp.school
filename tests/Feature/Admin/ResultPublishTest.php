@@ -17,10 +17,9 @@ class ResultPublishTest extends TestCase
     {
         parent::setUp();
         Admin::query()->firstOrCreate(
-            ['adminId' => 'result-admin'],
+            ['email' => 'result@test.local'],
             [
                 'name' => 'Result Admin',
-                'email' => 'result@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => 1,
             ]

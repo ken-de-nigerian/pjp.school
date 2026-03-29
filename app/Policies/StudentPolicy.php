@@ -10,7 +10,7 @@ use App\Models\Teacher;
 
 final class StudentPolicy
 {
-    public function update(Admin|Teacher $user, Student $_student): bool
+    public function update(Admin|Teacher $user, Student $student): bool
     {
         if ($user instanceof Teacher) {
             return true;
@@ -19,7 +19,7 @@ final class StudentPolicy
         return $user->hasPermission('manage_students');
     }
 
-    public function delete(Admin|Teacher $user, Student $_student): bool
+    public function delete(Admin|Teacher $user, Student $student): bool
     {
         if ($user instanceof Teacher) {
             return false;
@@ -37,7 +37,7 @@ final class StudentPolicy
         return $user->hasPermission('manage_students');
     }
 
-    public function view(Admin|Teacher $user, Student $_student): bool
+    public function view(Admin|Teacher $user, Student $student): bool
     {
         if ($user instanceof Teacher) {
             return true;

@@ -71,12 +71,7 @@
                         </div>
 
                         <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
-                            <a href="{{ route('admin.results.published') }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
-                                <i class="fas fa-times text-sm" aria-hidden="true"></i>
-                                Clear
-                            </a>
-
-                            <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
+                            <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto min-h-[2.75rem] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
                                 Filter
                             </button>
                         </div>
@@ -314,7 +309,6 @@
                     const termVal = @json($term);
                     const sessionVal = @json($session);
                     const positionsCount = @json($positions->count());
-                    const RELOAD_DELAY_MS = 2800;
                     const remarksByReg = @json($positions->pluck('remark', 'reg_number')->all());
 
                     const toolbar = document.getElementById('published-results-toolbar');
@@ -406,7 +400,7 @@
                             if (d.status === 'success') {
                                 if (typeof flashSuccess === 'function') flashSuccess(d.message);
                                 closeConfirmModal();
-                                setTimeout(function () { window.location.reload(); }, RELOAD_DELAY_MS);
+                                setTimeout(function () { window.location.reload(); }, window.RELOAD_DELAY_MS);
                             } else {
                                 if (typeof flashError === 'function') flashError(d.message || 'Action failed.');
                             }
@@ -511,6 +505,7 @@
                                     }
                                     if (typeof flashSuccess === 'function') flashSuccess(d.message || 'Saved.');
                                     closeRemarkModal();
+                                    setTimeout(function () { window.location.reload(); }, window.RELOAD_DELAY_MS);
                                 } else {
                                     const msg = (d && d.message) ? d.message : (d && d.errors && Object.keys(d.errors).length ? Object.values(d.errors).flat().join(' ') : 'Could not save remark.');
                                     if (typeof flashError === 'function') flashError(msg);

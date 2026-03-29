@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -40,5 +41,23 @@ final class BulkToggleStudentFeeRequest extends FormRequest
                 }
             }
         });
+    }
+
+    public function feeStatusValue(): int
+    {
+        return Coercion::int(Coercion::stringKeyedMap($this->validated())['fee_status'] ?? 0);
+    }
+
+    public function className(): string
+    {
+        return Coercion::string(Coercion::stringKeyedMap($this->validated())['class'] ?? '');
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function studentIds(): array
+    {
+        return Coercion::listOfInt($this->input('ids', []));
     }
 }

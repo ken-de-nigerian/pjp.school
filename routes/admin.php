@@ -70,6 +70,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/academic_advancement/demote-students', 'demoteStudents')->name('students.demote_students');
         Route::get('/students/by-class', 'studentsByClassJson')->name('students.by-class');
         Route::get('/students/classlist/pdf', 'classListPdf')->name('students.classlist.pdf');
+        Route::get('/students/classlist/excel', 'classListExcel')->name('students.classlist.excel');
         Route::post('/students/bulk-fee-status', 'bulkToggleFee')->name('students.bulk-fee-status');
         Route::post('/students/promote', 'promote')->name('students.promote');
         Route::post('/students/demote', 'demote')->name('students.demote');
@@ -96,11 +97,11 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/staff', 'index')->name('staff.index');
         Route::get('/staff/create', 'create')->name('staff.create');
         Route::post('/staff', 'store')->name('staff.store');
-        Route::get('/staff/{admin}/edit', 'edit')->name('staff.edit')->where('admin', '[a-zA-Z0-9_\-]+');
-        Route::put('/staff/{admin}', 'update')->name('staff.update')->where('admin', '[a-zA-Z0-9_\-]+');
-        Route::delete('/staff/{admin}', 'destroy')->name('staff.destroy')->where('admin', '[a-zA-Z0-9_\-]+');
-        Route::put('/staff/{admin}/reset-password', 'resetPassword')->name('staff.reset-password')->where('admin', '[a-zA-Z0-9_\-]+');
-        Route::post('/staff/{admin}/upload-profile', 'uploadProfile')->name('staff.upload-profile')->where('admin', '[a-zA-Z0-9_\-]+');
+        Route::get('/staff/{admin}/edit', 'edit')->name('staff.edit')->whereNumber('admin');
+        Route::put('/staff/{admin}', 'update')->name('staff.update')->whereNumber('admin');
+        Route::delete('/staff/{admin}', 'destroy')->name('staff.destroy')->whereNumber('admin');
+        Route::put('/staff/{admin}/reset-password', 'resetPassword')->name('staff.reset-password')->whereNumber('admin');
+        Route::post('/staff/{admin}/upload-profile', 'uploadProfile')->name('staff.upload-profile')->whereNumber('admin');
     });
 
     /*
@@ -176,6 +177,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::controller(OnlineEntranceController::class)->group(function () {
         Route::get('/online_entrance', 'index')->name('online_entrance.index');
         Route::get('/online_entrance/pdf', 'applicantsPdf')->name('online_entrance.pdf');
+        Route::get('/online_entrance/excel', 'applicantsExcel')->name('online_entrance.excel');
         Route::get('/online_entrance/{entrance}', 'show')->name('online_entrance.show');
     });
 
@@ -232,19 +234,15 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     */
     Route::controller(TeachersController::class)->group(function () {
         Route::get('/teachers', 'index')->name('teachers.index');
-        Route::get('/teachers/{teacher}/edit', 'edit')->name('teachers.edit')->where('teacher', '[a-zA-Z0-9_\-]+');
-        Route::put('/teachers/{teacher}', 'update')->name('teachers.update')->where('teacher', '[a-zA-Z0-9_\-]+');
-        Route::delete('/teachers/{teacher}', 'destroy')->name('teachers.destroy')->where('teacher', '[a-zA-Z0-9_\-]+');
-        Route::post('/teachers/reset-password', 'resetPassword')->name('teachers.reset-password');
-        Route::post('/teachers/upload-profile', 'uploadProfile')->name('teachers.upload-profile');
-        Route::post('/teachers/update-contact', 'updateContact')->name('teachers.update-contact');
-        Route::post('/teachers/update-employment', 'updateEmployment')->name('teachers.update-employment');
-        Route::post('/teachers/form-teacher-status', 'formTeacherStatus')->name('teachers.form-teacher-status');
-        Route::post('/teachers/modify-results', 'modifyResults')->name('teachers.modify-results');
-        Route::post('/teachers/reset-teachers-password', 'resetPassword')->name('legacy.teachers.reset-password');
-        Route::post('/teachers/upload-teachers-profile', 'uploadProfile')->name('legacy.teachers.upload-profile');
-        Route::post('/teachers/edit-teachers-contact-address', 'updateContact')->name('legacy.teachers.update-contact');
-        Route::post('/teachers/edit-teachers-employment-status', 'updateEmployment')->name('legacy.teachers.update-employment');
+        Route::get('/teachers/{teacher}/edit', 'edit')->name('teachers.edit');
+        Route::put('/teachers/{teacher}', 'update')->name('teachers.update');
+        Route::delete('/teachers/{teacher}', 'destroy')->name('teachers.destroy');
+        Route::post('/teachers/{teacher}/reset-password', 'resetPassword')->name('teachers.reset-password');
+        Route::post('/teachers/{teacher}/upload-profile', 'uploadProfile')->name('teachers.upload-profile');
+        Route::post('/teachers/{teacher}/update-contact', 'updateContact')->name('teachers.update-contact');
+        Route::post('/teachers/{teacher}/update-employment', 'updateEmployment')->name('teachers.update-employment');
+        Route::post('/teachers/{teacher}/form-teacher-status', 'formTeacherStatus')->name('teachers.form-teacher-status');
+        Route::post('/teachers/{teacher}/modify-results', 'modifyResults')->name('teachers.modify-results');
         Route::get('/register_teacher', 'registerForm')->name('register_teacher.form');
         Route::post('/register_teacher', 'registerStore')->name('register_teacher.store');
         Route::get('/assign_teacher_to_class', 'assignClassForm')->name('assign_teacher_to_class.form');
@@ -291,6 +289,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/card', 'index')->name('card.index');
         Route::get('/card/unused-pins', 'unusedPins')->name('card.unused-pins');
         Route::get('/card/unused-pins/pdf', 'unusedPinsPdf')->name('card.unused-pins.pdf');
+        Route::get('/card/unused-pins/excel', 'unusedPinsExcel')->name('card.unused-pins.excel');
         Route::get('/card/used-pins', 'usedPins')->name('card.used-pins');
         Route::post('/card/generate-pins', 'generatePins')->name('card.generate-pins.store');
     });

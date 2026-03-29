@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class PromoteStudentsRequest extends FormRequest
@@ -30,5 +31,23 @@ final class PromoteStudentsRequest extends FormRequest
             'from_class.different' => "You can't promote students to the same class.",
             'student_ids.required' => 'Please select at least one student to promote.',
         ];
+    }
+
+    public function fromClassName(): string
+    {
+        return Coercion::string(Coercion::stringKeyedMap($this->validated())['from_class'] ?? '');
+    }
+
+    public function toClassName(): string
+    {
+        return Coercion::string(Coercion::stringKeyedMap($this->validated())['to_class'] ?? '');
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function studentIds(): array
+    {
+        return Coercion::listOfInt($this->input('student_ids', []));
     }
 }

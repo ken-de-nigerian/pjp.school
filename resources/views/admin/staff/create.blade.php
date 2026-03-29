@@ -68,8 +68,9 @@
                         </div>
 
                         <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-4">
-                            <a href="{{ route('admin.staff.index') }}" class="btn-secondary px-6 py-2.5 rounded-full text-sm w-full sm:w-auto text-center">Cancel</a>
-                            <button type="submit" id="create-staff-btn" class="btn-primary px-6 py-2.5 rounded-full text-sm w-full sm:w-auto">Register</button>
+                            <button type="submit" id="create-staff-btn" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto min-h-[2.75rem] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                                Register
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -108,7 +109,7 @@
                                 if (typeof flashSuccess === 'function') flashSuccess(res.data.message || 'Staff registered successfully.');
                                 setTimeout(function() {
                                     window.location.href = res.data.redirect || '{{ route('admin.staff.index') }}';
-                                }, 2800);
+                                }, window.RELOAD_DELAY_MS);
                             } else if (res.data && res.data.errors && typeof showLaravelErrors === 'function') {
                                 showLaravelErrors(res.data.errors);
                             } else if (typeof flashError === 'function') {

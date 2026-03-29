@@ -9,6 +9,7 @@ use App\Contracts\FeeServiceContract;
 use App\DTO\ResultTermContentDTO;
 use App\Http\Controllers\Controller;
 use App\Services\ResultCheckService;
+use App\Support\Coercion;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -93,12 +94,14 @@ final class ResultCheckController extends Controller
                 ->withInput();
         }
 
-        $data = $validator->validated();
-        $term = $data['term'];
-        $session = $data['session'];
-        $class = $data['class'];
-        $regNumber = trim((string) $data['reg_number']);
-        $scratchCard = isset($data['scratch_card']) ? trim((string) $data['scratch_card']) : trim((string) $request->query('scratch_card', ''));
+        $map = Coercion::stringKeyedMap($validator->validated());
+        $term = Coercion::string($map['term'] ?? '');
+        $session = Coercion::string($map['session'] ?? '');
+        $class = Coercion::string($map['class'] ?? '');
+        $regNumber = trim(Coercion::string($map['reg_number'] ?? ''));
+        $scratchCard = isset($map['scratch_card'])
+            ? trim(Coercion::string($map['scratch_card']))
+            : trim(Coercion::string($request->query('scratch_card', '')));
 
         if (! $this->resultCheckService->hasStudentId($regNumber)) {
             return $this->redirectCheckFormWithFieldErrors([

@@ -6,10 +6,10 @@ namespace App\Services;
 
 use App\Models\Admin;
 use App\Models\Role;
+use App\Support\Coercion;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Random\RandomException;
 
 final class StaffService
 {
@@ -28,50 +28,45 @@ final class StaffService
         return Role::query()->orderBy('name')->get();
     }
 
-    public function hasAdminEmail(string $email, ?string $excludeAdminId = null): bool
+    public function hasAdminEmail(string $email, ?int $excludeId = null): bool
     {
         $q = Admin::query()->where('email', $email);
-        if ($excludeAdminId !== null) {
-            $q->where('adminId', '!=', $excludeAdminId);
+        if ($excludeId !== null) {
+            $q->where('id', '!=', $excludeId);
         }
 
         return $q->exists();
     }
 
-    /** @param array<string, mixed> $data
-     * @throws RandomException
-     */
+    /** @param array<string, mixed> $data */
     public function create(array $data): Admin
     {
-        $adminId = $this->generateAdminId();
-
         return Admin::query()->create([
-            'adminId' => $adminId,
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'password' => $data['password'],
             'profileImage' => 'default.png',
             'joined' => now()->format('Y-m-d H:i:s'),
-            'user_type' => (int) $data['user_type'],
+            'user_type' => Coercion::int($data['user_type'] ?? 0),
             'security' => 0,
         ]);
     }
 
     /** @param array<string, mixed> $data */
-    public function update(string $adminId, array $data): int
+    public function update(int $id, array $data): int
     {
-        return Admin::query()->where('adminId', $adminId)->update([
+        return Admin::query()->whereKey($id)->update([
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
-            'user_type' => (int) $data['user_type'],
+            'user_type' => Coercion::int($data['user_type'] ?? 0),
         ]);
     }
 
-    public function resetPassword(string $adminId, string $hashedPassword): int
+    public function resetPassword(int $id, string $hashedPassword): int
     {
-        return Admin::query()->where('adminId', $adminId)->update([
+        return Admin::query()->whereKey($id)->update([
             'password' => $hashedPassword,
             'password_change_date' => now()->format('Y-m-d H:i:s'),
         ]);
@@ -80,11 +75,11 @@ final class StaffService
     /** @return Collection<int, Admin> */
     public function search(Request $request): Collection
     {
-        $validated = $request->validate([
+        $validated = Coercion::stringKeyedMap($request->validate([
             'search' => 'required|string|min:2|max:255',
-        ]);
+        ]));
 
-        $term = '%'.$validated['search'].'%';
+        $term = '%'.Coercion::string($validated['search'] ?? '').'%';
 
         return Admin::query()
             ->with('role')
@@ -96,16 +91,8 @@ final class StaffService
             ->get();
     }
 
-    public function delete(string $adminId): bool
+    public function delete(int $id): bool
     {
-        return (bool) Admin::query()->where('adminId', $adminId)->delete();
-    }
-
-    /** Generate unique admin ID (legacy: 12-digit numeric string).
-     * @throws RandomException
-     */
-    public function generateAdminId(): string
-    {
-        return substr((int) (microtime(true) * 1000).random_int(100, 999), 0, 12);
+        return (bool) Admin::query()->whereKey($id)->delete();
     }
 }

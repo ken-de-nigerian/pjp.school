@@ -1,3 +1,11 @@
+/**
+ * Milliseconds after successful AJAX before reload/redirect (toast visibility).
+ * Overwritten from config via layouts/partials/reload-delay.blade.php when present.
+ */
+if (typeof window.RELOAD_DELAY_MS !== 'number' || !isFinite(window.RELOAD_DELAY_MS) || window.RELOAD_DELAY_MS < 0) {
+    window.RELOAD_DELAY_MS = 2800;
+}
+
 function flashSuccess(message) {
     iziToast.success({ ...iziToastSettings, message: message });
 }
@@ -70,7 +78,7 @@ function setButtonLoading(button, loading) {
 
 (function injectResultsScoreInputStyles() {
     if (document.getElementById('results-score-input-styles')) return;
-    var s = document.createElement('style');
+    const s = document.createElement('style');
     s.id = 'results-score-input-styles';
     s.textContent =
         '.results-score-input.results-score-input-empty:not(:disabled){border-color:#ef4444!important;box-shadow:0 0 0 1px #ef4444;background-color:rgba(254,242,242,.35);}' +
@@ -85,8 +93,8 @@ function markEmptyResultsScoreInputsOnSubmit() {
             el.classList.remove('results-score-input-empty');
             return;
         }
-        var t = String(el.value).trim();
-        var empty = t === '' || t === '-';
+        const t = String(el.value).trim();
+        const empty = t === '' || t === '-';
         if (empty) el.classList.add('results-score-input-empty');
         else el.classList.remove('results-score-input-empty');
     });
@@ -94,9 +102,9 @@ function markEmptyResultsScoreInputsOnSubmit() {
 
 /** Validate CA (0–15), Assign (0–25), Exam (0–60). Returns { valid: true } or { valid: false, message: string }. */
 function validateResultScores(caVal, assignmentVal, examVal) {
-    var caV = parseFloat(caVal);
-    var asgV = parseFloat(assignmentVal);
-    var examV = parseFloat(examVal);
+    const caV = parseFloat(caVal);
+    const asgV = parseFloat(assignmentVal);
+    const examV = parseFloat(examVal);
     if (caVal === '' || assignmentVal === '' || examVal === '' || isNaN(caV) || isNaN(asgV) || isNaN(examV)) {
         return { valid: false, message: 'Enter all scores.' };
     }
@@ -106,10 +114,11 @@ function validateResultScores(caVal, assignmentVal, examVal) {
     return { valid: true };
 }
 
-/** Mark invalid edit-result modal inputs with results-score-input-empty (same style as upload sheet). Clears first, then adds to empty or out-of-range. */
+/** Mark invalid edit-result modal inputs with results-score-input-empty (same style as an upload sheet).
+ * Clears first, then adds to empty or out-of-range. */
 function markEditResultScoreInputErrors(caEl, asgEl, examEl, caV, asgV, examV) {
     [caEl, asgEl, examEl].forEach(function (el) { if (el) el.classList.remove('results-score-input-empty'); });
-    var empty = caEl.value === '' || asgEl.value === '' || examEl.value === '' || isNaN(caV) || isNaN(asgV) || isNaN(examV);
+    const empty = caEl.value === '' || asgEl.value === '' || examEl.value === '' || isNaN(caV) || isNaN(asgV) || isNaN(examV);
     if (empty) {
         [caEl, asgEl, examEl].forEach(function (el) {
             if (el && (!el.value || el.value.trim() === '' || isNaN(parseFloat(el.value)))) el.classList.add('results-score-input-empty');
@@ -124,19 +133,19 @@ function markEditResultScoreInputErrors(caEl, asgEl, examEl, caV, asgV, examV) {
 /** Clamp result-sheet number inputs to min/max (CA, Assign, Exam). On input: only cap over-max. On blur: min/max + step. */
 function clampScoreInput(el, isBlur) {
     if (!el || el.disabled || el.type !== 'number') return;
-    var maxS = el.getAttribute('max');
-    var minS = el.getAttribute('min');
+    const maxS = el.getAttribute('max');
+    const minS = el.getAttribute('min');
     if (maxS === null || maxS === '') return;
-    var max = parseFloat(maxS);
-    var min = minS !== null && minS !== '' ? parseFloat(minS) : 0;
+    const max = parseFloat(maxS);
+    const min = minS !== null && minS !== '' ? parseFloat(minS) : 0;
     if (isNaN(max)) return;
-    var raw = String(el.value).trim();
+    const raw = String(el.value).trim();
     if (raw === '' || raw === '-') return;
     if (!isBlur && /[eE]/.test(raw)) return;
     if (!isBlur && raw.slice(-1) === '.') return;
-    var v = parseFloat(raw);
+    let v = parseFloat(raw);
     if (isNaN(v)) return;
-    var step = parseFloat(el.getAttribute('step')) || 1;
+    const step = parseFloat(el.getAttribute('step')) || 1;
     if (!isBlur) {
         if (v > max) el.value = max;
         else if (v < min) el.value = min;
@@ -155,12 +164,12 @@ function clampScoreInput(el, isBlur) {
 document.addEventListener(
     'input',
     function (e) {
-        var t = e.target;
+        const t = e.target;
         if (t.tagName !== 'INPUT' || t.type !== 'number') return;
         if (!t.closest('.results-sheet-row') && !t.closest('#edit-result-modal')) return;
         clampScoreInput(t, false);
         if (t.classList.contains('results-score-input')) {
-            var tt = String(t.value).trim();
+            const tt = String(t.value).trim();
             if (tt !== '' && tt !== '-') t.classList.remove('results-score-input-empty');
         }
     },
@@ -169,7 +178,7 @@ document.addEventListener(
 document.addEventListener(
     'blur',
     function (e) {
-        var t = e.target;
+        const t = e.target;
         if (t.tagName !== 'INPUT' || t.type !== 'number') return;
         if (!t.closest('.results-sheet-row') && !t.closest('#edit-result-modal')) return;
         clampScoreInput(t, true);
@@ -184,14 +193,22 @@ function getTheme() {
     return localStorage.getItem('theme') || 'light';
 }
 
-function setTheme(theme) {
+function setTheme(theme, options) {
+    const opts = options && typeof options === 'object' ? options : {};
+    const useViewTransition = opts.useViewTransition !== false;
     localStorage.setItem('theme', theme);
     const apply = function () {
         document.documentElement.setAttribute('data-theme', theme);
         updateThemeIcon(theme);
         updateThemeToggle(theme);
     };
-    if (document.startViewTransition) {
+    const current = document.documentElement.getAttribute('data-theme');
+    if (current === theme) {
+        apply();
+
+        return;
+    }
+    if (useViewTransition && document.startViewTransition) {
         document.startViewTransition(apply);
     } else {
         apply();
@@ -244,7 +261,7 @@ function updateThemeToggle(theme) {
 // Initialize theme on a page load
 function initTheme() {
     const savedTheme = getTheme();
-    setTheme(savedTheme);
+    setTheme(savedTheme, { useViewTransition: false });
 }
 
 // Initialize
@@ -383,7 +400,7 @@ function toggleDropdown(dropdownId) {
         } else {
             dropdown.classList.toggle('hidden');
         }
-        // Mega menu arrow rotation (admin + teacher use different ids)
+        // Mega menu arrow rotation (admin and teacher use different ids)
         const megaArrow =
             document.getElementById('mega-menu-arrow') ||
             document.getElementById('teacher-mega-menu-arrow');

@@ -11,6 +11,7 @@ use App\Helpers\ClassArm;
 use App\Models\AnnualResult;
 use App\Models\Student;
 use App\Support\AnnualResultAggregation;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -34,18 +35,26 @@ final readonly class ResultService implements ResultServiceContract
 
     public function getUploadAndApprovalStatus(string $class, string $term, string $session, string $subject): array
     {
+        /** @var object{total:int, approved_count:int}|null $row */
         $row = AnnualResult::query()
             ->where('class', $class)
             ->where('term', $term)
             ->where('session', $session)
             ->where('subjects', $subject)
-            ->select(['status'])
+            ->selectRaw('
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as approved_count
+            ')
             ->first();
-        if ($row === null) {
+
+        if (! $row || $row->total == 0) {
             return ['uploaded' => false, 'status' => null];
         }
 
-        return ['uploaded' => true, 'status' => (int) $row->status];
+        return [
+            'uploaded' => true,
+            'status' => ($row->total == $row->approved_count) ? 1 : 0,
+        ];
     }
 
     public function getUploadedResults(string $class, string $term, string $session, string $subjects): Collection
@@ -55,20 +64,6 @@ final readonly class ResultService implements ResultServiceContract
             ->where('term', $term)
             ->where('session', $session)
             ->where('subjects', $subjects);
-
-        $results = AnnualResultAggregation::applyAggregatedSubjectScores($base)
-            ->orderBy('name')
-            ->get();
-
-        return $this->hydrateStudentsForAggregatedAnnualResults($results);
-    }
-
-    public function getResultsByClass(string $class, string $term, string $session): Collection
-    {
-        $base = AnnualResult::query()
-            ->where('class', $class)
-            ->where('term', $term)
-            ->where('session', $session);
 
         $results = AnnualResultAggregation::applyAggregatedSubjectScores($base)
             ->orderBy('name')
@@ -87,24 +82,24 @@ final readonly class ResultService implements ResultServiceContract
         $rows = [];
         foreach ($results as $r) {
 
-            $ca = (float) ($r['ca'] ?? 0);
-            $assignment = (float) ($r['assignment'] ?? 0);
-            $exam = (float) ($r['exam'] ?? 0);
+            $ca = self::coerceFloat($r['ca'] ?? null);
+            $assignment = self::coerceFloat($r['assignment'] ?? null);
+            $exam = self::coerceFloat($r['exam'] ?? null);
 
             $total = $ca + $assignment + $exam;
 
-            $class = $r['class'] ?? '';
+            $class = self::coerceString($r['class'] ?? null);
             $classArm = ClassArm::fromClass($class);
 
             $rows[] = [
-                'studentId' => $r['studentId'] ?? null,
+                'studentId' => self::coerceOptionalStudentId($r['studentId'] ?? null),
                 'class' => $class,
                 'class_arm' => $classArm,
-                'term' => $r['term'] ?? '',
-                'session' => $r['session'] ?? '',
-                'subjects' => $r['subjects'] ?? '',
-                'name' => $r['name'] ?? '',
-                'reg_number' => $r['reg_number'] ?? '',
+                'term' => self::coerceString($r['term'] ?? null),
+                'session' => self::coerceString($r['session'] ?? null),
+                'subjects' => self::coerceString($r['subjects'] ?? null),
+                'name' => self::coerceString($r['name'] ?? null),
+                'reg_number' => self::coerceString($r['reg_number'] ?? null),
                 'segment' => config('school.no_segment', 'No Segment'),
                 'ca' => $ca,
                 'assignment' => $assignment,
@@ -185,24 +180,6 @@ final readonly class ResultService implements ResultServiceContract
             ->update(['status' => ResultStatus::REJECTED->value]);
     }
 
-    /** @return Collection<int, AnnualResult> */
-    public function fetchResultsByName(string $name): Collection
-    {
-        $like = '%'.addcslashes($name, '%_\\').'%';
-
-        $base = AnnualResult::query()
-            ->where(function ($q) use ($like) {
-                $q->where('name', 'like', $like)
-                    ->orWhere('reg_number', 'like', $like);
-            });
-
-        $results = AnnualResultAggregation::applyAggregatedSubjectScores($base)
-            ->orderByDesc('date_added')
-            ->get();
-
-        return $this->hydrateStudentsForAggregatedAnnualResults($results);
-    }
-
     /**
      * Search results by name or reg_number, optionally filter by class.
      * Returns results ordered by session (desc), term, subjects.
@@ -243,20 +220,15 @@ final readonly class ResultService implements ResultServiceContract
         });
     }
 
-    /** @deprecated Segment is no longer used; kept for contract compatibility. */
-    public function getDistinctSegmentsFromResults(): Collection
-    {
-        return collect();
-    }
-
     public function deleteByContext(string $class, string $term, string $session, string $subjects): int
     {
-        $deleted = (int) AnnualResult::query()
+        $deletedRaw = AnnualResult::query()
             ->where('class', $class)
             ->where('term', $term)
             ->where('session', $session)
             ->where('subjects', $subjects)
             ->delete();
+        $deleted = is_int($deletedRaw) ? $deletedRaw : 0;
         if ($deleted > 0) {
             Cache::forget('annual_result.distinct_sessions');
         }
@@ -269,14 +241,9 @@ final readonly class ResultService implements ResultServiceContract
         return $this->resultRepository->hasPublishedResults($class, $term, $session);
     }
 
-    public function getPublishedResults(string $class, string $term, string $session): Collection
+    public function getPublishedResults(string $class, string $term, string $session): EloquentCollection
     {
         return $this->resultRepository->getPublishedResults($class, $term, $session);
-    }
-
-    public function getSegmentsForPublished(string $class, string $term, string $session): Collection
-    {
-        return $this->resultRepository->getSegmentsForPublished($class, $term, $session);
     }
 
     public function getSubjectBreakdownForPublished(string $class, string $term, string $session): Collection
@@ -305,7 +272,12 @@ final readonly class ResultService implements ResultServiceContract
      */
     private function hydrateStudentsForAggregatedAnnualResults(Collection $results): Collection
     {
-        $studentIds = $results->pluck('studentId')->filter()->map(static fn ($id) => (int) $id)->unique()->values()->all();
+        $studentIds = $results->pluck('studentId')
+            ->filter(static fn ($id): bool => is_int($id) || (is_string($id) && is_numeric($id)))
+            ->map(static fn (int|string $id): int => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
         if ($studentIds === []) {
             return $results;
         }
@@ -378,11 +350,57 @@ final readonly class ResultService implements ResultServiceContract
                 }
             })
             ->pluck('id')
-            ->map(static fn ($id) => (int) $id)
+            ->filter(static fn ($id): bool => is_int($id) || (is_string($id) && is_numeric($id)))
+            ->map(static fn (int|string $id): int => (int) $id)
             ->unique()
             ->values()
             ->all();
 
         return array_values($expanded);
+    }
+
+    private static function coerceFloat(mixed $value): float
+    {
+        if ($value === null || $value === '') {
+            return 0.0;
+        }
+        if (is_int($value) || is_float($value)) {
+            return (float) $value;
+        }
+        if (is_string($value) && is_numeric($value)) {
+            return (float) $value;
+        }
+
+        return 0.0;
+    }
+
+    private static function coerceString(mixed $value): string
+    {
+        if ($value === null) {
+            return '';
+        }
+        if (is_string($value)) {
+            return $value;
+        }
+        if (is_int($value) || is_float($value)) {
+            return (string) $value;
+        }
+
+        return '';
+    }
+
+    private static function coerceOptionalStudentId(mixed $value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        if (is_int($value)) {
+            return $value;
+        }
+        if (is_string($value) && is_numeric($value)) {
+            return (int) $value;
+        }
+
+        return null;
     }
 }

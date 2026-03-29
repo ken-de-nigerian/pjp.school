@@ -22,9 +22,8 @@ class TeacherLoginTest extends TestCase
     private function seedTeacher(): void
     {
         Teacher::query()->firstOrCreate(
-            ['userId' => 'teacher-1'],
+            ['email' => 'teacher@test.local'],
             [
-                'email' => 'teacher@test.local',
                 'firstname' => 'Test',
                 'lastname' => 'Teacher',
                 'password' => Hash::make('password'),
@@ -49,6 +48,6 @@ class TeacherLoginTest extends TestCase
         ]);
 
         $response->assertRedirect(route('teacher.dashboard'));
-        $this->assertAuthenticatedAs(Teacher::query()->firstOrFail(), 'teacher');
+        $this->assertAuthenticatedAs(Teacher::query()->where('email', 'teacher@test.local')->firstOrFail(), 'teacher');
     }
 }

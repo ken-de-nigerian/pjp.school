@@ -193,7 +193,7 @@
                             const data = await res.json().catch(() => ({}));
                             if (res.ok && data.status === 'success') {
                                 flashSuccess(data.message || 'Behavioural analysis saved.');
-                                setTimeout(function() { window.location.reload(); }, 2800);
+                                setTimeout(function() { window.location.reload(); }, window.RELOAD_DELAY_MS);
                             } else {
                                 flashError(data.message || 'Failed to save behavioural analysis.');
                             }

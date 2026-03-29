@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Models\Teacher;
 use App\Services\StudentService;
+use App\Support\Coercion;
 use App\Traits\AuthorizesAdminPermission;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -28,12 +29,12 @@ final class StatusController extends Controller
         $settings = Setting::getCached();
         $getClasses = $this->studentService->getClassesArray();
 
-        $class = trim((string) $request->query('class', ''));
-        $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
-        $session = trim((string) $request->query('session', $settings['session'] ?? ''));
+        $class = trim(Coercion::string($request->query('class', '')));
+        $term = trim(Coercion::string($request->query('term', Coercion::string($settings['term'] ?? 'First Term'))));
+        $session = trim(Coercion::string($request->query('session', Coercion::string($settings['session'] ?? ''))));
 
-        if ($term === '' && isset($settings['term']) && $settings['term'] !== '') {
-            $term = (string) $settings['term'];
+        if ($term === '' && Coercion::string($settings['term'] ?? '') !== '') {
+            $term = Coercion::string($settings['term'] ?? '');
         }
 
         $payload = [
@@ -59,10 +60,10 @@ final class StatusController extends Controller
             });
             $teacherSubjects = [];
             foreach ($teachers as $t) {
-                $subjectsList = array_filter(array_map('trim', explode(',', $t->subject_to_teach ?? '')));
+                $subjectsList = array_filter(array_map('trim', explode(',', Coercion::string($t->subject_to_teach ?? ''))));
                 $subjectStatuses = [];
                 foreach ($subjectsList as $subjectName) {
-                    $subjectName = (string) $subjectName;
+                    $subjectName = Coercion::string($subjectName);
                     $status = $this->resultService->getUploadAndApprovalStatus($class, $term, $session, $subjectName);
                     $subjectStatuses[] = [
                         'name' => $subjectName,

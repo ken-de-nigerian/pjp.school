@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Models\Role;
+use App\Support\Coercion;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -46,7 +47,7 @@ final class StoreRoleRequest extends FormRequest
         $validator->after(function (Validator $v): void {
             $sum = 0;
             foreach (Role::permissionKeys() as $col) {
-                $sum += (int) $this->input($col, 0);
+                $sum += Coercion::int($this->input($col, 0));
             }
             if ($sum < 1) {
                 $v->errors()->add('permissions', __('Select at least one permission.'));

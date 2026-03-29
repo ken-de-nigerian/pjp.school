@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Models\Teacher;
+use App\Support\Coercion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -17,9 +20,6 @@ final class ProfileController extends Controller
     public function show(): View
     {
         $teacher = auth('teacher')->user();
-        if (! $teacher) {
-            abort(403, 'Unauthorized.');
-        }
 
         return view('teacher.profile.index', [
             'user' => $teacher,
@@ -29,14 +29,14 @@ final class ProfileController extends Controller
     public function update(Request $request): JsonResponse
     {
         $teacher = auth('teacher')->user();
-        if (! $teacher) {
+        if (! $teacher instanceof Teacher) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized.',
             ], 403);
         }
 
-        $v = $request->validate([
+        $v = Coercion::stringKeyedMap($request->validate([
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'othername' => 'nullable|string|max:255',
@@ -44,11 +44,11 @@ final class ProfileController extends Controller
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('user', 'email')->ignore($teacher->userId, 'userId'),
+                Rule::unique((new Teacher)->getTable(), 'email')->ignore($teacher->getKey()),
             ],
             'phone' => 'nullable|string|max:50',
             'country' => 'nullable|string|max:100',
-        ]);
+        ]));
 
         $teacher->update($v);
 
@@ -61,20 +61,23 @@ final class ProfileController extends Controller
     public function changePassword(Request $request): JsonResponse
     {
         $teacher = auth('teacher')->user();
-        if (! $teacher) {
+        if (! $teacher instanceof Teacher) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized.',
             ], 403);
         }
 
-        $v = $request->validate([
+        $v = Coercion::stringKeyedMap($request->validate([
             'oldPassword' => 'required|string|min:6',
             'password' => 'required|string|min:8',
             'confirmPassword' => 'required|string|min:8|same:password',
-        ]);
+        ]));
 
-        if (! Hash::check($v['oldPassword'], (string) ($teacher->password ?? ''))) {
+        $oldPassword = Coercion::string($v['oldPassword'] ?? '');
+        $newPassword = Coercion::string($v['password'] ?? '');
+
+        if (! Hash::check($oldPassword, Coercion::string($teacher->password ?? ''))) {
             return response()->json([
                 'message' => 'Your current password does not match our records. Please try again.',
                 'errors' => ['oldPassword' => ['Your current password does not match our records. Please try again.']],
@@ -82,7 +85,7 @@ final class ProfileController extends Controller
         }
 
         $teacher->update([
-            'password' => Hash::make($v['password']),
+            'password' => Hash::make($newPassword),
             'password_change_date' => now(),
         ]);
 
@@ -95,7 +98,7 @@ final class ProfileController extends Controller
     public function uploadAvatar(Request $request): JsonResponse
     {
         $teacher = auth('teacher')->user();
-        if (! $teacher) {
+        if (! $teacher instanceof Teacher) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized.',
@@ -107,6 +110,13 @@ final class ProfileController extends Controller
         ]);
 
         $file = $request->file('photoimg');
+        if (! $file instanceof UploadedFile) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unable to read the uploaded file.',
+            ], 422);
+        }
+
         $ext = $file->getClientOriginalExtension();
         $filename = Str::random(12).'.'.strtolower($ext);
 

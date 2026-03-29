@@ -181,7 +181,7 @@
                             if (res.ok && d.status === 'success') {
                                 if (typeof flashSuccess === 'function') flashSuccess(d.message || 'Pins generated successfully.');
                                 closeCardModal();
-                                setTimeout(function() { window.location.reload(); }, 1500);
+                                setTimeout(function() { window.location.reload(); }, window.RELOAD_DELAY_MS);
                             } else {
                                 if (typeof flashError === 'function') flashError(d.message || 'Failed to generate pins.');
                             }

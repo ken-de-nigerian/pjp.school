@@ -21,10 +21,9 @@ class StudentControllerTest extends TestCase
     {
         parent::setUp();
         $this->admin = Admin::query()->firstOrCreate(
-            ['adminId' => 'student-test-admin'],
+            ['email' => 'studentadmin@test.local'],
             [
                 'name' => 'Admin',
-                'email' => 'studentadmin@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => 1,
             ]

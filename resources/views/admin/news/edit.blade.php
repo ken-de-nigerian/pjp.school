@@ -79,10 +79,7 @@
                         </div>
 
                         <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2">
-                            <a href="{{ route('admin.news.show', $news) }}" class="btn-secondary px-6 py-2.5 rounded-full text-sm w-full sm:w-auto text-center">
-                                Cancel
-                            </a>
-                            <button type="submit" class="btn-primary px-6 py-2.5 rounded-full text-sm w-full sm:w-auto" id="news-edit-submit-btn">
+                            <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto min-h-[2.75rem] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
                                 Update announcement
                             </button>
                         </div>
@@ -152,9 +149,9 @@
                                 if (data.status === 'success') {
                                     if (typeof flashSuccess === 'function') flashSuccess(data.message || 'Your news has been updated successfully.');
                                     if (data.redirect) {
-                                        setTimeout(function () { window.location.href = data.redirect; }, 2800);
+                                        setTimeout(function () { window.location.href = data.redirect; }, window.RELOAD_DELAY_MS);
                                     } else {
-                                        setTimeout(function () { window.location.reload(); }, 2800);
+                                        setTimeout(function () { window.location.reload(); }, window.RELOAD_DELAY_MS);
                                     }
                                 } else {
                                     if (typeof flashError === 'function') flashError(data.message || 'Could not update announcement.');

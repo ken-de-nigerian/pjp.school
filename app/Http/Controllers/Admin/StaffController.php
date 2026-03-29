@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateStaffRequest;
 use App\Http\Requests\UploadStaffProfileRequest;
 use App\Models\Admin;
 use App\Services\StaffService;
+use App\Support\Coercion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,7 +19,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Random\RandomException;
 
 final class StaffController extends Controller
 {
@@ -61,14 +61,12 @@ final class StaffController extends Controller
 
     /**
      * @return RedirectResponse|JsonResponse
-     *
-     * @throws RandomException
      */
     public function store(StoreStaffRequest $request)
     {
         Gate::authorize('create', Admin::class);
 
-        if ($this->staffService->hasAdminEmail($request->input('email'))) {
+        if ($this->staffService->hasAdminEmail(Coercion::string($request->input('email')))) {
             if ($request->wantsJson()) {
                 return response()->json([
                     'status' => 'error',
@@ -80,7 +78,7 @@ final class StaffController extends Controller
         }
 
         $data = $request->validated();
-        $data['password'] = Hash::make($data['password']);
+        $data['password'] = Hash::make(Coercion::string($data['password'] ?? ''));
         $this->staffService->create($data);
 
         if ($request->wantsJson()) {
@@ -115,7 +113,7 @@ final class StaffController extends Controller
     {
         Gate::authorize('update', $admin);
 
-        if ($this->staffService->hasAdminEmail($request->input('email'), $admin->adminId)) {
+        if ($this->staffService->hasAdminEmail(Coercion::string($request->input('email')), Coercion::int($admin->id))) {
             if ($request->wantsJson()) {
                 return response()->json([
                     'status' => 'error',
@@ -126,7 +124,7 @@ final class StaffController extends Controller
             return back()->withErrors(['email' => __('This email is registered to another staff.')])->withInput();
         }
 
-        $updated = $this->staffService->update($admin->adminId, $request->validated());
+        $updated = $this->staffService->update($admin->id, $request->validated());
 
         if ($request->wantsJson()) {
             if ($updated === 0) {
@@ -147,7 +145,7 @@ final class StaffController extends Controller
         }
 
         return redirect()
-            ->route('admin.staff.edit', $admin->adminId)
+            ->route('admin.staff.edit', $admin)
             ->with('success', __('Staff account has been updated successfully.'));
     }
 
@@ -183,7 +181,7 @@ final class StaffController extends Controller
         Gate::authorize('delete', $admin);
 
         $currentAdmin = request()->user('admin');
-        if ($currentAdmin && $admin->adminId === $currentAdmin->adminId) {
+        if ($currentAdmin && $admin->id === (int) $currentAdmin->id) {
             if (request()->wantsJson()) {
                 return response()->json([
                     'status' => 'error',
@@ -196,7 +194,7 @@ final class StaffController extends Controller
                 ->with('error', __("You can't delete your own account."));
         }
 
-        $this->staffService->delete($admin->adminId);
+        $this->staffService->delete($admin->id);
 
         if (request()->wantsJson()) {
             return response()->json([
@@ -215,10 +213,10 @@ final class StaffController extends Controller
     {
         Gate::authorize('update', $admin);
 
-        $this->staffService->resetPassword($admin->adminId, Hash::make($request->input('password')));
+        $this->staffService->resetPassword(Coercion::int($admin->id), Hash::make(Coercion::string($request->input('password'))));
 
         return redirect()
-            ->route('admin.staff.edit', $admin->adminId)
+            ->route('admin.staff.edit', $admin)
             ->with('success', __('Staff\'s password has been successfully changed.'));
     }
 }

@@ -19,12 +19,12 @@ final class ChecklistPolicy
         return $user->hasPermission('general_settings');
     }
 
-    public function update(Admin $user, Checklist $_checklist): bool
+    public function update(Admin $user, Checklist $checklist): bool
     {
         return $user->hasPermission('general_settings');
     }
 
-    public function delete(Admin $user, Checklist $_checklist): bool
+    public function delete(Admin $user, Checklist $checklist): bool
     {
         return $user->hasPermission('general_settings');
     }

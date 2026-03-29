@@ -7,10 +7,13 @@ namespace App\Http\Controllers\Teacher;
 use App\Contracts\NotificationServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EditBehavioralRequest;
+use App\Http\Requests\StoreBehavioralRequest;
 use App\Models\Setting;
 use App\Models\Student;
+use App\Models\Teacher;
 use App\Services\BehavioralService;
 use App\Services\StudentService;
+use App\Support\Coercion;
 use App\Traits\TeacherScope;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -46,13 +49,13 @@ final class BehavioralController extends Controller
     {
         $this->authorizeTeacherAbility('manageBehavioral');
 
-        $validated = $request->validate([
+        $validated = Coercion::stringKeyedMap($request->validate([
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
             'session' => 'required|string|max:50',
-        ]);
-
-        $class = $validated['class'];
+        ]));
+        $cts = Coercion::classTermSessionFromValidated($validated);
+        $class = $cts['class'];
         $this->ensureTeacherCanAccessClass($class);
 
         $students = $this->studentService
@@ -62,8 +65,8 @@ final class BehavioralController extends Controller
 
         return view('teacher.behavioral.take-behavioral', [
             'class' => $class,
-            'term' => $validated['term'],
-            'session' => $validated['session'],
+            'term' => $cts['term'],
+            'session' => $cts['session'],
             'students' => $students,
         ]);
     }
@@ -71,32 +74,15 @@ final class BehavioralController extends Controller
     /**
      * @throws Throwable
      */
-    public function save(Request $request): JsonResponse
+    public function save(StoreBehavioralRequest $request): JsonResponse
     {
         $this->authorizeTeacherAbility('manageBehavioral');
 
-        $request->validate([
-            'students' => 'required|array|min:1',
-            'students.*.class' => 'required|string|max:100',
-            'students.*.term' => 'required|string|max:50',
-            'students.*.session' => 'required|string|max:50',
-            'students.*.reg_number' => 'required|string|max:50',
-            'students.*.name' => 'nullable|string|max:255',
-            'students.*.neatness' => 'nullable|string|max:255',
-            'students.*.music' => 'nullable|string|max:255',
-            'students.*.sports' => 'nullable|string|max:255',
-            'students.*.attentiveness' => 'nullable|string|max:255',
-            'students.*.punctuality' => 'nullable|string|max:255',
-            'students.*.health' => 'nullable|string|max:255',
-            'students.*.politeness' => 'nullable|string|max:255',
-        ]);
-
-        /** @var array<int, array<string, mixed>> $students */
-        $students = (array) $request->input('students', []);
+        $students = $request->behavioralRows();
         $first = $students[0] ?? [];
-        $class = (string) ($first['class'] ?? '');
-        $term = (string) ($first['term'] ?? '');
-        $session = (string) ($first['session'] ?? '');
+        $class = Coercion::string($first['class'] ?? '');
+        $term = Coercion::string($first['term'] ?? '');
+        $session = Coercion::string($first['session'] ?? '');
 
         $this->ensureTeacherCanAccessClass($class);
 
@@ -114,17 +100,27 @@ final class BehavioralController extends Controller
             ->filter()
             ->values()
             ->all();
-        $allowed = array_flip(array_map('strval', $allowedRegs));
+        $allowed = [];
+        foreach ($allowedRegs as $reg) {
+            $s = Coercion::string($reg);
+            if ($s !== '') {
+                $allowed[$s] = true;
+            }
+        }
 
-        $scopedRows = array_values(array_filter($students, static function (array $r) use ($class, $term, $session, $allowed): bool {
-            $reg = (string) ($r['reg_number'] ?? '');
-
-            return $reg !== ''
-                && isset($allowed[$reg])
-                && (string) ($r['class'] ?? '') === $class
-                && (string) ($r['term'] ?? '') === $term
-                && (string) ($r['session'] ?? '') === $session;
-        }));
+        $scopedRows = [];
+        foreach ($students as $r) {
+            $reg = Coercion::string($r['reg_number'] ?? '');
+            if ($reg === '' || ! isset($allowed[$reg])) {
+                continue;
+            }
+            if (Coercion::string($r['class'] ?? '') !== $class
+                || Coercion::string($r['term'] ?? '') !== $term
+                || Coercion::string($r['session'] ?? '') !== $session) {
+                continue;
+            }
+            $scopedRows[] = $r;
+        }
 
         $count = $this->behavioralService->bulkInsert($scopedRows);
         if ($count !== count($scopedRows)) {
@@ -134,11 +130,7 @@ final class BehavioralController extends Controller
             ]);
         }
 
-        $teacher = $request->user('teacher');
-        $teacherName = $teacher ? trim($teacher->firstname.' '.$teacher->lastname) : 'Teacher';
-        if ($teacherName === '') {
-            $teacherName = 'Teacher';
-        }
+        $teacherName = $this->teacherDisplayName($request);
 
         $this->notificationService->add(
             'Behavioral Record Added',
@@ -155,19 +147,19 @@ final class BehavioralController extends Controller
     {
         $this->authorizeTeacherAbility('manageBehavioral');
 
-        $v = $request->validated();
+        $v = $request->editPayload();
         $this->ensureTeacherCanAccessClass($v['class']);
 
         $allowedRegs = $this->studentService
             ->getStudentsByClassAll($v['class'])
             ->where('status', 2)
             ->pluck('reg_number')
-            ->map(static fn ($r) => (string) $r)
+            ->map(static fn (mixed $r): string => Coercion::string($r))
             ->filter()
             ->flip()
             ->all();
 
-        if (! isset($allowedRegs[(string) $v['reg_number']])) {
+        if (! isset($allowedRegs[$v['reg_number']])) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'You cannot edit behavioural records for this student.',
@@ -189,11 +181,7 @@ final class BehavioralController extends Controller
         );
 
         if ($updated === 1) {
-            $teacher = $request->user('teacher');
-            $teacherName = $teacher ? trim($teacher->firstname.' '.$teacher->lastname) : 'Teacher';
-            if ($teacherName === '') {
-                $teacherName = 'Teacher';
-            }
+            $teacherName = $this->teacherDisplayName($request);
             $this->notificationService->add(
                 'Behavioral Record Edited',
                 $teacherName.' has edited a behavioural record for class: '.$v['class'].', term: '.$v['term'].', session: '.$v['session'].'.'
@@ -218,20 +206,21 @@ final class BehavioralController extends Controller
         $settings = Setting::getCached();
         $classes = $this->teacherAssignedClasses();
 
-        $class = trim((string) $request->query('class', ''));
-        $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
-        $session = trim((string) $request->query('session', $settings['session'] ?? ''));
+        $class = trim(Coercion::string($request->query('class', '')));
+        $term = trim(Coercion::string($request->query('term', Coercion::string($settings['term'] ?? 'First Term'))));
+        $session = trim(Coercion::string($request->query('session', Coercion::string($settings['session'] ?? ''))));
         $hasFilters = $class !== '' && $term !== '' && $session !== '';
 
         if ($hasFilters) {
-            $validated = $request->validate([
+            $validated = Coercion::stringKeyedMap($request->validate([
                 'class' => 'required|string|max:100',
                 'term' => 'required|string|max:50',
                 'session' => 'required|string|max:50',
-            ]);
-            $class = $validated['class'];
-            $term = $validated['term'];
-            $session = $validated['session'];
+            ]));
+            $cts = Coercion::classTermSessionFromValidated($validated);
+            $class = $cts['class'];
+            $term = $cts['term'];
+            $session = $cts['session'];
 
             $this->ensureTeacherCanAccessClass($class);
 
@@ -255,5 +244,17 @@ final class BehavioralController extends Controller
             'term' => $term,
             'session' => $session,
         ]);
+    }
+
+    private function teacherDisplayName(Request $request): string
+    {
+        $teacher = $request->user('teacher');
+        if (! $teacher instanceof Teacher) {
+            return 'Teacher';
+        }
+
+        $teacherName = trim(Coercion::string($teacher->firstname).' '.Coercion::string($teacher->lastname));
+
+        return $teacherName !== '' ? $teacherName : 'Teacher';
     }
 }

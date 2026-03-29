@@ -28,7 +28,7 @@
                                 <x-forms.md-select-native id="teachersList" name="teachersList" class="form-select w-full min-w-0" required>
                                     <option value="">Choose teacher</option>
                                     @foreach($getTeachers as $t)
-                                        <option value="{{ e($t->userId) }}" {{ old('teachersList') == $t->userId ? 'selected' : '' }}>
+                                        <option value="{{ e($t->id) }}" {{ (string) old('teachersList') === (string) $t->id ? 'selected' : '' }}>
                                             {{ e(trim($t->firstname . ' ' . $t->lastname)) }}
                                         </option>
                                     @endforeach
@@ -36,20 +36,20 @@
                                 <p id="teachersList-error" class="form-error mt-1 text-sm {{ $errors->has('teachersList') ? '' : 'hidden' }}" aria-live="polite">{{ $errors->first('teachersList') }}</p>
                             </div>
 
-                    <div class="form-group min-w-0">
-                        <span class="form-label block">Assign class(es) <span class="text-red-500" aria-hidden="true">*</span></span>
-                        <p class="text-sm mt-0.5 mb-2" style="color: var(--on-surface-variant);">Select one or more classes for this teacher.</p>
-                        <div class="flex flex-wrap gap-2 mb-3">
-                            <button type="button" id="assign-classes-select-all" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-opacity hover:opacity-90" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 10px;">
-                                <i class="fas fa-check-double" aria-hidden="true"></i>
-                                Select all
-                            </button>
-                            <button type="button" id="assign-classes-clear" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-opacity hover:opacity-90 border" style="border-color: var(--outline-variant); background: var(--surface-container); color: var(--on-surface); border-radius: 10px;">
-                                <i class="fas fa-times" aria-hidden="true"></i>
-                                Clear
-                            </button>
-                        </div>
-                        <div class="flex flex-wrap gap-3 sm:gap-4">
+                            <div class="form-group min-w-0">
+                                <span class="form-label block">Assign class(es) <span class="text-red-500" aria-hidden="true">*</span></span>
+                                <p class="text-sm mt-0.5 mb-2" style="color: var(--on-surface-variant);">Select one or more classes for this teacher.</p>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <button type="button" id="assign-classes-select-all" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-opacity hover:opacity-90" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 10px;">
+                                        <i class="fas fa-check-double" aria-hidden="true"></i>
+                                        Select all
+                                    </button>
+                                    <button type="button" id="assign-classes-clear" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-opacity hover:opacity-90 border" style="border-color: var(--outline-variant); background: var(--surface-container); color: var(--on-surface); border-radius: 10px;">
+                                        <i class="fas fa-times" aria-hidden="true"></i>
+                                        Clear
+                                    </button>
+                                </div>
+                                <div class="flex flex-wrap gap-3 sm:gap-4">
                                     @php
                                         $oldClasses = old('assigned_class', []);
                                     @endphp
@@ -64,11 +64,7 @@
                             </div>
 
                             <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
-                                <a href="{{ route('admin.teachers.index') }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
-                                    <i class="fas fa-times text-sm" aria-hidden="true"></i>
-                                    Cancel
-                                </a>
-                                <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
+                                <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto min-h-[2.75rem] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
                                     <i class="fas fa-link text-sm" aria-hidden="true"></i>
                                     Assign to Class
                                 </button>
@@ -81,47 +77,47 @@
     </main>
 
     @push('scripts')
-    <script>
-        (function() {
-            let teacherAssignedClasses = @json($teacherAssignedClasses ?? []);
-            const isFormRevalidation = {{ old('teachersList') !== null ? 'true' : 'false' }};
-            const select = document.getElementById('teachersList');
-            const checkboxes = document.querySelectorAll('#assign-form input[name="assigned_class[]"]');
+        <script>
+            (function() {
+                let teacherAssignedClasses = @json($teacherAssignedClasses ?? []);
+                const isFormRevalidation = {{ old('teachersList') !== null ? 'true' : 'false' }};
+                const select = document.getElementById('teachersList');
+                const checkboxes = document.querySelectorAll('#assign-form input[name="assigned_class[]"]');
 
-            function applyClassesForTeacher(teacherId) {
-                const classes = teacherAssignedClasses[teacherId] || [];
-                checkboxes.forEach(function(cb) {
-                    cb.checked = classes.indexOf(cb.value) !== -1;
-                });
-            }
-
-            if (select) {
-                select.addEventListener('change', function() {
-                    const id = this.value;
-                    if (id) {
-                        applyClassesForTeacher(id);
-                    } else {
-                        checkboxes.forEach(function(cb) { cb.checked = false; });
-                    }
-                });
-                if (select.value && !isFormRevalidation) {
-                    applyClassesForTeacher(select.value);
+                function applyClassesForTeacher(teacherId) {
+                    const classes = teacherAssignedClasses[teacherId] || [];
+                    checkboxes.forEach(function(cb) {
+                        cb.checked = classes.indexOf(cb.value) !== -1;
+                    });
                 }
-            }
 
-            const selectAllBtn = document.getElementById('assign-classes-select-all');
-            const clearBtn = document.getElementById('assign-classes-clear');
-            if (selectAllBtn) {
-                selectAllBtn.addEventListener('click', function() {
-                    checkboxes.forEach(function(cb) { cb.checked = true; });
-                });
-            }
-            if (clearBtn) {
-                clearBtn.addEventListener('click', function() {
-                    checkboxes.forEach(function(cb) { cb.checked = false; });
-                });
-            }
-        })();
-    </script>
+                if (select) {
+                    select.addEventListener('change', function() {
+                        const id = this.value;
+                        if (id) {
+                            applyClassesForTeacher(id);
+                        } else {
+                            checkboxes.forEach(function(cb) { cb.checked = false; });
+                        }
+                    });
+                    if (select.value && !isFormRevalidation) {
+                        applyClassesForTeacher(select.value);
+                    }
+                }
+
+                const selectAllBtn = document.getElementById('assign-classes-select-all');
+                const clearBtn = document.getElementById('assign-classes-clear');
+                if (selectAllBtn) {
+                    selectAllBtn.addEventListener('click', function() {
+                        checkboxes.forEach(function(cb) { cb.checked = true; });
+                    });
+                }
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', function() {
+                        checkboxes.forEach(function(cb) { cb.checked = false; });
+                    });
+                }
+            })();
+        </script>
     @endpush
 @endsection

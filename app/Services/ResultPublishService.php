@@ -10,6 +10,7 @@ use App\Models\AnnualResult;
 use App\Models\Position;
 use App\Models\Student;
 use App\Support\AnnualResultAggregation;
+use App\Support\Coercion;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -19,7 +20,9 @@ final readonly class ResultPublishService
         private SendNotificationAction $sendNotificationAction
     ) {}
 
-    /** @return array<string, mixed>
+    /**
+     * @return array{status: string, message: string}
+     *
      * @throws Throwable
      */
     public function publish(string $class, string $term, string $session, string $adminName): array
@@ -59,20 +62,27 @@ final readonly class ResultPublishService
         $insertData = [];
 
         foreach ($students as $student) {
-            $results = $allResults->get($student->reg_number, collect());
+            $regKey = Coercion::string($student->reg_number);
+            $results = $allResults->get($regKey, collect());
 
             if ($results->isEmpty()) {
                 continue;
             }
 
-            $numSubjects = count(array_filter(explode(',', $student->subjects ?? '')));
+            $subjectsCsv = Coercion::string($student->subjects ?? '');
+            $numSubjects = count(array_filter(explode(',', $subjectsCsv)));
             if ($numSubjects <= 0) {
                 continue;
             }
 
-            $total = $results->sum(fn ($r) => (float) $r->total);
+            $total = $results->sum(static function (mixed $r): float {
+                return $r instanceof AnnualResult ? Coercion::float($r->total) : 0.0;
+            });
             $average = $total / $numSubjects;
             $first = $results->first();
+            if (! $first instanceof AnnualResult) {
+                continue;
+            }
 
             $insertData[] = [
                 'reg_number' => $first->reg_number,

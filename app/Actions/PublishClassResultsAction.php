@@ -22,9 +22,9 @@ final readonly class PublishClassResultsAction
         $response = $this->resultPublishService->publish($class, $term, $session, $adminName);
 
         return new PublishResultResponseDTO(
-            status: $response['status'] ?? 'error',
-            message: $response['message'] ?? '',
-            redirect: $response['redirect'] ?? null,
+            status: $response['status'],
+            message: $response['message'],
+            redirect: null,
         );
     }
 }

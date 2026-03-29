@@ -18,12 +18,20 @@
                 </x-slot>
                 @if(isset($unused) && !$unused->isEmpty())
                     <x-slot name="actions">
-                        <a href="{{ route('admin.card.unused-pins.pdf') }}"
-                           target="_blank" rel="noopener noreferrer"
-                           class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
-                            <i class="fas fa-file-pdf text-sm" aria-hidden="true"></i>
-                            Export to PDF
-                        </a>
+                        <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full lg:w-auto">
+                            <a href="{{ route('admin.card.unused-pins.pdf') }}"
+                               target="_blank" rel="noopener noreferrer"
+                               class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
+                                <i class="fas fa-file-pdf text-sm" aria-hidden="true"></i>
+                                Export to PDF
+                            </a>
+                            <a href="{{ route('admin.card.unused-pins.excel') }}"
+                               class="admin-dashboard-hero__btn w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0 border"
+                               style="background: var(--surface); color: var(--primary); border-color: var(--outline-variant);">
+                                <i class="fas fa-file-excel text-sm" aria-hidden="true"></i>
+                                Export to Excel
+                            </a>
+                        </div>
                     </x-slot>
                 @endif
             </x-admin.hero-page>

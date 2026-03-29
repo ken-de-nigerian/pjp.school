@@ -8,6 +8,7 @@ use App\Contracts\ResultRemarkServiceContract;
 use App\DTO\StoreResultRemarkDTO;
 use App\Models\Position;
 use App\Models\Student;
+use App\Support\Coercion;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use Throwable;
@@ -47,9 +48,9 @@ final class ResultRemarkService implements ResultRemarkServiceContract
             }
 
             $name = trim(implode(' ', array_filter([
-                (string) ($student->firstname ?? ''),
-                (string) ($student->lastname ?? ''),
-                (string) ($student->othername ?? ''),
+                Coercion::string($student->firstname ?? ''),
+                Coercion::string($student->lastname ?? ''),
+                Coercion::string($student->othername ?? ''),
             ])));
 
             if ($name === '') {

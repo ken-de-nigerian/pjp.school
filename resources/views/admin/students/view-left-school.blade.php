@@ -1,4 +1,7 @@
-@php use Carbon\Carbon; @endphp
+@php
+    use Carbon\Carbon;
+    $yearLabel = ($year ?? '') === \App\Models\Student::LEFT_SCHOOL_UNDATED_YEAR ? __('No date recorded') : $year;
+@endphp
 @extends('layouts.app', ['title' => 'Left school student'])
 
 @section('content')
@@ -7,7 +10,7 @@
             <x-admin.hero-page
                 aria-label="Students who left by year"
                 pill="Admin"
-                :title="'Left school in ' . e($year)"
+                :title="'Left school — ' . e($yearLabel)"
                 description="View students who left school in this year. Search by name or reg. number."
             >
                 <x-slot name="above">
@@ -29,11 +32,7 @@
                         </div>
                     </div>
                     <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
-                        <a href="{{ route('admin.left_school.view', ['year' => $year]) }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
-                            <i class="fas fa-times text-sm" aria-hidden="true"></i>
-                            Clear
-                        </a>
-                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto min-h-[2.75rem] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
                             <i class="fas fa-search text-sm" aria-hidden="true"></i>
                             Search
                         </button>
@@ -50,7 +49,7 @@
                         @if(!empty($search))
                             <div class="flex flex-col items-center justify-center">
                                 <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No students found</h2>
-                                <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">No students who left in {{ e($year) }} match your search. Try a different term or clear the search.</p>
+                                <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">No students who left in {{ e($yearLabel) }} match your search. Try a different term or clear the search.</p>
                                 <div class="w-full flex justify-center">
                                     <a href="{{ route('admin.left_school.view', ['year' => $year]) }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] max-w-[280px] w-full rounded-xl font-medium text-sm transition-opacity hover:opacity-90" style="border-radius: 12px;">
                                         <i class="fas fa-times text-sm" aria-hidden="true"></i>
@@ -61,7 +60,7 @@
                         @else
                             <div class="flex flex-col items-center justify-center">
                                 <h2 class="text-lg font-medium mb-2" style="color: var(--on-surface);">No students for this year</h2>
-                                <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">There are no students recorded as having left school in {{ e($year) }}.</p>
+                                <p class="text-sm text-center max-w-sm mb-6" style="color: var(--on-surface-variant);">There are no students recorded as having left school in {{ e($yearLabel) }}.</p>
                                 <div class="flex justify-center w-full">
                                     <a href="{{ route('admin.left_school') }}" class="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 min-w-[180px] rounded-xl font-medium text-sm transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px; width: fit-content;">
                                         <i class="fas fa-arrow-left text-sm" aria-hidden="true"></i>

@@ -4,7 +4,57 @@ use App\Http\Controllers\Guest\OnlineEntrancePaymentController;
 use App\Http\Controllers\Guest\ResultCheckController;
 use App\Http\Controllers\Guest\WebsiteController;
 use App\Services\NewsService;
+use App\Support\Coercion;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
+
+Route::get('/system-setup', function () {
+    try {
+        $output = [];
+
+        // 1. Run migrations
+        Artisan::call('migrate', ['--force' => true]);
+        $output[] = 'Migrations: Success.';
+
+        // 2. Storage Link Check
+        if (! is_link(public_path('storage'))) {
+            Artisan::call('storage:link');
+            $output[] = 'Storage: Link created.';
+        }
+
+        // 3. Clear Sessions based on a driver
+        $driver = Coercion::string(config('session.driver'), '');
+
+        if ($driver === 'file') {
+            // Delete all files in storage/framework/sessions except .gitignore
+            File::cleanDirectory(storage_path('framework/sessions'));
+            $output[] = 'Sessions: Cleared file-based sessions.';
+        } elseif ($driver === 'database') {
+            // Truncate the session table if it exists
+            $table = Coercion::string(config('session.table'), 'sessions');
+            if (Schema::hasTable($table)) {
+                DB::table($table)->truncate();
+                $output[] = 'Sessions: Truncated database sessions.';
+            }
+        } else {
+            // For Redis/Memcached, cache:clear usually handles it
+            Artisan::call('cache:clear');
+            $output[] = "Sessions: Cleared via cache:clear ($driver driver).";
+        }
+
+        // 4. Final Optimization Clear
+        Artisan::call('optimize:clear');
+        $output[] = 'Optimization: System caches cleared.';
+
+        return response()->json(['status' => 'success', 'log' => $output]);
+
+    } catch (Exception $e) {
+        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+    }
+})->middleware('auth:admin');
 
 /*
 |--------------------------------------------------------------------------

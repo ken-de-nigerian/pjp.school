@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Support\Coercion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -68,7 +69,7 @@ class Role extends Model
     {
         $labels = [];
         foreach (self::permissionKeys() as $label => $column) {
-            if ((int) ($this->{$column} ?? 0) === 1) {
+            if (Coercion::int($this->{$column} ?? 0) === 1) {
                 $labels[] = $label;
             }
         }

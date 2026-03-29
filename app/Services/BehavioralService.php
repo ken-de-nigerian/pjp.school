@@ -120,16 +120,20 @@ final class BehavioralService
 
     public function deleteRecord(string $class, string $term, string $session): int
     {
-        return Behavioral::query()
+        $deleted = Behavioral::query()
             ->forClassTermSessionSegment($class, $term, $session)
             ->delete();
+
+        return is_int($deleted) ? $deleted : 0;
     }
 
     public function deleteOneRecord(string $reg_number, string $class, string $term, string $session): int
     {
-        return Behavioral::query()
+        $deleted = Behavioral::query()
             ->where('reg_number', $reg_number)
             ->forClassTermSessionSegment($class, $term, $session)
             ->delete();
+
+        return is_int($deleted) ? $deleted : 0;
     }
 }

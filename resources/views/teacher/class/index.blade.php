@@ -60,7 +60,7 @@
                             </div>
                         @empty
                             <div
-                                class="col-span-full flex-1 flex flex-col items-center justify-center min-h-[min(400px,50vh)] py-12 sm:py-16">
+                                class="col-span-full flex-1 flex flex-col items-center justify-center py-12 sm:py-16">
                                 <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg"
                                      style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
                                     <div

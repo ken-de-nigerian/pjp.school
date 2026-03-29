@@ -30,11 +30,7 @@
                         </div>
                     </div>
                     <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
-                        <a href="{{ route('admin.graduated.view', ['year' => $year]) }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
-                            <i class="fas fa-times text-sm" aria-hidden="true"></i>
-                            Clear
-                        </a>
-                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
+                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto min-h-[2.75rem] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
                             <i class="fas fa-search text-sm" aria-hidden="true"></i>
                             Search
                         </button>
@@ -44,7 +40,7 @@
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 @if($students->isEmpty())
-                    <div class="flex flex-col items-center justify-center min-h-[min(360px,50vh)] py-12 sm:py-16 px-4 sm:px-6">
+                    <div class="flex flex-col items-center justify-center py-12 sm:py-16 px-4 sm:px-6">
                         <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg">
                             @if(!empty($search))
                                 <div class="flex flex-col items-center justify-center">

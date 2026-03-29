@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterStudentSubjectsRequest;
 use App\Http\Requests\StoreSubjectRequest;
 use App\Http\Requests\UpdateSubjectRequest;
 use App\Models\Notification;
@@ -12,6 +13,7 @@ use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Services\StudentService;
+use App\Support\Coercion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -72,14 +74,15 @@ final class SubjectsController extends Controller
         $admin = $request->user('admin');
 
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'New Subject Added',
-                'message' => $admin->name.' has added a new subject: '.$subject->subject_name.' for '.$subject->grade.' class',
+                'message' => $adminName.' has added a new subject: '.Coercion::string($subject->subject_name).' for '.Coercion::string($subject->grade).' class',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
 
-        $message = $subject->subject_name.' subject has been added successfully.';
+        $message = Coercion::string($subject->subject_name).' subject has been added successfully.';
         $redirectUrl = route('admin.subjects.index', ['grade' => $subject->grade]);
 
         if ($request->expectsJson()) {
@@ -110,14 +113,15 @@ final class SubjectsController extends Controller
         $admin = $request->user('admin');
 
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Subject Edited',
-                'message' => $admin->name.' has edited subject: '.$subject->subject_name.' for '.$subject->grade.' class',
+                'message' => $adminName.' has edited subject: '.Coercion::string($subject->subject_name).' for '.Coercion::string($subject->grade).' class',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
 
-        $message = $subject->subject_name.' has been updated successfully for this class.';
+        $message = Coercion::string($subject->subject_name).' has been updated successfully for this class.';
         $redirectUrl = route('admin.subjects.index', ['grade' => $subject->grade]);
 
         if ($request->expectsJson()) {
@@ -135,26 +139,27 @@ final class SubjectsController extends Controller
     {
         Gate::authorize('delete', $subject);
 
-        if ($this->subjectAssignedToTeacher($subject->subject_name)) {
+        if ($this->subjectAssignedToTeacher(Coercion::string($subject->subject_name))) {
             $message = __('This subject cannot be deleted because it is assigned to one or more teachers. Unassign it first.');
 
             return $this->destroyErrorResponse($request, $message);
         }
-        if ($this->subjectRegisteredToStudents($subject->subject_name)) {
+        if ($this->subjectRegisteredToStudents(Coercion::string($subject->subject_name))) {
             $message = __('This subject cannot be deleted because it is registered for one or more students. Unregister it first.');
 
             return $this->destroyErrorResponse($request, $message);
         }
 
-        $name = $subject->subject_name;
-        $grade = $subject->grade;
+        $name = Coercion::string($subject->subject_name);
+        $grade = Coercion::string($subject->grade);
         $subject->delete();
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Subject Deleted',
-                'message' => $admin->name.' has deleted '.$name.' subject with: '.$subject->subject_name,
+                'message' => $adminName.' has deleted '.$name.' subject.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -181,10 +186,10 @@ final class SubjectsController extends Controller
         $hasFilters = $class !== null && $class !== '';
 
         if ($hasFilters) {
-            $validated = $request->validate([
+            $v = Coercion::stringKeyedMap($request->validate([
                 'class' => 'required|string|max:100',
-            ]);
-            $class = $validated['class'];
+            ]));
+            $class = Coercion::string($v['class'] ?? '');
             $students = $this->studentService->getStudentsByClass($class, 100);
             $subjects = $this->studentService->getSubjectsToRegister($class);
         } else {
@@ -201,29 +206,22 @@ final class SubjectsController extends Controller
         ]);
     }
 
-    public function registerSubjects(Request $request): JsonResponse
+    public function registerSubjects(RegisterStudentSubjectsRequest $request): JsonResponse
     {
         Gate::authorize('viewAny', Subject::class);
 
-        $validated = $request->validate([
-            'studentsList' => 'required|string|max:255',
-            'subjectsList' => 'required|array|min:1',
-            'subjectsList.*' => 'string|max:100',
-        ]);
+        $studentsList = $request->studentsListString();
+        $subjectsList = $request->subjectsListCsv();
 
-        $studentsList = $validated['studentsList'];
-        $subjectsList = is_array($validated['subjectsList'])
-            ? implode(',', $validated['subjectsList'])
-            : (string) $validated['subjectsList'];
-
-        $updated = $this->studentService->registerStudentSubjects((string) $studentsList, $subjectsList);
+        $updated = $this->studentService->registerStudentSubjects($studentsList, $subjectsList);
 
         if ($updated === 1) {
             $admin = $request->user('admin');
             if ($admin) {
+                $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
                 Notification::query()->create([
                     'title' => 'Subjects Registered For Student',
-                    'message' => $admin->name.' has registered subjects for student with ID: '.$studentsList,
+                    'message' => $adminName.' has registered subjects for student with ID: '.$studentsList,
                     'date_added' => now()->format('Y-m-d H:i:s'),
                 ]);
             }
@@ -251,12 +249,12 @@ final class SubjectsController extends Controller
         $hasFilters = $filterClass !== null && $filterClass !== '' && $filterSubject !== null && $filterSubject !== '';
 
         if ($hasFilters) {
-            $validated = $request->validate([
+            $v = Coercion::stringKeyedMap($request->validate([
                 'class' => 'required|string|max:100',
                 'subjects' => 'required|string|max:100',
-            ]);
-            $filterClass = $validated['class'];
-            $filterSubject = $validated['subjects'];
+            ]));
+            $filterClass = Coercion::string($v['class'] ?? '');
+            $filterSubject = Coercion::string($v['subjects'] ?? '');
             $students = $this->studentService->getStudentsByClassAndSubject($filterClass, $filterSubject);
         } else {
             $students = collect();

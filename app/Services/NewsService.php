@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\News;
+use App\Support\Coercion;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -97,15 +98,16 @@ final class NewsService
     /** @param array<string, mixed> $data */
     public function createWithImage(array $data, string $author, string $imageFileName): News
     {
-        $slug = Str::slug($data['title'] ?? '');
+        $title = Coercion::string($data['title'] ?? '');
+        $slug = Str::slug($title);
 
         return News::query()->create([
             'newsid' => Str::uuid(),
-            'title' => $data['title'],
+            'title' => $title,
             'slug' => $slug,
             'imagelocation' => $imageFileName,
-            'content' => $data['content'],
-            'category' => $data['category'] ?? '',
+            'content' => Coercion::string($data['content'] ?? ''),
+            'category' => Coercion::string($data['category'] ?? ''),
             'author' => $author,
         ]);
     }
@@ -113,15 +115,16 @@ final class NewsService
     /** @param array<string, mixed> $data */
     public function createNoImage(array $data, string $author): News
     {
-        $slug = Str::slug($data['title'] ?? '');
+        $title = Coercion::string($data['title'] ?? '');
+        $slug = Str::slug($title);
 
         return News::query()->create([
             'newsid' => Str::uuid(),
-            'title' => $data['title'],
+            'title' => $title,
             'slug' => $slug,
             'imagelocation' => 'default.png',
-            'content' => $data['content'],
-            'category' => $data['category'] ?? '',
+            'content' => Coercion::string($data['content'] ?? ''),
+            'category' => Coercion::string($data['category'] ?? ''),
             'author' => $author,
         ]);
     }
@@ -129,13 +132,14 @@ final class NewsService
     /** @param array<string, mixed> $data */
     public function update(int|string $id, array $data, string $author): int
     {
-        $slug = Str::slug($data['title'] ?? '');
+        $title = Coercion::string($data['title'] ?? '');
+        $slug = Str::slug($title);
 
         return News::query()->where('id', $id)->update([
-            'title' => $data['title'],
+            'title' => $title,
             'slug' => $slug,
-            'content' => $data['content'],
-            'category' => $data['category'] ?? '',
+            'content' => Coercion::string($data['content'] ?? ''),
+            'category' => Coercion::string($data['category'] ?? ''),
             'author' => $author,
         ]);
     }
@@ -149,6 +153,8 @@ final class NewsService
 
     public function delete(int|string $id): int
     {
-        return (int) News::query()->where('id', $id)->delete();
+        $deleted = News::query()->where('id', $id)->delete();
+
+        return is_int($deleted) ? $deleted : 0;
     }
 }

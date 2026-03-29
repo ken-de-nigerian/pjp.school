@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\DTO;
 
-/**
- * Structured dashboard counts for admin dashboard.
- * Use toArray() when passing to Blade to preserve the existing view variable shape.
- */
+use App\Support\Coercion;
+
 final readonly class DashboardCountsDTO
 {
     public function __construct(
@@ -19,8 +17,6 @@ final readonly class DashboardCountsDTO
     ) {}
 
     /**
-     * Array shape expected by admin. Dashboard view (keys with hyphens).
-     *
      * @return array<string, int>
      */
     public function toArray(): array
@@ -38,11 +34,11 @@ final readonly class DashboardCountsDTO
     public static function fromArray(array $data): self
     {
         return new self(
-            countAllStudents: (int) ($data['count-all-students'] ?? 0),
-            countBoardingStudents: (int) ($data['count-boarding-students'] ?? 0),
-            countDayStudents: (int) ($data['count-day-students'] ?? 0),
-            countSubjects: (int) ($data['count-subjects'] ?? 0),
-            countTeachers: (int) ($data['count-teachers'] ?? 0),
+            countAllStudents: Coercion::int($data['count-all-students'] ?? 0),
+            countBoardingStudents: Coercion::int($data['count-boarding-students'] ?? 0),
+            countDayStudents: Coercion::int($data['count-day-students'] ?? 0),
+            countSubjects: Coercion::int($data['count-subjects'] ?? 0),
+            countTeachers: Coercion::int($data['count-teachers'] ?? 0),
         );
     }
 }

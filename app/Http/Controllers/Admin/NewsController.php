@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateNewsCoverImageRequest;
 use App\Http\Requests\UpdateNewsRequest;
 use App\Models\News;
 use App\Services\NewsService;
+use App\Support\Coercion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -56,6 +57,7 @@ final class NewsController extends Controller
 
         $author = $request->user('admin')->name ?? 'Admin';
         $data = $request->validated();
+        $dataMap = Coercion::stringKeyedMap($data);
 
         try {
             if ($request->hasFile('photoimg') && $request->file('photoimg')->isValid()) {
@@ -68,7 +70,7 @@ final class NewsController extends Controller
                 $news = $this->newsService->createNoImage($data, $author);
             }
 
-            $this->notificationService->add('News Added', $author.' has added a news: '.($data['title'] ?? ''));
+            $this->notificationService->add('News Added', $author.' has added a news: '.Coercion::string($dataMap['title'] ?? ''));
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -109,16 +111,17 @@ final class NewsController extends Controller
 
         $author = $request->user('admin')->name ?? 'Admin';
         $data = $request->validated();
+        $dataMap = Coercion::stringKeyedMap($data);
 
         try {
-            $updated = $this->newsService->update($news->getKey(), $data, $author);
+            $updated = $this->newsService->update($news->id, $data, $author);
             if ($updated > 0) {
-                $this->notificationService->add('News Edited', $author.' has edited a news: '.($data['title'] ?? ''));
+                $this->notificationService->add('News Edited', $author.' has edited a news: '.Coercion::string($dataMap['title'] ?? ''));
             }
             if ($request->hasFile('photoimg') && $request->file('photoimg')->isValid()) {
                 $fileName = $this->storeResizedCoverImage($request->file('photoimg'));
                 if ($fileName !== null) {
-                    $this->newsService->updateCoverImage($news->getKey(), $fileName);
+                    $this->newsService->updateCoverImage($news->id, $fileName);
                     $this->notificationService->add('News Cover Image Edited', $author.' has edited a news cover image');
                 }
             }
@@ -144,7 +147,7 @@ final class NewsController extends Controller
     {
         Gate::authorize('delete', $news);
 
-        $deleted = $this->newsService->delete($news->getKey());
+        $deleted = $this->newsService->delete($news->id);
         if ($deleted > 0) {
             $adminName = $request->user('admin')->name ?? 'Admin';
             $this->notificationService->add('News Deleted', $adminName.' has deleted a news: '.$news->title);
@@ -162,8 +165,12 @@ final class NewsController extends Controller
 
     public function updateCoverImage(UpdateNewsCoverImageRequest $request): JsonResponse
     {
-        $id = $request->input('id');
-        $news = $this->newsService->getById($id);
+        $idRaw = Coercion::string($request->input('id'));
+        $newsId = Coercion::int($idRaw);
+        if ($newsId <= 0) {
+            return response()->json(['status' => 'error', 'message' => 'Invalid news id.'], 422);
+        }
+        $news = $this->newsService->getById($newsId);
         if ($news === null) {
             return response()->json(['status' => 'error', 'message' => 'News not found.'], 404);
         }
@@ -179,7 +186,7 @@ final class NewsController extends Controller
             ], 422);
         }
 
-        $this->newsService->updateCoverImage($id, $fileName);
+        $this->newsService->updateCoverImage($newsId, $fileName);
         $adminName = $request->user('admin')->name ?? 'Admin';
         $this->notificationService->add('News Cover Image Edited', $adminName.' has edited a news cover image');
 

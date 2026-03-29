@@ -7,10 +7,13 @@ namespace App\Http\Controllers\Teacher;
 use App\Contracts\NotificationServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EditAttendanceRequest;
+use App\Http\Requests\StoreAttendanceRequest;
 use App\Models\Setting;
 use App\Models\Student;
+use App\Models\Teacher;
 use App\Services\AttendanceService;
 use App\Services\StudentService;
+use App\Support\Coercion;
 use App\Traits\TeacherScope;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -47,13 +50,13 @@ final class AttendanceController extends Controller
     {
         $this->authorizeTeacherAbility('manageAttendance');
 
-        $validated = $request->validate([
+        $validated = Coercion::stringKeyedMap($request->validate([
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
             'session' => 'required|string|max:50',
-        ]);
-
-        $class = $validated['class'];
+        ]));
+        $cts = Coercion::classTermSessionFromValidated($validated);
+        $class = $cts['class'];
         $this->ensureTeacherCanAccessClass($class);
 
         $students = $this->studentService
@@ -63,8 +66,8 @@ final class AttendanceController extends Controller
 
         return view('teacher.attendance.take-attendance', [
             'class' => $class,
-            'term' => $validated['term'],
-            'session' => $validated['session'],
+            'term' => $cts['term'],
+            'session' => $cts['session'],
             'students' => $students,
         ]);
     }
@@ -72,30 +75,18 @@ final class AttendanceController extends Controller
     /**
      * @throws Throwable
      */
-    public function save(Request $request): JsonResponse
+    public function save(StoreAttendanceRequest $request): JsonResponse
     {
         $this->authorizeTeacherAbility('manageAttendance');
 
-        $request->validate([
-            'attendance' => 'required|array|min:1',
-            'attendance.*.class' => 'required|string|max:100',
-            'attendance.*.term' => 'required|string|max:50',
-            'attendance.*.session' => 'required|string|max:50',
-            'attendance.*.reg_number' => 'required|string|max:50',
-            'attendance.*.name' => 'nullable|string|max:255',
-            'attendance.*.class_roll_call' => 'required|string|max:20',
-        ]);
-
-        /** @var array<int, array<string, mixed>> $rows */
-        $rows = (array) $request->input('attendance', []);
+        $rows = $request->attendanceRows();
         $first = $rows[0] ?? [];
-        $class = (string) ($first['class'] ?? '');
-        $term = (string) ($first['term'] ?? '');
-        $session = (string) ($first['session'] ?? '');
+        $class = Coercion::string($first['class'] ?? '');
+        $term = Coercion::string($first['term'] ?? '');
+        $session = Coercion::string($first['session'] ?? '');
 
         $this->ensureTeacherCanAccessClass($class);
 
-        // Hard-scope to the teacher's students in this class (reg_number).
         $allowedRegs = $this->studentService
             ->getStudentsByClassAll($class)
             ->where('status', 2)
@@ -103,27 +94,32 @@ final class AttendanceController extends Controller
             ->filter()
             ->values()
             ->all();
-        $allowed = array_flip(array_map('strval', $allowedRegs));
+        $allowed = [];
+        foreach ($allowedRegs as $reg) {
+            $s = Coercion::string($reg);
+            if ($s !== '') {
+                $allowed[$s] = true;
+            }
+        }
 
-        $scopedRows = array_values(array_filter($rows, static function (array $r) use ($class, $term, $session, $allowed): bool {
-            $reg = (string) ($r['reg_number'] ?? '');
-
-            return $reg !== ''
-                && isset($allowed[$reg])
-                && (string) ($r['class'] ?? '') === $class
-                && (string) ($r['term'] ?? '') === $term
-                && (string) ($r['session'] ?? '') === $session;
-        }));
+        $scopedRows = [];
+        foreach ($rows as $r) {
+            $reg = Coercion::string($r['reg_number'] ?? '');
+            if ($reg === '' || ! isset($allowed[$reg])) {
+                continue;
+            }
+            if (Coercion::string($r['class'] ?? '') !== $class
+                || Coercion::string($r['term'] ?? '') !== $term
+                || Coercion::string($r['session'] ?? '') !== $session) {
+                continue;
+            }
+            $scopedRows[] = $r;
+        }
 
         $count = $this->attendanceService->saveRecord($scopedRows);
 
         if ($count > 0) {
-            $teacher = $request->user('teacher');
-            $teacherName = $teacher ? trim($teacher->firstname.' '.$teacher->lastname) : 'Teacher';
-            if ($teacherName === '') {
-                $teacherName = 'Teacher';
-            }
-
+            $teacherName = $this->teacherDisplayName($request);
             $this->notificationService->add(
                 'Attendance Record Added',
                 $teacherName.' has added attendance record for class: '.$class.', term: '.$term.', session: '.$session.'.'
@@ -140,22 +136,24 @@ final class AttendanceController extends Controller
     {
         $this->authorizeTeacherAbility('manageAttendance');
 
-        $v = $request->validated();
-        $this->ensureTeacherCanAccessClass($v['class']);
+        $ctx = $request->attendanceContext();
+        $this->ensureTeacherCanAccessClass($ctx['class']);
 
         $allowedRegs = $this->studentService
-            ->getStudentsByClassAll($v['class'])
+            ->getStudentsByClassAll($ctx['class'])
             ->where('status', 2)
             ->pluck('reg_number')
-            ->map(static fn ($r) => (string) $r)
+            ->map(static fn (mixed $r): string => Coercion::string($r))
             ->filter()
             ->flip()
             ->all();
 
-        $filtered = array_values(array_filter(
-            $v['updates'],
-            static fn (array $u): bool => isset($allowedRegs[(string) ($u['reg_number'] ?? '')])
-        ));
+        $filtered = [];
+        foreach ($request->attendanceUpdates() as $u) {
+            if (isset($allowedRegs[$u['reg_number']])) {
+                $filtered[] = $u;
+            }
+        }
 
         if ($filtered === []) {
             return response()->json([
@@ -165,24 +163,20 @@ final class AttendanceController extends Controller
         }
 
         $updated = $this->attendanceService->editRecord(
-            $v['class'],
-            $v['term'],
-            $v['session'],
-            $v['date'],
+            $ctx['class'],
+            $ctx['term'],
+            $ctx['session'],
+            $ctx['date'],
             $filtered
         );
 
         if ($updated > 0) {
-            $teacher = $request->user('teacher');
-            $teacherName = $teacher ? trim($teacher->firstname.' '.$teacher->lastname) : 'Teacher';
-            if ($teacherName === '') {
-                $teacherName = 'Teacher';
-            }
+            $teacherName = $this->teacherDisplayName($request);
             $this->notificationService->add(
                 'Attendance Records Edited',
-                $teacherName.' has edited '.$updated.' attendance record(s) for class: '.$v['class']
-                    .', term: '.$v['term']
-                    .', session: '.$v['session']
+                $teacherName.' has edited '.$updated.' attendance record(s) for class: '.$ctx['class']
+                    .', term: '.$ctx['term']
+                    .', session: '.$ctx['session']
             );
         }
 
@@ -201,23 +195,24 @@ final class AttendanceController extends Controller
         $settings = Setting::getCached();
         $classes = $this->teacherAssignedClasses();
 
-        $date = trim((string) $request->query('date', date('Y-m-d')));
-        $class = trim((string) $request->query('class', ''));
-        $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
-        $session = trim((string) $request->query('session', $settings['session'] ?? ''));
+        $date = trim(Coercion::string($request->query('date', date('Y-m-d'))));
+        $class = trim(Coercion::string($request->query('class', '')));
+        $term = trim(Coercion::string($request->query('term', Coercion::string($settings['term'] ?? 'First Term'))));
+        $session = trim(Coercion::string($request->query('session', Coercion::string($settings['session'] ?? ''))));
         $hasFilters = $date !== '' && $class !== '' && $term !== '' && $session !== '';
 
         if ($hasFilters) {
-            $validated = $request->validate([
+            $validated = Coercion::stringKeyedMap($request->validate([
                 'date' => 'required|string|max:50',
                 'class' => 'required|string|max:100',
                 'term' => 'required|string|max:50',
                 'session' => 'required|string|max:50',
-            ]);
-            $date = $validated['date'];
-            $class = $validated['class'];
-            $term = $validated['term'];
-            $session = $validated['session'];
+            ]));
+            $date = Coercion::string($validated['date'] ?? '');
+            $cts = Coercion::classTermSessionFromValidated($validated);
+            $class = $cts['class'];
+            $term = $cts['term'];
+            $session = $cts['session'];
 
             $this->ensureTeacherCanAccessClass($class);
 
@@ -242,5 +237,17 @@ final class AttendanceController extends Controller
             'term' => $term,
             'session' => $session,
         ]);
+    }
+
+    private function teacherDisplayName(Request $request): string
+    {
+        $teacher = $request->user('teacher');
+        if (! $teacher instanceof Teacher) {
+            return 'Teacher';
+        }
+
+        $teacherName = trim(Coercion::string($teacher->firstname).' '.Coercion::string($teacher->lastname));
+
+        return $teacherName !== '' ? $teacherName : 'Teacher';
     }
 }

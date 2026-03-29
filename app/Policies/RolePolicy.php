@@ -14,7 +14,7 @@ final class RolePolicy
         return $user->hasPermission('general_settings');
     }
 
-    public function view(Admin $user, Role $_role): bool
+    public function view(Admin $user, Role $role): bool
     {
         return $user->hasPermission('general_settings');
     }
@@ -29,7 +29,7 @@ final class RolePolicy
         return $user->hasPermission('general_settings');
     }
 
-    public function delete(Admin $user, Role $_role): bool
+    public function delete(Admin $user, Role $role): bool
     {
         return $user->hasPermission('general_settings');
     }

@@ -17,10 +17,9 @@ class AttendanceGetRecordTest extends TestCase
     {
         parent::setUp();
         Admin::query()->firstOrCreate(
-            ['adminId' => 'att-get-admin'],
+            ['email' => 'attget@test.local'],
             [
                 'name' => 'Att Get',
-                'email' => 'attget@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => 1,
             ]

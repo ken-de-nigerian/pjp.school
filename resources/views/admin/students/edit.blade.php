@@ -416,7 +416,8 @@
                                 closeDeleteModal();
                                 if (res.ok && res.data && res.data.status === 'success') {
                                     if (typeof flashSuccess === 'function') flashSuccess(res.data.message || 'Student deleted.');
-                                    if (res.data.redirect) setTimeout(function() { window.location.href = res.data.redirect; }, 2800);
+                                    const nextUrl = res.data.redirect || @json(route('admin.classes'));
+                                    setTimeout(function() { window.location.href = nextUrl; }, window.RELOAD_DELAY_MS);
                                 } else {
                                     if (typeof flashError === 'function') flashError(res.data && res.data.message || 'Could not delete student.');
                                 }

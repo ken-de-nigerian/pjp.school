@@ -81,7 +81,7 @@
 
                                         <h3 class="text-sm sm:text-base font-medium mb-0.5 truncate w-full" style="color: var(--on-surface);">
                                             @can('update', $s)
-                                                <a href="{{ route('admin.staff.edit', $s->adminId) }}" class="hover:underline" style="color: var(--primary);">{{ e($s->name) }}</a>
+                                                <a href="{{ route('admin.staff.edit', $s) }}" class="hover:underline" style="color: var(--primary);">{{ e($s->name) }}</a>
                                             @else
                                                 <span>{{ e($s->name) }}</span>
                                             @endcan
@@ -98,13 +98,13 @@
 
                                     <div class="p-3 sm:p-4 pt-0 flex flex-row sm:flex-wrap items-stretch sm:items-center justify-center gap-2 w-full" style="border-top: 1px solid var(--outline-variant); background: var(--surface-container);">
                                         @can('update', $s)
-                                            <a href="{{ route('admin.staff.edit', $s->adminId) }}" class="inline-flex items-center justify-center gap-1.5 flex-1 sm:flex-initial min-h-[44px] sm:min-h-0 px-3 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-w-0" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;">
+                                            <a href="{{ route('admin.staff.edit', $s) }}" class="inline-flex items-center justify-center gap-1.5 flex-1 sm:flex-initial min-h-[44px] sm:min-h-0 px-3 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-w-0" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;">
                                                 <i class="fas fa-pen text-xs flex-shrink-0" aria-hidden="true"></i>
                                                 <span class="truncate">Edit</span>
                                             </a>
                                         @endcan
                                         @can('delete', $s)
-                                            <button type="button" class="staff-delete-btn inline-flex items-center justify-center gap-1.5 flex-1 sm:flex-initial min-h-[44px] sm:min-h-0 px-3 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-w-0" style="background: var(--error-container); color: var(--on-error-container); border-radius: 12px;" data-staff-id="{{ e($s->adminId) }}" data-staff-name="{{ e($s->name) }}" data-delete-url="{{ route('admin.staff.destroy', $s->adminId) }}">
+                                            <button type="button" class="staff-delete-btn inline-flex items-center justify-center gap-1.5 flex-1 sm:flex-initial min-h-[44px] sm:min-h-0 px-3 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-w-0" style="background: var(--error-container); color: var(--on-error-container); border-radius: 12px;" data-staff-id="{{ e($s->id) }}" data-staff-name="{{ e($s->name) }}" data-delete-url="{{ route('admin.staff.destroy', $s) }}">
                                                 <i class="fas fa-trash-alt text-xs flex-shrink-0" aria-hidden="true"></i>
                                                 <span class="truncate">Delete</span>
                                             </button>
@@ -193,7 +193,7 @@
                                 if (typeof flashSuccess === 'function') flashSuccess(res.data.message || 'Staff deleted.');
                                 setTimeout(function() {
                                     window.location.href = res.data.redirect || '{{ route('admin.staff.index') }}';
-                                }, 2800);
+                                }, window.RELOAD_DELAY_MS);
                             } else {
                                 if (typeof flashError === 'function') flashError(res.data && res.data.message ? (Array.isArray(res.data.message) ? res.data.message.join(' ') : res.data.message) : 'Could not delete staff.');
                             }

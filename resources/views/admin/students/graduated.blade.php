@@ -40,7 +40,7 @@
                             </div>
                         </div>
                     @empty
-                        <div class="col-span-full flex flex-col items-center justify-center min-h-[min(400px,50vh)] py-12 sm:py-16 px-4">
+                        <div class="col-span-full flex flex-col items-center justify-center py-12 sm:py-16 px-4">
                             <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg">
                                 <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
                                     <i class="fas fa-graduation-cap text-4xl" aria-hidden="true"></i>

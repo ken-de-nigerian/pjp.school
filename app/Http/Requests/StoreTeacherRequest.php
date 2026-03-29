@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class StoreTeacherRequest extends FormRequest
@@ -36,6 +37,48 @@ final class StoreTeacherRequest extends FormRequest
             'assigned_class.*' => ['string', 'max:50'],
             'subject_to_teach' => ['required', 'array'],
             'subject_to_teach.*' => ['string', 'max:100'],
+        ];
+    }
+
+    public function passwordPlain(): string
+    {
+        return Coercion::string(Coercion::stringKeyedMap($this->validated())['password'] ?? '');
+    }
+
+    public function registrationFullName(): string
+    {
+        $v = $this->validated();
+
+        return trim(Coercion::string($v['firstname'] ?? '').' '.Coercion::string($v['lastname'] ?? ''));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function attributesForTeacherCreate(string $passwordHash, string $imagelocation): array
+    {
+        $v = $this->validated();
+
+        return [
+            'imagelocation' => $imagelocation,
+            'email' => Coercion::string($v['email'] ?? ''),
+            'password' => $passwordHash,
+            'firstname' => Coercion::string($v['firstname'] ?? ''),
+            'lastname' => Coercion::string($v['lastname'] ?? ''),
+            'othername' => Coercion::string($v['othername'] ?? ''),
+            'date_of_birth' => Coercion::string($v['date_of_birth'] ?? ''),
+            'gender' => Coercion::string($v['gender'] ?? ''),
+            'phone' => Coercion::string($v['formattedPhone'] ?? ''),
+            'lga' => Coercion::string($v['lga'] ?? ''),
+            'state' => Coercion::string($v['state'] ?? ''),
+            'city' => Coercion::string($v['city'] ?? ''),
+            'country' => Coercion::string($v['country'] ?? ''),
+            'address' => Coercion::string($v['address'] ?? ''),
+            'employment_date' => Coercion::string($v['employment_date'] ?? ''),
+            'assigned_class' => Coercion::commaSeparatedStrings($v['assigned_class'] ?? []),
+            'subject_to_teach' => Coercion::commaSeparatedStrings($v['subject_to_teach'] ?? []),
+            'form-teacher' => Coercion::int($v['form_teacher'] ?? 2, 2),
+            'registration_date' => now()->format('Y-m-d H:i:s'),
         ];
     }
 }

@@ -276,7 +276,7 @@
                                 flashSuccess(res.data.message || 'Saved.');
                                 setTimeout(function() {
                                     window.location.href = res.data.redirect || window.location.pathname + '?grade=' + encodeURIComponent((modalGrade && modalGrade.value) || filterGrade);
-                                }, 2800);
+                                }, window.RELOAD_DELAY_MS);
                             } else if (res.data && res.data.errors) {
                                 mapModalErrors(res.data.errors);
                             } else {
@@ -343,7 +343,7 @@
                             flashSuccess(res.data.message || 'Subject deleted successfully.');
                             setTimeout(function() {
                                 window.location.href = res.data.redirect || '{{ route('admin.subjects.index', ['grade' => $filterGrade ?? 'Junior']) }}';
-                            }, 2800);
+                            }, window.RELOAD_DELAY_MS);
                         } else {
                             flashError(Array.isArray(res.data.message) ? res.data.message.join(' ') : (res.data.message || 'Could not delete subject.'));
                         }

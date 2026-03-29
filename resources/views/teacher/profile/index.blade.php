@@ -233,7 +233,7 @@
                                     if (typeof flashSuccess === 'function') flashSuccess(res.data.message || 'Profile updated successfully.');
                                     setTimeout(function () {
                                         window.location.reload();
-                                    }, 1200);
+                                    }, window.RELOAD_DELAY_MS);
                                 } else if (res.data && res.data.errors && typeof showLaravelErrors === 'function') {
                                     showLaravelErrors(res.data.errors);
                                 } else if (typeof flashError === 'function') {

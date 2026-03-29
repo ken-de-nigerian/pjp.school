@@ -11,6 +11,7 @@ use App\Http\Requests\EditClassRequest;
 use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Services\StudentService;
+use App\Support\Coercion;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -30,11 +31,11 @@ final class ClassController extends Controller
         $classesWithCounts = $this->studentService->getClassesWithCounts();
 
         if ($request->has('class')) {
-            $validated = $request->validate([
+            $validated = Coercion::stringKeyedMap($request->validate([
                 'class' => 'required|string|max:100',
-            ]);
-            $class = $validated['class'];
-            $search = $request->query('q', '');
+            ]));
+            $class = Coercion::string($validated['class'] ?? '');
+            $search = Coercion::string($request->query('q', ''));
             $students = $search !== ''
                 ? $this->studentService->getStudentsByClassWithSearch($class, $search)
                 : $this->studentService->getStudentsByClass($class);
@@ -53,14 +54,14 @@ final class ClassController extends Controller
             'students' => null,
             'classesWithCounts' => $classesWithCounts,
             'selectedClass' => '',
-            'searchQuery' => $request->query('q', ''),
+            'searchQuery' => Coercion::string($request->query('q', '')),
         ]);
     }
 
     public function addClass(AddClassRequest $request): RedirectResponse|JsonResponse
     {
         Gate::authorize('viewAny', Student::class);
-        if ($this->studentService->hasClass($request->validated('class_name'))) {
+        if ($this->studentService->hasClass($request->className())) {
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => 'error',
@@ -72,7 +73,7 @@ final class ClassController extends Controller
             return back()->withErrors(['class_name' => __('Class already exists.')]);
         }
 
-        $this->studentService->addClass($request->validated('class_name'));
+        $this->studentService->addClass($request->className());
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
@@ -87,7 +88,7 @@ final class ClassController extends Controller
     public function updateClass(EditClassRequest $request, SchoolClass $schoolClass): JsonResponse
     {
         Gate::authorize('viewAny', Student::class);
-        if ($this->studentService->hasClass($request->validated('class_name'))) {
+        if ($this->studentService->hasClass($request->className())) {
             throw new HttpResponseException(response()->json([
                 'status' => 'error',
                 'message' => __('Class already exists.'),
@@ -95,7 +96,7 @@ final class ClassController extends Controller
             ], 422));
         }
 
-        $updated = $this->studentService->updateClass($schoolClass->id, $request->validated('class_name'));
+        $updated = $this->studentService->updateClass(Coercion::int($schoolClass->id), $request->className());
 
         if (! $updated) {
             return response()->json([
@@ -113,14 +114,14 @@ final class ClassController extends Controller
     public function destroyClass(DeleteClassRequest $request, SchoolClass $schoolClass): JsonResponse
     {
         Gate::authorize('viewAny', Student::class);
-        if ($this->studentService->classHasStudents($request->validated('class_name'))) {
+        if ($this->studentService->classHasStudents($request->className())) {
             return response()->json([
                 'status' => 'error',
                 'message' => __('You can only delete an empty class with no students.'),
             ], 422);
         }
 
-        $deleted = $this->studentService->deleteClassIfEmpty($schoolClass->id, $request->validated('class_name'));
+        $deleted = $this->studentService->deleteClassIfEmpty(Coercion::int($schoolClass->id), $request->className());
 
         if (! $deleted) {
             return response()->json([

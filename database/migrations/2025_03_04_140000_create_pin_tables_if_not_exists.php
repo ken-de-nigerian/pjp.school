@@ -19,6 +19,7 @@ return new class extends Migration
                 $table->string('pin')->nullable();
                 $table->string('serial_number')->nullable();
                 $table->dateTime('upload_date')->nullable();
+                $table->index('session', 'pin_code_session_index');
             });
         }
 
@@ -26,6 +27,7 @@ return new class extends Migration
             Schema::create('unused_pins', function (Blueprint $table) {
                 $table->id();
                 $table->string('session')->nullable();
+                $table->index('session', 'unused_pins_session_index');
                 $table->string('pins')->nullable();
                 $table->string('serial_number')->nullable();
                 $table->dateTime('upload_date')->nullable();
@@ -42,6 +44,8 @@ return new class extends Migration
                 $table->string('term')->nullable();
                 $table->string('session')->nullable();
                 $table->dateTime('time_used')->nullable();
+                $table->index('reg_number', 'used_pins_reg_number_index');
+                $table->index('session', 'used_pins_session_index');
             });
         }
     }

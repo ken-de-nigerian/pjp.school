@@ -216,9 +216,9 @@
 </style>
 
 <nav class="sticky top-0 z-50" style="background: var(--surface-container-lowest);">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div class="flex justify-between items-center h-16 lg:h-20">
-            <div class="flex min-w-0 items-center gap-8 lg:gap-8">
+    <div class="max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 relative">
+        <div class="flex min-w-0 justify-between items-center h-16 lg:h-20">
+            <div class="flex min-w-0 items-center gap-2 sm:gap-4 lg:gap-8">
                 <!-- Menu (mobile: hamburger; desktop: opens centered modal) -->
                 <button onclick="toggleMobileMenu()" class="header-icon-btn" aria-label="Open menu">
                     <i class="fas fa-bars text-sm"></i>
@@ -246,7 +246,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 lg:gap-4 flex-shrink-0">
+            <div class="flex items-center gap-1.5 sm:gap-2 lg:gap-4 flex-shrink-0">
                 <!-- Search (Desktop only) -->
                 <div class="hidden lg:flex items-center mr-4">
                     <div class="search-wrap-header flex items-center gap-2 rounded-full pl-4 pr-3 py-2 w-48 focus-within:w-64 transition-[width] duration-200" style="background: var(--surface-container);">
@@ -271,7 +271,7 @@
                     </button>
                 @endif
 
-                <div class="header-nav-divider"></div>
+                <div class="header-nav-divider hidden sm:block"></div>
 
                 <!-- Profile Dropdown (pushed to extreme right on mobile) -->
                 <div class="relative ml-auto lg:ml-0" id="profile-container">
@@ -644,7 +644,7 @@
 <!-- Offcanvas Notifications: full-screen on mobile (scrollable above bottom nav), right panel on desktop -->
 @if(Route::has('admin.notifications.index'))
     <div id="notifications-modal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[60] hidden flex items-stretch lg:items-center lg:justify-end p-0">
-        <div class="notifications-modal-panel card-refined flex flex-col w-full h-full max-h-screen lg:max-w-md lg:max-h-screen lg:rounded-l-2xl lg:rounded-r-none rounded-none" style="background: var(--card-bg);">
+        <div class="notifications-modal-panel card-refined flex flex-col w-full h-full max-h-dvh lg:max-w-md lg:max-h-dvh lg:rounded-l-2xl lg:rounded-r-none rounded-none" style="background: var(--card-bg);">
             <div class="flex-shrink-0 p-4 sm:p-6 border-b flex items-center justify-between" style="background: var(--card-bg); border-color: var(--outline-variant);">
                 <h2 class="text-xl sm:text-2xl font-bold" style="color: var(--on-surface);">Notifications</h2>
                 <button type="button" onclick="closeModal('notifications-modal')" class="header-icon-btn w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" aria-label="Close">
@@ -652,7 +652,7 @@
                 </button>
             </div>
 
-            <div class="notifications-modal-content flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-4 sm:p-6 scrollbar-hide">
+            <div class="notifications-modal-content flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-4 sm:p-6">
                 @php $layoutNotifications = $layoutNotifications ?? collect(); @endphp
                 @if($layoutNotifications->isEmpty())
                     <div class="flex flex-col items-center justify-center py-8 sm:py-12">

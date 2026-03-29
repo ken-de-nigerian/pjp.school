@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string $reg_number
+ * @property string $name
+ * @property string $class_arm
+ * @property string $term
+ * @property string $session
+ * @property float|int|string|null $total
+ */
 class AnnualResult extends Model
 {
     public $timestamps = false;

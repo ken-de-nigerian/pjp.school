@@ -20,7 +20,7 @@ final class DashboardController extends Controller
 
     public function index(Request $request): View
     {
-        $user = $request->user('teacher');
+        $user = $request->user();
         $page = (int) $request->query('page', 1);
         $newsPaginator = $this->dashboardService->getTeacherNewsPaginated($page);
 

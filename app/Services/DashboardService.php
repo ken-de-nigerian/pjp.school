@@ -23,18 +23,18 @@ final class DashboardService
     {
         return new DashboardCountsDTO(
             countAllStudents: Student::query()
-                ->whereNotIn('class', ['Left', 'Graduated'])
-                ->where('status', 2)
+                ->active()
+                ->notLeftOrGraduated()
                 ->count(),
             countBoardingStudents: Student::query()
                 ->where('category', 'Boarding')
-                ->whereNotIn('class', ['Left', 'Graduated'])
-                ->where('status', 2)
+                ->active()
+                ->notLeftOrGraduated()
                 ->count(),
             countDayStudents: Student::query()
                 ->where('category', 'Day')
-                ->whereNotIn('class', ['Left', 'Graduated'])
-                ->where('status', 2)
+                ->active()
+                ->notLeftOrGraduated()
                 ->count(),
             countSubjects: Subject::query()->count(),
             countTeachers: Teacher::query()->count(),

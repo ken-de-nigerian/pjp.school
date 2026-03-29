@@ -7,14 +7,22 @@
                 aria-label="Entrance examination applicants"
                 pill="Admin"
                 title="Entrance examination applicants"
-                description="View and manage online entrance applications. Export the full list to PDF for printing."
+                description="View and manage online entrance applications. Export the full list to PDF or Excel."
             >
                 @if(!$applicants->isEmpty() && Route::has('admin.online_entrance.pdf'))
                     <x-slot name="actions">
-                        <a href="{{ route('admin.online_entrance.pdf') }}" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
-                            <i class="fas fa-file-pdf text-[10px] sm:text-xs" aria-hidden="true"></i>
-                            <span>Export to PDF</span>
-                        </a>
+                        <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full lg:w-auto">
+                            <a href="{{ route('admin.online_entrance.pdf') }}" target="_blank" rel="noopener noreferrer" class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
+                                <i class="fas fa-file-pdf text-[10px] sm:text-xs" aria-hidden="true"></i>
+                                <span>Export to PDF</span>
+                            </a>
+                            @if(Route::has('admin.online_entrance.excel'))
+                                <a href="{{ route('admin.online_entrance.excel') }}" class="admin-dashboard-hero__btn w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0 border" style="background: var(--surface); color: var(--primary); border-color: var(--outline-variant);">
+                                    <i class="fas fa-file-excel text-[10px] sm:text-xs" aria-hidden="true"></i>
+                                    <span>Export to Excel</span>
+                                </a>
+                            @endif
+                        </div>
                     </x-slot>
                 @endif
             </x-admin.hero-page>

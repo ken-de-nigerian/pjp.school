@@ -9,6 +9,7 @@ use App\Models\AnnualResult;
 use App\Models\Position;
 use App\Support\AnnualResultAggregation;
 use App\Traits\HasTermSessionFilters;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 
 final class ResultRepository implements ResultRepositoryContract
@@ -20,7 +21,7 @@ final class ResultRepository implements ResultRepositoryContract
         return $this->applyTermSessionFilters(Position::query(), $class, $term, $session)->exists();
     }
 
-    public function getPublishedResults(string $class, string $term, string $session): Collection
+    public function getPublishedResults(string $class, string $term, string $session): EloquentCollection
     {
         return $this->applyTermSessionFilters(Position::query(), $class, $term, $session)
             ->orderBy('class_position')
@@ -65,6 +66,8 @@ final class ResultRepository implements ResultRepositoryContract
 
     public function deletePublishedResults(string $class, string $term, string $session): int
     {
-        return $this->applyTermSessionFilters(Position::query(), $class, $term, $session)->delete();
+        $deleted = $this->applyTermSessionFilters(Position::query(), $class, $term, $session)->delete();
+
+        return is_int($deleted) ? $deleted : 0;
     }
 }

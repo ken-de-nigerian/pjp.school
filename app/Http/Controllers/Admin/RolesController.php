@@ -9,6 +9,7 @@ use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Models\Notification;
 use App\Models\Role;
+use App\Support\Coercion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -68,7 +69,7 @@ final class RolesController extends Controller
         Gate::authorize('create', Role::class);
 
         $data = array_merge(self::PERMISSION_DEFAULTS, $request->validated());
-        $name = $data['name'] ?? '';
+        $name = Coercion::string($data['name'] ?? '');
         unset($data['name']);
         $data['name'] = $name;
 
@@ -78,9 +79,10 @@ final class RolesController extends Controller
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Roles And Permissions Added',
-                'message' => $admin->name.' has added a new role & permissions: '.$name,
+                'message' => $adminName.' has added a new role & permissions: '.$name,
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -117,7 +119,7 @@ final class RolesController extends Controller
         Gate::authorize('update', $role);
 
         $data = array_merge(self::PERMISSION_DEFAULTS, $request->validated());
-        $name = $data['name'] ?? $role->name;
+        $name = Coercion::string($data['name'] ?? $role->name);
         unset($data['name']);
         $data['name'] = $name;
 
@@ -127,9 +129,10 @@ final class RolesController extends Controller
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Roles And Permissions Edited',
-                'message' => $admin->name.' has edited some roles & permissions',
+                'message' => $adminName.' has edited some roles & permissions',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -159,9 +162,10 @@ final class RolesController extends Controller
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Role Deleted',
-                'message' => $admin->name.' has deleted a role with ID: '.$role->name,
+                'message' => $adminName.' has deleted a role: '.Coercion::string($role->name),
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }

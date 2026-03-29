@@ -17,10 +17,9 @@ class DashboardAccessTest extends TestCase
     {
         parent::setUp();
         Admin::query()->firstOrCreate(
-            ['adminId' => 'dash-admin'],
+            ['email' => 'dash@test.local'],
             [
                 'name' => 'Dash',
-                'email' => 'dash@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => 1,
             ]

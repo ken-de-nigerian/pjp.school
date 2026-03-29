@@ -18,6 +18,7 @@ trait HasTermSessionFilters
      */
     /**
      * @template TModel of Model
+     *
      * @param  Builder<TModel>  $query
      * @return Builder<TModel>
      */

@@ -20,19 +20,23 @@
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
                     @forelse($leftSchoolYearsWithCounts as $row)
+                        @php
+                            $yearKey = $row['year'] ?? '';
+                            $yearLabel = $yearKey === \App\Models\Student::LEFT_SCHOOL_UNDATED_YEAR ? __('No date recorded') : $yearKey;
+                        @endphp
                         <div class="h-full min-h-[200px]">
                             <div class="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-200" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
                                 <div class="p-5 sm:p-6 text-center flex-1 flex flex-col items-center justify-center gap-3">
                                     <div class="dashboard-quick-icon dashboard-quick-icon--blue w-14 h-14 rounded-2xl flex-shrink-0 flex items-center justify-center" style="border-radius: 16px;">
                                         <i class="fas fa-door-open text-xl" aria-hidden="true"></i>
                                     </div>
-                                    <h2 class="text-base sm:text-lg font-medium mb-0" style="color: var(--on-surface);">{{ e($row['year']) }}</h2>
+                                    <h2 class="text-base sm:text-lg font-medium mb-0" style="color: var(--on-surface);">{{ e($yearLabel) }}</h2>
                                     <p class="text-2xl sm:text-3xl font-normal tracking-tight mb-0" style="color: var(--on-surface);">{{ $row['user_count'] ?? 0 }}</p>
                                     <p class="text-sm font-normal mb-0" style="color: var(--on-surface-variant);">Student(s)</p>
                                 </div>
 
                                 <div class="p-4 sm:p-5 pt-0 flex justify-center" style="border-top: 1px solid var(--outline-variant);">
-                                    <a href="{{ route('admin.left_school.view', ['year' => $row['year']]) }}" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px; margin-top: 10px;">
+                                    <a href="{{ route('admin.left_school.view', ['year' => $yearKey]) }}" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px; margin-top: 10px;">
                                         <i class="fas fa-list text-sm" aria-hidden="true"></i>
                                         View Year
                                     </a>
@@ -40,13 +44,13 @@
                             </div>
                         </div>
                     @empty
-                        <div class="col-span-full flex-1 flex flex-col items-center justify-center min-h-[min(400px,50vh)] py-12 sm:py-16">
+                        <div class="col-span-full flex-1 flex flex-col items-center justify-center py-12 sm:py-16">
                             <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg">
                                 <div class="dashboard-stat-icon dashboard-stat-icon--blue w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="border-radius: 16px;">
                                     <i class="fas fa-door-open text-4xl" aria-hidden="true"></i>
                                 </div>
                                 <h2 class="text-xl font-normal tracking-tight mb-2" style="color: var(--on-surface);">No left-school years found</h2>
-                                <p class="text-sm font-normal mb-0" style="color: var(--on-surface-variant);">There are no students on record who left school. Left-school dates are set when editing a student&apos;s status.</p>
+                                <p class="text-sm font-normal mb-0" style="color: var(--on-surface-variant);">There are no students on record who left school. They appear here when their status is set to left school, or when their class is Left, left-school, or similar.</p>
                             </div>
                         </div>
                     @endforelse

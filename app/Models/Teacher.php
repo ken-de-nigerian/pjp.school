@@ -4,25 +4,25 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
- * @property mixed $userId
+ * @property mixed $firstname
+ * @property mixed $lastname
+ * @property mixed $id
  */
 class Teacher extends Authenticatable
 {
     public $timestamps = false;
 
-    protected $table = 'user';
-
-    protected $primaryKey = 'userId';
+    protected $table = 'users';
 
     public const UPDATED_AT = null;
 
     public const CREATED_AT = null;
 
     protected $fillable = [
-        'userId',
         'email',
         'firstname',
         'lastname',
@@ -55,18 +55,8 @@ class Teacher extends Authenticatable
         ];
     }
 
-    public function getAuthIdentifierName(): string
-    {
-        return 'userId';
-    }
-
-    public function getAuthPassword(): string
-    {
-        return $this->password;
-    }
-
     public function getNameAttribute(): string
     {
-        return trim($this->firstname.' '.$this->lastname);
+        return trim(Coercion::string($this->firstname).' '.Coercion::string($this->lastname));
     }
 }

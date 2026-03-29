@@ -18,18 +18,16 @@ class RouteAccessControlTest extends TestCase
     {
         parent::setUp();
         Admin::query()->firstOrCreate(
-            ['adminId' => 'route-admin'],
+            ['email' => 'routeadmin@test.local'],
             [
                 'name' => 'Route Admin',
-                'email' => 'routeadmin@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => 1,
             ]
         );
         Teacher::query()->firstOrCreate(
-            ['userId' => 'route-teacher'],
+            ['email' => 'route@teacher.local'],
             [
-                'email' => 'route@teacher.local',
                 'firstname' => 'Route',
                 'lastname' => 'Teacher',
                 'password' => Hash::make('password'),

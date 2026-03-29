@@ -26,7 +26,7 @@
             </x-admin.hero-page>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1);">
-                <div class="col-span-full flex-1 flex flex-col items-center justify-center min-h-[min(400px,50vh)] py-12 sm:py-16">
+                <div class="col-span-full flex-1 flex flex-col items-center justify-center py-12 sm:py-16">
                     <div class="rounded-3xl p-4 sm:p-6 lg:p-8 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                         <form action="{{ route('admin.students.promote') }}" method="POST" class="p-5 sm:p-6 space-y-5" id="promote-form">
                             @csrf
@@ -245,6 +245,9 @@
                     }).then(function (data) {
                         if (data.status === 'success' && typeof flashSuccess === 'function') {
                             flashSuccess(data.message || 'Students promoted.');
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, window.RELOAD_DELAY_MS);
                         } else if (data.status === 'error' && typeof flashError === 'function') {
                             flashError(data.message || 'Unable to promote students.');
                         }

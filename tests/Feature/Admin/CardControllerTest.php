@@ -28,10 +28,9 @@ class CardControllerTest extends TestCase
             'term' => '1',
         ]);
         $this->admin = Admin::query()->firstOrCreate(
-            ['adminId' => 'card-admin'],
+            ['email' => 'card@test.local'],
             [
                 'name' => 'Card Admin',
-                'email' => 'card@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => 1,
                 'joined' => now(),

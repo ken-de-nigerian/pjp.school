@@ -9,11 +9,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GeneratePinsRequest;
 use App\Models\Setting;
 use App\Services\PinService;
+use App\Support\Coercion;
+use App\Support\XlsxExport;
 use App\Traits\AuthorizesAdminPermission;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Random\RandomException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 final class CardController extends Controller
@@ -33,7 +37,7 @@ final class CardController extends Controller
     {
         $this->authorizePermission('manage_scratch_card');
         $settings = Setting::getCached();
-        $session = $settings['session'] ?? '';
+        $session = Coercion::string($settings['session'] ?? '');
 
         $unusedCount = $this->pinService->countUnused($session);
         $usedCount = $this->pinService->countUsed($session);
@@ -49,8 +53,8 @@ final class CardController extends Controller
     {
         $this->authorizePermission('manage_scratch_card');
         $settings = Setting::getCached();
-        $session = $settings['session'] ?? '';
-        $page = (int) $request->query('page', 1);
+        $session = Coercion::string($settings['session'] ?? '');
+        $page = Coercion::int($request->query('page', 1), 1);
 
         $unused = $this->pinService->getUnusedPaginated($session, self::UNUSED_PINS_PER_PAGE, $page);
 
@@ -64,7 +68,7 @@ final class CardController extends Controller
     {
         $this->authorizePermission('manage_scratch_card');
         $settings = Setting::getCached();
-        $session = $settings['session'] ?? '';
+        $session = Coercion::string($settings['session'] ?? '');
         $unused = $this->pinService->getUnused($session);
 
         return view('admin.card.unused-pins-pdf', [
@@ -73,12 +77,49 @@ final class CardController extends Controller
         ]);
     }
 
+    public function unusedPinsExcel(): StreamedResponse
+    {
+        $this->authorizePermission('manage_scratch_card');
+        $settings = Setting::getCached();
+        $session = Coercion::string($settings['session'] ?? '');
+        $unused = $this->pinService->getUnused($session);
+
+        $headers = ['#', 'Serial #', 'Pin', 'Session', 'Uploaded'];
+        $rows = [];
+        foreach ($unused as $index => $row) {
+            $uploaded = '—';
+            if (! empty($row->upload_date)) {
+                try {
+                    $uploaded = Carbon::parse($row->upload_date)->format('M j, Y H:i');
+                } catch (\Throwable) {
+                    $uploaded = Coercion::string($row->upload_date);
+                }
+            }
+            $serial = Coercion::string($row->serial_number ?? '');
+            if ($serial === '') {
+                $serial = '#'.(string) ($index + 1);
+            }
+
+            $rows[] = [
+                $index + 1,
+                $serial,
+                Coercion::string($row->pins ?? ''),
+                Coercion::string($row->session ?? ''),
+                $uploaded,
+            ];
+        }
+
+        $file = 'unused-pins-'.XlsxExport::sanitizeFileSegment($session !== '' ? $session : 'session', 'session').'.xlsx';
+
+        return XlsxExport::stream($file, $headers, $rows);
+    }
+
     public function usedPins(Request $request): View
     {
         $this->authorizePermission('manage_scratch_card');
         $settings = Setting::getCached();
-        $session = $settings['session'] ?? '';
-        $page = (int) $request->query('page', 1);
+        $session = Coercion::string($settings['session'] ?? '');
+        $page = Coercion::int($request->query('page', 1), 1);
 
         $used = $this->pinService->getUsed($session, self::USED_PINS_PER_PAGE, $page);
 
@@ -94,8 +135,8 @@ final class CardController extends Controller
     public function generatePins(GeneratePinsRequest $request): JsonResponse
     {
         $this->authorizePermission('manage_scratch_card');
-        $session = $request->validated('session');
-        $count = (int) $request->validated('count');
+        $session = $request->sessionValue();
+        $count = $request->countValue();
 
         $pins = $this->pinService->generatePinValues($count);
 

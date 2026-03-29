@@ -19,6 +19,7 @@ return new class extends Migration
             $table->id();
             $table->string('subject_name')->nullable();
             $table->string('grade')->nullable();
+            $table->index(['subject_name', 'grade'], 'subjects_subject_name_grade_index');
         });
     }
 

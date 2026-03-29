@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\AttendanceRecord;
+use App\Support\Coercion;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -38,7 +39,7 @@ final class AttendanceService
         return (int) DB::transaction(function () use ($attendance, $dateForDay, $currentDateTime, $noSegment) {
             $affected = 0;
             foreach ($attendance as $row) {
-                $classRollCall = strtolower($row['class_roll_call'] ?? '') === 'present' ? 1 : 2;
+                $classRollCall = strtolower(Coercion::string($row['class_roll_call'] ?? '')) === 'present' ? 1 : 2;
                 $updated = AttendanceRecord::query()
                     ->where('class', $row['class'])
                     ->where('term', $row['term'])
@@ -73,7 +74,7 @@ final class AttendanceService
     }
 
     /**
-     * @param array<int, array{reg_number: string, class_roll_call?: string}> $updates
+     * @param  array<int, array{reg_number: string, class_roll_call?: string}>  $updates
      */
     public function editRecord(
         string $class,
@@ -82,7 +83,6 @@ final class AttendanceService
         string $date,
         array $updates
     ): int {
-        /** @var array<int, array{reg_number: string, class_roll_call?: string}> $updates */
         if (empty($updates)) {
             return 0;
         }
@@ -127,10 +127,12 @@ final class AttendanceService
         string $session,
         string $date
     ): int {
-        return (int) AttendanceRecord::query()
+        $deleted = AttendanceRecord::query()
             ->forClassTermSessionSegment($class, $term, $session)
             ->where('date_added', 'like', $date.'%')
             ->delete();
+
+        return is_int($deleted) ? $deleted : 0;
     }
 
     public function deleteOneRecord(
@@ -140,10 +142,12 @@ final class AttendanceService
         string $session,
         string $date
     ): int {
-        return (int) AttendanceRecord::query()
+        $deleted = AttendanceRecord::query()
             ->forClassTermSessionSegment($class, $term, $session)
             ->where('reg_number', $regNumber)
             ->where('date_added', 'like', $date.'%')
             ->delete();
+
+        return is_int($deleted) ? $deleted : 0;
     }
 }

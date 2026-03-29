@@ -14,7 +14,7 @@ final class EntrancePolicy
         return $user->hasPermission('online_entrance');
     }
 
-    public function view(Admin $user, Entrance $_entrance): bool
+    public function view(Admin $user, Entrance $entrance): bool
     {
         return $user->hasPermission('online_entrance');
     }

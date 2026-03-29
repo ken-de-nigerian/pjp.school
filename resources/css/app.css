@@ -132,35 +132,205 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth theme transition: only on elements that change with theme */
+/* Smooth theme: html root + cross-fading paints (0 specificity :where so Tailwind transition-* still wins) */
 html {
-    transition: background-color 0.35s ease, color 0.35s ease;
+    transition:
+        background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body,
-main,
-[class*="card-refined"],
-nav,
-header,
-[class*="mobile-nav"],
-[class*="mobile-menu-panel"],
-[class*="sidebar"] {
-    transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+@media (prefers-reduced-motion: no-preference) {
+    :where(body.app-portal, body.guest-site) :where(*) {
+        transition-property: background-color, background-image, color, border-color, outline-color, fill, stroke,
+            box-shadow, text-shadow, text-decoration-color, column-rule-color;
+        transition-duration: 0.5s;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    :where(body.app-portal, body.guest-site) :where(*::before, *::after) {
+        transition-property: background-color, background-image, color, border-color, outline-color, fill, stroke,
+            box-shadow;
+        transition-duration: 0.5s;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
 }
 
-/* View Transitions API: https://www.w3.org/TR/css-view-transitions-1/ */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        transition-duration: 0.01ms;
+    }
+
+    :where(body.app-portal, body.guest-site) :where(*),
+    :where(body.app-portal, body.guest-site) :where(*::before, *::after) {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Safe-area only: no fixed bottom bar in portal — large padding caused empty scroll on iOS. */
+@media (max-width: 1024px) {
+    .app-portal main {
+        padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Ensure shared page wrapper spacing is mobile-friendly across admin/teacher pages */
+    .app-portal .page-content {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .app-portal .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+    }
+
+}
+
+@media (min-width: 640px) {
+    .app-portal .page-content {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .app-portal .page-content {
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+    }
+}
+
+/*
+ * Admin / teacher (main only): long words wrap on all viewports.
+ * Numeric / code blocks opt out below.
+ */
+.app-portal main
+    :where(p, h1, h2, h3, h4, h5, h6, span, small, li, dd, dt, figcaption, label, strong, em, blockquote, cite) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.app-portal main :where(.tabular-nums, .font-mono, code, pre) {
+    word-break: normal;
+    overflow-wrap: normal;
+}
+
+/*
+ * Flex/grid: divs may shrink (do not set max-width: 100% on all divs — breaks overflow-x-auto lanes).
+ */
+.app-portal main :where(div) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.app-portal main table {
+    table-layout: auto;
+    width: 100%;
+}
+
+.app-portal main td,
+.app-portal main th {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    min-width: 0;
+}
+
+/* Chips / badges in portal content */
+.app-portal main [class*='rounded-'][class*='px-'][class*='py-'] {
+    max-width: 100%;
+    min-width: 0;
+    white-space: normal;
+    box-sizing: border-box;
+}
+
+/* Pills & status rows that use inline-flex */
+.app-portal main :is(span, div).inline-flex {
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+}
+
+/*
+ * Buttons & button-style links: cap width at the column (max-width) but do not set min-width.
+ * A global min-width: 0 here beat Tailwind min-w-* (higher specificity) and squeezed action rows.
+ */
+.app-portal main :is(button:not(.header-icon-btn), [type='submit'], [type='button'], [type='reset']) {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.app-portal
+    main
+    a:is(
+        .btn-primary,
+        .btn-secondary,
+        .btn-primary-tonal,
+        .btn-save,
+        .btn-danger,
+        .btn-edit,
+        .admin-dashboard-hero__btn
+    ) {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.app-portal main a.inline-flex,
+.app-portal main button.inline-flex {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+/* Form fields: stay inside column (admin & teacher forms) */
+.app-portal main :where(input:not([type='checkbox']):not([type='radio']), textarea, select) {
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+/* View Transitions API: full-document cross-fade on theme toggle (Chromium; complements CSS transitions elsewhere) */
 /*noinspection CssInvalidPseudoSelector */
 @supports (view-transition-name: none) {
+    ::view-transition-group(root) {
+        animation-duration: 0.55s;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     ::view-transition-old(root) {
-        animation: theme-fade-out 0.2s ease-out forwards;
+        animation: theme-fade-out 0.52s cubic-bezier(0.4, 0, 0.2, 1) both;
     }
 
     ::view-transition-new(root) {
-        animation: theme-fade-in 0.25s ease-in 0.05s both;
+        animation: theme-fade-in 0.52s cubic-bezier(0.33, 1, 0.68, 1) 0.06s both;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    @supports (view-transition-name: none) {
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation-duration: 0.01ms !important;
+            animation-delay: 0s !important;
+        }
+
+        ::view-transition-group(root) {
+            animation-duration: 0.01ms !important;
+        }
     }
 }
 
 @keyframes theme-fade-out {
+    from {
+        opacity: 1;
+    }
+
     to {
         opacity: 0;
     }
@@ -170,6 +340,7 @@ header,
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -247,6 +418,16 @@ header,
     --on-success-container: #1b5e20;
     --error-container: #ffcdd2;
     --on-error-container: #b71c1c;
+    /* Solid actions (save / edit / destroy) — neutral ink; brand --primary stays for main CTAs */
+    --action-save: #45413d;
+    --on-action-save: #ffffff;
+    --action-save-hover: #5c5852;
+    --action-edit: #6b6560;
+    --on-action-edit: #ffffff;
+    --action-edit-hover: #807970;
+    --action-danger: #c62828;
+    --on-action-danger: #ffffff;
+    --action-danger-hover: #b71c1c;
     --font-primary: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-heading: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-sans: var(--font-primary);
@@ -303,6 +484,15 @@ header,
     --on-success-container: #a5d6a7;
     --error-container: #b71c1c;
     --on-error-container: #ffcdd2;
+    --action-save: #6d6860;
+    --on-action-save: #faf8f5;
+    --action-save-hover: #807970;
+    --action-edit: #5c5750;
+    --on-action-edit: #faf8f5;
+    --action-edit-hover: #6e6962;
+    --action-danger: #ef5350;
+    --on-action-danger: #ffffff;
+    --action-danger-hover: #e57373;
 }
 
 /* Dark mode: keep original icon colors but slightly brighter for contrast on dark bg */
@@ -327,8 +517,12 @@ header,
 [data-theme="dark"] .bg-sage-600\/10 {
     background: var(--primary-container);
 }
+.news-placeholder-bg {
+    background: var(--surface-container-high);
+    border: 1px solid var(--outline-variant);
+}
 [data-theme="dark"] .news-placeholder-bg {
-    background: var(--primary-container);
+    background: var(--surface-container-high);
     border: 1px solid var(--outline-variant);
 }
 
@@ -401,7 +595,7 @@ h6 {
             [class*="text-8xl"],
             [class*="text-9xl"]
         )
-    ):not(button):not([type="submit"]):not([type="button"]):not(.tabular-nums):not(.btn-primary):not(.btn-secondary):not(.btn-primary-tonal):not(.form-input):not(.nav-link-header):not(
+    ):not(button):not([type="submit"]):not([type="button"]):not(.tabular-nums):not(.btn-primary):not(.btn-secondary):not(.btn-primary-tonal):not(.btn-save):not(.btn-danger):not(.btn-edit):not(.form-input):not(.nav-link-header):not(
         label
     ):not(.admin-dashboard-hero__tile-label) {
     font-family: var(--font-serif), serif;
@@ -450,11 +644,23 @@ h6 {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    min-width: 40px;
     border-radius: 20px;
     border: none;
     background: var(--surface-container);
     color: var(--on-surface-variant);
     transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+@media (max-width: 640px) {
+    .header-icon-btn {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        border-radius: 22px;
+    }
 }
 
 .header-icon-btn:hover {
@@ -496,8 +702,8 @@ h6 {
     color: inherit;
 }
 .mega-col-icon--blue {
-    background: var(--primary-container);
-    color: var(--on-primary-container);
+    background: var(--surface-container-high);
+    color: var(--on-surface-variant);
 }
 .mega-col-icon--orange {
     background: rgba(245, 124, 0, 0.12);
@@ -540,8 +746,8 @@ h6 {
 }
 .dashboard-quick-icon--blue,
 .dashboard-stat-icon--blue {
-    background: var(--primary-container);
-    color: var(--on-primary-container);
+    background: var(--surface-container-high);
+    color: var(--on-surface-variant);
 }
 .dashboard-quick-icon--orange,
 .dashboard-stat-icon--orange {
@@ -582,6 +788,54 @@ h6 {
 [data-theme="dark"] .dashboard-stat-icon--purple {
     background: rgba(179, 157, 219, 0.2);
     color: #b39ddb;
+}
+
+/* Dashboard / feed row actions: calm neutrals; delete stays readable but not loud */
+.dashboard-inline-action--edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.5rem;
+    font-size: inherit;
+    font-weight: 500;
+    text-decoration: none;
+    background: var(--surface-container-high);
+    color: var(--on-surface);
+    border: 1px solid var(--outline-variant);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.dashboard-inline-action--edit:hover {
+    background: var(--surface-container);
+    border-color: var(--outline);
+}
+
+.dashboard-inline-action--delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.5rem;
+    font-size: inherit;
+    font-weight: 500;
+    background: color-mix(in srgb, var(--action-danger) 10%, var(--surface-container-lowest));
+    color: var(--action-danger);
+    border: 1px solid color-mix(in srgb, var(--action-danger) 22%, var(--outline-variant));
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.dashboard-inline-action--delete:hover {
+    background: color-mix(in srgb, var(--action-danger) 16%, var(--surface-container-lowest));
+    border-color: color-mix(in srgb, var(--action-danger) 30%, var(--outline-variant));
+}
+
+.dashboard-view-all-link {
+    color: var(--on-surface);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+.dashboard-view-all-link:hover {
+    color: var(--on-surface);
+    opacity: 0.8;
 }
 
 .auth-container {
@@ -1168,6 +1422,7 @@ h6 {
     flex-direction: column;
     gap: 1rem;
     margin-bottom: 1.25rem;
+    min-width: 0;
 }
 
 @media (min-width: 640px) {
@@ -1231,10 +1486,32 @@ h6 {
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
+/* Make hero actions & text resilient on small screens */
+@media (max-width: 640px) {
+    .admin-dashboard-hero__actions {
+        width: 100%;
+    }
+
+    .admin-dashboard-hero__btn {
+        max-width: 100%;
+        min-width: 0 !important; /* override min-w-[...] utility classes when present */
+        justify-content: center;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-page-hero__title,
+    .admin-dashboard-hero__name,
+    .admin-dashboard-hero__email {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+}
+
 /* Secondary only — do not override --primary background (was causing white-on-gold = unreadable) */
 .admin-dashboard-hero__btn:hover:not(.admin-dashboard-hero__btn--primary) {
-    background: color-mix(in srgb, var(--accent) 14%, var(--surface-container-low));
-    border-color: color-mix(in srgb, var(--accent) 28%, var(--outline-variant));
+    background: var(--surface-container-high);
+    border-color: var(--outline);
     color: var(--on-surface);
 }
 
@@ -1272,8 +1549,8 @@ h6 {
 }
 
 .admin-dashboard-hero__tile:hover {
-    background: color-mix(in srgb, var(--primary) 6%, var(--surface-container-lowest));
-    border-color: color-mix(in srgb, var(--primary) 22%, var(--outline-variant));
+    background: var(--surface-container-low);
+    border-color: var(--outline);
     transform: translateY(-1px);
 }
 
@@ -1284,8 +1561,8 @@ h6 {
     align-items: center;
     justify-content: center;
     border-radius: 0.75rem;
-    background: color-mix(in srgb, var(--accent) 14%, var(--surface-container-low));
-    color: color-mix(in srgb, var(--accent) 55%, var(--on-surface));
+    background: var(--surface-container-high);
+    color: var(--on-surface-variant);
     font-size: 1.125rem;
 }
 
@@ -1373,8 +1650,8 @@ h6 {
 }
 
 [data-theme="dark"] .admin-dashboard-hero__tile-icon {
-    background: color-mix(in srgb, var(--accent) 18%, rgba(255, 255, 255, 0.06));
-    color: var(--accent);
+    background: var(--surface-container-high);
+    color: var(--on-surface-variant);
 }
 
 [data-theme="dark"] .admin-dashboard-hero__tile-label {
@@ -1591,6 +1868,16 @@ h6 {
 .admin-mega-menu-banner__inner {
     position: relative;
     z-index: 1;
+}
+
+.admin-mega-menu-intro {
+    min-width: 0;
+}
+
+.admin-mega-menu-intro > span:not(.admin-mega-menu-intro__brand) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    line-height: 1.35;
 }
 
 .admin-mega-menu-intro__brand {
@@ -1964,8 +2251,8 @@ h6 {
 }
 
 .admin-dashboard-hero .admin-page-hero__segment:hover {
-    background: color-mix(in srgb, var(--accent) 12%, var(--surface-container-low));
-    border-color: color-mix(in srgb, var(--accent) 28%, var(--outline-variant));
+    background: var(--surface-container-high);
+    border-color: var(--outline);
     color: var(--on-surface);
 }
 
@@ -2400,6 +2687,179 @@ textarea.form-input {
 
 .form-select--error {
     border-color: #dc2626;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Table toolbar search: layout unchanged; visuals aligned with MD3 / form-input */
+/* -------------------------------------------------------------------------- */
+.table-toolbar-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+@media (min-width: 1024px) {
+    .table-toolbar-filter {
+        justify-content: flex-end;
+        width: auto;
+        max-width: min(100%, 42rem);
+    }
+}
+
+.table-toolbar-filter__label {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+    margin: 0;
+    font-weight: 500;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    letter-spacing: 0.01em;
+    color: var(--on-surface-variant);
+    min-width: 0;
+}
+
+@media (max-width: 639px) {
+    .table-toolbar-filter__label {
+        flex: 1 1 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .table-toolbar-filter__input {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+}
+
+.table-toolbar-filter__text {
+    white-space: nowrap;
+}
+
+/* Outlined text field — same tokens as .form-input / portal fields */
+.table-toolbar-filter__input {
+    display: inline-block;
+    box-sizing: border-box;
+    vertical-align: middle;
+    width: 12.5rem;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    margin: 0;
+    padding: 0.625rem 0.875rem;
+    font-size: 16px;
+    line-height: 1.4;
+    font-family: inherit;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+@media (min-width: 641px) {
+    .table-toolbar-filter__input {
+        font-size: 0.9375rem;
+    }
+}
+
+.table-toolbar-filter__input:hover {
+    border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+    background: color-mix(in srgb, var(--surface-container-low) 35%, var(--input-bg));
+}
+
+.table-toolbar-filter__input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.72;
+}
+
+.table-toolbar-filter__input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.12);
+    background: var(--surface-container-lowest);
+}
+
+[data-theme="dark"] .table-toolbar-filter__input:focus {
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+}
+
+/* Filled button — matches primary actions elsewhere in admin */
+.table-toolbar-filter__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0 1.125rem;
+    min-height: 44px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.2;
+    font-family: inherit;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    border-radius: var(--radius-lg);
+    background: var(--primary);
+    color: var(--on-primary);
+    transition:
+        opacity 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
+    box-shadow: var(--elevation-1);
+}
+
+.table-toolbar-filter__submit:hover {
+    opacity: 0.94;
+    box-shadow: var(--elevation-2);
+}
+
+.table-toolbar-filter__submit:active {
+    transform: scale(0.98);
+}
+
+.table-toolbar-filter__submit:focus-visible {
+    outline: none;
+    box-shadow:
+        var(--elevation-1),
+        0 0 0 2px var(--surface-container-lowest),
+        0 0 0 4px color-mix(in srgb, var(--primary) 45%, transparent);
+}
+
+/* Icon-style clear — tonal state layer, no harsh box */
+.table-toolbar-filter__clear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    font-size: 1.125rem;
+    line-height: 1;
+    text-decoration: none;
+    border: none;
+    border-radius: var(--radius-full);
+    background: var(--surface-container);
+    color: var(--on-surface-variant);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.table-toolbar-filter__clear:hover {
+    background: var(--surface-container-high);
+    color: var(--on-surface);
+}
+
+.table-toolbar-filter__clear:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
 }
 
 /* Material Design 3 select field */
@@ -2920,12 +3380,6 @@ textarea.form-input {
     box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--primary);
 }
 
-/* Settings page: prevent overscroll when reaching top/bottom (mobile) */
-main.overflow-y-auto {
-    overscroll-behavior-y: none;
-    -webkit-overflow-scrolling: touch;
-}
-
 /* Settings page: mobile responsive modal */
 @media (max-width: 640px) {
     #changePassword .relative.min-h-full {
@@ -2969,6 +3423,32 @@ main.overflow-y-auto {
     box-shadow: var(--elevation-1);
 }
 
+@media (max-width: 640px) {
+    .btn-primary,
+    .btn-secondary,
+    .btn-primary-tonal,
+    .btn-save,
+    .btn-danger,
+    .btn-edit {
+        min-width: 0 !important; /* override min-w-[...] utilities on small screens */
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        white-space: normal;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-save,
+    .btn-danger,
+    .btn-edit {
+        min-height: 44px; /* mobile tap target */
+    }
+
+    .form-select {
+        min-width: 0 !important; /* override min-w-[10rem] etc. */
+    }
+}
+
 .btn-primary:hover {
     background: var(--primary-hover);
     box-shadow: var(--elevation-2);
@@ -2978,10 +3458,144 @@ main.overflow-y-auto {
     box-shadow: none;
 }
 
+/* Affirmative save / update / submit (neutral — distinct from brand green primary) */
+.btn-save {
+    background: var(--action-save);
+    color: var(--on-action-save);
+    border: none;
+    font-family: var(--font-serif), serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    width: 100%;
+    padding: 10px 24px;
+    min-height: 40px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: var(--elevation-1);
+}
+
+.btn-save:hover {
+    background: var(--action-save-hover);
+    box-shadow: var(--elevation-2);
+    filter: brightness(1.02);
+}
+
+.btn-save:active {
+    box-shadow: none;
+}
+
+/* Edit / modify actions */
+.btn-edit {
+    background: var(--action-edit);
+    color: var(--on-action-edit);
+    border: none;
+    font-family: var(--font-serif), serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: var(--elevation-1);
+}
+
+.btn-edit:hover {
+    background: var(--action-edit-hover);
+    box-shadow: var(--elevation-2);
+    filter: brightness(1.02);
+}
+
+.btn-edit:active {
+    box-shadow: none;
+}
+
+/* Destructive confirm (delete, remove) */
+.btn-danger {
+    background: var(--action-danger);
+    color: var(--on-action-danger);
+    border: none;
+    font-family: var(--font-serif), serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: var(--elevation-1);
+}
+
+.btn-danger:hover {
+    background: var(--action-danger-hover);
+    box-shadow: var(--elevation-2);
+    filter: brightness(1.03);
+}
+
+.btn-danger:active {
+    box-shadow: none;
+}
+
+/* Compact / table-row destructive actions (skip heavy uppercase) */
+.btn-danger.btn-danger--inline,
+button.btn-danger.btn-danger--inline {
+    font-size: 0.875rem;
+    letter-spacing: normal;
+    text-transform: none;
+    min-height: auto;
+    padding: 0.5rem 0.75rem;
+    box-shadow: none;
+    line-height: 1.25;
+}
+
+.btn-danger.btn-danger--inline:hover {
+    filter: brightness(0.97);
+    box-shadow: var(--elevation-1);
+}
+
+/* Tonal destructive (badges / small chips — not modal primary action) */
+.btn-danger-soft {
+    background: var(--error-container);
+    color: var(--on-error-container);
+    border: 1px solid var(--outline-variant);
+    font-size: 0.875rem;
+    letter-spacing: normal;
+    text-transform: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, filter 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn-danger-soft:hover {
+    filter: brightness(0.97);
+}
+
 /* Button loading spinner: use button text color (works in light and dark mode) */
 .btn-primary .button-loading-spinner,
 .btn-primary .button-loading-spinner span {
     color: var(--on-primary);
+}
+
+.btn-save .button-loading-spinner,
+.btn-save .button-loading-spinner span {
+    color: var(--on-action-save);
+}
+
+.btn-danger .button-loading-spinner,
+.btn-danger .button-loading-spinner span {
+    color: var(--on-action-danger);
+}
+
+.btn-edit .button-loading-spinner,
+.btn-edit .button-loading-spinner span {
+    color: var(--on-action-edit);
 }
 
 .btn-secondary .button-loading-spinner,
@@ -3580,15 +4194,6 @@ button, a, input, textarea, select {
     background: color-mix(in srgb, var(--on-surface) 6%, transparent);
 }
 
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
-}
-
 .progress-ring {
     transform: rotate(-90deg);
 }
@@ -3652,23 +4257,25 @@ button, a, input, textarea, select {
     margin: 0;
 }
 
+/* Cancel / dismiss / back — neutral surface (not green-tinted) */
 .btn-secondary {
-    background: var(--primary-container);
-    color: var(--on-primary-container);
-    border: none;
+    background: var(--surface-container-lowest);
+    color: var(--on-surface);
+    border: 1px solid var(--outline-variant);
     font-family: var(--font-serif), serif;
     font-weight: 500;
     font-size: 14px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     border-radius: var(--radius-full);
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: none;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    box-shadow: var(--elevation-1);
 }
 
 .btn-secondary:hover {
     background: var(--surface-container-high);
     color: var(--on-surface);
+    border-color: var(--outline);
 }
 
 /* Primary tonal (container) – for dashboard Scratch Card, Bulk SMS, etc. */
@@ -4021,10 +4628,10 @@ span[style*="box-shadow: var(--elevation-1)"] {
         padding-right: 1rem;
     }
 
-    /* Improved mobile section spacing */
+    /* Section rhythm without stacking huge vertical padding (was amplifying empty scroll on iOS). */
     .page-content > div {
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
     }
 }
 
@@ -4046,13 +4653,63 @@ span[style*="box-shadow: var(--elevation-1)"] {
     }
 }
 
-/* Document scroll: only the admin/teacher shell uses a fixed viewport with scroll on <main>.
- * A global html { overflow: hidden } at lg+ broke guest pages and any layout that scrolls the window. */
-@media (min-width: 1024px) {
-    html:has(body.app-portal > .flex.h-screen.overflow-hidden) {
-        overflow: hidden;
-        height: 100%;
+/*
+ * Admin / teacher portal: scroll the viewport (body), not <main>.
+ * Nested overflow-y on <main> + flex min-height tricks often breaks touch scrolling on mobile.
+ */
+body.app-portal .portal-app-shell > main {
+    flex: 1 1 auto;
+    min-height: min-content;
+    width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+    overflow-y: visible;
+    overscroll-behavior-y: auto;
+}
+@supports not (overflow: clip) {
+    body.app-portal .portal-app-shell > main {
+        overflow-x: hidden;
     }
+}
+
+/* Prevent rare horizontal “wiggle” / clipped content from wide flex children */
+body.app-portal {
+    overflow-x: clip;
+}
+@supports not (overflow: clip) {
+    body.app-portal {
+        overflow-x: hidden;
+    }
+}
+
+.portal-app-shell .page-content {
+    min-width: 0;
+}
+
+/*
+ * Mobile / tablet: stop primary panels under .page-content from flex-growing to fill the viewport.
+ * flex-1 + min-h-dvh shell left a tall empty band below short empty states (common iOS complaint).
+ * Long tables/lists use document scroll; add class .portal-panel-stretch-mobile on a panel to opt into fill.
+ */
+@media (max-width: 1023px) {
+    body.app-portal main .page-content.flex.flex-col > .flex-1.min-h-0:not(.portal-panel-stretch-mobile) {
+        flex: 0 1 auto;
+    }
+}
+
+/* Mega menu (admin + teacher): tall panels scroll inside the dropdown on tablets / phones */
+@media (max-width: 1023px) {
+    #mega-menu-dropdown.mega-menu-open .mega-menu-panel {
+        max-height: min(85dvh, calc(100dvh - 4.5rem));
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Profile menu: never wider than the viewport */
+#profile-container .profile-dropdown-panel {
+    max-width: min(14rem, calc(100vw - 1rem));
 }
 
 /* Mobile menu overlay - bottom sheet on mobile, centered modal on desktop */
@@ -4080,7 +4737,7 @@ span[style*="box-shadow: var(--elevation-1)"] {
     bottom: 0;
     left: 0;
     right: 0;
-    max-height: 85vh;
+    max-height: 85dvh;
     background: var(--surface-container-lowest);
     border-radius: 24px 24px 0 0;
     border: 1px solid var(--outline-variant);
@@ -4119,7 +4776,7 @@ span[style*="box-shadow: var(--elevation-1)"] {
         right: auto;
         width: 100%;
         max-width: 768px;
-        max-height: 88vh;
+        max-height: 88dvh;
         border-radius: 16px;
         border: 1px solid var(--outline-variant);
         box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18), 0 8px 16px rgba(0, 0, 0, 0.08);
@@ -4135,13 +4792,13 @@ span[style*="box-shadow: var(--elevation-1)"] {
         box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), 0 8px 16px rgba(0, 0, 0, 0.3);
     }
 
-    /* Hide scrollbar on desktop but keep scroll behavior */
+    /* Keep native scrollbars visible (better UX) */
     .mobile-menu-content {
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+        scrollbar-width: auto;
+        -ms-overflow-style: auto;
     }
     .mobile-menu-content::-webkit-scrollbar {
-        display: none;
+        display: block;
     }
 
     /* Grid layout on desktop to reduce modal height */

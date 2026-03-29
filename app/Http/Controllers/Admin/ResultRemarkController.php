@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\ResultRemarkServiceContract;
-use App\DTO\StoreResultRemarkDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreResultRemarkRequest;
 use App\Traits\AuthorizesAdminPermission;
@@ -24,15 +23,7 @@ final class ResultRemarkController extends Controller
     {
         $this->authorizePermission('view_published_results');
 
-        $validated = $request->validated();
-
-        $dto = new StoreResultRemarkDTO(
-            regNumber: trim((string) $validated['reg_number']),
-            class: trim((string) $validated['class']),
-            term: trim((string) $validated['term']),
-            session: trim((string) $validated['session']),
-            remark: isset($validated['remark']) ? trim((string) $validated['remark']) : null,
-        );
+        $dto = $request->dto();
 
         try {
             $this->resultRemarkService->storeOrUpdate($dto);

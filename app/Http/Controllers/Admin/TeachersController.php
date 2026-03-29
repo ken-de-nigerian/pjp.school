@@ -17,6 +17,7 @@ use App\Models\SchoolClass;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Services\StudentService;
+use App\Support\Coercion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -43,13 +44,9 @@ final class TeachersController extends Controller
         return view('admin.teachers.index', ['teachers' => $teachers]);
     }
 
-    public function edit(string $teacher): View
+    public function edit(Teacher $teacher): View
     {
-        $teacherModel = Teacher::query()->where('userId', $teacher)->first();
-        if (! $teacherModel) {
-            abort(404, 'Teacher not found.');
-        }
-        Gate::authorize('update', $teacherModel);
+        Gate::authorize('update', $teacher);
 
         $getClasses = $this->studentService->getClassesArray();
         $getSubjects = Subject::query()
@@ -66,71 +63,56 @@ final class TeachersController extends Controller
         ];
 
         return view('admin.teachers.edit', [
-            'teacher' => $teacherModel,
+            'teacher' => $teacher,
             'getClasses' => $getClasses,
             'getSubjects' => $getSubjects,
             'states' => $states,
         ]);
     }
 
-    public function update(UpdateTeacherRequest $request, string $teacher): JsonResponse|RedirectResponse
+    public function update(UpdateTeacherRequest $request, Teacher $teacher): JsonResponse|RedirectResponse
     {
-        $teacherModel = Teacher::query()->where('userId', $teacher)->first();
-        if (! $teacherModel) {
-            abort(404, 'Teacher not found.');
-        }
-        Gate::authorize('update', $teacherModel);
+        Gate::authorize('update', $teacher);
 
-        $data = $request->only([
-            'firstname',
-            'lastname',
-            'othername',
-            'email',
-            'phone',
-            'date_of_birth',
-            'employment_date',
-            'gender',
-        ]);
-        $teacherModel->update($data);
+        $teacher->update($request->profileUpdateAttributes());
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Teacher Account Edited',
-                'message' => $admin->name.' has edited the account information of teacher: '.$teacherModel->firstname.' '.$teacherModel->lastname.'.',
+                'message' => $adminName.' has edited the account information of teacher: '.Coercion::string($teacher->firstname).' '.Coercion::string($teacher->lastname).'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
 
+        $full = trim(Coercion::string($teacher->firstname).' '.Coercion::string($teacher->lastname));
+
         if ($request->expectsJson()) {
             return response()->json([
                 'status' => 'success',
-                'message' => $teacherModel->firstname.' '.$teacherModel->lastname.' profile has been updated successfully.',
+                'message' => $full.' profile has been updated successfully.',
             ]);
         }
 
         return redirect()->route('admin.teachers.index')
-            ->with('success', $teacherModel->firstname.' '.$teacherModel->lastname.' profile has been updated successfully.');
+            ->with('success', $full.' profile has been updated successfully.');
     }
 
-    public function resetPassword(ResetTeacherPasswordRequest $request): JsonResponse
+    public function resetPassword(ResetTeacherPasswordRequest $request, Teacher $teacher): JsonResponse
     {
-        $teacher = Teacher::query()->where('userId', $request->input('userId'))->first();
-        if (! $teacher) {
-            return response()->json(['status' => 'error', 'message' => 'Teacher not found.'], 404);
-        }
-
         Gate::authorize('update', $teacher);
         $teacher->update([
-            'password' => Hash::make($request->input('password')),
+            'password' => Hash::make($request->plainPassword()),
             'password_change_date' => now()->format('Y-m-d H:i:s'),
         ]);
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Teacher Password Reset',
-                'message' => $admin->name.' has reset password of teacher: '.$teacher->firstname.' '.$teacher->lastname.'.',
+                'message' => $adminName.' has reset password of teacher: '.Coercion::string($teacher->firstname).' '.Coercion::string($teacher->lastname).'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -141,14 +123,10 @@ final class TeachersController extends Controller
         ]);
     }
 
-    public function uploadProfile(UploadTeacherProfileRequest $request): JsonResponse
+    public function uploadProfile(UploadTeacherProfileRequest $request, Teacher $teacher): JsonResponse
     {
-        $teacher = Teacher::query()->where('userId', $request->input('userId'))->first();
-        if (! $teacher) {
-            return response()->json(['status' => 'error', 'message' => 'Teacher not found.'], 404);
-        }
-
         Gate::authorize('update', $teacher);
+
         $file = $request->file('photoimg');
         $ext = $file->getClientOriginalExtension();
         $filename = Str::random(12).'.'.strtolower($ext);
@@ -163,21 +141,17 @@ final class TeachersController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function updateContact(UpdateTeacherContactRequest $request): JsonResponse
+    public function updateContact(UpdateTeacherContactRequest $request, Teacher $teacher): JsonResponse
     {
-        $teacher = Teacher::query()->where('userId', $request->input('userId'))->first();
-        if (! $teacher) {
-            return response()->json(['status' => 'error', 'message' => 'Teacher not found.'], 404);
-        }
-
         Gate::authorize('update', $teacher);
-        $teacher->update($request->only(['lga', 'state', 'city', 'country', 'address']));
+        $teacher->update($request->contactUpdateAttributes());
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Teacher Contact Updated',
-                'message' => $admin->name.' has updated the contact details of teacher: '.$teacher->firstname.' '.$teacher->lastname.'.',
+                'message' => $adminName.' has updated the contact details of teacher: '.Coercion::string($teacher->firstname).' '.Coercion::string($teacher->lastname).'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -188,26 +162,21 @@ final class TeachersController extends Controller
         ]);
     }
 
-    public function updateEmployment(UpdateTeacherEmploymentRequest $request): JsonResponse
+    public function updateEmployment(UpdateTeacherEmploymentRequest $request, Teacher $teacher): JsonResponse
     {
-        $teacher = Teacher::query()->where('userId', $request->input('userId'))->first();
-        if (! $teacher) {
-            return response()->json(['status' => 'error', 'message' => 'Teacher not found.'], 404);
-        }
-
         Gate::authorize('update', $teacher);
-        $assignedClass = is_array($request->input('assigned_class')) ? implode(',', $request->input('assigned_class')) : (string) $request->input('assigned_class');
-        $subjectToTeach = is_array($request->input('subject_to_teach')) ? implode(',', $request->input('subject_to_teach')) : (string) $request->input('subject_to_teach');
+
         $teacher->update([
-            'assigned_class' => $assignedClass,
-            'subject_to_teach' => $subjectToTeach,
+            'assigned_class' => $request->assignedClassCsv(),
+            'subject_to_teach' => $request->subjectToTeachCsv(),
         ]);
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Teacher Employment Status Updated',
-                'message' => $admin->name.' has updated the employment status of teacher: '.$teacher->firstname.' '.$teacher->lastname.'.',
+                'message' => $adminName.' has updated the employment status of teacher: '.Coercion::string($teacher->firstname).' '.Coercion::string($teacher->lastname).'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -218,27 +187,19 @@ final class TeachersController extends Controller
         ]);
     }
 
-    public function formTeacherStatus(Request $request): JsonResponse
+    public function formTeacherStatus(Request $request, Teacher $teacher): JsonResponse
     {
-        $userId = $request->input('userId');
-        $formTeacher = (int) $request->input('form_teacher', 0);
-        if ($userId === null || $userId === '') {
-            return response()->json(['status' => 'error', 'message' => 'User ID is required.'], 422);
-        }
-
-        $teacher = Teacher::query()->where('userId', $userId)->first();
-        if (! $teacher) {
-            return response()->json(['status' => 'error', 'message' => 'Teacher not found.'], 404);
-        }
-
         Gate::authorize('update', $teacher);
+
+        $formTeacher = Coercion::int($request->input('form_teacher', 0));
         $teacher->update(['form-teacher' => $formTeacher === 1 ? 1 : 0]);
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Teacher Form Status Updated',
-                'message' => $admin->name.' has updated the form status of teacher: '.$teacher->firstname.' '.$teacher->lastname.'.',
+                'message' => $adminName.' has updated the form status of teacher: '.Coercion::string($teacher->firstname).' '.Coercion::string($teacher->lastname).'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -249,27 +210,19 @@ final class TeachersController extends Controller
         ]);
     }
 
-    public function modifyResults(Request $request): JsonResponse
+    public function modifyResults(Request $request, Teacher $teacher): JsonResponse
     {
-        $userId = $request->input('userId');
-        $modifyResults = (int) $request->input('modify_results', 0);
-        if ($userId === null || $userId === '') {
-            return response()->json(['status' => 'error', 'message' => 'User ID is required.'], 422);
-        }
-
-        $teacher = Teacher::query()->where('userId', $userId)->first();
-        if (! $teacher) {
-            return response()->json(['status' => 'error', 'message' => 'Teacher not found.'], 404);
-        }
-
         Gate::authorize('update', $teacher);
+
+        $modifyResults = Coercion::int($request->input('modify_results', 0));
         $teacher->update(['modify_results' => $modifyResults === 1 ? 1 : 0]);
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Teacher Result Modification Status Updated',
-                'message' => $admin->name.' has updated the result modification status of teacher: '.$teacher->firstname.' '.$teacher->lastname.'.',
+                'message' => $adminName.' has updated the result modification status of teacher: '.Coercion::string($teacher->firstname).' '.Coercion::string($teacher->lastname).'.',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -280,26 +233,20 @@ final class TeachersController extends Controller
         ]);
     }
 
-    public function destroy(Request $request, string $teacher): JsonResponse
+    public function destroy(Request $request, Teacher $teacher): JsonResponse
     {
-        $teacherModel = Teacher::query()->where('userId', $teacher)->first();
-        if (! $teacherModel) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Teacher not found.',
-            ], 404);
-        }
+        Gate::authorize('delete', $teacher);
 
-        Gate::authorize('delete', $teacherModel);
-        $fullName = trim(($teacherModel->firstname ?? '').' '.($teacherModel->lastname ?? ''));
+        $fullName = trim(Coercion::string($teacher->firstname).' '.Coercion::string($teacher->lastname));
 
-        $teacherModel->delete();
+        $teacher->delete();
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Teacher Account Deleted',
-                'message' => $admin->name.' has deleted a teacher account: '.$fullName.' ('.$teacherModel->userId.')',
+                'message' => $adminName.' has deleted a teacher account: '.$fullName.' ('.Coercion::int($teacher->getKey()).')',
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
@@ -347,59 +294,37 @@ final class TeachersController extends Controller
             return redirect()->back()->withInput()->withErrors(['email' => $msg]);
         }
 
-        $userId = $this->uniqueId();
-        $assignedClass = is_array($request->input('assigned_class')) ? implode(',', $request->input('assigned_class')) : '';
-        $subjectToTeach = is_array($request->input('subject_to_teach')) ? implode(',', $request->input('subject_to_teach')) : '';
-
-        $data = [
-            'userId' => $userId,
-            'imagelocation' => 'default.png',
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-            'firstname' => $request->input('firstname'),
-            'lastname' => $request->input('lastname'),
-            'othername' => $request->input('othername'),
-            'date_of_birth' => $request->input('date_of_birth'),
-            'gender' => $request->input('gender'),
-            'phone' => $request->input('formattedPhone'),
-            'lga' => $request->input('lga'),
-            'state' => $request->input('state'),
-            'city' => $request->input('city'),
-            'country' => $request->input('country'),
-            'address' => $request->input('address'),
-            'employment_date' => $request->input('employment_date'),
-            'assigned_class' => $assignedClass,
-            'subject_to_teach' => $subjectToTeach,
-            'form-teacher' => (int) $request->input('form_teacher', 2),
-            'registration_date' => now()->format('Y-m-d H:i:s'),
-        ];
-
+        $imagelocation = 'default.png';
         if ($request->hasFile('photoimg')) {
             $file = $request->file('photoimg');
             $filename = Str::random(12).'.'.strtolower($file->getClientOriginalExtension());
             $file->storeAs('teachers', $filename, 'public');
-            $data['imagelocation'] = $filename;
+            $imagelocation = $filename;
         }
+
+        $data = $request->attributesForTeacherCreate(Hash::make($request->passwordPlain()), $imagelocation);
 
         Teacher::query()->create($data);
 
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Teacher Registered',
-                'message' => $admin->name.' has registered a new teacher: '.$request->input('firstname').' '.$request->input('lastname'),
+                'message' => $adminName.' has registered a new teacher: '.$request->registrationFullName(),
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }
+        $regName = $request->registrationFullName();
         if ($request->expectsJson()) {
             return response()->json([
                 'status' => 'success',
-                'message' => $request->input('firstname').' '.$request->input('lastname').' account has been registered successfully.',
+                'message' => $regName.' account has been registered successfully.',
                 'redirect' => 'admin/teachers',
             ]);
         }
 
-        return redirect()->route('admin.teachers.index')->with('success', $request->input('firstname').' '.$request->input('lastname').' account has been registered successfully.');
+        return redirect()->route('admin.teachers.index')->with('success', $regName.' account has been registered successfully.');
     }
 
     public function assignClassForm(): View
@@ -411,7 +336,7 @@ final class TeachersController extends Controller
         $teacherAssignedClasses = [];
         foreach ($getTeachers as $t) {
             $assigned = $t->assigned_class ?? '';
-            $teacherAssignedClasses[$t->userId] = $assigned !== ''
+            $teacherAssignedClasses[Coercion::int($t->getKey())] = $assigned !== ''
                 ? array_map('trim', explode(',', $assigned))
                 : [];
         }
@@ -425,18 +350,21 @@ final class TeachersController extends Controller
 
     public function assignClassStore(AssignTeacherToClassRequest $request): JsonResponse|RedirectResponse
     {
-        $teacher = Teacher::query()->where('userId', $request->input('teachersList'))->first();
-        if (! $teacher) {
-            return response()->json(['status' => 'error', 'message' => 'Teacher not found.'], 404);
+        $teacher = Teacher::query()->find($request->teacherId());
+        if ($teacher === null) {
+            abort(404);
         }
+
         Gate::authorize('update', $teacher);
-        $assignedClass = is_array($request->input('assigned_class')) ? implode(',', $request->input('assigned_class')) : (string) $request->input('assigned_class');
+
+        $assignedClass = $request->assignedClassCsv();
         $teacher->update(['assigned_class' => $assignedClass]);
         $admin = $request->user('admin');
         if ($admin) {
+            $adminName = is_string($admin->name) && $admin->name !== '' ? $admin->name : 'Admin';
             Notification::query()->create([
                 'title' => 'Teacher Registration',
-                'message' => $admin->name.' has assigned teacher: '.$teacher->firstname.' to class '.$assignedClass,
+                'message' => $adminName.' has assigned teacher: '.Coercion::string($teacher->firstname).' to class '.$assignedClass,
                 'date_added' => now()->format('Y-m-d H:i:s'),
             ]);
         }

@@ -14,7 +14,7 @@ final class NewsPolicy
         return $user->hasPermission('news');
     }
 
-    public function view(Admin $user, News $_news): bool
+    public function view(Admin $user, News $news): bool
     {
         return $user->hasPermission('news');
     }
@@ -24,12 +24,12 @@ final class NewsPolicy
         return $user->hasPermission('news');
     }
 
-    public function update(Admin $user, News $_news): bool
+    public function update(Admin $user, News $news): bool
     {
         return $user->hasPermission('news');
     }
 
-    public function delete(Admin $user, News $_news): bool
+    public function delete(Admin $user, News $news): bool
     {
         return $user->hasPermission('news');
     }

@@ -21,12 +21,12 @@ final class TeacherPolicy
         return $user instanceof Admin;
     }
 
-    public function update(mixed $user, Teacher $_teacher): bool
+    public function update(mixed $user, Teacher $teacher): bool
     {
         return $user instanceof Admin;
     }
 
-    public function delete(mixed $user, Teacher $_teacher): bool
+    public function delete(mixed $user, Teacher $teacher): bool
     {
         return $user instanceof Admin;
     }
@@ -38,7 +38,7 @@ final class TeacherPolicy
     */
 
     /**
-     * Form teacher status unlocks attendance and behavioural tools (not result editing).
+     * Form teacher status unlocks attendance and behavioral tools (not result editing).
      */
     private function teacherIsFormTeacher(Teacher $teacher): bool
     {
@@ -56,7 +56,7 @@ final class TeacherPolicy
     }
 
     /**
-     * Dashboard / general “can use class-operational features”.
+     * Dashboard / general “can use class-operational features.”
      */
     public function operateActiveTeacherFeatures(Teacher $user, Teacher $teacher): Response
     {

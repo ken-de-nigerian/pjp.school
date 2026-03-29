@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class UpdateStudentSponsorsRequest extends FormRequest
@@ -23,5 +24,13 @@ final class UpdateStudentSponsorsRequest extends FormRequest
             'sponsor_address' => 'nullable|string',
             'relationship' => 'nullable|string|max:100',
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function sponsorsPayload(): array
+    {
+        return Coercion::stringKeyedMap($this->validated());
     }
 }

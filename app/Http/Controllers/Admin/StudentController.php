@@ -21,12 +21,15 @@ use App\Http\Requests\UpdateStudentSponsorsRequest;
 use App\Http\Requests\UploadStudentProfilePhotoRequest;
 use App\Models\Student;
 use App\Services\StudentService;
+use App\Support\Coercion;
+use App\Support\XlsxExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class StudentController extends Controller
 {
@@ -39,7 +42,7 @@ final class StudentController extends Controller
     {
         Gate::authorize('viewAny', Student::class);
 
-        $class = $request->query('class', '');
+        $class = Coercion::string($request->query('class', ''));
         if ($class === '') {
             return redirect()->route('admin.classes')
                 ->with('error', 'Please select a class.');
@@ -53,12 +56,40 @@ final class StudentController extends Controller
         ]);
     }
 
+    public function classListExcel(Request $request): RedirectResponse|StreamedResponse
+    {
+        Gate::authorize('viewAny', Student::class);
+
+        $class = Coercion::string($request->query('class', ''));
+        if ($class === '') {
+            return redirect()->route('admin.classes')
+                ->with('error', 'Please select a class.');
+        }
+
+        $students = $this->studentService->getStudentsByClassAll($class);
+        $headers = ['#', 'Name', 'Reg. number', 'Class'];
+        $rows = [];
+        foreach ($students as $index => $s) {
+            $fullName = trim(Coercion::string($s->firstname).' '.Coercion::string($s->lastname).' '.Coercion::string($s->othername ?? ''));
+            $rows[] = [
+                $index + 1,
+                $fullName !== '' ? $fullName : '—',
+                Coercion::string($s->reg_number ?? '') !== '' ? Coercion::string($s->reg_number ?? '') : '—',
+                Coercion::string($s->class ?? ''),
+            ];
+        }
+
+        $file = 'class-list-'.XlsxExport::sanitizeFileSegment($class, 'class').'.xlsx';
+
+        return XlsxExport::stream($file, $headers, $rows);
+    }
+
     public function create(Request $request): View
     {
         Gate::authorize('create', Student::class);
 
         $classes = $this->studentService->getClassesArray();
-        $selectedClass = $request->query('class', '');
+        $selectedClass = Coercion::string($request->query('class', ''));
 
         $subjects = $selectedClass ? $this->studentService->getSubjectsToRegister($selectedClass) : collect();
         $juniorSubjects = $this->studentService->getSubjectsToRegister('JSS 1A');
@@ -89,8 +120,7 @@ final class StudentController extends Controller
     {
         Gate::authorize('create', Student::class);
 
-        $validated = $request->validated();
-        unset($validated['image']);
+        $validated = $request->attributesForCreate();
         $imagelocation = null;
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -104,10 +134,10 @@ final class StudentController extends Controller
 
         $student = $this->studentService->create($validated, $imagelocation);
 
-        $adminName = $request->user('admin')->name ?? 'Admin';
+        $adminName = $this->adminDisplayName($request);
         $this->notificationService->add(
             'New Student Registered',
-            $adminName.' has registered a new student: '.$validated['firstname'].' '.$validated['lastname'].', into class: '.$validated['class']
+            $adminName.' has registered a new student: '.$request->notificationStudentLabel().', into class: '.$request->notificationClassLabel()
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -135,7 +165,7 @@ final class StudentController extends Controller
         Gate::authorize('update', $student);
 
         $classes = $this->studentService->getClassesArray();
-        $subjects = $student->class ? $this->studentService->getSubjectsToRegister($student->class) : collect();
+        $subjects = $student->class ? $this->studentService->getSubjectsToRegister(Coercion::string($student->class)) : collect();
         $juniorSubjects = $this->studentService->getSubjectsToRegister('JSS 1A');
         $seniorSubjects = $this->studentService->getSubjectsToRegister('SSS 1A');
         $states = [
@@ -162,12 +192,12 @@ final class StudentController extends Controller
     {
         Gate::authorize('update', $student);
 
-        $this->studentService->updateAccount($student->id, $request->validated());
+        $this->studentService->updateAccount($this->studentId($student), $request->accountPayload());
 
-        $adminName = $request->user('admin')->name ?? 'Admin';
+        $adminName = $this->adminDisplayName($request);
         $this->notificationService->add(
             'Student Profile Updated',
-            $adminName.' has updated the profile information of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
+            $adminName.' has updated the profile information of student: '.Coercion::string($student->firstname).' '.Coercion::string($student->lastname).', in class: '.Coercion::string($student->class)
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -184,16 +214,16 @@ final class StudentController extends Controller
         Gate::authorize('update', $student);
 
         $this->studentService->updateAcademicProfile(
-            $student->id,
-            $request->input('class'),
-            $request->input('subjects', ''),
-            $request->input('reg_number')
+            $this->studentId($student),
+            $request->className(),
+            $request->subjectsValue(),
+            $request->regNumber()
         );
 
-        $adminName = $request->user('admin')->name ?? 'Admin';
+        $adminName = $this->adminDisplayName($request);
         $this->notificationService->add(
             'Student Academic Status Updated',
-            $adminName.' has updated the academic status of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
+            $adminName.' has updated the academic status of student: '.Coercion::string($student->firstname).' '.Coercion::string($student->lastname).', in class: '.Coercion::string($student->class)
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -209,12 +239,12 @@ final class StudentController extends Controller
     {
         Gate::authorize('update', $student);
 
-        $this->studentService->updateContactAddress($student->id, $request->validated());
+        $this->studentService->updateContactAddress($this->studentId($student), $request->contactPayload());
 
-        $adminName = $request->user('admin')->name ?? 'Admin';
+        $adminName = $this->adminDisplayName($request);
         $this->notificationService->add(
             'Contact Information Updated',
-            $adminName.' has updated the contact information of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
+            $adminName.' has updated the contact information of student: '.Coercion::string($student->firstname).' '.Coercion::string($student->lastname).', in class: '.Coercion::string($student->class)
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -230,12 +260,12 @@ final class StudentController extends Controller
     {
         Gate::authorize('update', $student);
 
-        $this->studentService->updateParentsInformation($student->id, $request->validated());
+        $this->studentService->updateParentsInformation($this->studentId($student), $request->parentsPayload());
 
-        $adminName = $request->user('admin')->name ?? 'Admin';
+        $adminName = $this->adminDisplayName($request);
         $this->notificationService->add(
             'Parents Information Updated',
-            $adminName.' has updated the parent\'s information of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
+            $adminName.' has updated the parent\'s information of student: '.Coercion::string($student->firstname).' '.Coercion::string($student->lastname).', in class: '.Coercion::string($student->class)
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -251,12 +281,12 @@ final class StudentController extends Controller
     {
         Gate::authorize('update', $student);
 
-        $this->studentService->updateSponsorsInformation($student->id, $request->validated());
+        $this->studentService->updateSponsorsInformation($this->studentId($student), $request->sponsorsPayload());
 
-        $adminName = $request->user('admin')->name ?? 'Admin';
+        $adminName = $this->adminDisplayName($request);
         $this->notificationService->add(
             'Sponsors Information Updated',
-            $adminName.' has updated the sponsor\'s information of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
+            $adminName.' has updated the sponsor\'s information of student: '.Coercion::string($student->firstname).' '.Coercion::string($student->lastname).', in class: '.Coercion::string($student->class)
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -272,17 +302,16 @@ final class StudentController extends Controller
     {
         Gate::authorize('update', $student);
 
-        $v = $request->validated();
         $this->studentService->updateOtherInformation(
-            $student->id,
-            $v['house'] ?? '',
-            $v['category'] ?? ''
+            $this->studentId($student),
+            $request->houseValue(),
+            $request->categoryValue()
         );
 
-        $adminName = $request->user('admin')->name ?? 'Admin';
+        $adminName = $this->adminDisplayName($request);
         $this->notificationService->add(
             'Students Information Updated',
-            $adminName.' has updated the information of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
+            $adminName.' has updated the information of student: '.Coercion::string($student->firstname).' '.Coercion::string($student->lastname).', in class: '.Coercion::string($student->class)
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -298,7 +327,7 @@ final class StudentController extends Controller
     {
         Gate::authorize('delete', $student);
 
-        $this->studentService->delete($student->id);
+        $this->studentService->delete($this->studentId($student));
 
         if (request()->wantsJson() || request()->ajax()) {
             return response()->json([
@@ -315,7 +344,7 @@ final class StudentController extends Controller
 
     public function uploadStudentsProfile(UploadStudentProfilePhotoRequest $request): JsonResponse
     {
-        $studentId = (int) $request->input('studentId');
+        $studentId = $request->studentId();
         $student = $this->studentService->getById($studentId);
         if (! $student) {
             return response()->json(['status' => 'error', 'message' => 'Student not found.'], 404);
@@ -334,10 +363,10 @@ final class StudentController extends Controller
 
         $updated = $this->studentService->updateProfilePicture($studentId, $path);
         if ($updated) {
-            $adminName = $request->user('admin')->name ?? 'Admin';
+            $adminName = $this->adminDisplayName($request);
             $this->notificationService->add(
                 'Profile Picture Updated',
-                $adminName.' has updated the profile picture of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
+                $adminName.' has updated the profile picture of student: '.Coercion::string($student->firstname).' '.Coercion::string($student->lastname).', in class: '.Coercion::string($student->class)
             );
         }
 
@@ -352,11 +381,11 @@ final class StudentController extends Controller
     {
         Gate::authorize('update', $student);
 
-        if ($request->input('status') == 1) {
+        if ($request->statusValue() === 1) {
             $class_arm = 'left-school';
         } else {
             $pattern = '/(JSS|SSS) [1-3]/';
-            if (preg_match($pattern, $student->class, $matches)) {
+            if (preg_match($pattern, Coercion::string($student->class), $matches)) {
                 $class_arm = $matches[0];
             } else {
                 $class_arm = 'left-school';
@@ -364,15 +393,15 @@ final class StudentController extends Controller
         }
 
         $this->studentService->toggleStatus(
-            $student->id,
-            $request->input('status'),
+            $this->studentId($student),
+            $request->statusValue(),
             $class_arm
         );
 
-        $adminName = $request->user('admin')->name ?? 'Admin';
+        $adminName = $this->adminDisplayName($request);
         $this->notificationService->add(
             'Students Status Updated',
-            $adminName.' has updated the status of student: '.$student->firstname.' '.$student->lastname
+            $adminName.' has updated the status of student: '.Coercion::string($student->firstname).' '.Coercion::string($student->lastname)
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -386,12 +415,12 @@ final class StudentController extends Controller
     {
         Gate::authorize('update', $student);
 
-        $this->studentService->toggleFeeStatus($student->id, (int) $request->input('fee_status'));
+        $this->studentService->toggleFeeStatus($this->studentId($student), $request->feeStatusValue());
 
-        $adminName = $request->user('admin')->name ?? 'Admin';
+        $adminName = $this->adminDisplayName($request);
         $this->notificationService->add(
             'Fee Status Updated',
-            $adminName.' has updated the fee status of student: '.$student->firstname.' '.$student->lastname.', in class: '.$student->class
+            $adminName.' has updated the fee status of student: '.Coercion::string($student->firstname).' '.Coercion::string($student->lastname).', in class: '.Coercion::string($student->class)
         );
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -405,13 +434,13 @@ final class StudentController extends Controller
     {
         Gate::authorize('viewAny', Student::class);
 
-        $feeStatus = (int) $request->input('fee_status');
+        $feeStatus = $request->feeStatusValue();
 
         if ($request->boolean('entire_class') && $request->filled('class')) {
-            $students = $this->studentService->getStudentsByClassAll($request->input('class'));
-            $ids = $students->pluck('id')->map(static fn ($v) => (int) $v)->values()->all();
+            $students = $this->studentService->getStudentsByClassAll($request->className());
+            $ids = $students->pluck('id')->map(static fn ($v) => Coercion::int($v))->values()->all();
         } else {
-            $ids = array_values(array_map('intval', array_filter((array) $request->input('ids', []), 'is_numeric')));
+            $ids = $request->studentIds();
         }
 
         $updated = $this->studentService->updateFeeStatusBulk($ids, $feeStatus);
@@ -424,7 +453,7 @@ final class StudentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => $message,
-                'redirect' => route('admin.classes', ['class' => $request->input('class', '')]),
+                'redirect' => route('admin.classes', ['class' => $request->className()]),
             ]);
         }
 
@@ -450,7 +479,7 @@ final class StudentController extends Controller
     public function studentsByClassJson(Request $request): JsonResponse
     {
         Gate::authorize('viewAny', Student::class);
-        $class = $request->query('class', '');
+        $class = Coercion::string($request->query('class', ''));
         if ($class === '') {
             return response()->json(['students' => []]);
         }
@@ -467,14 +496,12 @@ final class StudentController extends Controller
 
     public function promote(PromoteStudentsRequest $request): RedirectResponse|JsonResponse
     {
-        $validated = $request->validated();
-        $fromClass = (string) $validated['from_class'];
-        $toClass = (string) $validated['to_class'];
-        $studentIds = array_values(array_map('intval', (array) $validated['student_ids']));
+        $fromClass = $request->fromClassName();
+        $toClass = $request->toClassName();
 
-        $this->studentService->promote($fromClass, $toClass, $studentIds);
+        $this->studentService->promote($fromClass, $toClass, $request->studentIds());
 
-        $adminName = $request->user('admin')->name ?? 'Admin';
+        $adminName = $this->adminDisplayName($request);
         $this->notificationService->add(
             'Class Promotion',
             $adminName.' has promoted students from: '.$fromClass.' to '.$toClass
@@ -492,15 +519,15 @@ final class StudentController extends Controller
 
     public function demote(DemoteStudentsRequest $request): RedirectResponse|JsonResponse
     {
-        $fromClass = (string) $request->input('from_class');
-        $toClass = (string) $request->input('to_class');
+        $fromClass = $request->fromClassName();
+        $toClass = $request->toClassName();
 
         $this->studentService->demote(
             $toClass,
-            $request->input('student_ids')
+            $request->studentIds()
         );
 
-        $adminName = $request->user('admin')->name ?? 'Admin';
+        $adminName = $this->adminDisplayName($request);
         $this->notificationService->add(
             'Class Demotion',
             $adminName.' has demoted students from: '.$fromClass.' to '.$toClass
@@ -528,16 +555,16 @@ final class StudentController extends Controller
     {
         Gate::authorize('viewAny', Student::class);
 
-        $validated = $request->validate([
+        $v = Coercion::stringKeyedMap($request->validate([
             'house' => 'required|string|max:100',
             'search' => 'nullable|string|max:255',
             'class' => 'nullable|string|max:100',
-        ]);
+        ]));
 
-        $house = $validated['house'];
-        $search = $validated['search'] ?? '';
-        $class = $validated['class'] ?? '';
-        $students = $this->studentService->getStudentsInHouse($house, $search ?: null, $class ?: null);
+        $house = Coercion::string($v['house'] ?? '');
+        $search = Coercion::string($v['search'] ?? '');
+        $class = Coercion::string($v['class'] ?? '');
+        $students = $this->studentService->getStudentsInHouse($house, $search !== '' ? $search : null, $class !== '' ? $class : null);
         $getClasses = $this->studentService->getClassesArray();
 
         return view('admin.students.view-house', [
@@ -561,24 +588,24 @@ final class StudentController extends Controller
     {
         Gate::authorize('viewAny', Student::class);
 
-        $validated = $request->validate([
+        $v = Coercion::stringKeyedMap($request->validate([
             'year' => 'required|string|max:20',
             'search' => 'nullable|string|max:255',
             'page' => 'nullable|integer|min:1',
-        ]);
+        ]));
 
-        $year = $validated['year'];
-        $search = $validated['search'] ?? '';
+        $year = Coercion::string($v['year'] ?? '');
+        $search = Coercion::string($v['search'] ?? '');
         $perPage = 25;
-        $currentPage = (int) $request->query('page', 1);
+        $currentPage = Coercion::int($request->query('page', 1), 1);
 
         $collection = $this->studentService->getStudentsByGraduationYear($year);
 
         if ($search !== '') {
             $q = strtolower($search);
             $collection = $collection->filter(function ($s) use ($q) {
-                $name = strtolower(trim(($s->firstname ?? '').' '.($s->lastname ?? '').' '.($s->othername ?? '')));
-                $reg = strtolower((string) ($s->reg_number ?? ''));
+                $name = strtolower(trim(Coercion::string($s->firstname ?? '').' '.Coercion::string($s->lastname ?? '').' '.Coercion::string($s->othername ?? '')));
+                $reg = strtolower(Coercion::string($s->reg_number ?? ''));
 
                 return str_contains($name, $q) || str_contains($reg, $q);
             })->values();
@@ -608,24 +635,24 @@ final class StudentController extends Controller
     {
         Gate::authorize('viewAny', Student::class);
 
-        $validated = $request->validate([
+        $v = Coercion::stringKeyedMap($request->validate([
             'year' => 'required|string|max:20',
             'search' => 'nullable|string|max:255',
             'page' => 'nullable|integer|min:1',
-        ]);
+        ]));
 
-        $year = $validated['year'];
-        $search = $validated['search'] ?? '';
+        $year = Coercion::string($v['year'] ?? '');
+        $search = Coercion::string($v['search'] ?? '');
         $perPage = 25;
-        $currentPage = (int) $request->query('page', 1);
+        $currentPage = Coercion::int($request->query('page', 1), 1);
 
         $collection = $this->studentService->getStudentsWhoLeftSchool($year);
 
         if ($search !== '') {
             $q = strtolower($search);
             $collection = $collection->filter(function ($s) use ($q) {
-                $name = strtolower(trim(($s->firstname ?? '').' '.($s->lastname ?? '').' '.($s->othername ?? '')));
-                $reg = strtolower((string) ($s->reg_number ?? ''));
+                $name = strtolower(trim(Coercion::string($s->firstname ?? '').' '.Coercion::string($s->lastname ?? '').' '.Coercion::string($s->othername ?? '')));
+                $reg = strtolower(Coercion::string($s->reg_number ?? ''));
 
                 return str_contains($name, $q) || str_contains($reg, $q);
             })->values();
@@ -641,5 +668,17 @@ final class StudentController extends Controller
             'year' => $year,
             'search' => $search,
         ]);
+    }
+
+    private function adminDisplayName(Request $request): string
+    {
+        $name = $request->user('admin')?->name;
+
+        return is_string($name) && $name !== '' ? $name : 'Admin';
+    }
+
+    private function studentId(Student $student): int
+    {
+        return Coercion::int($student->getKey());
     }
 }

@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Models\Subject;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Support\Coercion;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 
 final class UpdateSubjectRequest extends FormRequest
 {
@@ -27,14 +28,16 @@ final class UpdateSubjectRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator): void {
-            $id = (int) $this->route('id');
+            $id = Coercion::int($this->route('id'));
+            $name = Coercion::string($this->input('subject_name'));
+            $grade = Coercion::string($this->input('grade'));
             $exists = Subject::query()
-                ->where('subject_name', $this->input('subject_name'))
-                ->where('grade', $this->input('grade'))
+                ->where('subject_name', $name)
+                ->where('grade', $grade)
                 ->where('id', '!=', $id)
                 ->exists();
             if ($exists) {
-                $validator->errors()->add('subject_name', $this->input('subject_name').' has already been added for this class.');
+                $validator->errors()->add('subject_name', $name.' has already been added for this class.');
             }
         });
     }

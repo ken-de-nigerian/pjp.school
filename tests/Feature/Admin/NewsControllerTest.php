@@ -25,10 +25,9 @@ class NewsControllerTest extends TestCase
         parent::setUp();
         Role::query()->firstOrCreate(['id' => 1], ['name' => 'Admin', 'permissions' => null]);
         $this->admin = Admin::query()->firstOrCreate(
-            ['adminId' => 'news-test-admin'],
+            ['email' => 'newsadmin@test.local'],
             [
                 'name' => 'News Test Admin',
-                'email' => 'newsadmin@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => 1,
                 'joined' => now(),

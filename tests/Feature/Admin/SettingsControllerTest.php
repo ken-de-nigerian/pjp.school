@@ -18,10 +18,9 @@ class SettingsControllerTest extends TestCase
     {
         parent::setUp();
         Admin::query()->firstOrCreate(
-            ['adminId' => 'settings-admin'],
+            ['email' => 'settings@test.local'],
             [
                 'name' => 'Settings Admin',
-                'email' => 'settings@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => 1,
             ]

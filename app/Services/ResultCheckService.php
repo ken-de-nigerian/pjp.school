@@ -12,6 +12,8 @@ use App\Models\Position;
 use App\Models\Setting;
 use App\Models\Student;
 use App\Support\AnnualResultAggregation;
+use App\Support\Coercion;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Throwable;
 
@@ -50,7 +52,7 @@ final class ResultCheckService
     {
         $student = $this->getStudent($regNumber);
 
-        return $student && (int) $student->fee_status === 1;
+        return $student !== null && Coercion::int($student->fee_status) === 1;
     }
 
     public function hasPublished(string $class, string $term, string $session): bool
@@ -62,7 +64,7 @@ final class ResultCheckService
     {
         $s = $this->getSettings();
 
-        return (int) ($s['scratch_card'] ?? 0) === 1;
+        return Coercion::int($s['scratch_card'] ?? 0) === 1;
     }
 
     /**
@@ -81,7 +83,7 @@ final class ResultCheckService
             if ($used->reg_number !== $regNumber) {
                 return 'This pin has already been used by another student.';
             }
-            $count = (int) $used->used_count;
+            $count = Coercion::int($used->used_count);
             if ($count >= self::MAX_PIN_USES) {
                 return 'You have exhausted your card usage validity.';
             }
@@ -119,8 +121,8 @@ final class ResultCheckService
             ->get();
     }
 
-    /** @return Collection<int, mixed> */
-    public function getSegment(string $regNumber, string $class, string $term, string $session): Collection
+    /** @return EloquentCollection<int, AnnualResult> */
+    public function getSegment(string $regNumber, string $class, string $term, string $session): EloquentCollection
     {
         $base = AnnualResult::query()
             ->where('reg_number', $regNumber)
@@ -138,7 +140,7 @@ final class ResultCheckService
     {
         return Student::query()
             ->where('class_arm', $class)
-            ->whereNotIn('class', ['Left', 'Graduated'])
+            ->notLeftOrGraduated()
             ->count();
     }
 }

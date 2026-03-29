@@ -45,7 +45,7 @@ trait TeacherScope
     }
 
     /**
-     * Authorize against TeacherPolicy using the teacher guard user (default app guard is not "teacher").
+     * Authorize against TeacherPolicy using the teacher guard.
      *
      * @throws AuthorizationException
      */

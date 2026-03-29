@@ -16,9 +16,10 @@ return new class extends Migration
         }
 
         Schema::create('admin', function (Blueprint $table) {
-            $table->string('adminId', 64)->primary();
+            $table->id();
             $table->string('name')->nullable();
             $table->string('email')->nullable();
+            $table->index('email', 'admin_email_index');
             $table->string('phone')->nullable();
             $table->string('password');
             $table->string('profileImage')->nullable();

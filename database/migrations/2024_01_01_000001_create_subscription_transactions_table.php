@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Support\Coercion;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +14,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create(config('payments.subscriptions.logging.table', 'subscription_transactions'), function (Blueprint $table) {
+        if (Schema::hasTable('subscription_transactions')) {
+            return;
+        }
+
+        $tableName = Coercion::string(config('payments.subscriptions.logging.table'), 'subscription_transactions');
+        Schema::create($tableName, function (Blueprint $table) {
             $table->id();
             $table->string('subscription_code')->unique()->index();
             $table->string('provider')->index();
@@ -33,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists(config('payments.subscriptions.logging.table', 'subscription_transactions'));
+        Schema::dropIfExists(Coercion::string(config('payments.subscriptions.logging.table'), 'subscription_transactions'));
     }
 };

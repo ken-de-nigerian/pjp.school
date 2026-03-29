@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('content')->nullable();
             $table->string('image')->nullable();
             $table->dateTime('date_added')->nullable();
+            $table->index('date_added', 'news_date_added_index');
         });
     }
 

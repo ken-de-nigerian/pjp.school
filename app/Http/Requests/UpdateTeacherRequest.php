@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class UpdateTeacherRequest extends FormRequest
@@ -25,6 +26,25 @@ final class UpdateTeacherRequest extends FormRequest
             'date_of_birth' => ['required', 'date'],
             'employment_date' => ['required', 'date'],
             'gender' => ['required', 'string', 'max:20'],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function profileUpdateAttributes(): array
+    {
+        $v = $this->validated();
+
+        return [
+            'firstname' => Coercion::string($v['firstname'] ?? ''),
+            'lastname' => Coercion::string($v['lastname'] ?? ''),
+            'othername' => Coercion::string($v['othername'] ?? ''),
+            'email' => Coercion::string($v['email'] ?? ''),
+            'phone' => Coercion::string($v['phone'] ?? ''),
+            'date_of_birth' => Coercion::string($v['date_of_birth'] ?? ''),
+            'employment_date' => Coercion::string($v['employment_date'] ?? ''),
+            'gender' => Coercion::string($v['gender'] ?? ''),
         ];
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class UploadResultsTermRequest extends FormRequest
@@ -29,5 +30,15 @@ final class UploadResultsTermRequest extends FormRequest
             'results.*.assignment' => 'required|numeric|min:0|max:25',
             'results.*.exam' => 'required|numeric|min:0|max:60',
         ];
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function resultRows(): array
+    {
+        $validated = Coercion::stringKeyedMap($this->validated());
+
+        return Coercion::listOfStringKeyedMaps($validated['results'] ?? []);
     }
 }

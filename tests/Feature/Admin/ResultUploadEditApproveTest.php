@@ -8,6 +8,7 @@ use App\Models\Admin;
 use App\Models\AnnualResult;
 use App\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
@@ -22,10 +23,9 @@ class ResultUploadEditApproveTest extends TestCase
         parent::setUp();
         Role::query()->firstOrCreate(['id' => 1], ['name' => 'Admin', 'permissions' => null]);
         $this->admin = Admin::query()->firstOrCreate(
-            ['adminId' => 'result-upload-admin'],
+            ['email' => 'resultupload@test.local'],
             [
                 'name' => 'Result Admin',
-                'email' => 'resultupload@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => 1,
                 'joined' => now(),
@@ -139,7 +139,9 @@ class ResultUploadEditApproveTest extends TestCase
 
         $response->assertOk();
         $response->assertViewHas('results');
-        $this->assertCount(1, $response->viewData('results'));
+        $results = $response->viewData('results');
+        $this->assertInstanceOf(Collection::class, $results);
+        $this->assertCount(1, $results);
     }
 
     public function test_edit_recalculates_total_term_weight(): void

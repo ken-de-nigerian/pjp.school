@@ -36,4 +36,12 @@ return [
 
     'school_email' => 'support@pjp.school',
     'school_phone' => '+234 (806) 983-0352',
+
+    /*
+    |--------------------------------------------------------------------------
+    | AJAX success: delay before full-page reload or redirect (ms)
+    |--------------------------------------------------------------------------
+    | Lets iziToast stay visible after fetch()/XHR success. Env: SCHOOL_AJAX_RELOAD_DELAY_MS
+    */
+    'ajax_reload_delay_ms' => max(0, (int) env('SCHOOL_AJAX_RELOAD_DELAY_MS', 2800)),
 ];

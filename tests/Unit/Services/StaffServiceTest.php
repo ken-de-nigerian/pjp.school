@@ -7,6 +7,7 @@ namespace Tests\Unit\Services;
 use App\Models\Admin;
 use App\Models\Role;
 use App\Services\StaffService;
+use App\Support\Coercion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -27,7 +28,6 @@ class StaffServiceTest extends TestCase
     {
         Role::query()->create(['id' => 1, 'name' => 'Admin', 'permissions' => null]);
         Admin::query()->create([
-            'adminId' => 'first',
             'name' => 'First',
             'email' => 'first@test.local',
             'password' => Hash::make('p'),
@@ -35,7 +35,6 @@ class StaffServiceTest extends TestCase
             'joined' => now()->subDay(),
         ]);
         Admin::query()->create([
-            'adminId' => 'second',
             'name' => 'Second',
             'email' => 'second@test.local',
             'password' => Hash::make('p'),
@@ -52,8 +51,7 @@ class StaffServiceTest extends TestCase
     public function test_has_admin_email(): void
     {
         Role::query()->create(['id' => 1, 'name' => 'R', 'permissions' => null]);
-        Admin::query()->create([
-            'adminId' => 'a1',
+        $existing = Admin::query()->create([
             'name' => 'A',
             'email' => 'exists@test.local',
             'password' => Hash::make('p'),
@@ -62,7 +60,7 @@ class StaffServiceTest extends TestCase
 
         $this->assertTrue($this->service->hasAdminEmail('exists@test.local'));
         $this->assertFalse($this->service->hasAdminEmail('other@test.local'));
-        $this->assertFalse($this->service->hasAdminEmail('exists@test.local', 'a1'));
+        $this->assertFalse($this->service->hasAdminEmail('exists@test.local', $existing->id));
     }
 
     public function test_create_sets_profile_and_joined(): void
@@ -86,15 +84,14 @@ class StaffServiceTest extends TestCase
     {
         Role::query()->create(['id' => 1, 'name' => 'R1', 'permissions' => null]);
         Role::query()->create(['id' => 2, 'name' => 'R2', 'permissions' => null]);
-        Admin::query()->create([
-            'adminId' => 'u1',
+        $row = Admin::query()->create([
             'name' => 'Old',
             'email' => 'old@test.local',
             'password' => Hash::make('p'),
             'user_type' => 1,
         ]);
 
-        $count = $this->service->update('u1', [
+        $count = $this->service->update($row->id, [
             'name' => 'New Name',
             'email' => 'old@test.local',
             'phone' => null,
@@ -102,24 +99,23 @@ class StaffServiceTest extends TestCase
         ]);
 
         $this->assertSame(1, $count);
-        $admin = Admin::query()->where('adminId', 'u1')->firstOrFail();
+        $admin = Admin::query()->whereKey($row->id)->firstOrFail();
         $this->assertSame('New Name', $admin->name);
-        $this->assertSame(2, (int) $admin->user_type);
+        $this->assertSame(2, Coercion::int($admin->user_type));
     }
 
     public function test_delete_removes_staff(): void
     {
         Role::query()->create(['id' => 1, 'name' => 'R', 'permissions' => null]);
-        Admin::query()->create([
-            'adminId' => 'd1',
+        $row = Admin::query()->create([
             'name' => 'Del',
             'email' => 'del@test.local',
             'password' => Hash::make('p'),
             'user_type' => 1,
         ]);
 
-        $this->service->delete('d1');
+        $this->service->delete($row->id);
 
-        $this->assertDatabaseMissing('admin', ['adminId' => 'd1']);
+        $this->assertDatabaseMissing('admin', ['email' => 'del@test.local']);
     }
 }

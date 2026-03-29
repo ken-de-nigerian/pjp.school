@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -7,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 
 /**
  * @property mixed $name
+ * @property mixed $address
  */
 class Setting extends Model
 {
@@ -58,10 +61,21 @@ class Setting extends Model
     /** @return array<string, mixed> */
     public static function getCached(): array
     {
-        return Cache::remember(self::CACHE_KEY, self::CACHE_TTL_SECONDS, function () {
+        return Cache::remember(self::CACHE_KEY, self::CACHE_TTL_SECONDS, function (): array {
             $row = self::orderBy('id', 'desc')->first();
+            if ($row === null) {
+                return [];
+            }
 
-            return $row ? $row->toArray() : [];
+            $raw = $row->toArray();
+            $out = [];
+            foreach ($raw as $key => $value) {
+                if (is_string($key)) {
+                    $out[$key] = $value;
+                }
+            }
+
+            return $out;
         });
     }
 

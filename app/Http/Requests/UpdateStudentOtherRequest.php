@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class UpdateStudentOtherRequest extends FormRequest
@@ -20,5 +21,15 @@ final class UpdateStudentOtherRequest extends FormRequest
             'house' => 'nullable|string|max:100',
             'category' => 'nullable|string|max:100',
         ];
+    }
+
+    public function houseValue(): string
+    {
+        return Coercion::string(Coercion::stringKeyedMap($this->validated())['house'] ?? '');
+    }
+
+    public function categoryValue(): string
+    {
+        return Coercion::string(Coercion::stringKeyedMap($this->validated())['category'] ?? '');
     }
 }

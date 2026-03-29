@@ -15,13 +15,13 @@ final class DefaultTermSession
     {
         $settings = Setting::getCached();
 
-        return trim((string) ($settings['term'] ?? 'First Term'));
+        return trim(Coercion::string($settings['term'] ?? 'First Term'));
     }
 
     public static function getDefaultSession(): string
     {
         $settings = Setting::getCached();
 
-        return trim((string) ($settings['session'] ?? ''));
+        return trim(Coercion::string($settings['session'] ?? ''));
     }
 }

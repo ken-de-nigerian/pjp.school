@@ -378,7 +378,13 @@
                             const data = res.data;
                             if (res.ok && data.status === 'success') {
                                 flashSuccess(data.message || 'Student registered successfully.');
-                                if (data.redirect) setTimeout(function() { window.location.href = data.redirect; }, 2800);
+                                setTimeout(function() {
+                                    if (data.redirect) {
+                                        window.location.href = data.redirect;
+                                    } else {
+                                        window.location.reload();
+                                    }
+                                }, window.RELOAD_DELAY_MS);
                             } else if (data.errors) {
                                 showLaravelErrors(data.errors);
                             } else {

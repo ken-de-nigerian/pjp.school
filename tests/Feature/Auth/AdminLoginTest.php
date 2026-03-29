@@ -22,10 +22,9 @@ class AdminLoginTest extends TestCase
     private function seedAdmin(): void
     {
         Admin::query()->firstOrCreate(
-            ['adminId' => 'test-admin-1'],
+            ['email' => 'admin@test.local'],
             [
                 'name' => 'Test Admin',
-                'email' => 'admin@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => 1,
             ]

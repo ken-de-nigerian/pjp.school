@@ -11,6 +11,7 @@ use App\Http\Requests\StoreChecklistRequest;
 use App\Http\Requests\UpdateChecklistRequest;
 use App\Models\Checklist;
 use App\Models\Setting;
+use App\Support\Coercion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -29,12 +30,12 @@ final class ChecklistController extends Controller
         Gate::authorize('viewAny', Checklist::class);
 
         $settings = Setting::getCached();
-        $term = $request->query('term', $settings['term'] ?? '');
-        $session = $request->query('session', $settings['session'] ?? '');
+        $term = Coercion::string($request->query('term', Coercion::string($settings['term'] ?? '')));
+        $session = Coercion::string($request->query('session', Coercion::string($settings['session'] ?? '')));
 
         $checklists = $this->checklistService->listForAdminFilters(
-            is_string($term) && $term !== '' ? $term : null,
-            is_string($session) && $session !== '' ? $session : null,
+            $term !== '' ? $term : null,
+            $session !== '' ? $session : null,
         );
 
         return view('admin.checklists.index', [
@@ -52,7 +53,7 @@ final class ChecklistController extends Controller
     {
         Gate::authorize('create', Checklist::class);
 
-        $data = $request->validated();
+        $data = Coercion::stringKeyedMap($request->validated());
         if (! array_key_exists('is_active', $data)) {
             $data['is_active'] = true;
         }
@@ -62,13 +63,13 @@ final class ChecklistController extends Controller
 
         $checklist = DB::transaction(function () use ($data, $position): Checklist {
             if ($position === null) {
-                $max = (int) Checklist::query()
-                    ->where('term', $data['term'])
-                    ->where('session', $data['session'])
-                    ->max('position');
+                $max = Coercion::int(Checklist::query()
+                    ->where('term', Coercion::string($data['term'] ?? ''))
+                    ->where('session', Coercion::string($data['session'] ?? ''))
+                    ->max('position'));
                 $data['position'] = $max + 1;
             } else {
-                $data['position'] = (int) $position;
+                $data['position'] = Coercion::int($position);
             }
 
             return Checklist::query()->create($data);
@@ -85,9 +86,9 @@ final class ChecklistController extends Controller
     {
         Gate::authorize('update', $checklist);
 
-        $data = $request->validated();
+        $data = Coercion::stringKeyedMap($request->validated());
         if (array_key_exists('position', $data)) {
-            $data['position'] = (int) $data['position'];
+            $data['position'] = Coercion::int($data['position']);
         }
 
         $checklist->update($data);

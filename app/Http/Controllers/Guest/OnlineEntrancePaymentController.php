@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Guest;
 use App\Http\Controllers\Controller;
 use App\Models\Entrance;
 use App\Models\Setting;
+use App\Support\Coercion;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -42,13 +43,13 @@ final class OnlineEntrancePaymentController extends Controller
      */
     public function store(Entrance $entrance, Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $v = Coercion::stringKeyedMap($request->validate([
             'email' => 'required|email',
             'amount' => 'required|numeric',
-        ]);
+        ]));
 
-        return Payment::amount($validated['amount'])
-            ->email($validated['email'])
+        return Payment::amount(Coercion::float($v['amount'] ?? 0))
+            ->email(Coercion::string($v['email'] ?? ''))
             ->metadata(['order_id' => $entrance->uniqueID])
             ->callback(route('verify_payment'))
             ->redirect();
@@ -60,7 +61,7 @@ final class OnlineEntrancePaymentController extends Controller
      */
     public function verify(Request $request): RedirectResponse
     {
-        $verification = Payment::verify($request->input('reference'));
+        $verification = Payment::verify(Coercion::string($request->input('reference')));
 
         if ($verification->isSuccessful()) {
             Entrance::query()->where('uniqueID', $verification->metadata['order_id'])

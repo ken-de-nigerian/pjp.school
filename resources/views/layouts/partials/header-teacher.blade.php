@@ -217,9 +217,9 @@
 </style>
 
 <nav class="sticky top-0 z-50" style="background: var(--surface-container-lowest);">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div class="flex justify-between items-center h-16 lg:h-20">
-            <div class="flex min-w-0 items-center gap-8 lg:gap-8">
+    <div class="max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 relative">
+        <div class="flex min-w-0 justify-between items-center h-16 lg:h-20">
+            <div class="flex min-w-0 items-center gap-2 sm:gap-4 lg:gap-8">
                 <button onclick="toggleMobileMenu()" class="header-icon-btn" aria-label="Open menu">
                     <i class="fas fa-bars text-sm"></i>
                 </button>
@@ -245,7 +245,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 lg:gap-4 flex-shrink-0">
+            <div class="flex items-center gap-1.5 sm:gap-2 lg:gap-4 flex-shrink-0">
                 <div class="hidden lg:flex items-center mr-4">
                     <div class="search-wrap-header flex items-center gap-2 rounded-full pl-4 pr-3 py-2 w-48 focus-within:w-64 transition-[width] duration-200" style="background: var(--surface-container);">
                         <i class="fas fa-search text-sm" style="color: var(--on-surface-variant);"></i>
@@ -257,7 +257,7 @@
                     <i id="theme-icon" class="fas fa-moon text-sm"></i>
                 </button>
 
-                <div class="header-nav-divider"></div>
+                <div class="header-nav-divider hidden sm:block"></div>
 
                 <div class="relative ml-auto lg:ml-0" id="profile-container">
                     <button onclick="toggleProfileDropdown()" class="profile-trigger-header flex items-center gap-2 lg:gap-3 px-2 lg:px-3 py-2 rounded-full min-h-[44px] transition-colors">

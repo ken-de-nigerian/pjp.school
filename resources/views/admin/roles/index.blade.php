@@ -168,7 +168,7 @@
                                 flashSuccess(res.data.message || 'Role deleted.');
                                 setTimeout(function() {
                                     window.location.href = res.data.redirect && res.data.redirect.indexOf('http') === 0 ? res.data.redirect : indexUrl;
-                                }, 2800);
+                                }, window.RELOAD_DELAY_MS);
                             } else {
                                 flashError(res.data.message || 'Could not delete role.');
                             }

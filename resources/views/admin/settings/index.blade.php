@@ -20,8 +20,6 @@
 
                             @csrf
                             <input type="hidden" id="formattedPhone" name="formattedPhone" value="{{ old('formattedPhone', $layoutAdmin->phone ?? '') }}">
-                            <input type="hidden" name="adminId" id="adminId" value="{{ $layoutAdmin->adminId ?? '' }}">
-
                             <div class="p-4 sm:p-5 min-w-0">
                                 <div class="form-group">
                                     <label for="fullname" class="form-label">Full name</label>
@@ -299,7 +297,7 @@
                             setTimeout(function() {
                                 if (data.redirect) window.location.href = '/' + data.redirect;
                                 else window.location.reload();
-                            }, 2800);
+                            }, window.RELOAD_DELAY_MS);
                         } else if (data.errors) {
                             showLaravelErrors(data.errors);
                         } else {
@@ -316,7 +314,6 @@
                     const fd = new FormData();
                     fd.append('photoimg', file);
                     fd.append('_token', csrf);
-                    fd.append('adminId', document.getElementById('adminId') && document.getElementById('adminId').value || '');
                     const errEl = document.getElementById('file-error');
                     errEl.textContent = '';
                     errEl.classList.add('hidden');
@@ -329,7 +326,7 @@
                     .then(function(data) {
                         if (data.status === 'success') {
                             flashSuccess('Photo updated.');
-                            setTimeout(function() { window.location.reload(); }, 2800);
+                            setTimeout(function() { window.location.reload(); }, window.RELOAD_DELAY_MS);
                         } else {
                             errEl.textContent = (data.message || 'Upload failed.');
                             errEl.classList.remove('hidden');
@@ -376,7 +373,7 @@
                             setTimeout(function() {
                                 if (data.redirect) window.location.href = '/' + data.redirect;
                                 else window.location.reload();
-                            }, 2800);
+                            }, window.RELOAD_DELAY_MS);
                         } else if (data.errors) {
                             showLaravelErrors(data.errors, { password_confirmation: 'confirmPassword' });
                         } else {
@@ -458,7 +455,7 @@
                         const data = res.data;
                         if (data.status === 'success') {
                             flashSuccess('Website settings updated.');
-                            setTimeout(function() { window.location.reload(); }, 2800);
+                            setTimeout(function() { window.location.reload(); }, window.RELOAD_DELAY_MS);
                         } else if (data.errors) showLaravelErrors(data.errors);
                         else flashError(data.message || 'Update failed.');
                     })
@@ -488,7 +485,7 @@
                         const data = res.data;
                         if (data.status === 'success') {
                             flashSuccess('Academic configuration updated.');
-                            setTimeout(function() { window.location.reload(); }, 2800);
+                            setTimeout(function() { window.location.reload(); }, window.RELOAD_DELAY_MS);
                         } else if (data.errors) showLaravelErrors(data.errors);
                         else flashError(data.message || 'Update failed.');
                     })

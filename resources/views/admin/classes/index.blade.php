@@ -39,6 +39,24 @@
                             @endif
                         </div>
                     </x-slot>
+                @else
+                    <x-slot name="actions">
+                        <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full lg:w-auto">
+                            <a href="{{ route('admin.students.classlist.pdf', ['class' => $selectedClass]) }}"
+                               target="_blank" rel="noopener noreferrer"
+                               class="admin-dashboard-hero__btn admin-dashboard-hero__btn--primary w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0">
+                                <i class="fas fa-file-pdf text-sm" aria-hidden="true"></i>
+                                Export to PDF
+                            </a>
+
+                            <a href="{{ route('admin.students.classlist.excel', ['class' => $selectedClass]) }}"
+                               class="admin-dashboard-hero__btn w-full lg:w-auto justify-center min-h-[44px] sm:min-h-0 border"
+                               style="background: var(--surface); color: var(--primary); border-color: var(--outline-variant);">
+                                <i class="fas fa-file-excel text-sm" aria-hidden="true"></i>
+                                Export to Excel
+                            </a>
+                        </div>
+                    </x-slot>
                 @endif
             </x-admin.hero-page>
 
@@ -119,7 +137,7 @@
                             </div>
                         @empty
                             <div
-                                class="col-span-full flex-1 flex flex-col items-center justify-center min-h-[min(400px,50vh)] py-12 sm:py-16">
+                                class="col-span-full flex-1 flex flex-col items-center justify-center py-12 sm:py-16">
                                 <div class="rounded-3xl p-8 sm:p-12 text-center w-full max-w-lg"
                                      style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); box-shadow: var(--elevation-1);">
                                     <div
@@ -140,98 +158,103 @@
             @endif
 
             @if($students !== null)
-                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden"
-                     style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
-                    <div
-                        class="flex flex-col gap-3 px-4 sm:px-6 py-3 border-b sm:flex-row sm:flex-wrap sm:items-center sm:justify-between"
-                        style="border-color: var(--outline-variant); background: var(--surface-container-low);">
-                        <div
-                            class="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto sm:flex-1 sm:max-w-md">
-                            <form method="GET" action="{{ route('admin.classes') }}"
-                                  class="flex items-center gap-2 flex-1 min-w-0">
+                <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl overflow-hidden" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
+                    <div class="flex flex-col gap-5 px-4 sm:px-6 py-5 border-b bg-[var(--surface-container-low)]" style="border-color: var(--outline-variant);">
+                        <!-- Search Bar -->
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                            <form method="GET" action="{{ route('admin.classes') }}" class="flex-1 max-w-md" role="search">
                                 <input type="hidden" name="class" value="{{ e($selectedClass) }}">
-                                <label for="classes-students-search" class="sr-only">Search students</label>
-                                <div
-                                    class="flex-1 min-w-0 flex items-center gap-2 rounded-xl pl-3 pr-2 py-2 border transition-colors"
-                                    style="background: var(--surface-container); border-color: var(--outline-variant);">
-                                    <i class="fas fa-search text-sm flex-shrink-0"
-                                       style="color: var(--on-surface-variant);"></i>
-                                    <input type="search" id="classes-students-search" name="q"
-                                           value="{{ e($searchQuery ?? '') }}"
-                                           placeholder="Search by name or reg. number..."
-                                           class="flex-1 min-w-0 border-0 bg-transparent py-1 text-sm focus:ring-0 focus:outline-none"
-                                           style="color: var(--on-surface);" autocomplete="off">
-                                    @if(!empty($searchQuery))
-                                        <a href="{{ route('admin.classes', ['class' => $selectedClass]) }}"
-                                           class="flex-shrink-0 p-1 rounded-lg transition-opacity hover:opacity-80"
-                                           style="color: var(--on-surface-variant);" aria-label="Clear search"><i
-                                                class="fas fa-times text-xs"></i></a>
-                                    @endif
+                                <div class="relative">
+                                    <div class="table-toolbar-filter w-full">
+                                        <label for="classes-students-search" class="sr-only">
+                                            {{ __('Search students') }}
+                                        </label>
+                                        <input type="search"
+                                               id="classes-students-search"
+                                               name="q"
+                                               value="{{ e($searchQuery ?? '') }}"
+                                               placeholder="{{ __('Search by name or reg. no.') }}"
+                                               class="w-full pl-11 pr-10 py-3.5 rounded-2xl text-sm border border-[var(--outline-variant)] focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition-all bg-[var(--surface-container)]"
+                                               autocomplete="off">
+
+                                        <button type="submit"
+                                                class="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] hover:text-[var(--primary)] transition-colors">
+                                            <i class="fas fa-search text-base"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <button type="submit"
-                                        class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-opacity hover:opacity-90"
-                                        style="background: var(--primary); color: var(--on-primary);">Search
-                                </button>
                             </form>
                         </div>
 
-                        <a href="{{ route('admin.students.classlist.pdf', ['class' => $selectedClass]) }}"
-                           target="_blank" rel="noopener noreferrer"
-                           class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2 rounded-xl text-sm font-medium transition-opacity hover:opacity-90 min-h-[44px] sm:min-h-0"
-                           style="color: var(--on-primary); background: var(--primary); border-radius: 12px;">
-                            <i class="fas fa-file-pdf text-sm" aria-hidden="true"></i>
-                            Export class list (PDF)
-                        </a>
+                        <!-- Bulk Actions -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Selected Students -->
+                            <div>
+                                <div class="text-xs font-semibold uppercase tracking-widest text-[var(--on-surface-variant)] mb-3">
+                                    SELECTED STUDENTS
+                                </div>
 
-                        <div class="flex flex-col gap-3 w-full sm:w-auto sm:flex-row sm:flex-wrap sm:gap-2">
-                            <form method="POST" action="{{ route('admin.students.bulk-fee-status') }}"
-                                  class="grid grid-cols-2 gap-2 sm:inline-flex sm:flex-wrap sm:gap-2 fee-status-form"
-                                  id="fee-selected-form">
-                                @csrf
-                                <input type="hidden" name="class" value="{{ e($selectedClass ?? '') }}">
-                                <button type="submit" name="fee_status" value="1"
-                                        data-confirm-message="Mark selected students as paid?"
-                                        class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-h-[44px] sm:min-h-0 w-full sm:w-auto"
-                                        style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;">
-                                    <i class="fas fa-check text-xs sm:text-sm flex-shrink-0" aria-hidden="true"></i>
-                                    <span class="sm:hidden truncate">Selected paid</span>
-                                    <span class="hidden sm:inline">Mark selected as paid</span>
-                                </button>
-                                <button type="submit" name="fee_status" value="0"
-                                        data-confirm-message="Mark selected students as unpaid?"
-                                        class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-h-[44px] sm:min-h-0 w-full sm:w-auto"
-                                        style="background: var(--surface-container-high); color: var(--on-surface); border: 1px solid var(--outline-variant); border-radius: 12px;">
-                                    <i class="fas fa-times text-xs sm:text-sm flex-shrink-0" aria-hidden="true"></i>
-                                    <span class="sm:hidden truncate">Selected unpaid</span>
-                                    <span class="hidden sm:inline">Mark selected as unpaid</span>
-                                </button>
-                            </form>
+                                <form method="POST" action="{{ route('admin.students.bulk-fee-status') }}"
+                                      class="grid grid-cols-2 gap-3 fee-status-form"
+                                      id="fee-selected-form">
+                                    @csrf
 
-                            <form method="POST" action="{{ route('admin.students.bulk-fee-status') }}"
-                                  class="grid grid-cols-2 gap-2 sm:inline-flex sm:flex-wrap sm:gap-2 fee-status-form">
-                                @csrf
-                                <input type="hidden" name="entire_class" value="1">
-                                <input type="hidden" name="class" value="{{ e($selectedClass) }}">
-                                <button type="submit" name="fee_status" value="1"
-                                        data-confirm-message="Mark all students in {{ e($selectedClass) }} as paid?"
-                                        class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-h-[44px] sm:min-h-0 w-full sm:w-auto"
-                                        style="background: var(--primary); color: var(--on-primary); border-radius: 12px;">
-                                    <i class="fas fa-check-double text-xs sm:text-sm flex-shrink-0"
-                                       aria-hidden="true"></i>
-                                    <span class="sm:hidden truncate">Class paid</span>
-                                    <span class="hidden sm:inline">Mark entire class paid</span>
-                                </button>
-                                <button type="submit" name="fee_status" value="0"
-                                        data-confirm-message="Mark all students in {{ e($selectedClass) }} as unpaid?"
-                                        class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-h-[44px] sm:min-h-0 w-full sm:w-auto"
-                                        style="background: var(--error-container); color: var(--on-error-container); border-radius: 12px;">
-                                    <i class="fas fa-undo text-xs sm:text-sm flex-shrink-0" aria-hidden="true"></i>
-                                    <span class="sm:hidden truncate">Class unpaid</span>
-                                    <span class="hidden sm:inline">Mark entire class unpaid</span>
-                                </button>
-                            </form>
+                                    <input type="hidden" name="class" value="{{ e($selectedClass ?? '') }}">
+                                    <button type="submit" name="fee_status" value="1"
+                                            data-confirm-message="Mark selected students as paid?"
+                                            class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-h-[44px] sm:min-h-0 w-full sm:w-auto lg:min-h-[40px]"
+                                            style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;">
+                                        <i class="fas fa-check text-xs sm:text-sm flex-shrink-0" aria-hidden="true"></i>
+                                        <span class="sm:hidden truncate">Selected paid</span>
+                                        <span class="hidden sm:inline lg:hidden">Mark selected as paid</span>
+                                        <span class="hidden lg:inline">Paid</span>
+                                    </button>
+
+                                    <button type="submit" name="fee_status" value="0"
+                                            data-confirm-message="Mark selected students as unpaid?"
+                                            class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-h-[44px] sm:min-h-0 w-full sm:w-auto lg:min-h-[40px]"
+                                            style="background: var(--surface-container-high); color: var(--on-surface); border: 1px solid var(--outline-variant); border-radius: 12px;">
+                                        <i class="fas fa-times text-xs sm:text-sm flex-shrink-0" aria-hidden="true"></i>
+                                        <span class="sm:hidden truncate">Selected unpaid</span>
+                                        <span class="hidden sm:inline lg:hidden">Mark selected as unpaid</span>
+                                        <span class="hidden lg:inline">Unpaid</span>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Entire Class -->
+                            <div>
+                                <div class="text-xs font-semibold uppercase tracking-widest text-[var(--on-surface-variant)] mb-3">
+                                    ENTIRE CLASS
+                                </div>
+                                <form method="POST" action="{{ route('admin.students.bulk-fee-status') }}"
+                                      class="grid grid-cols-2 gap-3 fee-status-form">
+                                    @csrf
+                                    <input type="hidden" name="entire_class" value="1">
+                                    <input type="hidden" name="class" value="{{ e($selectedClass) }}">
+                                    <button type="submit" name="fee_status" value="1"
+                                            data-confirm-message="Mark all students in {{ e($selectedClass) }} as paid?"
+                                            class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-h-[44px] sm:min-h-0 w-full sm:w-auto lg:min-h-[40px]"
+                                            style="background: var(--primary); color: var(--on-primary); border-radius: 12px;">
+                                        <i class="fas fa-check-double text-xs sm:text-sm flex-shrink-0" aria-hidden="true"></i>
+                                        <span class="sm:hidden truncate">Class paid</span>
+                                        <span class="hidden sm:inline lg:hidden">Mark entire class paid</span>
+                                        <span class="hidden lg:inline">Mark paid</span>
+                                    </button>
+                                    <button type="submit" name="fee_status" value="0"
+                                            data-confirm-message="Mark all students in {{ e($selectedClass) }} as unpaid?"
+                                            class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90 min-h-[44px] sm:min-h-0 w-full sm:w-auto lg:min-h-[40px]"
+                                            style="background: var(--error-container); color: var(--on-error-container); border-radius: 12px;">
+                                        <i class="fas fa-undo text-xs sm:text-sm flex-shrink-0" aria-hidden="true"></i>
+                                        <span class="sm:hidden truncate">Class unpaid</span>
+                                        <span class="hidden sm:inline lg:hidden">Mark entire class unpaid</span>
+                                        <span class="hidden lg:inline">Mark unpaid</span>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
+
                     @if($students->isEmpty())
                         <div class="flex flex-col items-center justify-center py-16 px-6">
                             <div
@@ -268,7 +291,7 @@
                     @else
                         <div class="overflow-x-auto overflow-y-auto flex-1 min-h-0 border-x border-b md:border-x md:border-b"
                              style="border-color: var(--outline-variant);">
-                            <ul class="flex flex-col gap-3 md:gap-0 md:divide-y divide-[var(--outline-variant)] p-4 sm:px-6 md:p-0 list-none min-w-0" role="list">
+                            <ul id="classes-students-list" class="flex flex-col gap-3 md:gap-0 md:divide-y divide-[var(--outline-variant)] p-4 sm:px-6 md:p-0 list-none min-w-0" role="list">
                                 <li class="hidden md:flex items-center gap-3 sm:gap-4 px-5 sm:px-6 py-3"
                                     style="background: var(--surface-container); border-color: var(--outline-variant);">
                                     <label class="flex items-center flex-shrink-0 cursor-pointer">
@@ -344,29 +367,27 @@
                         @endif
                     @endif
 
-                    <div id="fee-confirm-modal" class="fixed inset-0 z-50 hidden overflow-y-auto overscroll-contain"
-                         aria-modal="true" role="dialog" aria-labelledby="fee-confirm-modal-title">
-                        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" data-close="fee-confirm-modal"
-                             aria-hidden="true"></div>
-                        <div
-                            class="relative min-h-full flex items-center justify-center p-4 py-6 sm:p-6">
-                            <div
-                                class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl py-5 px-4 sm:py-6 sm:px-6 shadow-xl border my-auto"
-                                style="background: var(--surface-container-lowest); border-color: var(--outline-variant);">
-                                <h3 id="fee-confirm-modal-title" class="text-lg font-semibold mb-2"
-                                    style="color: var(--on-surface);">Confirm action</h3>
-                                <p id="fee-confirm-modal-message" class="text-sm mb-6"
-                                   style="color: var(--on-surface-variant);"></p>
-                                <div class="flex flex-col-reverse sm:flex-row justify-end gap-2">
-                                    <button type="button"
-                                            class="btn-secondary px-4 py-2.5 rounded-full text-sm w-full sm:w-auto"
-                                            data-close="fee-confirm-modal">Cancel
-                                    </button>
-                                    <button type="button" id="fee-confirm-modal-confirm"
-                                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium w-full sm:w-auto transition-opacity hover:opacity-95"
-                                            style="background: var(--primary); color: var(--on-primary);">Confirm
-                                    </button>
+                    <div id="fee-confirm-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm" aria-modal="true" role="dialog" aria-labelledby="fee-confirm-modal-title" aria-hidden="true">
+                        <div class="relative w-full max-w-md min-w-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl shadow-2xl flex flex-col" style="background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);">
+                            <div class="flex-shrink-0 px-5 sm:px-6 pt-5 sm:pt-6 pb-3 flex items-start justify-between gap-3" style="border-bottom: 1px solid var(--outline-variant);">
+                                <div class="min-w-0 flex-1">
+                                    <h3 id="fee-confirm-modal-title" class="text-lg font-semibold" style="color: var(--on-surface);">Confirm fee change</h3>
+                                    <p class="text-sm mt-1" style="color: var(--on-surface-variant);">Review the message below before continuing.</p>
                                 </div>
+
+                                <button type="button" class="fee-confirm-dismiss w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" aria-label="Close" style="color: var(--on-surface);">
+                                    <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                                </button>
+                            </div>
+
+                            <div class="flex-1 min-h-0 overflow-y-auto px-5 sm:px-6 py-4">
+                                <p id="fee-confirm-modal-message" class="text-sm" style="color: var(--on-surface-variant);"></p>
+                            </div>
+
+                            <div class="flex-shrink-0 flex flex-col-reverse sm:flex-row justify-end gap-2 px-5 sm:px-6 py-4" style="border-top: 1px solid var(--outline-variant); background: var(--surface-container-lowest);">
+                                <button type="button" id="fee-confirm-modal-confirm" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto min-h-[2.75rem] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
+                                    Confirm
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -590,7 +611,7 @@
                                 if (data.status === 'success') {
                                     if (typeof flashSuccess === 'function') flashSuccess(data.message || 'Class added.');
                                     closeModal('add-class-modal');
-                                    setTimeout(function() { window.location.reload(); }, 2800);
+                                    setTimeout(function() { window.location.reload(); }, window.RELOAD_DELAY_MS);
                                 } else {
                                     if (typeof flashError === 'function') flashError(data.message || 'Could not add class.');
                                 }
@@ -737,7 +758,7 @@
                                 if (data.status === 'success') {
                                     if (typeof flashSuccess === 'function') flashSuccess(data.message || 'Class updated.');
                                     closeModal('edit-class-modal');
-                                    setTimeout(function () { window.location.reload(); }, 2800);
+                                    setTimeout(function () { window.location.reload(); }, window.RELOAD_DELAY_MS);
                                 } else {
                                     if (typeof flashError === 'function') flashError(data.message || 'Could not update class.');
                                 }
@@ -785,7 +806,7 @@
                                 if (res.ok && res.data.status === 'success') {
                                     if (typeof flashSuccess === 'function') flashSuccess(res.data.message || 'Class deleted.');
                                     closeModal('delete-class-modal');
-                                    setTimeout(function () { window.location.reload(); }, 2800);
+                                    setTimeout(function () { window.location.reload(); }, window.RELOAD_DELAY_MS);
                                 } else if (res.status === 422) {
                                     if (typeof flashError === 'function') {
                                         flashError(res.data.message || 'You can only delete an empty class with no students.');
@@ -818,15 +839,42 @@
                 let pendingForm = null;
                 let pendingSubmitter = null;
 
+                if (modal) {
+                    new MutationObserver(function () {
+                        if (modal.classList.contains('hidden')) {
+                            pendingForm = null;
+                            pendingSubmitter = null;
+                            modal.setAttribute('aria-hidden', 'true');
+                        }
+                    }).observe(modal, {attributes: true, attributeFilter: ['class']});
+                    modal.querySelectorAll('.fee-confirm-dismiss').forEach(function (el) {
+                        el.addEventListener('click', function () {
+                            closeFeeConfirmModal();
+                        });
+                    });
+                }
+
                 function openFeeConfirmModal() {
-                    if (modal) modal.classList.remove('hidden');
+                    if (!modal) return;
+                    if (typeof openModal === 'function') {
+                        openModal('fee-confirm-modal');
+                    } else {
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                        document.body.style.overflow = 'hidden';
+                    }
+                    modal.setAttribute('aria-hidden', 'false');
                 }
 
                 function closeFeeConfirmModal() {
-                    if (modal) {
+                    if (typeof closeModal === 'function') {
+                        closeModal('fee-confirm-modal');
+                    } else if (modal) {
                         modal.classList.add('hidden');
                         modal.classList.remove('flex');
+                        document.body.style.overflow = '';
                     }
+                    if (modal) modal.setAttribute('aria-hidden', 'true');
                     pendingForm = null;
                     pendingSubmitter = null;
                 }
@@ -872,9 +920,13 @@
                                 if (res.ok && res.data.status === 'success') {
                                     closeFeeConfirmModal();
                                     flashSuccess(res.data.message || 'Fee status updated.');
-                                    if (res.data.redirect) setTimeout(function () {
-                                        window.location.href = res.data.redirect;
-                                    }, 2800);
+                                    setTimeout(function () {
+                                        if (res.data.redirect) {
+                                            window.location.href = res.data.redirect;
+                                        } else {
+                                            window.location.reload();
+                                        }
+                                    }, window.RELOAD_DELAY_MS);
                                 } else if (res.status === 422 && res.data.errors) {
                                     const err = res.data.errors;
                                     const first = (err.ids && err.ids[0]) || (err.class && err.class[0]) || (err.fee_status && err.fee_status[0]) || res.data.message;
@@ -892,11 +944,6 @@
                     });
                 }
 
-                document.querySelectorAll('[data-close="fee-confirm-modal"]').forEach(function (el) {
-                    el.addEventListener('click', function () {
-                        closeFeeConfirmModal();
-                    });
-                });
             })();
             @endif
         </script>

@@ -9,7 +9,7 @@ use App\Models\Setting;
 
 final class SettingPolicy
 {
-    public function update(Admin $user, ?Setting $_setting = null): bool
+    public function update(Admin $user, ?Setting $setting = null): bool
     {
         return $user->hasPermission('general_settings');
     }

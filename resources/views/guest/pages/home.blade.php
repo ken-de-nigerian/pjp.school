@@ -1,5 +1,5 @@
 @php use Illuminate\Support\Carbon;use Illuminate\Support\Str; @endphp
-@extends('layouts.guest', ['title' => 'guest.pages.home'])
+@extends('layouts.guest', ['title' => 'Home'])
 
 @section('content')
     <main id="main-content">

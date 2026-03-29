@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property mixed $id
- * @property mixed $title
- * @property mixed $category
+ * @property int $id
+ * @property string $title
+ * @property string|null $category
  */
 class News extends Model
 {

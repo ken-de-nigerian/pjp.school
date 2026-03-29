@@ -16,9 +16,6 @@ use Illuminate\Support\Facades\Route;
 | Teacher Routes (auth:teacher)
 |--------------------------------------------------------------------------
 |
-| This routes file defines only the Teacher module features.
-| All teacher endpoints are scoped to the authenticated teacher via auth()->user().
-|
 */
 Route::middleware('auth:teacher')
     ->prefix('teacher')

@@ -13,6 +13,7 @@ use App\Models\Setting;
 use App\Models\Student;
 use App\Services\BehavioralService;
 use App\Services\StudentService;
+use App\Support\Coercion;
 use App\Traits\AuthorizesAdminPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -43,20 +44,21 @@ final class BehavioralController extends Controller
     public function takeBehavioral(Request $request): View
     {
         $this->authorizePermission('behavioural_analysis');
-        $validated = $request->validate([
+        $validated = Coercion::stringKeyedMap($request->validate([
             'class' => 'required',
             'term' => 'required',
             'session' => 'required',
-        ]);
+        ]));
+        $cts = Coercion::classTermSessionFromValidated($validated);
 
         $students = SchoolClass::query()->where([
-            'class_name' => $validated['class'],
+            'class_name' => $cts['class'],
         ])->with('students')->get();
 
         return view('admin.behavioral.take-behavioral', [
-            'class' => $validated['class'],
-            'term' => $validated['term'],
-            'session' => $validated['session'],
+            'class' => $cts['class'],
+            'term' => $cts['term'],
+            'session' => $cts['session'],
             'students' => $students,
         ]);
     }
@@ -67,11 +69,12 @@ final class BehavioralController extends Controller
     public function save(StoreBehavioralRequest $request): JsonResponse
     {
         $this->authorizePermission('behavioural_analysis');
-        $students = $request->input('students');
+        $students = $request->behavioralRows();
 
-        $class = $students[0]['class'] ?? '';
-        $term = $students[0]['term'] ?? '';
-        $session = $students[0]['session'] ?? '';
+        $first = $students[0] ?? [];
+        $class = Coercion::string($first['class'] ?? '');
+        $term = Coercion::string($first['term'] ?? '');
+        $session = Coercion::string($first['session'] ?? '');
 
         if ($this->behavioralService->hasBehavioralAnalysis($class, $term, $session)) {
             return response()->json([
@@ -108,20 +111,21 @@ final class BehavioralController extends Controller
         $this->authorizePermission('view_uploaded_behavioural_analysis');
         $settings = Setting::getCached();
         $classes = SchoolClass::query()->orderBy('class_name')->get();
-        $class = trim((string) $request->query('class', ''));
-        $term = trim((string) $request->query('term', $settings['term'] ?? 'First Term'));
-        $session = trim((string) $request->query('session', $settings['session'] ?? ''));
+        $class = trim(Coercion::string($request->query('class', '')));
+        $term = trim(Coercion::string($request->query('term', Coercion::string($settings['term'] ?? 'First Term'))));
+        $session = trim(Coercion::string($request->query('session', Coercion::string($settings['session'] ?? ''))));
         $hasFilters = $class !== '' && $term !== '' && $session !== '';
 
         if ($hasFilters) {
-            $validated = $request->validate([
+            $validated = Coercion::stringKeyedMap($request->validate([
                 'class' => 'required|string|max:100',
                 'term' => 'required|string|max:50',
                 'session' => 'required|string|max:50',
-            ]);
-            $class = $validated['class'];
-            $term = $validated['term'];
-            $session = $validated['session'];
+            ]));
+            $cts = Coercion::classTermSessionFromValidated($validated);
+            $class = $cts['class'];
+            $term = $cts['term'];
+            $session = $cts['session'];
             $records = $this->behavioralService->getRecord($class, $term, $session);
             $regNumbers = $records->pluck('reg_number')->unique()->filter()->values();
             $studentsByReg = $regNumbers->isNotEmpty()
@@ -147,16 +151,17 @@ final class BehavioralController extends Controller
     public function getRecord(Request $request): View|JsonResponse
     {
         $this->authorizePermission('view_uploaded_behavioural_analysis');
-        $validated = $request->validate([
+        $validated = Coercion::stringKeyedMap($request->validate([
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
             'session' => 'required|string|max:50',
-        ]);
+        ]));
+        $cts = Coercion::classTermSessionFromValidated($validated);
 
         $records = $this->behavioralService->getRecord(
-            $validated['class'],
-            $validated['term'],
-            $validated['session']
+            $cts['class'],
+            $cts['term'],
+            $cts['session']
         );
 
         if ($request->expectsJson()) {
@@ -176,16 +181,16 @@ final class BehavioralController extends Controller
             'hasFilters' => true,
             'students' => $records,
             'studentsByReg' => $studentsByReg,
-            'class' => $validated['class'],
-            'term' => $validated['term'],
-            'session' => $validated['session'],
+            'class' => $cts['class'],
+            'term' => $cts['term'],
+            'session' => $cts['session'],
         ]);
     }
 
     public function edit(EditBehavioralRequest $request): JsonResponse
     {
         $this->authorizePermission('view_uploaded_behavioural_analysis');
-        $v = $request->validated();
+        $v = $request->editPayload();
         $updated = $this->behavioralService->editRecord(
             $v['reg_number'],
             $v['class'],
@@ -224,15 +229,15 @@ final class BehavioralController extends Controller
     public function destroyByRequest(Request $request): JsonResponse
     {
         $this->authorizePermission('view_uploaded_behavioural_analysis');
-        $class = $request->input('class');
-        $term = $request->input('term');
-        $session = $request->input('session');
-        if (empty($class) || empty($term) || empty($session)) {
+        $class = Coercion::string($request->input('class'));
+        $term = Coercion::string($request->input('term'));
+        $session = Coercion::string($request->input('session'));
+        if ($class === '' || $term === '' || $session === '') {
             return response()->json(['status' => 'error', 'message' => 'Missing parameters.'], 422);
         }
-        $classDecoded = urldecode((string) $class);
-        $termDecoded = urldecode((string) $term);
-        $sessionDecoded = urldecode((string) $session);
+        $classDecoded = urldecode($class);
+        $termDecoded = urldecode($term);
+        $sessionDecoded = urldecode($session);
         $deleted = $this->behavioralService->deleteRecord($classDecoded, $termDecoded, $sessionDecoded);
         if ($deleted > 0) {
             $admin = $request->user('admin');
@@ -259,18 +264,20 @@ final class BehavioralController extends Controller
     public function destroyOne(Request $request): JsonResponse
     {
         $this->authorizePermission('view_uploaded_behavioural_analysis');
-        $validated = $request->validate([
+        $validated = Coercion::stringKeyedMap($request->validate([
             'reg_number' => 'required|string|max:50',
             'class' => 'required|string|max:100',
             'term' => 'required|string|max:50',
             'session' => 'required|string|max:50',
-        ]);
+        ]));
+        $regNumber = Coercion::string($validated['reg_number'] ?? '');
+        $cts = Coercion::classTermSessionFromValidated($validated);
 
         $deleted = $this->behavioralService->deleteOneRecord(
-            $validated['reg_number'],
-            $validated['class'],
-            $validated['term'],
-            $validated['session']
+            $regNumber,
+            $cts['class'],
+            $cts['term'],
+            $cts['session']
         );
 
         if ($deleted > 0) {

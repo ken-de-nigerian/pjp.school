@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class UpdateStudentAccountRequest extends FormRequest
@@ -24,5 +25,13 @@ final class UpdateStudentAccountRequest extends FormRequest
             'gender' => 'nullable|string|max:50',
             'contact_phone' => 'required|string|max:50',
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function accountPayload(): array
+    {
+        return Coercion::stringKeyedMap($this->validated());
     }
 }

@@ -20,7 +20,7 @@
             </x-admin.hero-page>
 
             <div class="flex-1 flex flex-col min-h-0 w-full rounded-3xl p-5 sm:p-6 lg:p-8" style="background: var(--surface-container-low); box-shadow: var(--elevation-1);">
-                <div class="col-span-full flex-1 flex flex-col items-center justify-center min-h-[min(400px,50vh)] py-12 sm:py-16">
+                <div class="col-span-full flex-1 flex flex-col items-center justify-center py-12 sm:py-16">
                     <div class="rounded-3xl p-4 sm:p-6 lg:p-8 overflow-hidden min-w-0 w-full" style="background: var(--surface-container-low); box-shadow: var(--elevation-1); border: 1px solid var(--outline-variant);">
                         <form id="publish-results-form" method="POST" action="{{ route('admin.results.publish') }}" class="space-y-5 sm:space-y-6">
                             @csrf
@@ -65,12 +65,7 @@
                             </div>
 
                             <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
-                                <a href="{{ route('admin.publish-results') }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
-                                    <i class="fas fa-times text-sm" aria-hidden="true"></i>
-                                    Clear
-                                </a>
-
-                                <button type="submit" id="publish-results-submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                                <button type="submit" id="publish-results-submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto min-h-[2.75rem] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
                                     <i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
                                     Publish result
                                 </button>
@@ -126,36 +121,36 @@
                                 'X-Requested-With': 'XMLHttpRequest'
                             }
                         })
-                        .then(function(r) {
-                            return r.json().then(function(data) {
-                                return { ok: r.ok, status: r.status, data: data };
-                            }).catch(function() { return { ok: false, status: r.status, data: {} }; });
-                        })
-                        .then(function(result) {
-                            setButtonLoading(submitBtn, false);
-                            const d = result.data || {};
+                            .then(function(r) {
+                                return r.json().then(function(data) {
+                                    return { ok: r.ok, status: r.status, data: data };
+                                }).catch(function() { return { ok: false, status: r.status, data: {} }; });
+                            })
+                            .then(function(result) {
+                                setButtonLoading(submitBtn, false);
+                                const d = result.data || {};
 
-                            if (result.ok && (d.status === 'success')) {
-                                if (typeof flashSuccess === 'function') flashSuccess(d.message || 'Results published successfully.');
-                                if (d.redirect) {
-                                    setTimeout(function() { window.location.href = d.redirect; }, 1200);
+                                if (result.ok && (d.status === 'success')) {
+                                    if (typeof flashSuccess === 'function') flashSuccess(d.message || 'Results published successfully.');
+                                    if (d.redirect) {
+                                        setTimeout(function() { window.location.href = d.redirect; }, window.RELOAD_DELAY_MS);
+                                    }
+                                    return;
                                 }
-                                return;
-                            }
 
-                            if (result.status === 422 && d.errors) {
-                                showErrors(d.errors);
-                                return;
-                            }
+                                if (result.status === 422 && d.errors) {
+                                    showErrors(d.errors);
+                                    return;
+                                }
 
-                            const msg = d.message || 'Failed to publish results. Please try again.';
-                            if (typeof flashError === 'function') flashError(msg);
-                            if (formErrorEl) { formErrorEl.textContent = msg; formErrorEl.classList.remove('hidden'); }
-                        })
-                        .catch(function() {
-                            setButtonLoading(submitBtn, false);
-                            if (typeof flashError === 'function') flashError('Request failed. Check your connection and try again.');
-                        });
+                                const msg = d.message || 'Failed to publish results. Please try again.';
+                                if (typeof flashError === 'function') flashError(msg);
+                                if (formErrorEl) { formErrorEl.textContent = msg; formErrorEl.classList.remove('hidden'); }
+                            })
+                            .catch(function() {
+                                setButtonLoading(submitBtn, false);
+                                if (typeof flashError === 'function') flashError('Request failed. Check your connection and try again.');
+                            });
                     });
                 }
             })();

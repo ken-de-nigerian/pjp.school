@@ -17,10 +17,9 @@ class AdminLogoutTest extends TestCase
     {
         parent::setUp();
         Admin::query()->firstOrCreate(
-            ['adminId' => 'logout-admin'],
+            ['email' => 'logout@test.local'],
             [
                 'name' => 'Logout Admin',
-                'email' => 'logout@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => 1,
             ]

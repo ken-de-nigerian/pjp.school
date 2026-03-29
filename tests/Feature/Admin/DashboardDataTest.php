@@ -30,10 +30,9 @@ class DashboardDataTest extends TestCase
             ['name' => 'Super Admin']
         );
         Admin::query()->firstOrCreate(
-            ['adminId' => 'dash-data-admin'],
+            ['email' => 'dashdata@test.local'],
             [
                 'name' => 'Dash Data',
-                'email' => 'dashdata@test.local',
                 'password' => Hash::make('password'),
                 'user_type' => $role->id,
             ]
@@ -60,7 +59,6 @@ class DashboardDataTest extends TestCase
         ]);
         Subject::query()->create(['subject_name' => 'Math', 'grade' => 'Senior']);
         Teacher::query()->create([
-            'userId' => 't1',
             'email' => 't@t.local',
             'firstname' => 'T',
             'lastname' => 'One',

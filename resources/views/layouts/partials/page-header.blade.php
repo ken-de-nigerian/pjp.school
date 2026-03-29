@@ -1,5 +1,5 @@
 <header class="w-full z-[1000] relative">
-    <div class="bg-educave-900 text-white text-xs py-2 px-4 md:px-8 lg:px-16 flex justify-between items-center" role="banner">
+    <div class="bg-educave-900 text-white text-xs py-2 px-4 flex justify-between items-center" role="banner">
         <div class="flex items-center space-x-4">
             <span class="hidden md:inline text-gray-300">Welcome To <span class="text-white font-semibold">{{ site_settings()?->name ?? config('app.name') }}</span></span>
         </div>
@@ -25,13 +25,6 @@
                         {{ config('school.school_email') }}
                     </a>
                 </span>
-            </div>
-
-            <div class="flex items-center space-x-1 cursor-pointer">
-                <span>English</span>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m6 9 6 6 6-6"/>
-                </svg>
             </div>
         </div>
     </div>
@@ -90,7 +83,7 @@
                 </a>
             </nav>
 
-            <div class="hidden lg:flex items-center gap-6 shrink-0">
+            <div class="hidden lg:flex items-center gap-3 xl:gap-4 shrink-0">
                 <div class="flex items-center gap-4">
                     @if (Route::has('teacher.login'))
                         <a href="{{ route('teacher.login') }}" class="text-xs font-bold tracking-wider text-gray-600 hover:text-educave-800 transition-colors whitespace-nowrap leading-none py-2.5">TEACHERS</a>
@@ -105,14 +98,22 @@
                     @endif
                 </div>
 
-                <a href="{{ route('result.check') }}" class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 min-h-[44px] border border-gray-300 text-xs font-bold tracking-wider hover:bg-educave-800 hover:text-white hover:border-educave-800 transition-all duration-300 group whitespace-nowrap" aria-label="{{ __('Result portal') }}">
-                    {{ __('RESULT PORTAL') }}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
-                </a>
+                <div class="flex items-center gap-2 xl:gap-3 shrink-0">
+                    <button type="button" onclick="toggleTheme()" class="header-icon-btn relative shrink-0" title="{{ __('Toggle theme') }}" aria-label="{{ __('Toggle light or dark mode') }}">
+                        <i id="theme-icon" class="fas fa-moon text-sm"></i>
+                    </button>
+                    <a href="{{ route('result.check') }}" class="inline-flex items-center justify-center gap-2 rounded-xl px-4 xl:px-5 py-2.5 min-h-[44px] border border-gray-300 text-xs font-bold tracking-wider hover:bg-educave-800 hover:text-white hover:border-educave-800 transition-all duration-300 group whitespace-nowrap" aria-label="{{ __('Result portal') }}">
+                        {{ __('RESULT PORTAL') }}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+                    </a>
+                </div>
             </div>
 
-            <div class="flex items-center gap-2 lg:hidden shrink-0">
-                <a href="{{ route('result.check') }}" class="flex items-center gap-1.5 rounded-xl px-3 py-2.5 border border-gray-300 text-[10px] font-bold tracking-wider hover:bg-educave-800 hover:text-white hover:border-educave-800 transition-all duration-300 group" aria-label="{{ __('Result portal') }}">
+            <div class="flex items-center gap-1.5 sm:gap-2 lg:hidden shrink-0 min-w-0">
+                <button type="button" onclick="toggleTheme()" class="header-icon-btn relative shrink-0" title="{{ __('Toggle theme') }}" aria-label="{{ __('Toggle light or dark mode') }}">
+                    <i id="mobile-theme-icon" class="fas fa-moon text-sm"></i>
+                </button>
+                <a href="{{ route('result.check') }}" class="flex items-center gap-1.5 rounded-xl px-2.5 sm:px-3 py-2.5 min-h-[44px] border border-gray-300 text-[10px] font-bold tracking-wider hover:bg-educave-800 hover:text-white hover:border-educave-800 transition-all duration-300 group min-w-0" aria-label="{{ __('Result portal') }}">
                     <span class="truncate max-w-[7rem] sm:max-w-none">{{ __('Result portal') }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0 sm:w-4 sm:h-4" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
                 </a>

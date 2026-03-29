@@ -18,7 +18,6 @@ final class UploadTeacherProfileRequest extends FormRequest
     {
         return [
             'photoimg' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
-            'userId' => ['required', 'string'],
         ];
     }
 }

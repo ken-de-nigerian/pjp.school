@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Contracts\ChecklistServiceContract;
@@ -18,6 +20,9 @@ use App\Services\NotificationService;
 use App\Services\ResultRemarkService;
 use App\Services\ResultService;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Contracts\View\View as ViewContract;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -36,9 +41,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        DB::prohibitDestructiveCommands(app()->isProduction());
+
         Gate::policy(Teacher::class, TeacherPolicy::class);
 
-        View::composer('*', function ($view) {
+        View::composer('*', function (ViewContract $view): void {
             $view->with('layoutRoute', request()->route()?->getName());
             if (auth()->guard('admin')->check()) {
                 $admin = auth()->guard('admin')->user();
@@ -59,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        AuthenticationException::redirectUsing(function ($request, array $guards) {
+        AuthenticationException::redirectUsing(function (Request $request, array $guards) {
             if ($request->expectsJson()) {
                 return null;
             }

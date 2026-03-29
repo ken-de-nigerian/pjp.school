@@ -25,7 +25,7 @@
                             <h2 class="text-sm sm:text-base font-semibold" style="color: var(--on-surface);">Profile</h2>
                         </div>
 
-                        <form id="edit-teacher-account-form" method="POST" action="{{ route('admin.teachers.update', $teacher->userId) }}" class="p-4 sm:p-5 min-w-0 space-y-4">
+                        <form id="edit-teacher-account-form" method="POST" action="{{ route('admin.teachers.update', $teacher) }}" class="p-4 sm:p-5 min-w-0 space-y-4">
                             @csrf
                             @method('PUT')
 
@@ -117,7 +117,7 @@
                                 <h3 class="text-sm sm:text-base font-semibold mb-1" style="color: var(--on-surface);">Delete teacher</h3>
                                 <p class="text-sm mb-0" style="color: var(--on-surface-variant);">Permanently remove this teacher. This action cannot be undone.</p>
                             </div>
-                            <form method="POST" action="{{ route('admin.teachers.destroy', $teacher->userId) }}" id="teacher-delete-form" class="flex-shrink-0 w-full sm:w-auto">
+                            <form method="POST" action="{{ route('admin.teachers.destroy', $teacher) }}" id="teacher-delete-form" class="flex-shrink-0 w-full sm:w-auto">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="teacher-delete-open-btn w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-95" style="color: var(--on-error-container); background: var(--error-container);">
@@ -171,9 +171,8 @@
                         </div>
                     </div>
 
-                    <form id="edit-teacher-contact-form" method="POST" action="{{ route('admin.teachers.update-contact') }}" class="card-refined rounded-xl p-4 sm:p-5 border" style="border-color: var(--outline-variant);">
+                    <form id="edit-teacher-contact-form" method="POST" action="{{ route('admin.teachers.update-contact', $teacher) }}" class="card-refined rounded-xl p-4 sm:p-5 border" style="border-color: var(--outline-variant);">
                         @csrf
-                        <input type="hidden" name="userId" value="{{ $teacher->userId }}">
 
                         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                             <div class="min-w-0">
@@ -233,9 +232,8 @@
                         <p class="text-xs sm:text-sm mt-1 mb-0" style="color: var(--on-surface-variant);">Choose the class(es) this teacher is assigned to and the subject(s) they will teach.</p>
                     </div>
 
-                    <form id="edit-teacher-employment-form" method="POST" action="{{ route('admin.teachers.update-employment') }}" class="p-4 sm:p-5 min-w-0">
+                    <form id="edit-teacher-employment-form" method="POST" action="{{ route('admin.teachers.update-employment', $teacher) }}" class="p-4 sm:p-5 min-w-0">
                         @csrf
-                        <input type="hidden" name="userId" value="{{ $teacher->userId }}">
                         @php
                             $assignedClassesForTeacher = $teacher->assigned_class
                                 ? array_map('trim', explode(',', $teacher->assigned_class))
@@ -323,7 +321,6 @@
                 <h3 class="text-lg font-semibold mb-4" style="color: var(--on-surface);">Reset Teacher Password</h3>
                 <form id="teacher-password-form" class="min-w-0">
                     @csrf
-                    <input type="hidden" name="userId" id="teacher-password-userId" value="{{ $teacher->userId }}">
 
                     <div class="space-y-4">
                         <div class="form-group">
@@ -447,8 +444,7 @@
                     const profileInput = document.getElementById('photoimg');
                     const profileUploadBtn = document.getElementById('teacher-profile-upload-btn');
                     const photoErrorEl = document.getElementById('photoimg-error');
-                    const uploadUrl = @json(route('admin.teachers.upload-profile'));
-                    const userId = @json($teacher->userId);
+                    const uploadUrl = @json(route('admin.teachers.upload-profile', $teacher));
 
                     if (!profilePreview || !profileInput || !profileUploadBtn) return;
 
@@ -483,7 +479,6 @@
                         }
 
                         const fd = new FormData();
-                        fd.append('userId', userId);
                         fd.append('photoimg', file);
                         fd.append('_token', csrf || '');
 
@@ -572,7 +567,7 @@
                 if (formTeacherToggle) {
                     formTeacherToggle.addEventListener('change', function () {
                         const checked = this.checked;
-                        fetch('{{ route('admin.teachers.form-teacher-status') }}', {
+                        fetch('{{ route('admin.teachers.form-teacher-status', $teacher) }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -581,7 +576,6 @@
                                 'X-Requested-With': 'XMLHttpRequest',
                             },
                             body: new URLSearchParams({
-                                userId: '{{ $teacher->userId }}',
                                 form_teacher: checked ? '1' : '2',
                             }),
                         })
@@ -604,7 +598,7 @@
                 if (modifyToggle) {
                     modifyToggle.addEventListener('change', function () {
                         const checked = this.checked;
-                        fetch('{{ route('admin.teachers.modify-results') }}', {
+                        fetch('{{ route('admin.teachers.modify-results', $teacher) }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -613,7 +607,6 @@
                                 'X-Requested-With': 'XMLHttpRequest',
                             },
                             body: new URLSearchParams({
-                                userId: '{{ $teacher->userId }}',
                                 modify_results: checked ? '1' : '2',
                             }),
                         })
@@ -675,11 +668,10 @@
                                         if (typeof flashSuccess === 'function') {
                                             flashSuccess(res.data.message || 'Teacher deleted.');
                                         }
-                                        if (res.data.redirect) {
-                                            setTimeout(function () {
-                                                window.location.href = res.data.redirect;
-                                            }, 2800);
-                                        }
+                                        const nextUrl = res.data.redirect || @json(route('admin.teachers.index'));
+                                        setTimeout(function () {
+                                            window.location.href = nextUrl;
+                                        }, window.RELOAD_DELAY_MS);
                                     } else if (typeof flashError === 'function') {
                                         flashError(res.data && res.data.message || 'Could not delete teacher.');
                                     }
@@ -743,11 +735,10 @@
                         if (typeof setButtonLoading === 'function') setButtonLoading(btn, true);
 
                         const body = new URLSearchParams({
-                            userId: '{{ $teacher->userId }}',
                             password: password,
                         });
 
-                        fetch('{{ route('admin.teachers.reset-password') }}', {
+                        fetch('{{ route('admin.teachers.reset-password', $teacher) }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',

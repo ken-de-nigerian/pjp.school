@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->text('message')->nullable();
             $table->dateTime('date_added')->nullable();
+            $table->index('date_added', 'notifications_date_added_index');
         });
     }
 

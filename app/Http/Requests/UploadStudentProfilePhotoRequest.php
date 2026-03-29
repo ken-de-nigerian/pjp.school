@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class UploadStudentProfilePhotoRequest extends FormRequest
@@ -28,5 +29,10 @@ final class UploadStudentProfilePhotoRequest extends FormRequest
             'photoimg' => 'profile photo',
             'studentId' => 'student',
         ];
+    }
+
+    public function studentId(): int
+    {
+        return Coercion::int(Coercion::stringKeyedMap($this->validated())['studentId'] ?? 0);
     }
 }

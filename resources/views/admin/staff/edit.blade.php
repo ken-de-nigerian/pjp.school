@@ -28,7 +28,7 @@
                     <div class="px-4 sm:px-5 py-3 sm:py-4 border-b" style="border-color: var(--card-border);">
                         <h2 class="text-sm sm:text-base font-semibold" style="color: var(--on-surface);">Account</h2>
                     </div>
-                    <form id="edit-staff-account-form" method="POST" action="{{ route('admin.staff.update', $staff->adminId) }}" class="p-4 sm:p-5 min-w-0">
+                    <form id="edit-staff-account-form" method="POST" action="{{ route('admin.staff.update', $staff) }}" class="p-4 sm:p-5 min-w-0">
                         @csrf
                         @method('PUT')
 
@@ -76,8 +76,9 @@
                         </div>
 
                         <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-4">
-                            <a href="{{ route('admin.staff.index') }}" class="btn-secondary px-6 py-2.5 rounded-full text-sm w-full sm:w-auto text-center">Cancel</a>
-                            <button type="submit" id="edit-staff-account-btn" class="btn-primary px-6 py-2.5 rounded-full text-sm w-full sm:w-auto">Update</button>
+                            <button type="submit" id="edit-staff-account-btn" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto min-h-[2.75rem] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" style="border-radius: 12px;">
+                                Update
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -132,8 +133,8 @@
                 const passwordModal = document.getElementById('staffResetPassword');
                 const passwordForm = document.getElementById('staff-password-form');
                 const passwordBtn = document.getElementById('staff-password-btn');
-                const resetUrl = '{{ route('admin.staff.reset-password', $staff->adminId) }}';
-                const uploadProfileUrl = '{{ route('admin.staff.upload-profile', $staff->adminId) }}';
+                const resetUrl = '{{ route('admin.staff.reset-password', $staff) }}';
+                const uploadProfileUrl = '{{ route('admin.staff.upload-profile', $staff) }}';
 
                 function clearLocalFieldErrors(ids) {
                     if (!Array.isArray(ids)) return;
@@ -158,7 +159,7 @@
                         .then(function(res) {
                             if (res.ok && res.data && res.data.status === 'success') {
                                 if (typeof flashSuccess === 'function') flashSuccess(res.data.message || 'Updated successfully.');
-                                setTimeout(function() { window.location.reload(); }, 2800);
+                                setTimeout(function() { window.location.reload(); }, window.RELOAD_DELAY_MS);
                             } else if (res.data && res.data.errors && typeof showLaravelErrors === 'function') {
                                 showLaravelErrors(res.data.errors);
                             } else if (typeof flashError === 'function') {
@@ -222,7 +223,7 @@
                                 profileInput.value = '';
                                 profileUploadBtn.classList.add('hidden');
                                 if (typeof flashSuccess === 'function') flashSuccess(data.message || 'Profile picture updated.');
-                                setTimeout(function() { window.location.reload(); }, 2800);
+                                setTimeout(function() { window.location.reload(); }, window.RELOAD_DELAY_MS);
                             } else if (data.errors && typeof showLaravelErrors === 'function') {
                                 showLaravelErrors(data.errors);
                             } else if (typeof flashError === 'function') {
@@ -289,7 +290,7 @@
                                 setTimeout(function() {
                                     if (data.redirect) window.location.href = data.redirect;
                                     else window.location.reload();
-                                }, 2800);
+                                }, window.RELOAD_DELAY_MS);
                             } else if (data && data.errors) {
                                 if (data.errors.password && pwdErrEl) { pwdErrEl.textContent = data.errors.password[0]; pwdErrEl.classList.remove('hidden'); }
                                 if (data.errors.password_confirmation && confirmErrEl) { confirmErrEl.textContent = data.errors.password_confirmation[0]; confirmErrEl.classList.remove('hidden'); }

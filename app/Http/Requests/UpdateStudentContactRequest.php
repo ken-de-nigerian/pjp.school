@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\Coercion;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class UpdateStudentContactRequest extends FormRequest
@@ -23,5 +24,13 @@ final class UpdateStudentContactRequest extends FormRequest
             'nationality' => 'required|string|max:100',
             'address' => 'required|string',
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function contactPayload(): array
+    {
+        return Coercion::stringKeyedMap($this->validated());
     }
 }

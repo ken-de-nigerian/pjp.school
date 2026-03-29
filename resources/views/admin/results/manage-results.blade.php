@@ -52,12 +52,8 @@
                             </x-forms.md-select-native>
                         </div>
                     </div>
-                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2 min-w-0" style="border-top: 1px solid var(--outline-variant); padding-top: 1.25rem;">
-                        <a href="{{ route('admin.results-by-params') }}" class="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 sm:min-w-[120px]" style="border-radius: 12px;">
-                            <i class="fas fa-times text-sm" aria-hidden="true"></i>
-                            Clear
-                        </a>
-                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[2.75rem] sm:min-h-0 min-w-[140px] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
+                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end items-center gap-3 pt-5 border-t border-gray-200">
+                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto min-h-[2.75rem] rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-95 active:scale-[0.98]" data-preloader style="border-radius: 12px;">
                             <i class="fas fa-search text-sm" aria-hidden="true"></i>
                             Search
                         </button>

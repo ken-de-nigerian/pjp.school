@@ -75,7 +75,7 @@
                                         <p class="text-sm truncate" style="color: var(--on-surface-variant);">{{ $t->email ?? '—' }}</p>
                                     </div>
                                     <div class="flex-shrink-0 w-24 text-right">
-                                        <a href="{{ route('admin.teachers.edit', $t->userId) }}" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;">
+                                        <a href="{{ route('admin.teachers.edit', $t) }}" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-opacity hover:opacity-90" style="background: var(--primary-container); color: var(--on-primary-container); border-radius: 12px;">
                                             <i class="fas fa-pen text-xs" aria-hidden="true"></i>
                                             <span class="hidden sm:inline">Edit</span>
                                         </a>

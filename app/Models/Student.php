@@ -12,13 +12,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property mixed $firstname
  * @property mixed $lastname
  * @property mixed $othername
- * @property mixed $reg_number
- * @property mixed $id
+ * @property string $reg_number
+ * @property int $id
  * @property mixed $imagelocation
  * @property mixed $dob
  * @property mixed $gender
  * @property mixed $contact_phone
- * @property mixed $subjects
+ * @property string|null $subjects
  * @property mixed $lga
  * @property mixed $state
  * @property mixed $city
@@ -36,13 +36,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property mixed $sponsor_address
  * @property mixed $house
  * @property mixed $category
- * @property mixed $fee_status
+ * @property int|string $fee_status
  * @property mixed $time_of_reg
  * @property mixed $left_school_date
  * @property mixed $graduation_date
  */
 class Student extends Model
 {
+    /** Year bucket when a class-based leaver has no usable dates (route/query param value). */
+    public const LEFT_SCHOOL_UNDATED_YEAR = 'undated';
+
     public $timestamps = false;
 
     protected $table = 'students';
@@ -123,10 +126,45 @@ class Student extends Model
         $query->where('status', 2);
     }
 
-    /** @param Builder<Student> $query */
+    /**
+     * Exclude students whose `class` column marks them as no longer on the active roster.
+     * Normalizes with LOWER/TRIM so Left, LEFT, left-school, Graduated, etc. are all excluded.
+     *
+     * @param Builder<Student> $query
+     */
     public function scopeNotLeftOrGraduated(Builder $query): void
     {
-        $query->whereNotIn('class', ['Left', 'Graduated']);
+        $column = $query->getModel()->qualifyColumn('class');
+        $query->whereRaw(
+            sprintf('LOWER(TRIM(COALESCE(%s, \'\'))) NOT IN (?, ?, ?, ?)', $column),
+            ['left', 'left-school', 'left school', 'graduated']
+        );
+    }
+
+    /**
+     * `Class` column indicates the student left (not graduated). Matches Left, LEFT, left-school, etc.
+     *
+     * @param Builder<Student> $query
+     */
+    public function scopeClassIndicatesLeftSchool(Builder $query): void
+    {
+        $column = $query->getModel()->qualifyColumn('class');
+        $query->whereRaw(
+            sprintf('LOWER(TRIM(COALESCE(%s, \'\'))) IN (?, ?, ?)', $column),
+            ['left', 'left-school', 'left school']
+        );
+    }
+
+    /**
+     * @param Builder<Student> $query
+     */
+    public function scopeExcludeGraduatedClass(Builder $query): void
+    {
+        $column = $query->getModel()->qualifyColumn('class');
+        $query->whereRaw(
+            sprintf('LOWER(TRIM(COALESCE(%s, \'\'))) <> ?', $column),
+            ['graduated']
+        );
     }
 
     /** @param Builder<Student> $query */

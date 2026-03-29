@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
 use App\Services\StudentService;
+use App\Support\Coercion;
 use App\Traits\TeacherScope;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -25,11 +26,11 @@ final class ClassController extends Controller
         $classesWithCounts = array_values(array_filter($allWithCounts, fn (array $c) => in_array($c['class_name'] ?? '', $assigned, true)));
 
         if ($request->has('class')) {
-            $validated = $request->validate([
+            $validated = Coercion::stringKeyedMap($request->validate([
                 'class' => 'required|string|max:100',
-            ]);
-            $class = $validated['class'];
-            $search = $request->query('q', '');
+            ]));
+            $class = Coercion::string($validated['class'] ?? '');
+            $search = Coercion::string($request->query('q', ''));
             $students = $search !== ''
                 ? $this->studentService->getStudentsByClassWithSearch($class, $search)
                 : $this->studentService->getStudentsByClass($class);
@@ -48,7 +49,7 @@ final class ClassController extends Controller
             'students' => null,
             'classesWithCounts' => $classesWithCounts,
             'selectedClass' => '',
-            'searchQuery' => $request->query('q', ''),
+            'searchQuery' => Coercion::string($request->query('q', '')),
         ]);
     }
 }

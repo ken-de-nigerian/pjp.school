@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Models\Subject;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Support\Coercion;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 
 final class StoreSubjectRequest extends FormRequest
 {
@@ -31,8 +32,8 @@ final class StoreSubjectRequest extends FormRequest
     {
         $validator->after(function (Validator $validator): void {
             $exists = Subject::query()
-                ->where('subject_name', $this->input('subject_name'))
-                ->where('grade', $this->input('grade'))
+                ->where('subject_name', Coercion::string($this->input('subject_name')))
+                ->where('grade', Coercion::string($this->input('grade')))
                 ->exists();
             if ($exists) {
                 $validator->errors()->add('subject_name', 'This subject has already been registered.');

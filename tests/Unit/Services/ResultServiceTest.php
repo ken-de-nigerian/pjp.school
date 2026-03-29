@@ -126,8 +126,12 @@ class ResultServiceTest extends TestCase
         ]);
 
         $collection = $this->service->getUploadedResults('JSS 1', '1', '2024/2025', 'Math');
-        $this->assertSame('Alice', $collection->first()->name);
-        $this->assertSame('Zara', $collection->last()->name);
+        $first = $collection->first();
+        $last = $collection->last();
+        $this->assertNotNull($first);
+        $this->assertNotNull($last);
+        $this->assertSame('Alice', $first->name);
+        $this->assertSame('Zara', $last->name);
     }
 
     public function test_edit_recalculates_total(): void
@@ -209,6 +213,7 @@ class ResultServiceTest extends TestCase
         $collection = $this->service->getUploadedResults('JSS 1', '1', '2024/2025', 'Math');
         $this->assertCount(1, $collection);
         $row = $collection->first();
+        $this->assertNotNull($row);
         $this->assertSame(60.0, (float) $row->total);
         $this->assertSame(15.0, (float) $row->ca);
         $this->assertSame(15.0, (float) $row->assignment);

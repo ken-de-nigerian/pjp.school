@@ -7,6 +7,7 @@ namespace Tests\Unit\Services;
 use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Services\StudentService;
+use App\Support\Coercion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -53,6 +54,35 @@ class StudentServiceTest extends TestCase
         $result = $this->service->getHouseCounts();
 
         $this->assertEmpty($result);
+    }
+
+    public function test_get_house_counts_excludes_left_and_graduated_class(): void
+    {
+        config(['school.houses' => ['Red']]);
+        foreach (
+            [
+                ['reg_number' => 'R1', 'class' => 'JSS 1', 'house' => 'Red'],
+                ['reg_number' => 'R2', 'class' => 'Graduated', 'house' => 'Red'],
+                ['reg_number' => 'R3', 'class' => 'Left', 'house' => 'Red'],
+                ['reg_number' => 'R4', 'class' => 'left-school', 'house' => 'Red'],
+                ['reg_number' => 'R5', 'class' => 'LEFT', 'house' => 'Red'],
+            ] as $row
+        ) {
+            Student::query()->create([
+                'reg_number' => $row['reg_number'],
+                'firstname' => 'A',
+                'lastname' => 'B',
+                'class' => $row['class'],
+                'house' => $row['house'],
+                'status' => 2,
+            ]);
+        }
+
+        $result = $this->service->getHouseCounts();
+
+        $this->assertCount(1, $result);
+        $this->assertSame('Red', $result[0]['house']);
+        $this->assertSame(1, $result[0]['user_count']);
     }
 
     public function test_get_by_id_returns_student(): void
@@ -130,6 +160,58 @@ class StudentServiceTest extends TestCase
 
         $s1->refresh();
         $this->assertSame('JSS 1', $s1->class);
+    }
+
+    public function test_left_school_includes_class_column_leavers_bucketed_by_time_of_reg(): void
+    {
+        Student::query()->create([
+            'reg_number' => 'L1',
+            'firstname' => 'A',
+            'lastname' => 'B',
+            'class' => 'left-school',
+            'status' => 2,
+            'time_of_reg' => '2024-06-01 10:00:00',
+        ]);
+
+        $rows = $this->service->getLeftSchoolYearsWithCounts();
+        $byYear = collect($rows)->keyBy('year');
+        $this->assertSame(1, Coercion::int($byYear['2024']['user_count'] ?? 0));
+
+        $listed = $this->service->getStudentsWhoLeftSchool('2024');
+        $this->assertCount(1, $listed);
+        $this->assertSame('L1', $listed->first()?->reg_number);
+    }
+
+    public function test_left_school_class_leaver_without_dates_is_undated_year(): void
+    {
+        Student::query()->create([
+            'reg_number' => 'L2',
+            'firstname' => 'C',
+            'lastname' => 'D',
+            'class' => 'Left',
+            'status' => 2,
+        ]);
+
+        $rows = $this->service->getLeftSchoolYearsWithCounts();
+        $this->assertCount(1, $rows);
+        $this->assertSame(Student::LEFT_SCHOOL_UNDATED_YEAR, $rows[0]['year']);
+        $this->assertSame(1, $rows[0]['user_count']);
+
+        $listed = $this->service->getStudentsWhoLeftSchool(Student::LEFT_SCHOOL_UNDATED_YEAR);
+        $this->assertCount(1, $listed);
+    }
+
+    public function test_left_school_excludes_graduated_class(): void
+    {
+        Student::query()->create([
+            'reg_number' => 'G1',
+            'firstname' => 'E',
+            'lastname' => 'F',
+            'class' => 'Graduated',
+            'status' => 2,
+        ]);
+
+        $this->assertSame([], $this->service->getLeftSchoolYearsWithCounts());
     }
 
     public function test_toggle_status_sets_left_school_date(): void

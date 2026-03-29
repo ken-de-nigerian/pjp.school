@@ -184,7 +184,7 @@
                                     if (typeof flashSuccess === 'function') flashSuccess(res.data.message || 'Notification updated.');
                                     setTimeout(function () {
                                         window.location.href = res.data.redirect || window.location.href;
-                                    }, 2800);
+                                    }, window.RELOAD_DELAY_MS);
                                 } else if (typeof flashError === 'function') {
                                     const msg = res.data && res.data.message ? (Array.isArray(res.data.message) ? res.data.message.join(' ') : res.data.message) : 'Action failed.';
                                     flashError(msg);

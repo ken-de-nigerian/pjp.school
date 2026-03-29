@@ -218,7 +218,7 @@
                                     if (typeof flashSuccess === 'function') flashSuccess(res.data.message || 'Announcement deleted.');
                                     setTimeout(function() {
                                         window.location.href = res.data.redirect || '{{ route('admin.news.index') }}';
-                                    }, 2800);
+                                    }, window.RELOAD_DELAY_MS);
                                 } else if (typeof flashError === 'function') {
                                     const msg = res.data && res.data.message ? (Array.isArray(res.data.message) ? res.data.message.join(' ') : res.data.message) : 'Could not delete announcement.';
                                     flashError(msg);

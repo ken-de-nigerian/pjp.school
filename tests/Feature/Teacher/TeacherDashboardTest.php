@@ -22,9 +22,8 @@ class TeacherDashboardTest extends TestCase
     {
         parent::setUp();
         Teacher::query()->firstOrCreate(
-            ['userId' => 'teacher-dash-1'],
+            ['email' => 'teacherdash@test.local'],
             [
-                'email' => 'teacherdash@test.local',
                 'firstname' => 'Teach',
                 'lastname' => 'Er',
                 'password' => Hash::make('password'),
@@ -60,6 +59,8 @@ class TeacherDashboardTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertViewHas('get_news');
-        $this->assertLessThanOrEqual(3, count($response->viewData('get_news')));
+        $getNews = $response->viewData('get_news');
+        $this->assertIsArray($getNews);
+        $this->assertLessThanOrEqual(3, count($getNews));
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangeAdminPasswordRequest;
 use App\Http\Requests\UpdateAdminProfileRequest;
 use App\Http\Requests\UploadAdminAvatarRequest;
+use App\Support\Coercion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -53,7 +54,7 @@ final class ProfileController extends Controller
             ], 403);
         }
 
-        if (! Hash::check($request->input('oldPassword'), $admin->password)) {
+        if (! Hash::check(Coercion::string($request->input('oldPassword')), $admin->password)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Your current password does not match our records. Please try again.',
@@ -61,7 +62,7 @@ final class ProfileController extends Controller
         }
 
         $admin->update([
-            'password' => Hash::make($request->input('password')),
+            'password' => Hash::make(Coercion::string($request->input('password'))),
             'password_change_date' => now(),
         ]);
 
